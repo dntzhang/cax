@@ -1,4 +1,4 @@
-JX.Game
+JXGame
 =======
 
-JX.Game 游戏引擎
+JXGame 游戏引擎
