@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    	<style>
+article p { text-indent: 1em; }
+article p.noIndent { text-indent: 0; }
+canvas { margin: 1em 0; }
+.canvasContainer canvas { border: 1px solid #333; }
+.canvasContainer { max-width: 100%; overflow: auto; }
+.canvasText .question { margin: 10px 0; font-family: monospace; overflow: hidden; } 
+.canvasText .question label { float: left; width: 200px; font-family: monospace; }
+pre { overflow-x: auto; border: 1px solid #CCC; }
+			</style>
+</head>
+<body>
+    <div class="canvasText" >
+				<h3><a name="textureGenerator">Texture Generator</a></h3>
+			
+				<div class="question">
+					<label>Enforce square texture</label>
+					<input id="squareTexture" type="checkbox" >
+				</div>
+				<div class="question">
+					<label>Calculated Dimensions</label>
+					<input id="calculatedWidth" disabled="disabled">
+					<input id="calculatedHeight" disabled="disabled">
+				</div>
+				<div class="question">
+					<label>Text</label>
+					<textarea id="text">Alloy Team</textarea>
+				</div>
+				<div class="question">
+					<label>Text size (px)</label>
+					<input id="textSize" value="56">
+				</div>
+				<div class="question">
+					<label>Font Family</label>
+					<input id="fontFamily" value="monospace">
+				</div>
+				<div class="question">
+					<label>Text colour</label>
+					<input id="textColour" value="#333">
+				</div>
+				<div class="question">
+				<label>Text Alignment</label>
+				<select id="textAlignment">
+					<option value="left">Left</option>
+					<option value="center" selected="selected">Centre</option>
+					<option value="right">Right</option>
+				</select>
+				</div>
+				<div class="question">
+					<label>Maximum Text Width (px)</label>
+					<input id="maxWidth" value="256">
+				</div>
+				<div class="question">
+					<label>Background Colour</label>
+					<input id="backgroundColour" value="#FFF">
+				</div>
+				<input type="button" value="Draw Text" onclick="draw();"/>	
+                <input type="button" value="Export Option " onclick="exportOption()"/>
+        <br/>
+				<div class="canvasContainer" style="display:inline-block;">
+					<canvas id="textureCanvas" style="display: block;border:1px solid #ccc;" width="256" height="256">I'm sorry your browser does not support the HTML5 canvas element.</canvas>
+                   
+				</div>
+         <div style="display:inline-block;vertical-align:top;margin-top:20px;"><textarea id="codeTxta" cols="40" rows="15"></textarea></div>
+				<!-- Texture Generation Script -->
+				<script type="text/javascript">
+				    function getPowerOfTwo(value, pow) {
+				        var pow = pow || 1;
+				        while (pow < value) {
+				            pow *= 2;
+				        }
+				        return pow;
+				    }
+
+				    function measureText(ctx, textToMeasure) {
+				        return ctx.measureText(textToMeasure).width;
+				    }
+
+				    function createMultilineText(ctx, textToWrite, maxWidth, text) {
+				        textToWrite = textToWrite.replace("\n", " ");
+				        var currentText = textToWrite;
+				        var futureText;
+				        var subWidth = 0;
+				        var maxLineWidth = 0;
+
+				        var wordArray = textToWrite.split(" ");
+				        var wordsInCurrent, wordArrayLength;
+				        wordsInCurrent = wordArrayLength = wordArray.length;
+
+				        while (measureText(ctx, currentText) > maxWidth && wordsInCurrent > 1) {
+				            wordsInCurrent--;
+				            var linebreak = false;
+
+				            currentText = futureText = "";
+				            for (var i = 0; i < wordArrayLength; i++) {
+				                if (i < wordsInCurrent) {
+				                    currentText += wordArray[i];
+				                    if (i + 1 < wordsInCurrent) { currentText += " "; }
+				                }
+				                else {
+				                    futureText += wordArray[i];
+				                    if (i + 1 < wordArrayLength) { futureText += " "; }
+				                }
+				            }
+				        }
+				        text.push(currentText);
+				        maxLineWidth = measureText(ctx, currentText);
+
+				        if (futureText) {
+				            subWidth = createMultilineText(ctx, futureText, maxWidth, text);
+				            if (subWidth > maxLineWidth) {
+				                maxLineWidth = subWidth;
+				            }
+				        }
+
+				        return maxLineWidth;
+				    }
+				    function drawText(option) {
+				        var canvasX, canvasY;
+				        var textX, textY;
+				        var text = [];
+				        var textToWrite =option.txt;
+
+				        var maxWidth = option.maxWidth;
+				        var squareTexture =option.square;
+
+				        var textHeight = option.size;
+				        var textAlignment = option.alignment;
+				        var textColour =option.color;
+				        var fontFamily =option.fontFamily;
+
+				        var backgroundColour = option.backgroundColour;
+
+				        var canvas =option.renderTo;
+				        var ctx = canvas.getContext('2d');
+
+				        ctx.font = textHeight + "px " + fontFamily;
+				        if (maxWidth && measureText(ctx, textToWrite) > maxWidth) {
+				            maxWidth = createMultilineText(ctx, textToWrite, maxWidth, text);
+				            canvasX = getPowerOfTwo(maxWidth);
+				        } else {
+				            text.push(textToWrite);
+				            canvasX = getPowerOfTwo(ctx.measureText(textToWrite).width);
+				        }
+				        canvasY = getPowerOfTwo(textHeight * (text.length + 1));
+				        if (squareTexture) {
+				            (canvasX > canvasY) ? canvasY = canvasX : canvasX = canvasY;
+				        }
+				        option.calculatedWidth.value = canvasX;
+				        option.calculatedHeight.value = canvasY;
+
+				        canvas.width = canvasX;
+				        canvas.height = canvasY;
+
+				        switch (textAlignment) {
+				            case "left":
+				                textX = 0;
+				                break;
+				            case "center":
+				                textX = canvasX / 2;
+				                break;
+				            case "right":
+				                textX = canvasX;
+				                break;
+				        }
+				        textY = canvasY / 2;
+
+				        ctx.fillStyle = backgroundColour;
+				        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+				        ctx.fillStyle = textColour;
+				        ctx.textAlign = textAlignment;
+
+				        ctx.textBaseline = 'middle'; // top, middle, bottom
+				        ctx.font = textHeight + "px " + fontFamily;
+
+				        var offset = (canvasY - textHeight * (text.length + 1)) * 0.5;
+				        option.cmd = [];
+				        for (var i = 0; i < text.length; i++) {
+				            if (text.length > 1) {
+				                textY = (i + 1) * textHeight + offset;
+				            }
+
+				            option.cmd.push({text:text[i], x:textX, y:textY});
+				            ctx.fillText(text[i], textX, textY);
+				        }
+
+				        window.option = option;
+				    }
+				   
+				    function draw() {
+				        drawText({
+				            txt: document.getElementById('text').value,
+				            maxWidth: parseInt(document.getElementById('maxWidth').value, 10),
+				            square: document.getElementById('squareTexture').checked,
+				            size: document.getElementById('textSize').value,
+				            alignment: document.getElementById('textAlignment').value,
+				            color: document.getElementById('textColour').value,
+				            fontFamily: document.getElementById('fontFamily').value,
+				            backgroundColour: document.getElementById('backgroundColour').value,
+				            calculatedWidth: document.getElementById('calculatedWidth'),
+				            calculatedHeight: document.getElementById('calculatedHeight'),
+				            renderTo: document.getElementById('textureCanvas')
+
+
+				        });
+				    }
+
+
+				    var codeTxta = document.getElementById("codeTxta");
+				    function exportOption() {
+				        if (typeof option.renderTo == "object") {
+				            delete option.maxWidth;
+				            delete option.square;
+				            option.calculatedWidth = option.renderTo.width;
+				            option.calculatedHeight = option.renderTo.height;
+				            option.renderTo = option.renderTo.id;
+				            codeTxta.value = JSON.stringify(option);
+				            codeTxta.focus();
+				        }
+				    }
+				  
+
+				    draw();
+				</script>
+			</div>
+</body>
+</html>
