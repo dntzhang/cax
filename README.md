@@ -31,6 +31,10 @@ Tools
 * [tiled](http://www.mapeditor.org/)
 * [image splitter](http://kmdjs.github.io/imagesplitter/)
 
+AlloyAnimationEngine
+=================
+coming soon...
+
 AlloyRenderingEngine
 =================
 Super fast HTML 5 2D rendering engine , supporting Canvas and WebGL rendering
