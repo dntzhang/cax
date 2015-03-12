@@ -30,6 +30,7 @@ Tools
 * [combine images](http://kmdjs.github.io/combineimages/)
 * [tiled](http://www.mapeditor.org/)
 * [image splitter](http://kmdjs.github.io/imagesplitter/)
+* [thumbnail generator](http://kmdjs.github.io/thumbnailgenerator/)
 
 AlloyAnimationEngine
 =================
