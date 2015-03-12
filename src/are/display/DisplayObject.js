@@ -13,7 +13,7 @@ define("ARE.DisplayObject", {
         this._matrix = new Matrix2D();
         this.events = {};
         this.id = UID.get();
-
+        this.cacheID = 0;
         this.baseInstanceof = "DisplayObject";
         var self = this;
         this._watch(this, "originX", function (prop, value) {
@@ -110,7 +110,7 @@ define("ARE.DisplayObject", {
             this.cacheCanvas.height = bound.height;
             this.cacheCtx = this.cacheCanvas.getContext("2d");
         } 
-       
+        this.cacheID = UID.getCacheID();
         //this._cacheScale = scale;
         
 

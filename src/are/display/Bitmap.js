@@ -16,7 +16,7 @@ define("ARE.Bitmap:ARE.DisplayObject", {
                 this.visible = false;
                 this.img = document.createElement("img");
                 this.img.onload = function () {
-                    self.visible = true;
+                   
                     if (!self.rect) self.rect = [0, 0, self.img.width, self.img.height];
                     self.width = self.rect[2];
                     self.height = self.rect[3];
@@ -24,6 +24,7 @@ define("ARE.Bitmap:ARE.DisplayObject", {
                     self.regY = self.height * self.originY;
 
                     Bitmap[img] = self.img;
+                    self.visible = true;
                 }
                 this.img.src = img;
 

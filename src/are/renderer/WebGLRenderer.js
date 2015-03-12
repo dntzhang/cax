@@ -52,6 +52,7 @@
 				
 				"uniform float uAlpha;			\n" +
                 //声明多个sampler可以少调用glActiveTexture、glBindTexture、glEnable(GL_TEXTURE_2D)等，从而提高性能 http://blog.csdn.net/mythma/article/details/38979461
+                //每次调用drawElements的 max count是32
 				"uniform sampler2D uSampler0,uSampler1,uSampler2,uSampler3,uSampler4,uSampler5,uSampler6," +
 				"uSampler7,uSampler8,uSampler9,uSampler10,uSampler11,uSampler12,uSampler13,uSampler14,uSampler15;\n" +
 				
@@ -180,7 +181,7 @@
         var textureCount = this._cacheTextures.length + this._textures.length;
 
         for (var i = 0, l = textures.length; i < l; i++) {
-            if (textures[i].image == src) {
+            if (textures[i].image.src == src.src) {
                 src.glTexture = textures[i];
                 return i;
             }
@@ -212,7 +213,7 @@
             return;
         }
         var textures = this._cacheTextures;
-        var textureCount = this._cacheTextures.length + this._textures.length;
+        var textureCount =  this._textures.length;
 
         for (var i = 0, l = textures.length; i < l; i++) {
             if (o.cacheID&&textures[i]._cacheID == o.cacheID) {
@@ -242,11 +243,11 @@
         }
 
         ctx.uniform1i(ctx.getUniformLocation(ctx.canvas.shader, ("uSampler" + textureCount.toString())), textureCount);
-        src._cacheID = o.cacheID;
+        src.glTexture._cacheID = o.cacheID;
         src.glTexture._isUsed = true;
 		
         this._textures.push(src.glTexture);
-        textures.push(src.glTexture);
+        //textures.push(src.glTexture);
         return textureCount;
     },
     render : function(displayObject, surface) {
@@ -281,9 +282,9 @@
         if (o.parent) return this._getCompositeOperation(o.parent);
     },
     _render: function (ctx, o, matrix, docFrag) {
-        var mat4 = GLMatrix.mat4;
+        
         if (!o.isVisible()) { return; }
-				
+        var mat4 = GLMatrix.mat4;
         var testLength = (this._index + 4) * this._vertexDataCount;
         if (this.vertices.length < testLength) {				
             this._draw(ctx);
@@ -388,7 +389,7 @@
 		 * Since they're already drawn, doing this will be no problem.
 		 */
         this._poolMat4(mvMatrix);
-        if (this._textures.length + this._cacheTextures.length > 31) {
+        if (this._textures.length + this._cacheTextures.length > 15) {
             this._draw(ctx);
         }
 
