@@ -234,6 +234,31 @@ define("ARE.Stage:ARE.Container", {
     },
     correctingXY: function (x,y) {
         return { x: x * this.canvas.width / (window.innerWidth * this._scaleX), y: y * this.canvas.height / (window.innerHeight * this._scaleY) };
+    },
+    getTotalCount: function () {
+        var count = 0;
+
+        function getCount(child) {
+
+            if (child.baseInstanceof == "Container") {
+                for (var i = 0, len = child.children.length; i < len; i++) {
+
+                    if (child.children[i].baseInstanceof == "Container") {
+                        getCount(child.children[i])
+                    } else {
+                        count++;
+
+                    }
+                }
+            } else {
+                count++;
+
+            }
+
+        }
+        getCount(this);
+       
+        return count;
     }
 })
 
