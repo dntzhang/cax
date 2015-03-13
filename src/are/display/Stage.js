@@ -259,6 +259,12 @@ define("ARE.Stage:ARE.Container", {
         getCount(this);
        
         return count;
+    },
+    getRenderingMode: function () {
+        if (this.renderer instanceof CanvasRenderer) {
+            return "Canvas";
+        }
+        return "WebGL";
     }
 })
 

@@ -22,7 +22,7 @@ define("ARE.Bitmap:ARE.DisplayObject", {
                     self.height = self.rect[3];
                     self.regX = self.width * self.originX;
                     self.regY = self.height * self.originY;
-
+                    self.imgLoaded = true;
                     Bitmap[img] = self.img;
                     self.visible = true;
                 }

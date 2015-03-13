@@ -269,8 +269,7 @@
             this.initSurface(surface);
         }
         if (displayObject && surface) {
-            var docFrag = document.createDocumentFragment();
-            this._render(ctx, displayObject, surface.idMatrix, docFrag);
+            this._render(ctx, displayObject, surface.idMatrix);
             this._draw(ctx);
         }
 		
@@ -281,7 +280,14 @@
         if (o.compositeOperation) return o.compositeOperation;
         if (o.parent) return this._getCompositeOperation(o.parent);
     },
-    _render: function (ctx, o, matrix, docFrag) {
+    _getAlpha: function (o, alpha) {
+        var result = o.alpha * alpha;
+        if (o.parent) {
+            return this._getAlpha(o.parent, result)
+        }
+        return result;
+    },
+    _render: function (ctx, o, matrix) {
         
         if (!o.isVisible()) { return; }
         var mat4 = GLMatrix.mat4;
@@ -371,7 +377,7 @@
         var pos4 = mat4.multiplyVec3(mvMatrix, [1,0,0]);
 		
         // Get yonder alpha.
-        var alpha = o.alpha;
+        var alpha = this._getAlpha(o, 1);
 		
         this.vertices.set(
 				[pos1[0], pos1[1],	pos1[2],	uFrame, 		vFrame, 		samplerID,		alpha,
