@@ -38,7 +38,7 @@ define("ARE.Bitmap:ARE.DisplayObject", {
         this.rect = [0, 0, img.width, img.height];
         this.width = img.width;
         this.height = img.height;
-
+        this.imgLoaded = true;
     },
     /**
      * 设置滤镜

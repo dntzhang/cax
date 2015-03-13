@@ -1,5 +1,5 @@
 ﻿/**
- * 位图，继承自Container
+ * 舞台，继承自Container
  * @class Stage
  * @constructor
  * @param {canvas} canvas
