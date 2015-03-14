@@ -15,7 +15,10 @@
           { name: "ARE.WebGLRenderer", url: "are/renderer" },
           { name: "ARE.GLMatrix", url: "are/util" },
           { name: "ARE.Keyboard", url: "are/util" },
-          { name: "ARE.RAF", url: "are/util" }
+          { name: "ARE.RAF", url: "are/util" },
+          { name: "ARE.CircleShape", url: "are/display" },
+          { name: "ARE.RectShape", url: "are/display" },
+          { name: "ARE.FPS", url: "are/util" }
     ]
 });
 
@@ -35,10 +38,14 @@ define("Main", ["ARE"], {
             .end();
 
         shape.x = shape.y = 200;
-       
-        stage.add(shape);
 
-
+        var rectShape = new RectShape(100, 50, "red", true);
+        var circleShape = new CircleShape(10, "green", false);
+        rectShape.x = 200;
+        rectShape.y = 100;
+        circleShape.x = 200;
+        circleShape.y = 300;
+        stage.add(shape, rectShape, circleShape);
 
     }
 })

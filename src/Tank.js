@@ -3,13 +3,13 @@
         this._super();
 
         this.body = new Bitmap(option.img);
-        this.body.setRect(109, 5, 31, 44);
+        this.body.rect=[109, 5, 31, 44];
         this.body.originX = 0.5;
         this.body.originY = 0.5;
         this.add(this.body);
 
         this.gun = this.body.clone();
-        this.gun.setRect(165, 0, 17, 39);
+        this.gun.rect=[165, 0, 17, 39];
         this.gun.originX = 0.5;
         this.gun.originY = 0.6;
         this.gun.y = -5;

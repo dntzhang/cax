@@ -15,7 +15,8 @@
           { name: "ARE.WebGLRenderer", url: "are/renderer" },
           { name: "ARE.GLMatrix", url: "are/util" },
           { name: "ARE.Keyboard", url: "are/util" },
-          { name: "ARE.RAF", url: "are/util" }
+          { name: "ARE.RAF", url: "are/util" },
+          { name: "ARE.FPS", url: "are/util" }
     ]
 });
 
@@ -35,7 +36,7 @@ define("Main", ["ARE"], {
             //bind click event, the event monitor can be accurate to pixel
             bmp.on("click", function () {
                 //apply a random filter to the bmp
-                bmp.setFilter(Math.random(), Math.random(), Math.random(), 1);
+                bmp.filter=[Math.random(), Math.random(), Math.random(), 1];
             })
             //add object to stage
             stage.add(bmp);

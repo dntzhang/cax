@@ -288,7 +288,10 @@
         return result;
     },
     _render: function (ctx, o, matrix) {
-        
+        if (o instanceof DomElement) {
+            o.element.style.display = "block";
+            return;
+        }
         if (!o.isVisible()) { return; }
         var mat4 = GLMatrix.mat4;
         var testLength = (this._index + 4) * this._vertexDataCount;

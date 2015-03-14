@@ -5,7 +5,7 @@
  * @param {canvas} canvas
  * @param {bool} closeWebGL
  */
-define("ARE.Stage:ARE.Container", {
+define("ARE.Stage:ARE.Container", ["Util"],{
     statics: {
         checkMove: false
     },
@@ -44,10 +44,7 @@ define("ARE.Stage:ARE.Container", {
      
         this._scaleX = this._scaleY = null;
 
-        this.canvas.addEventListener("click", this._handleClick.bind(this), false);
-        this.canvas.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
-        window.addEventListener("keydown", this._handleKeyDown.bind(this), false);
-        window.addEventListener("keyup", this._handleKeyUp.bind(this), false);
+      
         this.offset = this._getXY(this.canvas);
 
         this.overObj = null;
@@ -83,7 +80,28 @@ define("ARE.Stage:ARE.Container", {
         });
 
      
-       
+        this.domSurface = document.createElement("div");
+        var style = this.domSurface.style;
+        style.width = this.width + "px";
+        style.height = this.height + "px";
+        style.position = "absolute";
+        style.border="0px solid red"
+        style.left = this.offset[0]+"px";
+        style.top = this.offset[1] + "px";
+
+        document.body.appendChild(this.domSurface);
+
+        //this.canvas.addEventListener("click", this._handleClick.bind(this), false);
+        //this.canvas.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
+        this.domSurface.addEventListener("click", this._handleClick.bind(this), false);
+        this.domSurface.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
+    },
+    add: function (obj) {
+        this._super(obj);
+        if (obj instanceof DomElement) {
+            this.domSurface.appendChild(obj.element);
+        }
+
     },
     /**
      * 更新舞台
@@ -221,12 +239,6 @@ define("ARE.Stage:ARE.Container", {
 
         this.interval=Math.floor(1000/fps);
     },
-    onKeyDown: function (fn) {
-        this.keyDownCallback = fn;
-    },
-    onKeyUp: function (fn) {
-        this.keyUpCallback = fn;
-    },
     onKeyboard: function (keyCombo, onDownCallback, onUpCallback) {
         Keyboard.on(keyCombo, onDownCallback, onUpCallback);
     },
@@ -234,7 +246,11 @@ define("ARE.Stage:ARE.Container", {
 
        return Keyboard.getActiveKeys();
     },
-    scalable: function (scaleX,scaleY) {
+    scalable: function (scaleX, scaleY) {
+        if (scaleX === 1 && scaleY === 1) {
+            document.body.style.overflow = "hidden";
+            document.documentElement.style.overflow = "hidden";
+        }
         document.body.style.margin = 0;
         document.documentElement.style.margin = 0;
         document.body.style.border = 0;
@@ -254,6 +270,15 @@ define("ARE.Stage:ARE.Container", {
         canvas.style.left = 100 * (1 - scaleX) / 2 + "%";
         canvas.style.top = 100 * (1 - scaleY) / 2 + "%";
         canvas.style.border = "0px solid #ccc";
+
+        var domSurface = this.domSurface;
+        domSurface.style.position = "absolute";
+        domSurface.style.width = (scaleX * 100) + "%";
+        domSurface.style.height = (scaleY * 100) + "%";
+        domSurface.style.left = 100 * (1 - scaleX) / 2 + "%";
+        domSurface.style.top = 100 * (1 - scaleY) / 2 + "%";
+        domSurface.style.border = "0px solid #ccc";
+
         this.offset = this._getXY(this.canvas);
     },
     correctingXY: function (x,y) {
@@ -289,6 +314,9 @@ define("ARE.Stage:ARE.Container", {
             return "Canvas";
         }
         return "WebGL";
+    },
+    getFPS: function () {
+        return FPS.get();
     }
 })
 

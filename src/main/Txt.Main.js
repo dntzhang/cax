@@ -16,7 +16,8 @@
           { name: "ARE.GLMatrix", url: "are/util" },
           { name: "ARE.RAF", url: "are/util" },
           { name: "ARE.Keyboard", url: "are/util" },
-          { name: "ARE.Txt", url: "are/display" }
+          { name: "ARE.Txt", url: "are/display" },
+          { name: "ARE.FPS", url: "are/util" }
     ]
 });
 

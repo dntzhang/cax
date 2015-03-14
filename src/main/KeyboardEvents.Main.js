@@ -16,7 +16,8 @@
           { name: "ARE.GLMatrix", url: "are/util" },
           { name: "ARE.RAF", url: "are/util" },
           { name: "ARE.Keyboard", url: "are/util" },
-          { name: "AlloyRenderingEngine.Tank" }
+          { name: "AlloyRenderingEngine.Tank" },
+          { name: "ARE.FPS", url: "are/util" }
     ]
 });
 

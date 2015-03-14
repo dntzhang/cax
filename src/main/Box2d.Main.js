@@ -15,7 +15,8 @@
           { name: "ARE.WebGLRenderer", url: "are/renderer" },
           { name: "ARE.GLMatrix", url: "are/util" },
           { name: "ARE.Keyboard", url: "are/util" },
-          { name: "ARE.RAF", url: "are/util" }
+          { name: "ARE.RAF", url: "are/util" },
+          { name: "ARE.FPS", url: "are/util" }
     ]
 });
 
@@ -34,12 +35,8 @@ define("Main", ["ARE"], {
         var worldScale = 30;
         var world = new b2World(new b2Vec2(0, 30), true), bodies = [];
 
-        var ld = new Loader(), stage = new Stage("#ourCanvas", localStorage.webgl == "1");
-        ld.loadRes([
-            { id: "box", src: "../asset/img/box.jpg" },
-             { id: "ball", src: "../asset/img/basketball.png" }
-        ]);
-        ld.complete(function () {
+        var  stage = new Stage("#ourCanvas", localStorage.webgl == "1");
+      
            
             stage.onTick(function () {
                 world.Step(1 / 60, 10, 10);
@@ -55,7 +52,6 @@ define("Main", ["ARE"], {
             })
             init();
 
-        });
         
 
 
@@ -101,7 +97,7 @@ define("Main", ["ARE"], {
             fixtureDef.shape = polygonShape;
             var body = world.CreateBody(bodyDef);
             bodies.push(body);
-            body.bitmap = new Bitmap(ld.get("box"));
+            body.bitmap = new Bitmap("../asset/img/box.jpg");
             body.bitmap.originX = body.bitmap.originY = 0.5;
             body.bitmap.scaleX = width / 200;
             body.bitmap.scaleY = height / 200;
@@ -121,7 +117,7 @@ define("Main", ["ARE"], {
             fixtureDef.shape = polygonShape;
             var body = world.CreateBody(bodyDef);
             bodies.push(body);
-            body.bitmap = new Bitmap(ld.get("ball"));
+            body.bitmap = new Bitmap("../asset/img/basketball.png");
             body.bitmap.originX = body.bitmap.originY = 0.5;
             body.bitmap.scaleX =  body.bitmap.scaleY = r*2 / 128;
             stage.add(body.bitmap)

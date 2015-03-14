@@ -16,7 +16,8 @@
           { name: "ARE.GLMatrix", url: "are/util" },
           { name: "ARE.RAF", url: "are/util" },
           { name: "ARE.Keyboard", url: "are/util" },
-          { name: "ARE.RectAdjust", url: "are/display" }
+          { name: "ARE.RectAdjust", url: "are/display" },
+          { name: "ARE.FPS", url: "are/util" }
     ]
 });
 

@@ -18,7 +18,8 @@
           { name: "ARE.Particle", url: "are/display" },
           { name: "ARE.Util", url: "are/util" },
           { name: "ARE.Keyboard", url: "are/util" },
-          { name: "ARE.Vector2", url: "are/util" }
+          { name: "ARE.Vector2", url: "are/util" },
+          { name: "ARE.FPS", url: "are/util" }
     ]
 });
 

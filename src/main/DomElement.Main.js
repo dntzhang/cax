@@ -15,8 +15,13 @@
           { name: "ARE.WebGLRenderer", url: "are/renderer" },
           { name: "ARE.GLMatrix", url: "are/util" },
           { name: "ARE.Keyboard", url: "are/util" },
-          { name: "ARE.RAF", url: "are/util" },
-          { name: "ARE.FPS", url: "are/util" }
+          { name: "ARE.Transform", url: "are/util" },
+             { name: "ARE.Observable", url: "are/util" },
+                { name: "ARE.Matrix3D", url: "are/util" },
+                  { name: "ARE.DomElement", url: "are/display" },
+             { name: "ARE.RAF", url: "are/util" },
+                { name: "ARE.FPS", url: "are/util" }
+
     ]
 });
 
@@ -24,15 +29,16 @@ define("Main", ["ARE"], {
     ctor: function () {
         var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
 
-        var bmp = new Bitmap("../asset/img/atLogo.png");
-        bmp.originX = 0.5;
-        bmp.originY = 0.5;
-        bmp.x = stage.width / 2;
-        bmp.y = stage.height / 2;
-        bmp.on("click", function () {
-            alert("The event monitor can be accurate to pixel");
-        })
-        stage.add(bmp);
+        var domElement = new DomElement("#testDom");
+  
+        domElement.y = 180;
+        domElement.rotateX = -20;
 
+        stage.add(domElement);
+
+
+        stage.onTick(function () {
+            domElement.rotateY+=1;
+        })
     }
 })

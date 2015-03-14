@@ -28,13 +28,13 @@
             fixtureDef.restitution = 0.5;
             fixtureDef.shape = polygonShape;
             var body = world.CreateBody(bodyDef);
-            
+
             body.bitmap = new Bitmap(img);
             body.bitmap.scaleX = width / rect[2];
             body.bitmap.scaleY = height / rect[3];
-            body.bitmap.setRect(rect);
+            body.bitmap.rect=rect;
             body.bitmap.originX = body.bitmap.originY = 0.5;
-            stage&&stage.add(body.bitmap)
+            stage && stage.add(body.bitmap)
             body.CreateFixture(fixtureDef);
             return body;
         },
@@ -51,11 +51,11 @@
             fixtureDef.restitution = 0.5;
             fixtureDef.shape = polygonShape;
             var body = world.CreateBody(bodyDef);
-   
+
             body.bitmap = new Bitmap(img);
             body.bitmap.originX = body.bitmap.originY = 0.5;
             body.bitmap.scaleX = body.bitmap.scaleY = r * 2 / rect[2];
-            body.bitmap.setRect(rect);
+            body.bitmap.rect=rect;
             stage && stage.add(body.bitmap)
             body.CreateFixture(fixtureDef);
             return body;
@@ -64,33 +64,33 @@
             var x = option.x, y = option.y, verticesList = option.verticesList, type = option.type, world = option.world, stage = option.stage, img = option.img, rect = option.imgRect;
             var bodyDef = new this.b2BodyDef;
             var fixDef = new this.b2FixtureDef();
-                bodyDef.type = type;
-                bodyDef.position.Set(x / this.worldScale, y / this.worldScale);
+            bodyDef.type = type;
+            bodyDef.position.Set(x / this.worldScale, y / this.worldScale);
 
 
 
-                for (var k = 0; k < verticesList.length; k++) {
-                    verticesList[k].x /= this.worldScale;
-                    verticesList[k].y /= this.worldScale;
-                }
+            for (var k = 0; k < verticesList.length; k++) {
+                verticesList[k].x /= this.worldScale;
+                verticesList[k].y /= this.worldScale;
+            }
 
-                var separator = new this.b2Separator();
-                var body = world.CreateBody(bodyDef);
-                var validate = separator.Validate(verticesList);
-                if (validate == 2) {
-                    verticesList.reverse();
-                    separator.Separate(body, fixDef, verticesList);
-                } else if (validate == 0) {
-                    separator.Separate(body, fixDef, verticesList);
-                }
+            var separator = new this.b2Separator();
+            var body = world.CreateBody(bodyDef);
+            var validate = separator.Validate(verticesList);
+            if (validate == 2) {
+                verticesList.reverse();
+                separator.Separate(body, fixDef, verticesList);
+            } else if (validate == 0) {
+                separator.Separate(body, fixDef, verticesList);
+            }
 
-                body.bitmap = new Bitmap(img);
-                //body.bitmap.originX = body.bitmap.originY = 0.5;
-                //body.bitmap.scaleX = width / rect[2];
-                //body.bitmap.scaleY = height / rect[3];
-                body.bitmap.setRect(rect);
-                stage && stage.add(body.bitmap)
-                return body;
+            body.bitmap = new Bitmap(img);
+            //body.bitmap.originX = body.bitmap.originY = 0.5;
+            //body.bitmap.scaleX = width / rect[2];
+            //body.bitmap.scaleY = height / rect[3];
+            body.bitmap.rect=rect;
+            stage && stage.add(body.bitmap)
+            return body;
         },
         correctingVertexList: function (vertexList) {
             var firstVertex = vertexList[0],
@@ -98,17 +98,22 @@
                 minY = firstVertex.y,
                 i = 1,
                 len = vertexList.length;
-                    for (; i < len; i++) {
-                        var vertex = vertexList[i];
-                        vertex.x < minX && (minX = vertex.x);
-                        vertex.y < minY && (minY = vertex.y);
-                    }
-                    i = 0;
-                    for (; i < len; i++) {
-                        var vertex = vertexList[i];
-                        vertex.x -= minX;
-                        vertex.y -= minY;
-                    }
-                }
+            for (; i < len; i++) {
+                var vertex = vertexList[i];
+                vertex.x < minX && (minX = vertex.x);
+                vertex.y < minY && (minY = vertex.y);
+            }
+            i = 0;
+            for (; i < len; i++) {
+                var vertex = vertexList[i];
+                vertex.x -= minX;
+                vertex.y -= minY;
+            }
+        },
+        createHollowPolygon: function () {
+            //由细的矩形组成
+
+
+        }
     }
 })
