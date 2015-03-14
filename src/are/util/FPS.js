@@ -29,14 +29,14 @@ define("ARE.FPS", {
         this.fpsList = [];
 
         var self = this;
-        RAF.requestInterval(function () {
+       setInterval(function () {
             var lastIndex= self.fpsList.length - 1;
 
             self.value = self.fpsList[lastIndex];
             if(lastIndex>500){
                 self.fpsList.shift();
             }
-        }, 200)
+        },500)
 
     },
     _computeFPS: function () {

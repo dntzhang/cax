@@ -53,13 +53,37 @@ define("ARE.Stage:ARE.Container", {
         this.overObj = null;
         this.pause = false;
 
-        this.tickFPS = 60;
-        this.interval = Math.floor(1000 / 80);
+       // this.tickFPS = 60;
+        this.interval = Math.floor(1000 / 60);
 
         var self = this;
-        self.loop=RAF.requestInterval(function () {
+        self.loop = setInterval(function () {
             self._tick(self);
         }, self.interval);
+
+        
+        Object.defineProperty(this, "useRequestAnimFrame", {
+            set: function (value) {
+                this._useRequestAnimFrame = value;
+                if (value) {
+                    clearInterval(self.loop);
+                    self.loop = RAF.requestInterval(function () {
+                        self._tick(self);
+                    }, self.interval)
+                } else {
+                    RAF.clearRequestInterval(self.loop);
+                    self.loop = setInterval(function () {
+                        self._tick(self);
+                    }, self.interval);
+                }
+            },
+            get: function () {
+                return this._useRequestAnimFrame;
+            }
+        });
+
+     
+       
     },
     /**
      * 更新舞台
@@ -144,7 +168,7 @@ define("ARE.Stage:ARE.Container", {
                 container._tickIntervalCurrent = new Date;
                 if (!container._tickIntervalLast) container._tickIntervalLast = new Date;
                 var itv = container._tickIntervalCurrent - container._tickIntervalLast;
-                if (itv > container._tickInterval) {
+                if ( itv*2> container._tickInterval ) {
                     container.tick();
                     container._tickIntervalLast = container._tickIntervalCurrent;
                 }
@@ -161,7 +185,7 @@ define("ARE.Stage:ARE.Container", {
                     child._tickIntervalCurrent = new Date;
                     if (!child._tickIntervalLast) child._tickIntervalLast = new Date;
                     var itv = child._tickIntervalCurrent - child._tickIntervalLast;
-                    if (itv > child._tickInterval) {
+                    if (itv * 2 > child._tickInterval) {
                         child.tick();
                         child._tickIntervalLast = child._tickIntervalCurrent;
                     }

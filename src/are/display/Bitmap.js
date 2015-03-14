@@ -35,10 +35,29 @@ define("ARE.Bitmap:ARE.DisplayObject", {
     },
     _init: function (img) {
         this.img = img;
-        this.rect = [0, 0, img.width, img.height];
+      
         this.width = img.width;
         this.height = img.height;
         this.imgLoaded = true;
+
+        var self = this;
+        this._watch(this, "filter", function (prop, value) {
+            self.setFilter.apply(self, value);
+        })
+
+        Object.defineProperty(this, "rect", {
+            get: function () {
+                return this["__rect"];
+            },
+            set: function (value) {
+                this["__rect"] = value;
+                this.width = value[2];
+                this.height = value[3];
+                this.regX = value[2] * this.originX;
+                this.regY = value[3] * this.originY;
+            }
+        });
+        this.rect = [0, 0, img.width, img.height];
     },
     /**
      * 设置滤镜
@@ -63,17 +82,6 @@ define("ARE.Bitmap:ARE.DisplayObject", {
             }
         }
         this.cacheCtx.putImageData(imageData, 0, 0);
-    },
-    setRect: function (x, y, w, h) {
-        if (arguments.length === 1) {
-            this.setRect.apply(this, arguments[0]);
-        } else {
-            this.rect = [x, y, w, h];
-            this.width = w;
-            this.height = h;
-            this.regX = this.width * this.originX;
-            this.regY = this.height * this.originY;
-        }
     },
     clone: function () {
         var o = new Bitmap(this.img);

@@ -115,12 +115,12 @@ define("ARE.Sprite:ARE.DisplayObject", {
     gotoAndPlay: function (animation, times) {
         this.paused = false;
         this.reset();
-        RAF.clearRequestInterval(this.loop);
+        clearInterval(this.loop);
         this.currentAnimation = animation;
       
         var self = this;
         var playTimes = 0;
-        this.loop = RAF.requestInterval(function () {
+        this.loop = setInterval(function () {
       
             if (!self.paused) {
                 var opt = self.option;
@@ -135,7 +135,7 @@ define("ARE.Sprite:ARE.DisplayObject", {
                     if (times && playTimes == times) {
                         if (self.animationEnd) self.animationEnd();
                         self.paused = true;
-                        RAF.clearRequestInterval(self.loop);
+                        clearInterval(self.loop);
                         self.parent.remove(self);
                     }
                 }
@@ -153,7 +153,7 @@ define("ARE.Sprite:ARE.DisplayObject", {
      */
     gotoAndStop: function (animation) {
         this.reset();
-        RAF.clearRequestInterval(this.loop);
+        clearInterval(this.loop);
         var self = this;
         self.currentAnimation = animation;
         var opt = self.option;
