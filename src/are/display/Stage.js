@@ -50,8 +50,10 @@ define("ARE.Stage:ARE.Container", ["Util"],{
         this.overObj = null;
         this.pause = false;
 
-       // this.tickFPS = 60;
-        this.interval = Math.floor(1000 / 60);
+        // this.tickFPS = 60;
+
+        this.fps = 60;
+        this.interval = Math.floor(1000 / this.fps);
 
         var self = this;
         self.loop = setInterval(function () {
@@ -95,13 +97,37 @@ define("ARE.Stage:ARE.Container", ["Util"],{
         //this.canvas.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
         this.domSurface.addEventListener("click", this._handleClick.bind(this), false);
         this.domSurface.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
+
+
+        this.debugDiv = document.createElement("div");
+       
+        this.debugDiv.style.cssText = "display:none;position:absolute;z-index:1000;left:0;top:0;background-color:yellow;font-size:20px;";
+
+        document.body.appendChild(this.debugDiv);
+        Object.defineProperty(this, "debug", {
+            set: function (value) {
+                this._debug = value;
+                
+                if (this._debug) {
+                    this.debugDiv.style.display = "block";
+                } else {
+                    this.debugDiv.style.display = "none";
+                }
+            },
+            get: function () {
+                return this._debug;
+            }
+        });
     },
     add: function (obj) {
-        this._super(obj);
-        if (obj instanceof DomElement) {
-            this.domSurface.appendChild(obj.element);
+        this._super.apply(this, arguments);
+        var i,len = arguments.length;
+        for (i = 0; i < len; i++) {
+            var obj = arguments[i];
+            if (obj instanceof DomElement) {
+                this.domSurface.appendChild(obj.element);
+            }
         }
-
     },
     /**
      * 更新舞台
@@ -111,14 +137,9 @@ define("ARE.Stage:ARE.Container", ["Util"],{
         if (!this.pause) {
             this.renderer.update();
         }
+
         //this.ctx.clearRect(0, 0, this.width, this.height);
         //this.draw(this.ctx);
-    },
-    _handleKeyDown: function (evt) {
-        this.keyDownCallback && this.keyDownCallback(evt.keyCode)
-    },
-    _handleKeyUp: function (evt) {
-        this.keyUpCallback && this.keyUpCallback(evt.keyCode)
     },
     _handleClick: function (evt) {
         // var child = this._getHitChild(this.hitCtx, evt.pageX - this.offset[0], evt.pageY - this.offset[1], "click");
@@ -227,6 +248,9 @@ define("ARE.Stage:ARE.Container", ["Util"],{
     tick: function (fn) {
         this.tickFn && this.tickFn();
         this.update();
+        if (this.debug) {
+            this.debugDiv.innerHTML = "fps : " + this.getFPS() + " <br/>object count : " + this.getTotalCount() + " <br/>rendering mode : " + this.getRenderingMode();
+        }
     },
     /**
      * 注册循环时要执行的函数
@@ -279,10 +303,11 @@ define("ARE.Stage:ARE.Container", ["Util"],{
         domSurface.style.top = 100 * (1 - scaleY) / 2 + "%";
         domSurface.style.border = "0px solid #ccc";
 
+        domSurface.style.transform =domSurface.style.msTransform = domSurface.style.OTransform = domSurface.style.MozTransform =domSurface.style.webkitTransform ="scale("+     window.innerWidth * this._scaleX/this.width+","+     window.innerHeight * this._scaleX/this.height+")"
         this.offset = this._getXY(this.canvas);
     },
     correctingXY: function (x,y) {
-        return { x: x * this.canvas.width / (window.innerWidth * this._scaleX), y: y * this.canvas.height / (window.innerHeight * this._scaleY) };
+        return { x: x * this.width / (window.innerWidth * this._scaleX), y: y * this.height / (window.innerHeight * this._scaleY) };
     },
     getTotalCount: function () {
         var count = 0;

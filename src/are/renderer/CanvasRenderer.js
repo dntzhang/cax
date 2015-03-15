@@ -13,11 +13,11 @@
         this.render(this.ctx, this.stage);
     },
     render: function (ctx, o, mtx) {
+          if (!o.isVisible()) { return; }
         if (o instanceof DomElement) {
             o.element.style.display = "block";
             return;
         }
-        if (!o.isVisible()) { return; }
         if (mtx) {
             o._matrix.reinitialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty, mtx.alpha, mtx.shadow, mtx.compositeOperation);
         } else {
