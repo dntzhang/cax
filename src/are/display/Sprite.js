@@ -68,9 +68,24 @@ define("ARE.Sprite:ARE.DisplayObject", {
         this.currentAnimation = option.currentAnimation||null;
         //当前帧所处的矩形区域
         this.rect = [0, 0, 10, 10];
-        //当前播放的图片
-        this.img = this.option.imgs[0];
+        //当前播放的图片 
+        this.visible = false;
+        this.bitmaps = [], this._loadedCount = 0, self = this;
+        for (var i = 0, len = this.option.imgs.length; i < len; i++) {
+            var bmp = new Bitmap();
+            bmp._sprite = this;
+            bmp.onImageLoad(function () {
+                bmp._sprite._loadedCount++;
+                if (bmp._sprite._loadedCount === len) {
+                    bmp._sprite.visible = true;
+                    delete bmp._sprite;
+                }
+            });
+            bmp.useImage(this.option.imgs[i]);
+            this.bitmaps.push(bmp);
+        }
       
+        this.img = this.bitmaps[0].img;
         //播放的时间间隔
         this.interval = 1000 / option.framerate;
         //播放的函数循环
@@ -141,7 +156,7 @@ define("ARE.Sprite:ARE.DisplayObject", {
                 }
 
                 self.rect = opt.frames[frames[self.animationFrameIndex]];
-                if (self.rect.length > 4) self.img = opt.imgs[self.rect[4]];
+                if (self.rect.length > 4) self.img = self.bitmaps[self.rect[4]].img;
             }
         }, this.interval);
 
@@ -159,7 +174,7 @@ define("ARE.Sprite:ARE.DisplayObject", {
         var opt = self.option;
         var frames = opt.animations[self.currentAnimation].frames, len = frames.length;
         self.rect = opt.frames[frames[self.animationFrameIndex]];
-        if (self.rect.length > 4) self.img = opt.imgs[self.rect[4]];
+        if (self.rect.length > 4) self.img = self.bitmaps[self.rect[4]].img;
     
     }
 

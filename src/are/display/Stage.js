@@ -86,11 +86,14 @@ define("ARE.Stage:ARE.Container", ["Util"],{
         var style = this.domSurface.style;
         style.width = this.width + "px";
         style.height = this.height + "px";
+        //fix for empty div click event not firing in IE  http://stackoverflow.com/questions/2158921/empty-div-hover-event-not-firing-in-ie
+        style.backgroundColor = "rgba(255,255,255,0)";
+        //style.opacity = "0";
+
         style.position = "absolute";
         style.border="0px solid red"
         style.left = this.offset[0]+"px";
         style.top = this.offset[1] + "px";
-
         document.body.appendChild(this.domSurface);
 
         //this.canvas.addEventListener("click", this._handleClick.bind(this), false);

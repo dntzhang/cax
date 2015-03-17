@@ -4,31 +4,27 @@
  * @constructor
  * @param {selector} selector
  */
-define("ARE.DomElement", {
+define("ARE.DomElement:ARE.DisplayObject", {
     ctor: function (selector) {
-
+        this._super();
         this.element = typeof selector == 'string' ? document.querySelector(selector) : selector;
         var element = this.element;
-        element.perspective = 400;
-        element.scaleX = element.scaleY = element.scaleZ = 1;
-        element.x = element.y = element.z = element.rotateX = element.rotateY = element.rotateZ = element.regX = element.regY = element.skewX = element.skewY = element.regX = element.regY = element.regZ = 0;
-        element.matrix3D = new Matrix3D();
-      
-        this.perspective = 400;
-        this.scaleX = this.scaleY = this.scaleZ = 1;
-        this.x = this.y = this.z = this.rotateX = this.rotateY = this.rotateZ = this.regX = this.regY = this.skewX = this.skewY = this.regX = this.regY = this.regZ = 0;
+ 
+  
 
-        var observer = Observable.watch(this, ["x", "y", "z", "scaleX", "scaleY", "scaleZ", "perspective", "rotateX", "rotateY", "rotateZ", "regX", "regY", "regZ"]);
+        var observer = Observable.watch(this, ["x", "y", "scaleX", "scaleY", "perspective", "rotation", "skewX", "skewY", "regX", "regY"]);
 
         var self = this;
       
         observer.propertyChangedHandler = function () {
            
-            var mtx = self.element.matrix3D.identity().appendTransform(self.perspective, self.x, self.y, self.z, self.scaleX, self.scaleY, self.scaleZ, self.rotateX, self.rotateY, self.rotateZ, self.regX, self.regY, self.regZ);
+            var mtx = self._matrix.identity().appendTransform(self.x, self.y, self.scaleX, self.scaleY, self.rotation, self.skewX, self.skewY, self.regX, self.regY);
 
-            self.element.style.transform = self.element.style.msTransform = self.element.style.OTransform = self.element.style.MozTransform = self.element.style.webkitTransform = "matrix3d(" + Array.prototype.slice.call(mtx.elements).join(",") + ")";
+            self.element.style.transform = self.element.style.msTransform = self.element.style.OTransform = self.element.style.MozTransform = self.element.style.webkitTransform = "matrix(" + mtx.a + "," + mtx.b + "," + mtx.c + "," + mtx.d + "," + mtx.tx + "," + mtx.ty + ")";
         }
 
+        delete this.visible;
+        
         Object.defineProperty(this, "visible", {
             set: function (value) {
                 this._visible = value;
@@ -42,7 +38,7 @@ define("ARE.DomElement", {
                 return this._visible;
             }
         });
-
+        delete this.alpha;
         Object.defineProperty(this, "alpha", {
             set: function (value) {
                 this._opacity = value;

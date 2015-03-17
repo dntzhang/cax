@@ -7,31 +7,38 @@
 define("ARE.Bitmap:ARE.DisplayObject", {
     ctor: function (img) {
         this._super();
+        if (arguments.length === 0) return;
         if (typeof img == "string") {
-            var cacheImg=Bitmap[img];
-            if (cacheImg) {
-                this._init(cacheImg);
-            } else {
-                var self = this;
-                this.visible = false;
-                this.img = document.createElement("img");
-                this.img.onload = function () {
-                   
-                    if (!self.rect) self.rect = [0, 0, self.img.width, self.img.height];
-                    self.width = self.rect[2];
-                    self.height = self.rect[3];
-                    self.regX = self.width * self.originX;
-                    self.regY = self.height * self.originY;
-                    self.imgLoaded = true;
-                    Bitmap[img] = self.img;
-                    self.visible = true;
-                }
-                this.img.src = img;
-
-            }
+            this._initWithSrc(img)
         } else {
             this._init(img);
         }
+    },
+    _initWithSrc: function (img) {
+        var cacheImg = Bitmap[img];
+        if (cacheImg) {
+            this._init(cacheImg);
+        } else {
+            var self = this;
+            this.visible = false;
+            this.img = document.createElement("img");
+            this.img.onload = function () {
+
+                if (!self.rect) self.rect = [0, 0, self.img.width, self.img.height];
+                self.width = self.rect[2];
+                self.height = self.rect[3];
+                self.regX = self.width * self.originX;
+                self.regY = self.height * self.originY;
+                self.imgLoaded = true;
+                Bitmap[img] = self.img;
+                self.visible = true;
+
+                self.imageLoadHandle && self.imageLoadHandle();
+            }
+            this.img.src = img;
+
+        }
+
     },
     _init: function (img) {
         this.img = img;
@@ -82,6 +89,17 @@ define("ARE.Bitmap:ARE.DisplayObject", {
             }
         }
         this.cacheCtx.putImageData(imageData, 0, 0);
+    },
+    useImage: function (img) {
+        if (typeof img == "string") {
+            this._initWithSrc(img);
+        } else {
+            this._init(img);
+            this.imageLoadHandle&&this.imageLoadHandle();
+        }
+    },
+    onImageLoad: function (fn) {
+        this.imageLoadHandle = fn;
     },
     clone: function () {
         var o = new Bitmap(this.img);

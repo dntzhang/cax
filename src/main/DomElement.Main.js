@@ -42,7 +42,7 @@ define("Main", ["ARE"], {
         var domElement = new DomElement("#testDom");
        
         domElement.y = 180;
-        domElement.rotateX = -20;
+        domElement.rotation = -20;
 
         stage.add(domElement);
         //stage.scalable(1, 1);
@@ -58,7 +58,7 @@ define("Main", ["ARE"], {
         stage.add(bmp);
 
         stage.onTick(function () {
-            domElement.rotateY += 1;
+            domElement.rotation += 1;
         })
     }
 })
