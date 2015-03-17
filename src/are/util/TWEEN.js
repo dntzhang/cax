@@ -711,21 +711,26 @@ define("ARE.TWEEN", {
 
                 Bernstein: function (n, i) {
 
-                    var fc = TWEEN.Interpolation.Utils.Factorial;
+                    var fc = TWEEN.Interpolation.Utils.getFactorial();
                     return fc(n) / fc(i) / fc(n - i);
 
                 },
+                getFactorial: function () {
 
-                FactorialA:[1],
-                Factorial:  function (n) {
+                    return (function () {
 
-                        var s = 1, i;
-                        if (this.FactorialA[n]) return this.FactorialA[n];
-                        for (i = n; i > 1; i--) s *= i;
-                        return this.FactorialA[n] = s;
+                        var a = [1];
 
-                    
+                        return function (n) {
 
+                            var s = 1, i;
+                            if (a[n]) return a[n];
+                            for (i = n; i > 1; i--) s *= i;
+                            return a[n] = s;
+
+                        };
+
+                    })();
                 },
 
                 CatmullRom: function (p0, p1, p2, p3, t) {

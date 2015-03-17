@@ -89,7 +89,7 @@ define("ARE.Stage:ARE.Container", ["Util"],{
         //fix for empty div click event not firing in IE  http://stackoverflow.com/questions/2158921/empty-div-hover-event-not-firing-in-ie
         style.backgroundColor = "rgba(255,255,255,0)";
         //style.opacity = "0";
-
+        style.zIndex = 1003;
         style.position = "absolute";
         style.border="0px solid red"
         style.left = this.offset[0]+"px";
@@ -97,7 +97,7 @@ define("ARE.Stage:ARE.Container", ["Util"],{
         document.body.appendChild(this.domSurface);
 
         //this.canvas.addEventListener("click", this._handleClick.bind(this), false);
-        //this.canvas.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
+        this.domSurface.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
         this.domSurface.addEventListener("click", this._handleClick.bind(this), false);
         this.domSurface.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
 
@@ -139,6 +139,7 @@ define("ARE.Stage:ARE.Container", ["Util"],{
     update: function () {
         if (!this.pause) {
             this.renderer.update();
+            TWEEN.update();
         }
 
         //this.ctx.clearRect(0, 0, this.width, this.height);

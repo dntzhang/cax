@@ -36,28 +36,38 @@
 
 define("Main", ["ARE"], {
     ctor: function () {
-        var pgBmp, stage = new Stage("#ourCanvas", localStorage.webgl == "1");
-        stage.debug = true;
+        var ld = new Loader(), bmp;
+        var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
+        ld.loadRes([
+            { id: "atLogo", src: "../asset/img/atLogo.png" }
+        ]);
+        ld.complete(function () {
+            var bmp = new Bitmap(ld.get("atLogo"));
+            bmp.originX = 0.5;
+            bmp.originY = 0.5;
+            bmp.scaleX = bmp.scaleY = 0.5;
+            bmp.rotation = 240;
+            bmp.x = stage.width / 2;
+            bmp.y = -200;
 
-        var ps = new ParticleSystem({
-            emitX: 200,
-            emitY: 200,
-            speed: 10,
-            angle: -30,
-            angleRange: 50,
-            emitArea: [1, 1],
-            gravity: new Vector2(0, 0),
-            texture: "data:image/png;base64\,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJkSURBVHjaxJeJbusgEEW94S1L//83X18M2MSuLd2pbqc4wZGqRLrKBsyZhQHny7Jk73xVL8xpVhWrcmiB5lX+6GJ5YgQ2owbAm8oIwH1VgKZUmGcRqKGGPgtEQQAzGR8hQ59fAmhJHSAagigJ4E7GPWRXOYC6owAd1JM6wDQPADyMWUqZRMqmAojHp1Vn6EQQEgUNMJLnUjMyJsM49wygBkAPw9dVFwXRkncCIIW3GRgoTQUZn6HxCMAFEFd8TwEQ78X4rHbILoAUmeT+RFG4UhQ6MiIAE4W/UsYFjuVjAIa2nIY4q1R0GFtQWG3E84lqw2GO2QOoCKBVu0BAPgDSU0eUDjjQenNkV/AW/pWChhpMTelo1a64AOKM30vk18GzTHXCNtI/Knz3DFBgsUqBGIjTInXRY1yA9xkVoqW5tVq3pDR9A0hfF5BSARmVnh7RMDCaIdcNgbPBkgzn1Bu+SfIEFSpSBmkxyrMicb0fAEuCZrWnN89veA/4XcakrPcjBWzkTuLjlbfTQPOlBhz+HwkqqPXmPQDdrQItxE1moGof1S74j/8txk8EHhTQrAE8qlwfqS5yukm1x/rAJ9Jiaa6nyATqD78aUVBhFo8b1V4DdTXdCW+IxA1zB4JhiOhZMEWO1HqnvdoHZ4FAMIhV9REF8FiUm0jsYPEJx/Fm/N8OhH90HI9YRHesWbXXZwAShU8qThe7H8YAuJmw5yOd989uRINKRTJAhoF8jbqrHKfeCYdIISZfSq26bk/K+yO3YvfKrVgiwQBHnwt8ynPB25+M8hceTt/ybPhnryJ78+tLgAEAuCFyiQgQB30AAAAASUVORK5CYII=",
-            filter: [0.8, 0.2, 0.8, 1],
-            emitCount: 1,
-            maxCount: 100
+            stage.add(bmp);
+
+            new TWEEN.Tween(bmp)
+             .delay(500)
+             .to({ y: 240 }, 2000)
+             .easing(TWEEN.Easing.Elastic.InOut)
+             .start();
+            new TWEEN.Tween(bmp)
+               .delay(2500)
+               .to({ rotation: 0 }, 2000)
+               .easing(TWEEN.Easing.Elastic.InOut)
+               .start();
+            new TWEEN.Tween(bmp)
+              .delay(4500)
+              .to({ scaleX: 1, scaleY: 1 }, 2000)
+              .easing(TWEEN.Easing.Elastic.InOut)
+              .start();
         });
 
-        stage.add(ps);
-
-        stage.on("mousemove", function (evt) {
-            ps.emitX = evt.stageX;
-            ps.emitY = evt.stageY;
-        })
     }
 })
