@@ -24,6 +24,11 @@
             o._matrix.reinitialize(1, 0, 0, 1, 0, 0);
         }
         mtx = o._matrix;
+        //Dynamic regX and regY
+        if (o instanceof Sprite) {
+            o.regX = o.rect[2] * o.originX;
+            o.regY = o.rect[3] * o.originY;
+        }
         mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY, o.filpX, o.flipY);
 
         var a = ctx.globalAlpha, cp = ctx.globalCompositeOperation;
