@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Alloy Render Engine</title>
+</head>
+<body>   
+    <div style="text-align:center;">
+       <h2> Alloy Render Engine</h2> 
+    </div>
+    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> 
+         <div style="text-align:center;">
+          <!--   <canvas width="480" id="Canvas1" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> -->
+     <select id="rdSlt">
+         <option value="0">WebGL渲染</option>
+         <option value="1">Canvas渲染</option>
+     </select>
+
+ </div>
+    </div>
+ 
+    <script src="../src/render-control.js"></script>
+    <script src="are.js"></script>
+   <script>
+       var stage = new ARE.Stage("#ourCanvas", localStorage.webgl == "1");
+       var txt = new ARE.Txt({
+           txt: "Alloy Rendering Engine",
+           fontSize: 25,
+           fontFamily: "arial"
+
+       });
+       stage.add(txt);
+   </script>
+</body>
+</html>

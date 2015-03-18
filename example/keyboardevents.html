@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Alloy Render Engine</title>
+</head>
+<body>   
+  
+    <div style="text-align:center;"><canvas width="640" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"> </canvas>  
+	 <div style="text-align:center;">
+   try to press【left】【right】【up】【down】【left+right】【up+right】【up+down】【left+down】
+
+ </div>
+         <div style="text-align:center;">
+     <select id="rdSlt">
+         <option value="0">WebGL渲染</option>
+         <option value="1">Canvas渲染</option>
+     </select>
+
+ </div>
+    </div>
+  <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
+<img src="../asset/img/github.png" alt="" />
+ </a>
+    <script src="../src/render-control.js"></script>
+    <script src="../src/Box2dWeb-2.1.a.3.min.js"></script>
+    <script src="../lib/kmd.js" data-main="../src/main/KeyboardEvents.Main.js"></script>
+</body>
+</html>
