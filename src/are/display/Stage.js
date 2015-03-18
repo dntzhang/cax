@@ -139,7 +139,6 @@ define("ARE.Stage:ARE.Container", ["Util"],{
     update: function () {
         if (!this.pause) {
             this.renderer.update();
-            TWEEN.update();
         }
 
         //this.ctx.clearRect(0, 0, this.width, this.height);

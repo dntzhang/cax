@@ -30,7 +30,8 @@
         { name: "ARE.TWEEN", url: "are/util" },
         { name: "ARE.UID", url: "are/util" },
         { name: "ARE.Util", url: "are/util" },
-        { name: "ARE.Vector2", url: "are/util" }
+        { name: "ARE.Vector2", url: "are/util" },
+        { name: "ARE.To", url: "are/util" },
     ]
 });
 
@@ -46,27 +47,33 @@ define("Main", ["ARE"], {
             bmp.originX = 0.5;
             bmp.originY = 0.5;
             bmp.scaleX = bmp.scaleY = 0.5;
-            bmp.rotation = 240;
+            bmp.rotation = 0;
             bmp.x = stage.width / 2;
-            bmp.y = -200;
+            bmp.y = -100;
 
             stage.add(bmp);
 
-            new TWEEN.Tween(bmp)
-             .delay(500)
-             .to({ y: 240 }, 2000)
-             .easing(TWEEN.Easing.Elastic.InOut)
-             .start();
-            new TWEEN.Tween(bmp)
-               .delay(2500)
-               .to({ rotation: 0 }, 2000)
-               .easing(TWEEN.Easing.Elastic.InOut)
+            To.get(bmp)
+               .to()
+               .y(240, 2000, To.elasticInOut)
+               .rotation(240, 2000, To.elasticInOut)
+               .end(function () {
+                   //console.log(" task one has completed!")
+               })
+               .wait(500)
+               .to()
+               .rotation(0, 1400, To.elasticInOut)
+               .end(function () {
+                   //console.log(" task two has completed!")
+               })
+               .wait(500)
+               .to()
+               .scaleX(1, 1400, To.elasticInOut)
+               .scaleY(1, 1400, To.elasticInOut)
+               .end(function () {
+                   //console.log(" task three has completed!")
+               })
                .start();
-            new TWEEN.Tween(bmp)
-              .delay(4500)
-              .to({ scaleX: 1, scaleY: 1 }, 2000)
-              .easing(TWEEN.Easing.Elastic.InOut)
-              .start();
         });
 
     }

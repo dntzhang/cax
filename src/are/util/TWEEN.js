@@ -98,12 +98,33 @@ define("ARE.TWEEN", {
             var _onCompleteCallback = null;
             var _onStopCallback = null;
 
+            var _paused = false, _passTime = null;
             // Set all starting values present on the target object
             for (var field in object) {
 
                 _valuesStart[field] = parseFloat(object[field], 10);
 
             }
+            this.togglePlayPause = function () {
+                if (_paused) {
+                    this.play();
+                } else {
+                    this.pause();
+                }
+            },
+            this.pause = function () {
+
+                _paused = true;
+             
+                var pauseTime = (typeof window !== 'undefined' && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now());
+                _passTime = pauseTime - _startTime;
+            };
+
+            this.play = function () {
+                _paused = false;
+                var nowTime=(typeof window !== 'undefined' && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now());
+                _startTime = nowTime - _passTime;
+            };
 
             this.to = function (properties, duration) {
 
@@ -262,7 +283,7 @@ define("ARE.TWEEN", {
             };
 
             this.update = function (time) {
-
+                if (_paused) return true;
                 var property;
 
                 if (time < _startTime) {
