@@ -14,7 +14,7 @@
         { name: "ARE.Shape", url: "are/display/shape.js" },
         { name: "ARE.Sprite", url: "are/display/sprite.js" },
         { name: "ARE.Stage", url: "are/display/stage.js" },
-        { name: "ARE.Txt", url: "are/display/txt.js" },
+        { name: "ARE.Text", url: "are/display/text.js" },
         { name: "ARE.CanvasRenderer", url: "are/renderer/canvas-renderer.js" },
         { name: "ARE.WebGLRenderer", url: "are/renderer/webgl-renderer.js" },
         { name: "ARE.Dom", url: "are/util/dom.js" },
@@ -36,15 +36,15 @@
 define("Main", ["ARE"], {
     ctor: function () {
         var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
-        var txt = new Txt({
+        var text = new Text({
             txt: "Alloy Game Engine",
             fontSize: 35,
             fontFamily: "arial"
 
         });
       
-        txt.y = 140;
-        stage.add(txt);
+        text.y = 140;
+        stage.add(text);
 
     }
 })

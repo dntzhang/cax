@@ -369,7 +369,7 @@
 
         //else if (o instanceof Shape) {
            
-        //} else if (o instanceof Txt) {
+        //} else if (o instanceof Text) {
 
         //}
 

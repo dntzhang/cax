@@ -14,7 +14,7 @@
         { name: "ARE.Shape", url: "are/display" },
         { name: "ARE.Sprite", url: "are/display" },
         { name: "ARE.Stage", url: "are/display" },
-        { name: "ARE.Txt", url: "are/display" },
+        { name: "ARE.Text", url: "are/display" },
         { name: "ARE.CanvasRenderer", url: "are/renderer" },
         { name: "ARE.WebGLRenderer", url: "are/renderer" },
         { name: "ARE.Dom", url: "are/util" },
@@ -36,6 +36,6 @@
 
 define("Main", ["ARE"], {
     ctor: function () {
-        Bitmap, CircleShape, Container, DisplayObject, DomElement, Particle, ParticleSystem, RectAdjust, RectShape, Shape, Sprite, Stage, Txt, CanvasRenderer, WebGLRenderer, Dom, FPS, GLMatrix, Keyboard, Loader, Matrix2D, Matrix3D, Observable, RAF, Transform, TWEEN, UID, Util, Vector2;
+        Bitmap, CircleShape, Container, DisplayObject, DomElement, Particle, ParticleSystem, RectAdjust, RectShape, Shape, Sprite, Stage, Text, CanvasRenderer, WebGLRenderer, Dom, FPS, GLMatrix, Keyboard, Loader, Matrix2D, Matrix3D, Observable, RAF, Transform, TWEEN, UID, Util, Vector2;
     }
 })

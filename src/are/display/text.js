@@ -4,10 +4,10 @@
 /**
 * 文本对象
 *
-* @class Txt
+* @class Text
 * @constructor
 */
-define("ARE.Txt:ARE.DisplayObject", {
+define("ARE.Text:ARE.DisplayObject", {
     ctor: function (option) {
         this._super();
         this.txt = option.txt;
@@ -170,7 +170,7 @@ define("ARE.Txt:ARE.DisplayObject", {
         ctx.fillText(this.text, 0, 0);
     },
     clone: function () {
-        var t = new Txt(this.text, this.font, this.color);
+        var t = new Text(this.text, this.font, this.color);
         this.cloneProps(t);
         return t;
 

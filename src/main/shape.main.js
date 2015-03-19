@@ -14,7 +14,7 @@
         { name: "ARE.Shape", url: "are/display/shape.js" },
         { name: "ARE.Sprite", url: "are/display/sprite.js" },
         { name: "ARE.Stage", url: "are/display/stage.js" },
-        { name: "ARE.Txt", url: "are/display/txt.js" },
+        { name: "ARE.Text", url: "are/display/text.js" },
         { name: "ARE.CanvasRenderer", url: "are/renderer/canvas-renderer.js" },
         { name: "ARE.WebGLRenderer", url: "are/renderer/webgl-renderer.js" },
         { name: "ARE.Dom", url: "are/util/dom.js" },

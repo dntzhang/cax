@@ -907,9 +907,9 @@
 
         //end-------------------ARE.Sprite---------------------end
 
-        //begin-------------------ARE.Txt---------------------begin
+        //begin-------------------ARE.Text---------------------begin
 
-        ARE.Txt = ARE.DisplayObject.extend({
+        ARE.Text = ARE.DisplayObject.extend({
             "ctor": function (option) {
                 this._super();
                 this.txt = option.txt;
@@ -1047,13 +1047,13 @@
                 ctx.fillText(this.text, 0, 0);
             },
             "clone": function () {
-                var t = new ARE.Txt(this.text, this.font, this.color);
+                var t = new ARE.Text(this.text, this.font, this.color);
                 this.cloneProps(t);
                 return t;
             }
         });
 
-        //end-------------------ARE.Txt---------------------end
+        //end-------------------ARE.Text---------------------end
 
         //begin-------------------ARE.CanvasRenderer---------------------begin
 
