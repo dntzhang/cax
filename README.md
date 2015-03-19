@@ -38,7 +38,6 @@ AlloyRenderingEngine
 =================
 Super fast HTML 5 2D rendering engine , supporting Canvas and WebGL rendering
 
-* [api](http://alloyteam.github.io/AlloyRenderingEngine/doc/)
 
 ### Demos
 * [tween](http://alloyteam.github.io/AlloyGameEngine/example/tween.html) 
