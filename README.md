@@ -33,9 +33,6 @@ Tools
 * [thumbnail generator](http://kmdjs.github.io/thumbnailgenerator/)
 * [image zoom](http://kmdjs.github.io/zoom/)
 
-AlloyAnimationEngine
-=================
-coming soon...
 
 AlloyRenderingEngine
 =================
@@ -95,5 +92,9 @@ stage.onTick(function () {
     bmp.scaleY += step;
 });
 ```
+
+AlloyAnimationEngine
+=================
+coming soon...
 
 This content is released under the (http://opensource.org/licenses/MIT) MIT License.
