@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Alloy Render Engine</title>
+</head>
+<body>   
+
+    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);background-color:black;"></canvas> 
+           <div style="text-align:center;">移动鼠标改变发射点位置</div>
+          <div style="text-align:center;">FPS:<span id="fps"></span></div>
+    </div>
+    
+   <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
+<img src="../asset/img/github.png" alt="" />
+ </a>
+    <script src="../src/are/base.js"></script>
+    <script src="../src/are/dom.js"></script>
+    <script src="../src/are/fps.js"></script>
+    <script src="../src/are/loader.js"></script>
+    <script src="../src/are/raf.js"></script>
+    <script src="../src/are/vector2.js"></script>
+    <script src="../src/are/uid.js"></script>
+    <script src="../src/are/util.js"></script>
+    <script src="../src/are/tween.js"></script>
+    <script src="../src/are/keyboard.js"></script>
+    <script src="../src/are/matrix2d.js"></script>
+    <script src="../src/are/observable.js"></script>
+    <script src="../src/are/display_object.js"></script>
+    <script src="../src/are/circle_shape.js"></script>
+    <script src="../src/are/dom_element.js"></script>
+    <script src="../src/are/bitmap.js"></script>
+    <script src="../src/are/container.js"></script>
+    <script src="../src/are/particle.js"></script>
+    <script src="../src/are/particle_system.js"></script>
+    <script src="../src/are/rect_adjust.js"></script>
+    <script src="../src/are/rect_shape.js"></script>
+    <script src="../src/are/shape.js"></script>
+    <script src="../src/are/sprite.js"></script>
+    <script src="../src/are/text.js"></script>
+    <script src="../src/are/stage.js"></script>
+    <script src="../src/are/canvas_renderer.js"></script>
+
+    <script>
+        (function (ARE) {
+            var Stage = ARE.Stage, Bitmap = ARE.Bitmap, ParticleSystem = ARE.ParticleSystem, Vector2 = ARE.Vector2, FPS = ARE.FPS;
+
+            var pgBmp, stage = new Stage("#ourCanvas", localStorage.webgl == "1");
+            stage.debug = true;
+
+            var ps = new ParticleSystem({
+                emitX: 200,
+                emitY: 200,
+                speed: 10,
+                angle: -30,
+                angleRange: 50,
+                emitArea: [1, 1],
+                gravity: new Vector2(0, 0),
+                texture: "data:image/png;base64\,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJkSURBVHjaxJeJbusgEEW94S1L//83X18M2MSuLd2pbqc4wZGqRLrKBsyZhQHny7Jk73xVL8xpVhWrcmiB5lX+6GJ5YgQ2owbAm8oIwH1VgKZUmGcRqKGGPgtEQQAzGR8hQ59fAmhJHSAagigJ4E7GPWRXOYC6owAd1JM6wDQPADyMWUqZRMqmAojHp1Vn6EQQEgUNMJLnUjMyJsM49wygBkAPw9dVFwXRkncCIIW3GRgoTQUZn6HxCMAFEFd8TwEQ78X4rHbILoAUmeT+RFG4UhQ6MiIAE4W/UsYFjuVjAIa2nIY4q1R0GFtQWG3E84lqw2GO2QOoCKBVu0BAPgDSU0eUDjjQenNkV/AW/pWChhpMTelo1a64AOKM30vk18GzTHXCNtI/Knz3DFBgsUqBGIjTInXRY1yA9xkVoqW5tVq3pDR9A0hfF5BSARmVnh7RMDCaIdcNgbPBkgzn1Bu+SfIEFSpSBmkxyrMicb0fAEuCZrWnN89veA/4XcakrPcjBWzkTuLjlbfTQPOlBhz+HwkqqPXmPQDdrQItxE1moGof1S74j/8txk8EHhTQrAE8qlwfqS5yukm1x/rAJ9Jiaa6nyATqD78aUVBhFo8b1V4DdTXdCW+IxA1zB4JhiOhZMEWO1HqnvdoHZ4FAMIhV9REF8FiUm0jsYPEJx/Fm/N8OhH90HI9YRHesWbXXZwAShU8qThe7H8YAuJmw5yOd989uRINKRTJAhoF8jbqrHKfeCYdIISZfSq26bk/K+yO3YvfKrVgiwQBHnwt8ynPB25+M8hceTt/ybPhnryJ78+tLgAEAuCFyiQgQB30AAAAASUVORK5CYII=",
+                filter: [0.8, 0.2, 0.8, 1],
+                emitCount: 1,
+                maxCount: 100
+            });
+
+            stage.add(ps);
+
+            stage.on("mousemove", function (evt) {
+                ps.emitX = evt.stageX;
+                ps.emitY = evt.stageY;
+            })
+
+        })(ARE);
+    </script>
+</body>
+</html>

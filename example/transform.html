@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Alloy Render Engine</title>
+</head>
+<body>   
+
+    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> 
+     
+    </div>
+  <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
+<img src="../asset/img/github.png" alt="" />
+ </a>
+   
+    <script src="../src/are/base.js"></script>
+    <script src="../src/are/dom.js"></script>
+    <script src="../src/are/fps.js"></script>
+    <script src="../src/are/loader.js"></script>
+    <script src="../src/are/raf.js"></script>
+    <script src="../src/are/vector2.js"></script>
+    <script src="../src/are/uid.js"></script>
+    <script src="../src/are/util.js"></script>
+    <script src="../src/are/tween.js"></script>
+    <script src="../src/are/keyboard.js"></script>
+    <script src="../src/are/matrix2d.js"></script>
+    <script src="../src/are/observable.js"></script>
+    <script src="../src/are/display_object.js"></script>
+    <script src="../src/are/circle_shape.js"></script>
+    <script src="../src/are/dom_element.js"></script>
+    <script src="../src/are/bitmap.js"></script>
+    <script src="../src/are/container.js"></script>
+    <script src="../src/are/particle.js"></script>
+    <script src="../src/are/particle_system.js"></script>
+    <script src="../src/are/rect_adjust.js"></script>
+    <script src="../src/are/rect_shape.js"></script>
+    <script src="../src/are/shape.js"></script>
+    <script src="../src/are/sprite.js"></script>
+    <script src="../src/are/text.js"></script>
+    <script src="../src/are/stage.js"></script>
+    <script src="../src/are/canvas_renderer.js"></script>
+
+    <script>
+        (function (ARE) {
+            var Stage = ARE.Stage, Bitmap = ARE.Bitmap, Loader = ARE.Loader;
+
+            var ld = new Loader(), stage = new Stage("#ourCanvas"), bmp;
+            ld.loadRes([
+                { id: "atLogo", src: "../asset/img/atLogo.png" }
+            ]);
+            ld.complete(function () {
+                bmp = new Bitmap(ld.get("atLogo"));
+                //（0.5,0.5）==〉The center is the point of rotation
+                bmp.originX = 0.5;
+                bmp.originY = 0.5;
+                bmp.x = 240;
+                bmp.y = 240;
+                //bind click event, the event monitor can be accurate to pixel
+                bmp.on("click", function () {
+                    //apply a random filter to the bmp
+                    bmp.filter = [Math.random(), Math.random(), Math.random(), 1];
+                })
+                //add object to stage
+                stage.add(bmp);
+
+                var step = 0.01;
+                //loop
+                stage.onTick(function () {
+                    bmp.rotation += 0.5;
+                    if (bmp.scaleX > 1.5 || bmp.scaleX < 0.5) {
+                        step *= -1;
+                    }
+                    bmp.scaleX += step;
+                    bmp.scaleY += step;
+                })
+            });
+
+
+        })(ARE);
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Alloy Render Engine</title>
+</head>
+<body>   
+ 
+    <div style="text-align:center;">
+        <canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> 
+    </div>
+        
+     <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
+<img src="../asset/img/github.png" alt="" />
+ </a>
+    <script src="../src/are/base.js"></script>
+    <script src="../src/are/dom.js"></script>
+    <script src="../src/are/fps.js"></script>
+    <script src="../src/are/loader.js"></script>
+    <script src="../src/are/raf.js"></script>
+    <script src="../src/are/vector2.js"></script>
+    <script src="../src/are/uid.js"></script>
+    <script src="../src/are/util.js"></script>
+    <script src="../src/are/tween.js"></script>
+    <script src="../src/are/keyboard.js"></script>
+    <script src="../src/are/matrix2d.js"></script>
+    <script src="../src/are/observable.js"></script>
+    <script src="../src/are/display_object.js"></script>
+    <script src="../src/are/circle_shape.js"></script>
+    <script src="../src/are/dom_element.js"></script>
+    <script src="../src/are/bitmap.js"></script>
+    <script src="../src/are/container.js"></script>
+    <script src="../src/are/particle.js"></script>
+    <script src="../src/are/particle_system.js"></script>
+    <script src="../src/are/rect_adjust.js"></script>
+    <script src="../src/are/rect_shape.js"></script>
+    <script src="../src/are/shape.js"></script>
+    <script src="../src/are/sprite.js"></script>
+    <script src="../src/are/text.js"></script>
+    <script src="../src/are/stage.js"></script>
+    <script src="../src/are/canvas_renderer.js"></script>
+
+    <script>
+        (function (ARE) {
+            var Stage = ARE.Stage, Shape = ARE.Shape, RectShape = ARE.RectShape, CircleShape = ARE.CircleShape;
+
+            var stage = new Stage("#ourCanvas");
+
+            var shape = new Shape(73, 76);
+            shape.beginPath().arc(377 / 4 - 58, 391 / 4 - 58, 140 / 4, 0, Math.PI * 2).closePath()
+                .fillStyle('#f4862c').fill()
+                .strokeStyle("#046ab4").lineWidth(8 / 4).stroke()
+                .beginPath().moveTo(298 / 4 - 58, 506 / 4 - 58).bezierCurveTo(236 / 4 - 58, 396 / 4 - 58, 302 / 4 - 58, 272 / 4 - 58, 407 / 4 - 58, 254 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke()
+                .beginPath().moveTo(328 / 4 - 58, 258 / 4 - 58).bezierCurveTo(360 / 4 - 58, 294 / 4 - 58, 451 / 4 - 58, 272 / 4 - 58, 503 / 4 - 58, 332 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke()
+                .beginPath().moveTo(282 / 4 - 58, 288 / 4 - 58).bezierCurveTo(391 / 4 - 58, 292 / 4 - 58, 481 / 4 - 58, 400 / 4 - 58, 488 / 4 - 58, 474 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke()
+                .beginPath().moveTo(242 / 4 - 58, 352 / 4 - 58).bezierCurveTo(352 / 4 - 58, 244 / 4 - 58, 319 / 4 - 58, 423 / 4 - 58, 409 / 4 - 58, 527 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke()
+                .end();
+
+            shape.x = shape.y = 200;
+
+            var rectShape = new RectShape(100, 50, "red", true);
+            var circleShape = new CircleShape(10, "green", false);
+            rectShape.x = 200;
+            rectShape.y = 100;
+            circleShape.x = 200;
+            circleShape.y = 300;
+            stage.add(shape, rectShape, circleShape);
+
+
+
+        })(ARE);
+    </script>
+</body>
+</html>
