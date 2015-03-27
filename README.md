@@ -21,7 +21,6 @@ integrated support tools : true
 
 Tools
 =================
-* [kmdjs](https://github.com/kmdjs/kmdjs)
 * [vertex generator](https://kmdjs.github.io/arejs-tool-sprite/)
 * [text to image](http://kmdjs.github.io/cwb/)
 * [particle editor](http://alloyteam.github.io/ParticleEditor/)
