@@ -61,7 +61,7 @@ Super fast HTML 5 2D rendering engine , supporting Canvas and WebGL rendering
 ### Usage
 To achieve this effect:
 
-![usage](https://raw.githubusercontent.com/AlloyTeam/AlloyRenderingEngine/master/asset/img/usage2.gif)
+![usage](https://raw.githubusercontent.com/AlloyTeam/AlloyGameEngine/master/asset/img/usage2.gif)
 
 You need to use the following code:
 
