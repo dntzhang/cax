@@ -1,25 +1,9 @@
 Alloy Game Engine
 =================
 
-A Powerful Javascript Game Engine.
+一款强大的javascript游戏引擎.
 
-Overview
-=================
-programming language : javascript
-
-platform : web browse
-
-license  : MIT License
-
-oriented : 2D base on webgl or canvas rendering
-
-sound effect : true
-
-physics engine : true
-
-integrated support tools : true
-
-Tools
+工具
 =================
 * [vertex generator](https://kmdjs.github.io/arejs-tool-sprite/)
 * [text to image](http://kmdjs.github.io/cwb/)
@@ -35,14 +19,13 @@ Tools
 
 AlloyRenderingEngine
 =================
-Super fast HTML 5 2D rendering engine , supporting Canvas and WebGL rendering
+超快的2d渲染引擎，支持webgl和canvas渲染
 
-
-### Demos
-* [tween](http://alloyteam.github.io/AlloyGameEngine/example/tween.html) 
-* [dom element](http://alloyteam.github.io/AlloyGameEngine/example/domelement.html) 
+### Demo
 * [bitmap](http://alloyteam.github.io/AlloyRenderingEngine/example/bitmap.html) 
 * [transform](http://alloyteam.github.io/AlloyRenderingEngine/example/transform.html) 
+* [tween](http://alloyteam.github.io/AlloyGameEngine/example/tween.html) 
+* [dom element](http://alloyteam.github.io/AlloyGameEngine/example/domelement.html) 
 * [flip](http://alloyteam.github.io/AlloyRenderingEngine/example/flip.html) 
 * [filter](http://alloyteam.github.io/AlloyRenderingEngine/example/filter.html) 
 * [shape](http://alloyteam.github.io/AlloyRenderingEngine/example/shape.html) 
@@ -55,15 +38,13 @@ Super fast HTML 5 2D rendering engine , supporting Canvas and WebGL rendering
 * [loader](http://alloyteam.github.io/AlloyRenderingEngine/example/loader/loader.html) 
 * [scalable](http://alloyteam.github.io/AlloyRenderingEngine/example/scalable.html)
 
-### Tutorials
-* [lesson1](http://www.cnblogs.com/iamzhanglei/p/4306146.html)
 
-### Usage
-To achieve this effect:
+### 一分钟快速入门
+要实现下面的效果：
 
 ![usage](https://raw.githubusercontent.com/AlloyTeam/AlloyGameEngine/master/asset/img/usage2.gif)
 
-You need to use the following code:
+可以使用下面的代码:
 
 ```javascript
 var bmp, stage = new Stage("#ourCanvas");
@@ -93,6 +74,6 @@ stage.onTick(function () {
 
 AlloyAnimationEngine
 =================
-coming soon...
+即将到来，敬请期待。
 
 This content is released under the (http://opensource.org/licenses/MIT) MIT License.
