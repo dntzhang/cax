@@ -24,7 +24,6 @@ AlloyRenderingEngine
 * [transform](http://alloyteam.github.io/AlloyRenderingEngine/example/transform.html) 
 * [tween](http://alloyteam.github.io/AlloyGameEngine/example/tween.html) 
 * [dom element](http://alloyteam.github.io/AlloyGameEngine/example/domelement.html) 
-* [flip](http://alloyteam.github.io/AlloyRenderingEngine/example/flip.html) 
 * [filter](http://alloyteam.github.io/AlloyRenderingEngine/example/filter.html) 
 * [shape](http://alloyteam.github.io/AlloyRenderingEngine/example/shape.html) 
 * [sprite](http://alloyteam.github.io/AlloyRenderingEngine/example/sprite.html) 
