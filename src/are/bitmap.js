@@ -29,6 +29,9 @@ ARE.Bitmap = ARE.DisplayObject.extend({
                 ARE.Bitmap[img] = self.img;
                 self.visible = true;
                 self.imageLoadHandle && self.imageLoadHandle();
+                self._watch(self, "filter", function (prop, value) {
+                    self.setFilter.apply(self, value);
+                });
             };
             this.img.src = img;
         }

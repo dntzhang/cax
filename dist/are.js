@@ -3,7 +3,8 @@
  * Github: https://github.com/AlloyTeam/AlloyGameEngine
  * MIT Licensed.
  */
-;(function(win){var initializing=!1,fnTest=/xyz/.test(function(){xyz})?/\b_super\b/:/.*/,__class=function(){};__class.extend=function(n){function i(){!initializing&&this.ctor&&this.ctor.apply(this,arguments)}var f=this.prototype,u,r,t;initializing=!0,u=new this,initializing=!1;for(t in n)t!="statics"&&(u[t]=typeof n[t]=="function"&&typeof f[t]=="function"&&fnTest.test(n[t])?function(n,t){return function(){var r=this._super,i;return this._super=f[n],i=t.apply(this,arguments),this._super=r,i}}(t,n[t]):n[t]);for(r in this)this.hasOwnProperty(r)&&r!="extend"&&(i[r]=this[r]);if(i.prototype=u,n.statics)for(t in n.statics)n.statics.hasOwnProperty(t)&&(i[t]=n.statics[t],t=="ctor"&&i[t]());return i.prototype.constructor=i,i.extend=arguments.callee,i.implement=function(n){for(var t in n)u[t]=n[t]},i};
+; (function (win) {
+    var initializing = !1, fnTest = /xyz/.test(function () { xyz }) ? /\b_super\b/ : /.*/, __class = function () { }; __class.extend = function (n) { function i() { !initializing && this.ctor && this.ctor.apply(this, arguments) } var f = this.prototype, u, r, t; initializing = !0, u = new this, initializing = !1; for (t in n) t != "statics" && (u[t] = typeof n[t] == "function" && typeof f[t] == "function" && fnTest.test(n[t]) ? function (n, t) { return function () { var r = this._super, i; return this._super = f[n], i = t.apply(this, arguments), this._super = r, i } }(t, n[t]) : n[t]); for (r in this) this.hasOwnProperty(r) && r != "extend" && (i[r] = this[r]); if (i.prototype = u, n.statics) for (t in n.statics) n.statics.hasOwnProperty(t) && (i[t] = n.statics[t], t == "ctor" && i[t]()); return i.prototype.constructor = i, i.extend = arguments.callee, i.implement = function (n) { for (var t in n) u[t] = n[t] }, i };
 
 ;(function(){
 var ARE={};
@@ -177,12 +178,22 @@ ARE.DisplayObject = __class.extend({
         this.cacheID = 0;
         this.baseInstanceof = "DisplayObject";
         var self = this;
-        this._watch(this, "originX", function(prop, value) {
-            self.regX = self.width * value;
-        });
-        this._watch(this, "originY", function(prop, value) {
-            self.regY = self.height * value;
-        });
+        this._watch(this, "originX", function (prop, value) {
+            if (typeof value === "string") {
+                self.regX = parseInt(value);
+            } else {
+                self.regX = self.width * value;
+            }
+
+        })
+        this._watch(this, "originY", function (prop, value) {
+            if (typeof value === "string") {
+                self.regY = parseInt(value);
+            } else {
+                self.regY = self.height * value;
+            }
+
+        })
     },
     "_watch": function(target, prop, onPropertyChanged) {
         var self = this,
@@ -399,6 +410,9 @@ ARE.Bitmap = ARE.DisplayObject.extend({
                 ARE.Bitmap[img] = self.img;
                 self.visible = true;
                 self.imageLoadHandle && self.imageLoadHandle();
+                self._watch(self, "filter", function (prop, value) {
+                    self.setFilter.apply(self, value);
+                });
             };
             this.img.src = img;
         }

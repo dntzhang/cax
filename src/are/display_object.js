@@ -13,12 +13,22 @@ ARE.DisplayObject = __class.extend({
         this.cacheID = 0;
         this.baseInstanceof = "DisplayObject";
         var self = this;
-        this._watch(this, "originX", function(prop, value) {
-            self.regX = self.width * value;
-        });
-        this._watch(this, "originY", function(prop, value) {
-            self.regY = self.height * value;
-        });
+        this._watch(this, "originX", function (prop, value) {
+            if (typeof value === "string") {
+                self.regX = parseInt(value);
+            } else {
+                self.regX = self.width * value;
+            }
+
+        })
+        this._watch(this, "originY", function (prop, value) {
+            if (typeof value === "string") {
+                self.regY = parseInt(value);
+            } else {
+                self.regY = self.height * value;
+            }
+
+        })
     },
     "_watch": function(target, prop, onPropertyChanged) {
         var self = this,
