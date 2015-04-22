@@ -69,8 +69,5 @@ stage.onTick(function () {
 });
 ```
 
-AlloyAnimationEngine
-=================
-即将到来，敬请期待。
 
 This content is released under the (http://opensource.org/licenses/MIT) MIT License.
