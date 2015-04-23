@@ -27,7 +27,7 @@ AlloyRenderingEngine
 * [filter](http://alloyteam.github.io/AlloyGameEngine/example/filter.html) 
 * [shape](http://alloyteam.github.io/AlloyGameEngine/example/shape.html) 
 * [sprite](http://alloyteam.github.io/AlloyGameEngine/example/sprite.html) 
-* [text](http://alloyteam.github.io/AlloyGameEngine/example/txt.html) 
+* [text](http://alloyteam.github.io/AlloyGameEngine/example/text.html) 
 * [particle system](http://alloyteam.github.io/AlloyGameEngine/example/particlesystem.html) 
 * [box2d](http://alloyteam.github.io/AlloyGameEngine/example/box2d.html) 
 * [keyboard events](http://alloyteam.github.io/AlloyGameEngine/example/keyboardevents.html) 
