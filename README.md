@@ -31,7 +31,7 @@ AlloyRenderingEngine
 * [particle system](http://alloyteam.github.io/AlloyGameEngine/example/particlesystem.html) 
 * [box2d](http://alloyteam.github.io/AlloyGameEngine/example/box2d.html) 
 * [keyboard events](http://alloyteam.github.io/AlloyGameEngine/example/keyboardevents.html) 
-* [collision](http://alloyteam.github.io/AlloyGameEngine/example/collision.html) 
+* [collision](http://alloyteam.github.io/AlloyRenderingEngine/example/collision.html) 
 * [loader](http://alloyteam.github.io/AlloyGameEngine/example/loader/loader.html) 
 * [scalable](http://alloyteam.github.io/AlloyGameEngine/example/scalable.html)
 
