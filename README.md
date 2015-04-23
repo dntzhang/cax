@@ -22,6 +22,7 @@ AlloyRenderingEngine
 ### 基础例子
 * [bitmap](http://alloyteam.github.io/AlloyGameEngine/example/bitmap.html) 
 * [transform](http://alloyteam.github.io/AlloyGameEngine/example/transform.html) 
+* [event](http://alloyteam.github.io/AlloyGameEngine/example/event.html) 
 * [tween](http://alloyteam.github.io/AlloyGameEngine/example/tween.html) 
 * [dom element](http://alloyteam.github.io/AlloyGameEngine/example/domelement.html) 
 * [filter](http://alloyteam.github.io/AlloyGameEngine/example/filter.html) 
@@ -30,9 +31,9 @@ AlloyRenderingEngine
 * [text](http://alloyteam.github.io/AlloyGameEngine/example/text.html) 
 * [particle system](http://alloyteam.github.io/AlloyGameEngine/example/particlesystem.html) 
 * [box2d](http://alloyteam.github.io/AlloyGameEngine/example/box2d.html) 
-* [keyboard events](http://alloyteam.github.io/AlloyGameEngine/example/keyboardevents.html) 
+* [keyboard event](http://alloyteam.github.io/AlloyGameEngine/example/keyboardevents.html) 
 * [collision](http://alloyteam.github.io/AlloyRenderingEngine/example/collision.html) 
-* [loader](http://alloyteam.github.io/AlloyGameEngine/example/loader/loader.html) 
+* [loader](http://alloyteam.github.io/AlloyRenderingEngine/example/loader/loader.html) 
 * [scalable](http://alloyteam.github.io/AlloyGameEngine/example/scalable.html)
 
 
