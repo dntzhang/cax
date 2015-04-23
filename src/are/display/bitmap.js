@@ -17,7 +17,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
             this._init(cacheImg);
         } else {
             var self = this;
-            this.visible = false;
+            this.textureReady = false;
             this.img = document.createElement("img");
             this.img.onload = function() {
                 if (!self.rect) self.rect = [0, 0, self.img.width, self.img.height];
@@ -25,26 +25,19 @@ ARE.Bitmap = ARE.DisplayObject.extend({
                 self.height = self.rect[3];
                 self.regX = self.width * self.originX;
                 self.regY = self.height * self.originY;
-                self.imgLoaded = true;
                 ARE.Bitmap[img] = self.img;
-                self.visible = true;
+                self.textureReady = true;
                 self.imageLoadHandle && self.imageLoadHandle();
-                self._watch(self, "filter", function (prop, value) {
-                    self.setFilter.apply(self, value);
-                });
+                if (self.filter) self.filter = self.filter;
             };
             this.img.src = img;
         }
     },
     "_init": function(img) {
+        if (!img) return;
         this.img = img;
         this.width = img.width;
         this.height = img.height;
-        this.imgLoaded = true;
-        var self = this;
-        this._watch(this, "filter", function(prop, value) {
-            self.setFilter.apply(self, value);
-        });
         Object.defineProperty(this, "rect", {
             get: function() {
                 return this["__rect"];
@@ -58,21 +51,6 @@ ARE.Bitmap = ARE.DisplayObject.extend({
             }
         });
         this.rect = [0, 0, img.width, img.height];
-    },
-    "setFilter": function(r, g, b, a) {
-        this.uncache();
-        this.cache();
-        var imageData = this.cacheCtx.getImageData(0, 0, this.cacheCanvas.width, this.cacheCanvas.height);
-        var pix = imageData.data;
-        for (var i = 0, n = pix.length; i < n; i += 4) {
-            if (pix[i + 3] > 0) {
-                pix[i] *= r;
-                pix[i + 1] *= g;
-                pix[i + 2] *= b;
-                pix[i + 3] *= a;
-            }
-        }
-        this.cacheCtx.putImageData(imageData, 0, 0);
     },
     "useImage": function(img) {
         if (typeof img == "string") {
@@ -90,7 +68,9 @@ ARE.Bitmap = ARE.DisplayObject.extend({
         o.rect = this.rect.slice(0);
         this.cloneProps(o);
         return o;
-    }
+    },
+    "flipX": function() {},
+    "flipY": function() {}
 });
 
 //end-------------------ARE.Bitmap---------------------end

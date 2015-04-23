@@ -4,6 +4,8 @@
 ARE.Particle = ARE.Bitmap.extend({
     "ctor": function(option) {
         this._super(option.texture);
+        this.originX = .5;
+        this.originY = .5;
         this.position = option.position;
         this.x = this.position.x;
         this.y = this.position.y;
@@ -15,7 +17,8 @@ ARE.Particle = ARE.Bitmap.extend({
         this.hideSpeed = option.hideSpeed || .01;
         this.zoomSpeed = option.hideSpeed || .01;
         this.isAlive = true;
-        this.setFilter.apply(this, option.filter);
+        this.img = option.texture;
+        this.img.src = "";
     },
     "tick": function() {
         this.velocity.add(this.acceleration);

@@ -12,32 +12,7 @@
     
       <canvas  width="500" id="ourCanvas" height="500"></canvas>
 
-    <script src="../src/are/base.js"></script>
-    <script src="../src/are/dom.js"></script>
-    <script src="../src/are/fps.js"></script>
-    <script src="../src/are/loader.js"></script>
-    <script src="../src/are/raf.js"></script>
-    <script src="../src/are/vector2.js"></script>
-    <script src="../src/are/uid.js"></script>
-    <script src="../src/are/util.js"></script>
-    <script src="../src/are/tween.js"></script>
-    <script src="../src/are/keyboard.js"></script>
-    <script src="../src/are/matrix2d.js"></script>
-    <script src="../src/are/observable.js"></script>
-    <script src="../src/are/display_object.js"></script>
-    <script src="../src/are/circle_shape.js"></script>
-    <script src="../src/are/dom_element.js"></script>
-    <script src="../src/are/bitmap.js"></script>
-    <script src="../src/are/container.js"></script>
-    <script src="../src/are/particle.js"></script>
-    <script src="../src/are/particle_system.js"></script>
-    <script src="../src/are/rect_adjust.js"></script>
-    <script src="../src/are/rect_shape.js"></script>
-    <script src="../src/are/shape.js"></script>
-    <script src="../src/are/sprite.js"></script>
-    <script src="../src/are/text.js"></script>
-    <script src="../src/are/stage.js"></script>
-    <script src="../src/are/canvas_renderer.js"></script>
+<script src="../dist/are.js"></script>
 
     <script>
         (function (ARE) {
@@ -48,7 +23,7 @@
             var range1 = document.querySelector("#range1");
             var range2 = document.querySelector("#range2");
 
-            stage.scalable(range1.value, range2.value);
+            stage.scaleToScreen(range1.value, range2.value);
             var self = this;
             ld.complete(function () {
          
@@ -75,19 +50,19 @@
                     bmp.scaleY += step;
                 })
                 range1.addEventListener("mouseup", function () {
-                    stage.scalable(range1.value, range2.value);
+                    stage.scaleToScreen(range1.value, range2.value);
 
                 }, false);
                 range2.addEventListener("mouseup", function () {
-                    stage.scalable(range1.value, range2.value);
+                    stage.scaleToScreen(range1.value, range2.value);
 
                 }, false);
                 range1.addEventListener("change", function () {
-                    stage.scalable(range1.value, range2.value);
+                    stage.scaleToScreen(range1.value, range2.value);
 
                 }, false);
                 range2.addEventListener("change", function () {
-                    stage.scalable(range1.value, range2.value);
+                    stage.scaleToScreen(range1.value, range2.value);
 
                 }, false);
             });

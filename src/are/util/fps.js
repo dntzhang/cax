@@ -6,14 +6,16 @@ ARE.FPS = __class.extend({
         "get": function() {
             if (!this.instance) this.instance = new this();
             this.instance._computeFPS();
-            return this.instance.value;
+            return this.instance;
         }
     },
     "ctor": function() {
         this.last = new Date();
         this.current = null;
         this.value = 0;
+        this.totalValue = 0;
         this.fpsList = [];
+        this.count = 0;
         var self = this;
         setInterval(function() {
             var lastIndex = self.fpsList.length - 1;
@@ -21,12 +23,18 @@ ARE.FPS = __class.extend({
             if (lastIndex > 500) {
                 self.fpsList.shift();
             }
+            self.averageFPS = Math.ceil(self.totalValue / self.count);
         }, 500);
     },
     "_computeFPS": function() {
         this.current = new Date();
-        this.fpsList.push(parseInt(1e3 / (this.current - this.last)));
-        this.last = this.current;
+        if (this.current - this.last > 0) {
+            var fps = Math.ceil(1e3 / (this.current - this.last));
+            this.fpsList.push(fps);
+            this.count++;
+            this.totalValue += fps;
+            this.last = this.current;
+        }
     }
 });
 

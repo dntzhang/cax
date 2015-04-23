@@ -13,20 +13,35 @@ ARE.Sprite = ARE.DisplayObject.extend({
         this.rect = [0, 0, 10, 10];
         this.visible = false;
         this.bitmaps = [],
-        this._loadedCount = 0,
-        self = this;
-        for (var i = 0, len = this.option.imgs.length; i < len; i++) {
-            var bmp = new ARE.Bitmap();
-            bmp._sprite = this;
-            bmp.onImageLoad(function() {
-                bmp._sprite._loadedCount++;
-                if (bmp._sprite._loadedCount === len) {
-                    bmp._sprite.visible = true;
-                    delete bmp._sprite;
+        this._loadedCount = 0;
+        var self = this,
+            len = this.option.imgs.length;
+        for (var i = 0; i < len; i++) {
+            var urlOrImg = this.option.imgs[i];
+            if (typeof urlOrImg === "string") {
+                if (ARE.Bitmap[urlOrImg]) {
+                    this.bitmaps.push(new ARE.Bitmap(ARE.Bitmap[urlOrImg]));
+                    this._loadedCount++;
+                } else {
+                    var bmp = new ARE.Bitmap();
+                    bmp._sprite = this;
+                    bmp.onImageLoad(function() {
+                        bmp._sprite._loadedCount++;
+                        if (bmp._sprite._loadedCount === len) {
+                            bmp._sprite.visible = true;
+                            delete bmp._sprite;
+                        }
+                    });
+                    bmp.useImage(this.option.imgs[i]);
+                    this.bitmaps.push(bmp);
                 }
-            });
-            bmp.useImage(this.option.imgs[i]);
-            this.bitmaps.push(bmp);
+            } else {
+                this._loadedCount++;
+                this.bitmaps.push(new ARE.Bitmap(urlOrImg));
+            }
+        }
+        if (this._loadedCount === len) {
+            this.visible = true;
         }
         this.img = this.bitmaps[0].img;
         this.interval = 1e3 / option.framerate;
@@ -75,7 +90,13 @@ ARE.Sprite = ARE.DisplayObject.extend({
                     }
                 }
                 self.rect = opt.frames[frames[self.animationFrameIndex]];
-                if (self.rect.length > 4) self.img = self.bitmaps[self.rect[4]].img;
+                self.width = self.rect[2];
+                self.height = self.rect[3];
+                var rect = self.rect,
+                    rectLen = rect.length;
+                rectLen > 4 && (self.regX = rect[2] * rect[4]);
+                rectLen > 5 && (self.regY = rect[3] * rect[5]);
+                rectLen > 6 && (self.img = self.bitmaps[rect[6]].img);
             }
         }, this.interval);
     },
@@ -88,7 +109,13 @@ ARE.Sprite = ARE.DisplayObject.extend({
         var frames = opt.animations[self.currentAnimation].frames,
             len = frames.length;
         self.rect = opt.frames[frames[self.animationFrameIndex]];
-        if (self.rect.length > 4) self.img = self.bitmaps[self.rect[4]].img;
+        self.width = self.rect[2];
+        self.height = self.rect[3];
+        var rect = self.rect,
+            rectLen = rect.length;
+        rectLen > 4 && (self.regX = rect[2] * rect[4]);
+        rectLen > 5 && (self.regY = rect[3] * rect[5]);
+        rectLen > 6 && (self.img = self.bitmaps[rect[6]].img);
     }
 });
 

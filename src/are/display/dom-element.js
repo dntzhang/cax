@@ -17,9 +17,9 @@ ARE.DomElement = ARE.DisplayObject.extend({
             set: function(value) {
                 this._visible = value;
                 if (this._visible) {
-                    this.element.style.display = "block";
+                    this.element.style.visibility = "visible";
                 } else {
-                    this.element.style.display = "none";
+                    this.element.style.visibility = "hidden";
                 }
             },
             get: function() {
@@ -38,7 +38,8 @@ ARE.DomElement = ARE.DisplayObject.extend({
         });
         this.visible = true;
         this.alpha = 1;
-        this.element.style.display = "none";
+        this.element.style.visibility = "hidden";
+        this.element.style.position = "absolute";
     },
     "isVisible": function() {
         return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);

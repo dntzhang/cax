@@ -1,0 +1,275 @@
+
+//begin-------------------ARE.DisplayObject---------------------begin
+
+ARE.DisplayObject = __class.extend({
+    "ctor": function() {
+        this.alpha = this.scaleX = this.scaleY = this.scale = 1;
+        this.x = this.y = this.rotation = this.originX = this.originY = this.skewX = this.skewY = this.width = this.height = this.regX = this.regY = 0;
+        this.textureReady = true;
+        this.visible = true;
+        this._matrix = new ARE.Matrix2D();
+        this._hitMatrix = new ARE.Matrix2D();
+        this.events = {};
+        this.id = ARE.UID.get();
+        this.cacheID = 0;
+        this.baseInstanceof = "DisplayObject";
+        var self = this;
+        this._watch(this, "originX", function(prop, value) {
+            if (typeof value === "string") {
+                self.regX = parseInt(value);
+            } else {
+                self.regX = self.width * value;
+            }
+        });
+        this._watch(this, "originY", function(prop, value) {
+            if (typeof value === "string") {
+                self.regY = parseInt(value);
+            } else {
+                self.regY = self.height * value;
+            }
+        });
+        this._watch(this, "filter", function(prop, value) {
+            self.setFilter.apply(self, value);
+        });
+        this._watch(this, "scale", function(prop, value) {
+            this.scaleX = this.scaleY = this.scale;
+        });
+        this._preAABB = [-1, -1, 0, 0];
+    },
+    "_watch": function(target, prop, onPropertyChanged) {
+        var self = this,
+            currentValue = target["__" + prop] = this[prop];
+        Object.defineProperty(target, prop, {
+            get: function() {
+                return this["__" + prop];
+            },
+            set: function(value) {
+                this["__" + prop] = value;
+                onPropertyChanged.apply(target, [prop, value]);
+            }
+        });
+    },
+    "isVisible": function() {
+        return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && this.textureReady);
+    },
+    "on": function(type, fn) {
+        this.events[type] || (this.events[type] = []);
+        this.events[type].push(fn);
+    },
+    "execEvent": function(type, x, y) {
+        var fns = this.events[type],
+            result = true;
+        if (fns) {
+            for (var i = 0, len = fns.length; i < len; i++) {
+                result = fns[i].call(this, {
+                    stageX: x,
+                    stageY: y,
+                    type: type
+                });
+            }
+        }
+        if (type === "mouseup" || type === "touchend") {
+            var pressupFns = this.events["pressup"];
+            if (pressupFns) {
+                for (i = 0, len = pressupFns.length; i < len; i++) {
+                    result = pressupFns[i].call(this, {
+                        stageX: x,
+                        stageY: y,
+                        type: "pressup"
+                    });
+                }
+            }
+        }
+        return result;
+    },
+    "clone": function() {
+        var o = new ARE.DisplayObject();
+        this.cloneProps(o);
+        return o;
+    },
+    "cloneProps": function(o) {
+        o.visible = this.visible;
+        o.alpha = this.alpha;
+        o.originX = this.originX;
+        o.originY = this.originY;
+        o.rotation = this.rotation;
+        o.scaleX = this.scaleX;
+        o.scaleY = this.scaleY;
+        o.skewX = this.skewX;
+        o.skewY = this.skewY;
+        o.x = this.x;
+        o.y = this.y;
+        o.regX = this.regX;
+        o.regY = this.regY;
+    },
+    "cache": function() {
+        if (!this.cacheCanvas) {
+            this.cacheCanvas = document.createElement("canvas");
+            var bound = this.getBound();
+            this.cacheCanvas.width = bound.width;
+            this.cacheCanvas.height = bound.height;
+            this.cacheCtx = this.cacheCanvas.getContext("2d");
+        }
+        this.cacheID = ARE.UID.getCacheID();
+        this.updateCache(this.cacheCtx, this, bound.width, bound.width);
+    },
+    "uncache": function() {
+        this.cacheCanvas = null;
+        this.cacheCtx = null;
+        this.cacheID = null;
+    },
+    "setFilter": function(r, g, b, a) {
+        if (this.width === 0 || this.height === 0) return;
+        this.uncache();
+        this.cache();
+        var imageData = this.cacheCtx.getImageData(0, 0, this.cacheCanvas.width, this.cacheCanvas.height);
+        var pix = imageData.data;
+        for (var i = 0, n = pix.length; i < n; i += 4) {
+            if (pix[i + 3] > 0) {
+                pix[i] *= r;
+                pix[i + 1] *= g;
+                pix[i + 2] *= b;
+                pix[i + 3] *= a;
+            }
+        }
+        this.cacheCtx.putImageData(imageData, 0, 0);
+    },
+    "getBound": function() {
+        return {
+            width: this.width,
+            height: this.height
+        };
+    },
+    "toCenter": function() {
+        this.originX = .5;
+        this.originY = .5;
+        this.x = this.parent.width / 2;
+        this.y = this.parent.height / 2;
+    },
+    "onClick": function(fn) {
+        this.on("click", fn);
+    },
+    "onMouseMove": function(fn) {
+        this.on("mousemove", fn);
+    },
+    "onPressMove": function(fn) {
+        this.on("pressmove", fn);
+    },
+    "onHover": function(over, out) {
+        this.on("mouseover", over);
+        this.on("mouseout", out);
+    },
+    "destroy": function() {
+        this.cacheCanvas = null;
+        this.cacheCtx = null;
+        this.cacheID = null;
+        this._matrix = null;
+        this.events = null;
+        if (this.parent) {
+            this.parent.remove(this);
+        }
+    },
+    "initAABB": function() {
+        var x = 0,
+            y = 0,
+            width = this.width,
+            height = this.height,
+            mtx = this._matrix;
+        var x_a = width * mtx.a,
+            x_b = width * mtx.b;
+        var y_c = height * mtx.c,
+            y_d = height * mtx.d;
+        var tx = mtx.tx,
+            ty = mtx.ty;
+        var minX = tx,
+            maxX = tx,
+            minY = ty,
+            maxY = ty;
+        if ((x = x_a + tx) < minX) {
+            minX = x;
+        } else if (x > maxX) {
+            maxX = x;
+        }
+        if ((x = x_a + y_c + tx) < minX) {
+            minX = x;
+        } else if (x > maxX) {
+            maxX = x;
+        }
+        if ((x = y_c + tx) < minX) {
+            minX = x;
+        } else if (x > maxX) {
+            maxX = x;
+        }
+        if ((y = x_b + ty) < minY) {
+            minY = y;
+        } else if (y > maxY) {
+            maxY = y;
+        }
+        if ((y = x_b + y_d + ty) < minY) {
+            minY = y;
+        } else if (y > maxY) {
+            maxY = y;
+        }
+        if ((y = y_d + ty) < minY) {
+            minY = y;
+        } else if (y > maxY) {
+            maxY = y;
+        }
+        this.AABB = [minX, minY, maxX - minX, maxY - minY];
+    },
+    "getRectPoints": function() {
+        var x = 0,
+            y = 0,
+            width = this.width,
+            height = this.height,
+            mtx = this._matrix;
+        var x_a = width * mtx.a,
+            x_b = width * mtx.b;
+        var y_c = height * mtx.c,
+            y_d = height * mtx.d;
+        var tx = mtx.tx,
+            ty = mtx.ty;
+        this.rectPoints = [{
+            x: tx,
+            y: ty},{
+            x: x_a + tx,
+            y: x_b + ty},{
+            x: x_a + y_c + tx,
+            y: x_b + y_d + ty},{
+            x: y_c + tx,
+            y: y_d + ty}];
+        return this.rectPoints;
+    },
+    "onPressUp": function(fn) {
+        this.on("pressup", fn);
+    },
+    "onMouseWheel": function(fn) {
+        this.on("mousewheel", fn);
+    },
+    "updateCache": function(ctx, o, w, h) {
+        ctx.clearRect(0, 0, w + 1, h + 1);
+        this.renderCache(ctx, o);
+    },
+    "renderCache": function(ctx, o) {
+        if (!o.isVisible()) {
+            return;
+        }
+        if (o instanceof ARE.Container || o instanceof ARE.Stage) {
+            var list = o.children.slice(0);
+            for (var i = 0, l = list.length; i < l; i++) {
+                ctx.save();
+                this.render(ctx, list[i]);
+                ctx.restore();
+            }
+        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+            var rect = o.rect;
+            ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+        } else if (o.txtCanvas) {
+            ctx.drawImage(o.txtCanvas, 0, 0);
+        } else if (o.shapeCanvas) {
+            ctx.drawImage(o.shapeCanvas, 0, 0);
+        }
+    }
+});
+
+//end-------------------ARE.DisplayObject---------------------end

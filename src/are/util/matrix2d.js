@@ -19,7 +19,7 @@ ARE.Matrix2D = __class.extend({
         this.b = this.c = this.tx = this.ty = 0;
         return this;
     },
-    "appendTransform": function(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY, flipX, flipY) {
+    "appendTransform": function(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
         if (rotation % 360) {
             var r = rotation * ARE.Matrix2D.DEG_TO_RAD;
             var cos = Math.cos(r);
@@ -40,14 +40,6 @@ ARE.Matrix2D = __class.extend({
             this.tx -= regX * this.a + regY * this.c;
             this.ty -= regX * this.b + regY * this.d;
         }
-        if (flipX) {
-            this.a *= -1;
-            this.c *= -1;
-        }
-        if (flipY) {
-            this.b *= -1;
-            this.d *= -1;
-        }
         return this;
     },
     "append": function(a, b, c, d, tx, ty) {
@@ -63,21 +55,26 @@ ARE.Matrix2D = __class.extend({
         this.ty = tx * b1 + ty * d1 + this.ty;
         return this;
     },
-    "reinitialize": function(a, k, b, d, c, f, h, i, j) {
-        this.initialize(a, k, b, d, c, f);
-        this.alpha = h || 1;
-        this.shadow = i;
-        this.compositeOperation = j;
+    "initialize": function(a, b, c, d, tx, ty) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+        this.tx = tx;
+        this.ty = ty;
         return this;
     },
-    "initialize": function(a, k, b, d, c, f) {
-        if (a != null) this.a = a;
-        this.b = k || 0;
-        this.c = b || 0;
-        if (d != null) this.d = d;
-        this.tx = c || 0;
-        this.ty = f || 0;
+    "setValues": function(a, b, c, d, tx, ty) {
+        this.a = a == null ? 1 : a;
+        this.b = b || 0;
+        this.c = c || 0;
+        this.d = d == null ? 1 : d;
+        this.tx = tx || 0;
+        this.ty = ty || 0;
         return this;
+    },
+    "copy": function(matrix) {
+        return this.setValues(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
     }
 });
 

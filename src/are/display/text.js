@@ -12,6 +12,8 @@ ARE.Text = ARE.DisplayObject.extend({
         this.textBaseline = "top";
         this.maxWidth = option.maxWidth || 2e3;
         this.square = option.square || false;
+        this.txtCanvas = document.createElement("canvas");
+        this.txtCtx = this.txtCanvas.getContext("2d");
         var drawOption = this.getDrawOption({
             txt: this.txt,
             maxWidth: this.maxWidth,
@@ -21,8 +23,13 @@ ARE.Text = ARE.DisplayObject.extend({
             color: this.color || "black",
             fontFamily: this.fontFamily
         });
+        this.cacheID = ARE.UID.getCacheID();
+        this.width = drawOption.calculatedWidth;
+        this.height = drawOption.calculatedHeight;
     },
     "getDrawOption": function(option) {
+        var canvas = this.txtCanvas;
+        var ctx = this.txtCtx;
         var canvasX, canvasY;
         var textX, textY;
         var text = [];
@@ -34,8 +41,6 @@ ARE.Text = ARE.DisplayObject.extend({
         var textColour = option.color;
         var fontFamily = option.fontFamily;
         var backgroundColour = option.backgroundColour;
-        var canvas = document.createElement("canvas");
-        var ctx = canvas.getContext("2d");
         ctx.font = textHeight + "px " + fontFamily;
         if (maxWidth && this.measureText(ctx, textToWrite) > maxWidth) {
             maxWidth = this.createMultilineText(ctx, textToWrite, maxWidth, text);
@@ -81,7 +86,6 @@ ARE.Text = ARE.DisplayObject.extend({
             });
             ctx.fillText(text[i], textX, textY);
         }
-        this.txtCanvas = canvas;
         return option;
     },
     "getPowerOfTwo": function(value, pow) {

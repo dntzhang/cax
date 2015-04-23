@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Alloy Render Engine</title>
+</head>
+<body>   
+    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> 
+  
+    </div>
+  <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
+<img src="../asset/img/github.png" alt="" />
+ </a>
+    <script src="../dist/are.js"></script>
+
+    <script>
+        ; (function (ARE) {
+            var Stage = ARE.Stage, Bitmap = ARE.Bitmap, Loader = ARE.Loader, Container=ARE.Container;
+
+            var ld = new Loader();
+            var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
+         
+            ld.loadRes([
+                { id: "hero", src: "../asset/img/atLogo.png" }]
+                );
+            ld.complete(function () {
+                var bmp = new Bitmap(ld.get("hero"));
+                bmp.originX = 0.5;
+                bmp.originY = 0.5;
+                bmp.x = stage.width / 2;
+                bmp.y = stage.height / 2;
+                var ctt = new Container();
+                ctt.add(bmp);
+                bmp.onPressMove(function (evt) {
+                    this.x = evt.stageX;
+                    this.y = evt.stageY;
+                })
+
+                stage.add(ctt);
+
+                var bmp2 = new Bitmap(ld.get("hero"));
+                bmp2.x = 100;
+                bmp2.y = 100;
+                bmp2.originX = bmp2.originY = 0.5;
+                bmp2.onHover(function () {
+                    bmp2.scale = 1.1;
+                }, function () {
+                    bmp2.scale = 1;
+
+                })
+
+                stage.add(bmp2);
+            });
+
+        })(ARE)
+
+    </script>
+</body>
+</html>
