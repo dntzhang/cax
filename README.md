@@ -20,20 +20,20 @@ AlloyRenderingEngine
 超快的2d渲染引擎，支持webgl和canvas渲染
 
 ### 基础例子
-* [bitmap](http://alloyteam.github.io/AlloyRenderingEngine/example/bitmap.html) 
-* [transform](http://alloyteam.github.io/AlloyRenderingEngine/example/transform.html) 
+* [bitmap](http://alloyteam.github.io/AlloyGameEngine/example/bitmap.html) 
+* [transform](http://alloyteam.github.io/AlloyGameEngine/example/transform.html) 
 * [tween](http://alloyteam.github.io/AlloyGameEngine/example/tween.html) 
 * [dom element](http://alloyteam.github.io/AlloyGameEngine/example/domelement.html) 
-* [filter](http://alloyteam.github.io/AlloyRenderingEngine/example/filter.html) 
-* [shape](http://alloyteam.github.io/AlloyRenderingEngine/example/shape.html) 
-* [sprite](http://alloyteam.github.io/AlloyRenderingEngine/example/sprite.html) 
-* [text](http://alloyteam.github.io/AlloyRenderingEngine/example/txt.html) 
-* [particle system](http://alloyteam.github.io/AlloyRenderingEngine/example/particlesystem.html) 
-* [box2d](http://alloyteam.github.io/AlloyRenderingEngine/example/box2d.html) 
-* [keyboard events](http://alloyteam.github.io/AlloyRenderingEngine/example/keyboardevents.html) 
-* [collision](http://alloyteam.github.io/AlloyRenderingEngine/example/collision.html) 
-* [loader](http://alloyteam.github.io/AlloyRenderingEngine/example/loader/loader.html) 
-* [scalable](http://alloyteam.github.io/AlloyRenderingEngine/example/scalable.html)
+* [filter](http://alloyteam.github.io/AlloyGameEngine/example/filter.html) 
+* [shape](http://alloyteam.github.io/AlloyGameEngine/example/shape.html) 
+* [sprite](http://alloyteam.github.io/AlloyGameEngine/example/sprite.html) 
+* [text](http://alloyteam.github.io/AlloyGameEngine/example/txt.html) 
+* [particle system](http://alloyteam.github.io/AlloyGameEngine/example/particlesystem.html) 
+* [box2d](http://alloyteam.github.io/AlloyGameEngine/example/box2d.html) 
+* [keyboard events](http://alloyteam.github.io/AlloyGameEngine/example/keyboardevents.html) 
+* [collision](http://alloyteam.github.io/AlloyGameEngine/example/collision.html) 
+* [loader](http://alloyteam.github.io/AlloyGameEngine/example/loader/loader.html) 
+* [scalable](http://alloyteam.github.io/AlloyGameEngine/example/scalable.html)
 
 
 ### 一分钟快速入门
