@@ -228,7 +228,6 @@ ARE.Stage = ARE.Container.extend({
         var child = this._getObjectUnderPoint(evt.stageX, evt.stageY, evt.type);
         if (child) {
             this._getPressmoveTarget(child);
-            this._getObjectUnderPoint(evt.stageX, evt.stageY, evt.type);
         }
     },
     "_handleMouseUp": function(evt) {
