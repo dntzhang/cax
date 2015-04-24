@@ -1414,7 +1414,6 @@
                 var child = this._getObjectUnderPoint(evt.stageX, evt.stageY, evt.type);
                 if (child) {
                     this._getPressmoveTarget(child);
-                    this._getObjectUnderPoint(evt.stageX, evt.stageY, evt.type);
                 }
             },
             "_handleMouseUp": function (evt) {
@@ -1644,7 +1643,7 @@
                         if (target) return target;
                     }
                 } else {
-                    if (this.checkPointInAABB(x, y, o.AABB)) {
+                    if (o.AABB&&this.checkPointInAABB(x, y, o.AABB)) {
                         this._bubbleEvent(o, type, x, y);
                         return o;
                     }
