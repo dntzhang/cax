@@ -33,7 +33,7 @@ ARE.CanvasRenderer = __class.extend({
                 if (target) return target;
             }
         } else {
-            if (this.checkPointInAABB(x, y, o.AABB)) {
+            if (o.AABB&&this.checkPointInAABB(x, y, o.AABB)) {
                 this._bubbleEvent(o, type, x, y);
                 return o;
             }
