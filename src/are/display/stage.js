@@ -83,6 +83,16 @@ ARE.Stage = ARE.Container.extend({
                 return this._moveFPS;
             }
         });
+        this.canvas.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
+        this.canvas.addEventListener("click", this._handleClick.bind(this), false);
+        this.canvas.addEventListener("mousedown", this._handleMouseDown.bind(this), false);
+        this.canvas.addEventListener("mouseup", this._handleMouseUp.bind(this), false);
+        this.canvas.addEventListener("dblclick", this._handleDblClick.bind(this), false);
+        this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+        this.canvas.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
+        this.canvas.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
+        this.canvas.addEventListener("touchend", this._handleMouseUp.bind(this), false);
+        window.addEventListener("load", this._initDomSurface.bind(this), false);
     },
     "_initDebug": function() {
         this.debugDiv = document.createElement("div");
@@ -132,6 +142,9 @@ ARE.Stage = ARE.Container.extend({
         this.domSurface.addEventListener("mouseup", this._handleMouseUp.bind(this), false);
         this.domSurface.addEventListener("dblclick", this._handleDblClick.bind(this), false);
         this.addEvent(this.domSurface, "mousewheel", this._handleMouseWheel.bind(this));
+        this.domSurface.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
+        this.domSurface.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
+        this.domSurface.addEventListener("touchend", this._handleMouseUp.bind(this), false);
         window.addEventListener("resize", function() {
             self.offset = self._getXY(self.canvas);
             style.left = self.offset[0] + "px";
@@ -144,15 +157,23 @@ ARE.Stage = ARE.Container.extend({
     "update": function() {
         this.stageRenderer.update();
     },
-    "_correctionEvent": function(evt, type) {
-        evt.stageX = evt.pageX - this.offset[0];
-        evt.stageY = evt.pageY - this.offset[1];
+    "_correctionEvent": function(evt) {
+        if (evt.touches) {
+            var firstTouch = evt.touches[0];
+            if (firstTouch) {
+                evt.stageX = firstTouch.pageX - this.offset[0];
+                evt.stageY = firstTouch.pageY - this.offset[1];
+            }
+        } else {
+            evt.stageX = evt.pageX - this.offset[0];
+            evt.stageY = evt.pageY - this.offset[1];
+        }
         if (this._scaleX) {
             var p = this.correctingXY(evt.stageX, evt.stageY);
             evt.stageX = Math.round(p.x);
             evt.stageY = Math.round(p.y);
         }
-        var callbacks = this.events[type];
+        var callbacks = this.events[evt.type];
         if (callbacks) {
             for (var i = 0, len = callbacks.length; i < len; i++) {
                 var callback = callbacks[i];
@@ -162,11 +183,11 @@ ARE.Stage = ARE.Container.extend({
         evt.preventDefault();
     },
     "_handleClick": function(evt) {
-        this._correctionEvent(evt, "click");
-        this._getObjectUnderPoint(evt.stageX, evt.stageY, "click");
+        this._correctionEvent(evt);
+        this._getObjectUnderPoint(evt.stageX, evt.stageY, evt.type);
     },
     "_handleMouseMove": function(evt) {
-        this._correctionEvent(evt, "mousemove");
+        this._correctionEvent(evt);
         if (this._pressmoveObjs) {
             var pressmoveHandle = this._pressmoveObjs.events["pressmove"];
             pressmoveHandle && this._pressmoveObjs.execEvent("pressmove", evt.stageX, evt.stageY);
@@ -203,19 +224,20 @@ ARE.Stage = ARE.Container.extend({
         if (o.parent) this._getPressmoveTarget(o.parent);
     },
     "_handleMouseDown": function(evt) {
-        this._correctionEvent(evt, "mousedown");
-        var child = this._getObjectUnderPoint(evt.stageX, evt.stageY, "mousedown");
+        this._correctionEvent(evt);
+        var child = this._getObjectUnderPoint(evt.stageX, evt.stageY, evt.type);
         if (child) {
             this._getPressmoveTarget(child);
+            this._getObjectUnderPoint(evt.stageX, evt.stageY, evt.type);
         }
     },
     "_handleMouseUp": function(evt) {
         this._pressmoveObjs = null;
-        this._correctionEvent(evt, "mouseup");
-        this._getObjectUnderPoint(evt.stageX, evt.stageY, "mouseup");
+        this._correctionEvent(evt);
+        this._getObjectUnderPoint(evt.stageX, evt.stageY, evt.type);
     },
     "_handleDblClick": function(evt) {
-        this._correctionEvent(evt, "dblclick");
+        this._correctionEvent(evt);
         this._getObjectUnderPoint(evt.stageX, evt.stageY, "dblclick");
     },
     "_getObjectUnderPoint": function(x, y, type) {
@@ -393,6 +415,10 @@ ARE.Stage = ARE.Container.extend({
             }
             fn.call(this, event);
         }, capture || false);
+    },
+    "setCursor": function(type) {
+        this.canvas.style.cursor = type;
+        this.domSurface.style.cursor = type;
     }
 });
 

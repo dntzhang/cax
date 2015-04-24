@@ -2,7 +2,7 @@
 //begin-------------------ARE.Renderer---------------------begin
 
 ARE.Renderer = __class.extend({
-    "ctor": function(stage, closegl) {
+    "ctor": function(stage) {
         this.stage = stage;
         this.objs = [];
         this.width = this.stage.width;

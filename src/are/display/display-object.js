@@ -152,6 +152,9 @@ ARE.DisplayObject = __class.extend({
     "onMouseMove": function(fn) {
         this.on("mousemove", fn);
     },
+    "onMouseDown": function(fn) {
+        this.on("mousedown", fn);
+    },
     "onPressMove": function(fn) {
         this.on("pressmove", fn);
     },
@@ -245,6 +248,15 @@ ARE.DisplayObject = __class.extend({
     },
     "onMouseWheel": function(fn) {
         this.on("mousewheel", fn);
+    },
+    "onTouchStart": function(fn) {
+        this.on("touchstart", fn);
+    },
+    "onTouchMove": function(fn) {
+        this.on("touchmove", fn);
+    },
+    "onTouchEnd": function(fn) {
+        this.on("touchend", fn);
     },
     "updateCache": function(ctx, o, w, h) {
         ctx.clearRect(0, 0, w + 1, h + 1);
