@@ -56,28 +56,12 @@ ARE.DisplayObject = __class.extend({
         this.events[type] || (this.events[type] = []);
         this.events[type].push(fn);
     },
-    "execEvent": function(type, x, y) {
+    "execEvent": function(type, event) {
         var fns = this.events[type],
             result = true;
         if (fns) {
             for (var i = 0, len = fns.length; i < len; i++) {
-                result = fns[i].call(this, {
-                    stageX: x,
-                    stageY: y,
-                    type: type
-                });
-            }
-        }
-        if (type === "mouseup" || type === "touchend") {
-            var pressupFns = this.events["pressup"];
-            if (pressupFns) {
-                for (i = 0, len = pressupFns.length; i < len; i++) {
-                    result = pressupFns[i].call(this, {
-                        stageX: x,
-                        stageY: y,
-                        type: "pressup"
-                    });
-                }
+                result = fns[i].call(this, event);
             }
         }
         return result;
@@ -146,22 +130,6 @@ ARE.DisplayObject = __class.extend({
         this.x = this.parent.width / 2;
         this.y = this.parent.height / 2;
     },
-    "onClick": function(fn) {
-        this.on("click", fn);
-    },
-    "onMouseMove": function(fn) {
-        this.on("mousemove", fn);
-    },
-    "onMouseDown": function(fn) {
-        this.on("mousedown", fn);
-    },
-    "onPressMove": function(fn) {
-        this.on("pressmove", fn);
-    },
-    "onHover": function(over, out) {
-        this.on("mouseover", over);
-        this.on("mouseout", out);
-    },
     "destroy": function() {
         this.cacheCanvas = null;
         this.cacheCtx = null;
@@ -219,19 +187,6 @@ ARE.DisplayObject = __class.extend({
             maxY = y;
         }
         this.AABB = [minX, minY, maxX - minX, maxY - minY];
-    },
-    "getRectPoints": function() {
-        var x = 0,
-            y = 0,
-            width = this.width,
-            height = this.height,
-            mtx = this._matrix;
-        var x_a = width * mtx.a,
-            x_b = width * mtx.b;
-        var y_c = height * mtx.c,
-            y_d = height * mtx.d;
-        var tx = mtx.tx,
-            ty = mtx.ty;
         this.rectPoints = [{
             x: tx,
             y: ty},{
@@ -241,22 +196,6 @@ ARE.DisplayObject = __class.extend({
             y: x_b + y_d + ty},{
             x: y_c + tx,
             y: y_d + ty}];
-        return this.rectPoints;
-    },
-    "onPressUp": function(fn) {
-        this.on("pressup", fn);
-    },
-    "onMouseWheel": function(fn) {
-        this.on("mousewheel", fn);
-    },
-    "onTouchStart": function(fn) {
-        this.on("touchstart", fn);
-    },
-    "onTouchMove": function(fn) {
-        this.on("touchmove", fn);
-    },
-    "onTouchEnd": function(fn) {
-        this.on("touchend", fn);
     },
     "updateCache": function(ctx, o, w, h) {
         ctx.clearRect(0, 0, w + 1, h + 1);
@@ -281,6 +220,52 @@ ARE.DisplayObject = __class.extend({
         } else if (o.shapeCanvas) {
             ctx.drawImage(o.shapeCanvas, 0, 0);
         }
+    },
+    "onClick": function(fn) {
+        this.on("click", fn);
+    },
+    "onMouseDown": function(fn) {
+        this.on("pressdown", fn);
+    },
+    "onMouseMove": function(fn) {
+        this.on("mousemove", fn);
+    },
+    "onMouseUp": function(fn) {
+        this.on("pressup", fn);
+    },
+    "onMouseOver": function(fn) {
+        this.on("mouseover", fn);
+    },
+    "onMouseOut": function(fn) {
+        this.on("mouseout", fn);
+    },
+    "onHover": function(over, out) {
+        this.on("mouseover", over);
+        this.on("mouseout", out);
+    },
+    "onPressDown": function(fn) {
+        this.on("pressdown", fn);
+    },
+    "onPressMove": function(fn) {
+        this.on("pressmove", fn);
+    },
+    "onPressUp": function(fn) {
+        this.on("pressup", fn);
+    },
+    "onMouseWheel": function(fn) {
+        this.on("mousewheel", fn);
+    },
+    "onTouchStart": function(fn) {
+        this.on("pressdown", fn);
+    },
+    "onTouchMove": function(fn) {
+        this.on("pressmove", fn);
+    },
+    "onTouchEnd": function(fn) {
+        this.on("pressup", fn);
+    },
+    "onDbClick": function(fn) {
+        this.on("dblclick", fn);
     }
 });
 

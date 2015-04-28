@@ -66,7 +66,6 @@ ARE.Stage = ARE.Container.extend({
                 }, this.interval);
             }
         });
-        this._initDomSurface();
         this._initDebug();
         this._pressmoveObjs = null;
         this.baseInstanceof = "Stage";
@@ -92,8 +91,25 @@ ARE.Stage = ARE.Container.extend({
         this.canvas.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
         this.canvas.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
         this.canvas.addEventListener("touchend", this._handleMouseUp.bind(this), false);
-        window.addEventListener("load", this._initDomSurface.bind(this), false);
+        window.addEventListener("resize", function() {
+            self.offset = self._getXY(self.canvas);
+            if (self.domSurface) {
+                self.domSurface.style.left = self.offset[0] + "px";
+                self.domSurface.style.top = self.offset[1] + "px";
+            }
+            if (self._scaleX) {
+                self.scaleToScreen(self._scaleX, self._scaleY);
+            }
+        }, false);
     },
+    "openDom": function() {
+        this._initDomSurface();
+    },
+    "closeDom": function() {
+        document.body.removeChild(this.domSurface);
+    },
+    "openDebug": function() {},
+    "closeDebug": function() {},
     "_initDebug": function() {
         this.debugDiv = document.createElement("div");
         this.debugDiv.style.cssText = "display:none;position:absolute;z-index:2000;left:0;top:0;background-color:yellow;font-size:16px;";
@@ -113,6 +129,7 @@ ARE.Stage = ARE.Container.extend({
         });
     },
     "_handleMouseWheel": function(event) {
+        this._correctionEvent(event);
         var callbacks = this.events["mousewheel"];
         if (callbacks) {
             for (var i = 0, len = callbacks.length; i < len; i++) {
@@ -121,6 +138,9 @@ ARE.Stage = ARE.Container.extend({
             }
         }
         event.preventDefault();
+        if (this.overObj) {
+            this.hitRenderer._bubbleEvent(this.overObj, "mousewheel", event);
+        }
     },
     "_initDomSurface": function() {
         var self = this;
@@ -145,14 +165,6 @@ ARE.Stage = ARE.Container.extend({
         this.domSurface.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
         this.domSurface.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
         this.domSurface.addEventListener("touchend", this._handleMouseUp.bind(this), false);
-        window.addEventListener("resize", function() {
-            self.offset = self._getXY(self.canvas);
-            style.left = self.offset[0] + "px";
-            style.top = self.offset[1] + "px";
-            if (self._scaleX) {
-                self.scaleToScreen(self._scaleX, self._scaleY);
-            }
-        }, false);
     },
     "update": function() {
         this.stageRenderer.update();
@@ -184,33 +196,33 @@ ARE.Stage = ARE.Container.extend({
     },
     "_handleClick": function(evt) {
         this._correctionEvent(evt);
-        this._getObjectUnderPoint(evt.stageX, evt.stageY, evt.type);
+        this._getObjectUnderPoint(evt, evt.type);
     },
     "_handleMouseMove": function(evt) {
         this._correctionEvent(evt);
         if (this._pressmoveObjs) {
             var pressmoveHandle = this._pressmoveObjs.events["pressmove"];
-            pressmoveHandle && this._pressmoveObjs.execEvent("pressmove", evt.stageX, evt.stageY);
+            pressmoveHandle && this._pressmoveObjs.execEvent("pressmove", evt);
         }
         this._currentMoveTime = new Date();
         if (this._currentMoveTime - this._preMoveTime > this._moveInterval / 2) {
-            var child = this._getObjectUnderPoint(evt.stageX, evt.stageY, "mousemove");
+            var child = this._getObjectUnderPoint(evt, "mousemove");
             if (child) {
                 if (this.overObj) {
                     if (child.id != this.overObj.id) {
-                        this.hitRenderer._bubbleEvent(this.overObj, "mouseout", evt.stageX, evt.stageY);
-                        this.hitRenderer._bubbleEvent(child, "mouseover", evt.stageX, evt.stageY);
+                        this.hitRenderer._bubbleEvent(this.overObj, "mouseout", evt);
+                        this.hitRenderer._bubbleEvent(child, "mouseover", evt);
                         this.overObj = child;
                     } else {
-                        this.hitRenderer._bubbleEvent(child, "mousemove", evt.stageX, evt.stageY);
+                        this.hitRenderer._bubbleEvent(child, "mousemove", evt);
                     }
                 } else {
                     this.overObj = child;
-                    this.hitRenderer._bubbleEvent(child, "mouseover", evt.stageX, evt.stageY);
+                    this.hitRenderer._bubbleEvent(child, "mouseover", evt);
                 }
             } else {
                 if (this.overObj) {
-                    this.hitRenderer._bubbleEvent(this.overObj, "mouseout", evt.stageX, evt.stageY);
+                    this.hitRenderer._bubbleEvent(this.overObj, "mouseout", evt);
                     this.overObj = null;
                 }
             }
@@ -225,7 +237,7 @@ ARE.Stage = ARE.Container.extend({
     },
     "_handleMouseDown": function(evt) {
         this._correctionEvent(evt);
-        var child = this._getObjectUnderPoint(evt.stageX, evt.stageY, evt.type);
+        var child = this._getObjectUnderPoint(evt, "pressdown");
         if (child) {
             this._getPressmoveTarget(child);
         }
@@ -233,17 +245,17 @@ ARE.Stage = ARE.Container.extend({
     "_handleMouseUp": function(evt) {
         this._pressmoveObjs = null;
         this._correctionEvent(evt);
-        this._getObjectUnderPoint(evt.stageX, evt.stageY, evt.type);
+        this._getObjectUnderPoint(evt, "pressup");
     },
     "_handleDblClick": function(evt) {
         this._correctionEvent(evt);
-        this._getObjectUnderPoint(evt.stageX, evt.stageY, "dblclick");
+        this._getObjectUnderPoint(evt, evt.type);
     },
-    "_getObjectUnderPoint": function(x, y, type) {
+    "_getObjectUnderPoint": function(evt, type) {
         if (this.hitAABB) {
-            return this.hitRenderer.hitAABB(this.hitCtx, this, null, x, y, type);
+            return this.hitRenderer.hitAABB(this.hitCtx, this, evt, type);
         } else {
-            return this.hitRenderer.hitRender(this.hitCtx, this, null, x, y, type);
+            return this.hitRenderer.hitRender(this.hitCtx, this, evt, type);
         }
     },
     "_getXY": function(el) {
@@ -357,13 +369,15 @@ ARE.Stage = ARE.Container.extend({
         canvas.style.top = 100 * (1 - scaleY) / 2 + "%";
         canvas.style.border = "0px solid #ccc";
         var domSurface = this.domSurface;
-        domSurface.style.position = "absolute";
-        domSurface.style.border = "0px solid #ccc";
-        domSurface.style.transform = domSurface.style.msTransform = domSurface.style.OTransform = domSurface.style.MozTransform = domSurface.style.webkitTransform = "scale(" + window.innerWidth * this._scaleX / this.width + "," + window.innerHeight * this._scaleY / this.height + ")";
-        this.offset = this._getXY(this.canvas);
-        this.offset2 = this._getXY(domSurface);
-        domSurface.style.left = parseInt(domSurface.style.left) - this.offset2[0] + this.offset[0] + "px";
-        domSurface.style.top = parseInt(domSurface.style.top) - this.offset2[1] + this.offset[1] + "px";
+        if (domSurface) {
+            domSurface.style.position = "absolute";
+            domSurface.style.border = "0px solid #ccc";
+            domSurface.style.transform = domSurface.style.msTransform = domSurface.style.OTransform = domSurface.style.MozTransform = domSurface.style.webkitTransform = "scale(" + window.innerWidth * this._scaleX / this.width + "," + window.innerHeight * this._scaleY / this.height + ")";
+            this.offset = this._getXY(this.canvas);
+            this.offset2 = this._getXY(domSurface);
+            domSurface.style.left = parseInt(domSurface.style.left) - this.offset2[0] + this.offset[0] + "px";
+            domSurface.style.top = parseInt(domSurface.style.top) - this.offset2[1] + this.offset[1] + "px";
+        }
     },
     "correctingXY": function(x, y) {
         return {
@@ -417,7 +431,7 @@ ARE.Stage = ARE.Container.extend({
     },
     "setCursor": function(type) {
         this.canvas.style.cursor = type;
-        this.domSurface.style.cursor = type;
+        if (this.domSurface) this.domSurface.style.cursor = type;
     }
 });
 

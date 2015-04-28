@@ -54,10 +54,15 @@ ARE.Renderer = __class.extend({
                 this._computeMatrix(list[i], o._matrix);
             }
         } else {
-            o.initAABB();
-            if (this.isInStage(o)) {
+            if (o instanceof ARE.Graphics) {
                 this.objs.push(o);
                 this.initComplex(o);
+            } else {
+                o.initAABB();
+                if (this.isInStage(o)) {
+                    this.objs.push(o);
+                    this.initComplex(o);
+                }
             }
         }
     },

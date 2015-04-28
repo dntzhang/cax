@@ -10,17 +10,17 @@ ARE.CanvasRenderer = __class.extend({
             this.width = this.canvas.height;
         }
     },
-    "hitAABB": function(ctx, o, mtx, x, y, type) {
+    "hitAABB": function(ctx, o, evt, type) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = l - 1; i >= 0; i--) {
             var child = list[i];
             if (!this.isbindingEvent(child)) continue;
-            var target = this._hitAABB(ctx, child, mtx, x, y, type);
+            var target = this._hitAABB(ctx, child, evt, type);
             if (target) return target;
         }
     },
-    "_hitAABB": function(ctx, o, mtx, x, y, type) {
+    "_hitAABB": function(ctx, o, evt, type) {
         if (!o.isVisible()) {
             return;
         }
@@ -29,38 +29,32 @@ ARE.CanvasRenderer = __class.extend({
                 l = list.length;
             for (var i = l - 1; i >= 0; i--) {
                 var child = list[i];
-                var target = this._hitAABB(ctx, child, mtx, x, y, type);
+                var target = this._hitAABB(ctx, child, evt, type);
                 if (target) return target;
             }
         } else {
-            if (o.AABB&&this.checkPointInAABB(x, y, o.AABB)) {
-                this._bubbleEvent(o, type, x, y);
+            if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
+                this._bubbleEvent(o, type, evt);
                 return o;
             }
         }
     },
-    "hitRender": function(ctx, o, mtx, x, y, type) {
-        if (mtx) {
-            o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-        } else {
-            o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
-        }
-        mtx = o._hitMatrix;
-        mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+    "hitRender": function(ctx, o, evt, type) {
+        var mtx = o._hitMatrix;
         var list = o.children.slice(0),
             l = list.length;
         for (var i = l - 1; i >= 0; i--) {
             var child = list[i];
             mtx.initialize(1, 0, 0, 1, 0, 0);
-            mtx.appendTransform(o.x - x, o.y - y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+            mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
             if (!this.isbindingEvent(child)) continue;
             ctx.save();
-            var target = this._hitRender(ctx, child, mtx, x, y, type);
+            var target = this._hitRender(ctx, child, mtx, evt, type);
             ctx.restore();
             if (target) return target;
         }
     },
-    "_hitRender": function(ctx, o, mtx, x, y, type) {
+    "_hitRender": function(ctx, o, mtx, evt, type) {
         ctx.clearRect(0, 0, 2, 2);
         if (!o.isVisible()) {
             return;
@@ -87,7 +81,7 @@ ARE.CanvasRenderer = __class.extend({
                 l = list.length;
             for (var i = l - 1; i >= 0; i--) {
                 ctx.save();
-                var target = this._hitRender(ctx, list[i], mtx, x, y, type);
+                var target = this._hitRender(ctx, list[i], mtx, evt, type);
                 if (target) return target;
                 ctx.restore();
             }
@@ -97,17 +91,20 @@ ARE.CanvasRenderer = __class.extend({
             var rect = o.rect;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+        } else if (o instanceof ARE.Graphics) {
+            ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            o.draw(ctx);
         }
         if (ctx.getImageData(0, 0, 1, 1).data[3] > 1 && !(o instanceof ARE.Container)) {
-            this._bubbleEvent(o, type, x, y);
+            this._bubbleEvent(o, type, evt);
             return o;
         }
     },
-    "_bubbleEvent": function(o, type, x, y) {
-        var result = o.execEvent(type, x, y);
+    "_bubbleEvent": function(o, type, event) {
+        var result = o.execEvent(type, event);
         if (result !== false) {
             if (o.parent && o.parent.events[type] && o.parent.events[type].length > 0 && o.parent.baseInstanceof !== "Stage") {
-                this._bubbleEvent(o.parent, type, x, y);
+                this._bubbleEvent(o.parent, type, event);
             }
         }
     },
@@ -141,6 +138,9 @@ ARE.CanvasRenderer = __class.extend({
             var rect = o.rect;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+        } else if (o instanceof ARE.Graphics) {
+            ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            o.draw(ctx);
         }
         ctx.restore();
     },
