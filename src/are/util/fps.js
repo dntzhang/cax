@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.FPS---------------------begin
 
-ARE.FPS = __class.extend({
+ARE.FPS = Class.extend({
     "statics": {
         "get": function() {
             if (!this.instance) this.instance = new this();

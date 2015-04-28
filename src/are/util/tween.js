@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.TWEEN---------------------begin
 
-ARE.TWEEN = __class.extend({
+ARE.TWEEN = Class.extend({
     "statics": {
         "ctor": function() {
             if (Date.now === undefined) {

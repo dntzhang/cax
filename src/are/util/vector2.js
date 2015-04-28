@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.Vector2---------------------begin
 
-ARE.Vector2 = __class.extend({
+ARE.Vector2 = Class.extend({
     "ctor": function(x, y) {
         this.x = x;
         this.y = y;

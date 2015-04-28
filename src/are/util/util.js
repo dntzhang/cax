@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.Util---------------------begin
 
-ARE.Util = __class.extend({
+ARE.Util = Class.extend({
     "statics": {
         "random": function(min, max) {
             return min + Math.floor(Math.random() * (max - min + 1));

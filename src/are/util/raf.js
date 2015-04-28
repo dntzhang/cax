@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.RAF---------------------begin
 
-ARE.RAF = __class.extend({
+ARE.RAF = Class.extend({
     "statics": {
         "ctor": function() {
             var requestAnimFrame = function() {

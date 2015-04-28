@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.Dom---------------------begin
 
-ARE.Dom = __class.extend({
+ARE.Dom = Class.extend({
     "statics": {
         "get": function(selector) {
             this.element = document.querySelector(selector);

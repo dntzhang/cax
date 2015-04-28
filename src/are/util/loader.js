@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.Loader---------------------begin
 
-ARE.Loader = __class.extend({
+ARE.Loader = Class.extend({
     "ctor": function() {
         this.audios = {};
         this.res = {};

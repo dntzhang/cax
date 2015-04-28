@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.CanvasRenderer---------------------begin
 
-ARE.CanvasRenderer = __class.extend({
+ARE.CanvasRenderer = Class.extend({
     "ctor": function(canvas) {
         if (canvas) {
             this.canvas = canvas;

@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.Observable---------------------begin
 
-ARE.Observable = __class.extend({
+ARE.Observable = Class.extend({
     "statics": {
         "ctor": function() {
             this.methods = ["concat", "every", "filter", "forEach", "indexOf", "join", "lastIndexOf", "map", "pop", "push", "reduce", "reduceRight", "reverse", "shift", "slice", "some", "sort", "splice", "unshift", "valueOf"],

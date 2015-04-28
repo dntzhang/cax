@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.Matrix2D---------------------begin
 
-ARE.Matrix2D = __class.extend({
+ARE.Matrix2D = Class.extend({
     "statics": {
         "DEG_TO_RAD": 0.017453292519943295
     },

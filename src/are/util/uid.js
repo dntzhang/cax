@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.UID---------------------begin
 
-ARE.UID = __class.extend({
+ARE.UID = Class.extend({
     "statics": {
         "_nextID": 0,
         "_nextCacheID": 1,

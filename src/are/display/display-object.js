@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.DisplayObject---------------------begin
 
-ARE.DisplayObject = __class.extend({
+ARE.DisplayObject = Class.extend({
     "ctor": function() {
         this.alpha = this.scaleX = this.scaleY = this.scale = 1;
         this.x = this.y = this.rotation = this.originX = this.originY = this.skewX = this.skewY = this.width = this.height = this.regX = this.regY = 0;

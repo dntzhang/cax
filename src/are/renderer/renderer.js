@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.Renderer---------------------begin
 
-ARE.Renderer = __class.extend({
+ARE.Renderer = Class.extend({
     "ctor": function(stage) {
         this.stage = stage;
         this.objs = [];

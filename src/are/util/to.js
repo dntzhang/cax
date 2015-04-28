@@ -1,7 +1,7 @@
 
 //begin-------------------ARE.To---------------------begin
 
-ARE.To = __class.extend({
+ARE.To = Class.extend({
     "statics": {
         "ctor": function() {
             var self = this;

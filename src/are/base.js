@@ -1,3 +1,89 @@
 var ARE={};
 
-(function(n){var t=!1,r=/xyz/.test(function(){xyz})?/\b_super\b/:/.*/,i=function(){};i.extend=function(n){function u(){!t&&this.ctor&&this.ctor.apply(this,arguments)}var o=this.prototype,e,f,i;t=!0,e=new this,t=!1;for(i in n)i!="statics"&&(e[i]=typeof n[i]=="function"&&typeof o[i]=="function"&&r.test(n[i])?function(n,t){return function(){var r=this._super,i;return this._super=o[n],i=t.apply(this,arguments),this._super=r,i}}(i,n[i]):n[i]);for(f in this)this.hasOwnProperty(f)&&f!="extend"&&(u[f]=this[f]);if(u.prototype=e,n.statics)for(i in n.statics)n.statics.hasOwnProperty(i)&&(u[i]=n.statics[i],i=="ctor"&&u[i]());return u.prototype.constructor=u,u.extend=arguments.callee,u.implement=function(n){for(var t in n)e[t]=n[t]},u},n.__class=i})(this)
+(function () {
+    var initializing = false, fnTest = /xyz/.test(function () { xyz; }) ? /\b_super\b/ : /.*/;
+
+    // The base Class implementation (does nothing)
+    this.Class = function () { };
+
+    // Create a new Class that inherits from this class
+    Class.extend = function (prop) {
+        var _super = this.prototype;
+
+        // Instantiate a base class (but only create the instance,
+        // don't run the init constructor)
+        initializing = true;
+        var prototype = new this();
+        initializing = false;
+
+        // Copy the properties over onto the new prototype
+        for (var name in prop) {
+            if (name != "statics") {
+                // Check if we're overwriting an existing function
+                prototype[name] = typeof prop[name] == "function" &&
+                  typeof _super[name] == "function" && fnTest.test(prop[name]) ?
+                  (function (name, fn) {
+                      return function () {
+                          var tmp = this._super;
+
+                          // Add a new ._super() method that is the same method
+                          // but on the super-class
+                          this._super = _super[name];
+
+                          // The method only need to be bound temporarily, so we
+                          // remove it when we're done executing
+                          var ret = fn.apply(this, arguments);
+                          this._super = tmp;
+
+                          return ret;
+                      };
+                  })(name, prop[name]) :
+                  prop[name];
+            }
+        }
+
+        // The dummy class constructor
+        function Class() {
+            // All construction is actually done in the init method
+            if (!initializing && this.ctor)
+                this.ctor.apply(this, arguments);
+        }
+
+        //继承父类的静态属性
+        for (var key in this) {
+            if (this.hasOwnProperty(key) && key != "extend")
+                Class[key] = this[key];
+        }
+
+        // Populate our constructed prototype object
+        Class.prototype = prototype;
+
+        //静态属性和方法
+        if (prop.statics) {
+            for (var name in prop.statics) {
+                if (prop.statics.hasOwnProperty(name)) {
+                    Class[name] = prop.statics[name];
+                    if (name == "ctor") {
+                        //提前执行静态构造函数
+                        Class[name]();
+                    }
+                }
+
+            }
+        }
+
+        // Enforce the constructor to be what we expect
+        Class.prototype.constructor = Class;
+
+        // And make this class extendable
+        Class.extend = arguments.callee;
+
+        //add implementation method
+        Class.implement = function (prop) {
+            for (var name in prop) {
+                prototype[name] = prop[name];
+            }
+        };
+        return Class;
+    };
+})();
