@@ -35,6 +35,8 @@ ARE.DisplayObject = __class.extend({
             this.scaleX = this.scaleY = this.scale;
         });
         this._preAABB = [-1, -1, 0, 0];
+
+        this.cursor = "default";
     },
     "_watch": function(target, prop, onPropertyChanged) {
         var self = this,
@@ -64,7 +66,21 @@ ARE.DisplayObject = __class.extend({
                 result = fns[i].call(this, event);
             }
         }
+        if (type === "mouseover" && this.cursor !== "default") {
+
+            this._setCursor(this, this.cursor)
+        } else if (type === "mouseout") {
+            this._setCursor(this, "default");
+        }
         return result;
+    },
+    "_setCursor": function (obj, type) {
+        if (obj.parent instanceof Stage) {
+            obj.parent.setCursor(type);
+        } else {
+            this._setCursor(obj.parent, type)
+        }
+
     },
     "clone": function() {
         var o = new ARE.DisplayObject();
