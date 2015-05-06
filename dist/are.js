@@ -91,24 +91,169 @@
     };
 })();
 
-; (function () {
-    var ARE = {};
-    //begin-------------------ARE.Dom---------------------begin
+; (function (win) {
 
-    ARE.Dom = Class.extend({
-        "statics": {
-            "get": function (selector) {
-                this.element = document.querySelector(selector);
-                return this;
-            },
-            "on": function (type, fn) {
-                this.element.addEventListener(type, fn, false);
-                return this;
+    var ARE = {};
+    //begin-------------------ARE.CanvasRenderer---------------------begin
+
+    ARE.CanvasRenderer = Class.extend({
+        "ctor": function (canvas) {
+            if (canvas) {
+                this.canvas = canvas;
+                this.ctx = this.canvas.getContext("2d");
+                this.height = this.canvas.width;
+                this.width = this.canvas.height;
             }
+        },
+        "hitAABB": function (ctx, o, evt, type) {
+            var list = o.children.slice(0),
+                l = list.length;
+            for (var i = l - 1; i >= 0; i--) {
+                var child = list[i];
+                if (!this.isbindingEvent(child)) continue;
+                var target = this._hitAABB(ctx, child, evt, type);
+                if (target) return target;
+            }
+        },
+        "_hitAABB": function (ctx, o, evt, type) {
+            if (!o.isVisible()) {
+                return;
+            }
+            if (o instanceof ARE.Container) {
+                var list = o.children.slice(0),
+                    l = list.length;
+                for (var i = l - 1; i >= 0; i--) {
+                    var child = list[i];
+                    var target = this._hitAABB(ctx, child, evt, type);
+                    if (target) return target;
+                }
+            } else {
+                if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
+                    this._bubbleEvent(o, type, evt);
+                    return o;
+                }
+            }
+        },
+        "hitRender": function (ctx, o, evt, type) {
+            var mtx = o._hitMatrix;
+            var list = o.children.slice(0),
+                l = list.length;
+            for (var i = l - 1; i >= 0; i--) {
+                var child = list[i];
+                mtx.initialize(1, 0, 0, 1, 0, 0);
+                mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+                if (!this.isbindingEvent(child)) continue;
+                ctx.save();
+                var target = this._hitRender(ctx, child, mtx, evt, type);
+                ctx.restore();
+                if (target) return target;
+            }
+        },
+        "_hitRender": function (ctx, o, mtx, evt, type) {
+            ctx.clearRect(0, 0, 2, 2);
+            if (!o.isVisible()) {
+                return;
+            }
+            if (mtx) {
+                o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            } else {
+                o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
+            }
+            mtx = o._hitMatrix;
+            if (o instanceof ARE.Shape) {
+                mtx.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+            } else {
+                mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+            }
+            var mmyCanvas = o.cacheCanvas || o.txtCanvas || o.shapeCanvas;
+            if (mmyCanvas) {
+                ctx.globalAlpha = o.complexAlpha;
+                ctx.globalCompositeOperation = o.complexCompositeOperation;
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                ctx.drawImage(mmyCanvas, 0, 0);
+            } else if (o instanceof ARE.Container) {
+                var list = o.children.slice(0),
+                    l = list.length;
+                for (var i = l - 1; i >= 0; i--) {
+                    ctx.save();
+                    var target = this._hitRender(ctx, list[i], mtx, evt, type);
+                    if (target) return target;
+                    ctx.restore();
+                }
+            } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+                ctx.globalAlpha = o.complexAlpha;
+                ctx.globalCompositeOperation = o.complexCompositeOperation;
+                var rect = o.rect;
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+            } else if (o instanceof ARE.Graphics) {
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                o.draw(ctx);
+            }
+            if (ctx.getImageData(0, 0, 1, 1).data[3] > 1 && !(o instanceof ARE.Container)) {
+                this._bubbleEvent(o, type, evt);
+                return o;
+            }
+        },
+        "_bubbleEvent": function (o, type, event) {
+            var result = o.execEvent(type, event);
+            if (result !== false) {
+                if (o.parent && o.parent.events[type] && o.parent.events[type].length > 0 && o.parent.baseInstanceof !== "Stage") {
+                    this._bubbleEvent(o.parent, type, event);
+                }
+            }
+        },
+        "isbindingEvent": function (obj) {
+            if (Object.keys(obj.events).length !== 0) return true;
+            if (obj instanceof ARE.Container) {
+                for (var i = 0, len = obj.children.length; i < len; i++) {
+                    var child = obj.children[i];
+                    if (child instanceof ARE.Container) {
+                        return this.isbindingEvent(child);
+                    } else {
+                        if (Object.keys(child.events).length !== 0) return true;
+                    }
+                }
+            }
+            return false;
+        },
+        "clear": function () {
+            this.ctx.clearRect(0, 0, this.height, this.width);
+        },
+        "renderObj": function (ctx, o) {
+            var mtx = o._matrix;
+            ctx.save();
+            ctx.globalAlpha = o.complexAlpha;
+            ctx.globalCompositeOperation = o.complexCompositeOperation;
+            var mmyCanvas = o.cacheCanvas || o.txtCanvas || o.shapeCanvas;
+            if (mmyCanvas) {
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                ctx.drawImage(mmyCanvas, 0, 0);
+            } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+                var rect = o.rect;
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+            } else if (o instanceof ARE.Graphics) {
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                o.draw(ctx);
+            }
+            ctx.restore();
+        },
+        "clearBackUpCanvasCache": function () { },
+        "checkPointInAABB": function (x, y, AABB) {
+            var minX = AABB[0];
+            if (x < minX) return false;
+            var minY = AABB[1];
+            if (y < minY) return false;
+            var maxX = minX + AABB[2];
+            if (x > maxX) return false;
+            var maxY = minY + AABB[3];
+            if (y > maxY) return false;
+            return true;
         }
     });
 
-    //end-------------------ARE.Dom---------------------end
+    //end-------------------ARE.CanvasRenderer---------------------end
 
     //begin-------------------ARE.DisplayObject---------------------begin
 
@@ -529,6 +674,55 @@
 
     //end-------------------ARE.Container---------------------end
 
+    //begin-------------------ARE.DomElement---------------------begin
+
+    ARE.DomElement = ARE.DisplayObject.extend({
+        "ctor": function (selector) {
+            this._super();
+            this.element = typeof selector == "string" ? document.querySelector(selector) : selector;
+            var element = this.element;
+            var observer = ARE.Observable.watch(this, ["x", "y", "scaleX", "scaleY", "perspective", "rotation", "skewX", "skewY", "regX", "regY"]);
+            var self = this;
+            observer.propertyChangedHandler = function () {
+                var mtx = self._matrix.identity().appendTransform(self.x, self.y, self.scaleX, self.scaleY, self.rotation, self.skewX, self.skewY, self.regX, self.regY);
+                self.element.style.transform = self.element.style.msTransform = self.element.style.OTransform = self.element.style.MozTransform = self.element.style.webkitTransform = "matrix(" + mtx.a + "," + mtx.b + "," + mtx.c + "," + mtx.d + "," + mtx.tx + "," + mtx.ty + ")";
+            };
+            delete this.visible;
+            Object.defineProperty(this, "visible", {
+                set: function (value) {
+                    this._visible = value;
+                    if (this._visible) {
+                        this.element.style.visibility = "visible";
+                    } else {
+                        this.element.style.visibility = "hidden";
+                    }
+                },
+                get: function () {
+                    return this._visible;
+                }
+            });
+            delete this.alpha;
+            Object.defineProperty(this, "alpha", {
+                set: function (value) {
+                    this._opacity = value;
+                    this.element.style.opacity = value;
+                },
+                get: function () {
+                    return this._opacity;
+                }
+            });
+            this.visible = true;
+            this.alpha = 1;
+            this.element.style.visibility = "hidden";
+            this.element.style.position = "absolute";
+        },
+        "isVisible": function () {
+            return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);
+        }
+    });
+
+    //end-------------------ARE.DomElement---------------------end
+
     //begin-------------------ARE.Graphics---------------------begin
 
     ARE.Graphics = ARE.DisplayObject.extend({
@@ -723,54 +917,64 @@
 
     //end-------------------ARE.Particle---------------------end
 
-    //begin-------------------ARE.DomElement---------------------begin
+    //begin-------------------ARE.RectAdjust---------------------begin
 
-    ARE.DomElement = ARE.DisplayObject.extend({
-        "ctor": function (selector) {
-            this._super();
-            this.element = typeof selector == "string" ? document.querySelector(selector) : selector;
-            var element = this.element;
-            var observer = ARE.Observable.watch(this, ["x", "y", "scaleX", "scaleY", "perspective", "rotation", "skewX", "skewY", "regX", "regY"]);
+    ARE.RectAdjust = Class.extend({
+        "ctor": function (option) {
+            this.min = option.min;
+            this.max = option.max;
+            this.value = option.value;
+            this.change = option.change;
+            this.renderTo = option.renderTo;
+            this.fillStyle = option.fillStyle;
+            this.canvas = document.createElement("canvas");
+            this.canvas.width = 140;
+            this.canvas.height = 16;
+            this.canvas.style.cssText = "border:1px solid black;";
+            this.ctx = this.canvas.getContext("2d");
+            this.renderTo.appendChild(this.canvas);
+            this.render(160 * (this.value - this.min) / (this.max - this.min));
+            this.offset = this.canvas.getBoundingClientRect();
             var self = this;
-            observer.propertyChangedHandler = function () {
-                var mtx = self._matrix.identity().appendTransform(self.x, self.y, self.scaleX, self.scaleY, self.rotation, self.skewX, self.skewY, self.regX, self.regY);
-                self.element.style.transform = self.element.style.msTransform = self.element.style.OTransform = self.element.style.MozTransform = self.element.style.webkitTransform = "matrix(" + mtx.a + "," + mtx.b + "," + mtx.c + "," + mtx.d + "," + mtx.tx + "," + mtx.ty + ")";
-            };
-            delete this.visible;
-            Object.defineProperty(this, "visible", {
-                set: function (value) {
-                    this._visible = value;
-                    if (this._visible) {
-                        this.element.style.visibility = "visible";
-                    } else {
-                        this.element.style.visibility = "hidden";
-                    }
-                },
-                get: function () {
-                    return this._visible;
+            var isMouseDown = false;
+            this.canvas.addEventListener("mousedown", function (evt) {
+                isMouseDown = true;
+                var x = evt.pageX - self.offset.left;
+                var y = evt.pageY - self.offset.top;
+                self.value = self.min + (self.max - self.min) * x / 140;
+                if (self.value > self.max) self.value = self.max;
+                if (self.value < self.min) self.value = self.min;
+                self.change(self.value);
+                self.render(x);
+                evt.preventDefault();
+                evt.stopPropagation();
+            }, false);
+            this.canvas.addEventListener("mousemove", function (evt) {
+                if (isMouseDown) {
+                    var x = evt.pageX - self.offset.left;
+                    var y = evt.pageY - self.offset.top;
+                    self.value = self.min + (self.max - self.min) * x / 140;
+                    if (self.value > self.max) self.value = self.max;
+                    if (self.value < self.min) self.value = self.min;
+                    self.change(self.value);
+                    self.render(x);
+                    evt.preventDefault();
+                    evt.stopPropagation();
                 }
-            });
-            delete this.alpha;
-            Object.defineProperty(this, "alpha", {
-                set: function (value) {
-                    this._opacity = value;
-                    this.element.style.opacity = value;
-                },
-                get: function () {
-                    return this._opacity;
-                }
-            });
-            this.visible = true;
-            this.alpha = 1;
-            this.element.style.visibility = "hidden";
-            this.element.style.position = "absolute";
+            }, false);
+            document.addEventListener("mouseup", function (evt) {
+                isMouseDown = false;
+            }, false);
         },
-        "isVisible": function () {
-            return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);
+        "render": function (x) {
+            this.ctx.fillStyle = this.fillStyle;
+            this.ctx.clearRect(0, 0, 500, 500);
+            this.ctx.beginPath();
+            this.ctx.fillRect(0, 0, x, 60);
         }
     });
 
-    //end-------------------ARE.DomElement---------------------end
+    //end-------------------ARE.RectAdjust---------------------end
 
     //begin-------------------ARE.ParticleSystem---------------------begin
 
@@ -861,65 +1065,6 @@
     });
 
     //end-------------------ARE.ParticleSystem---------------------end
-
-    //begin-------------------ARE.RectAdjust---------------------begin
-
-    ARE.RectAdjust = Class.extend({
-        "ctor": function (option) {
-            this.min = option.min;
-            this.max = option.max;
-            this.value = option.value;
-            this.change = option.change;
-            this.renderTo = option.renderTo;
-            this.fillStyle = option.fillStyle;
-            this.canvas = document.createElement("canvas");
-            this.canvas.width = 140;
-            this.canvas.height = 16;
-            this.canvas.style.cssText = "border:1px solid black;";
-            this.ctx = this.canvas.getContext("2d");
-            this.renderTo.appendChild(this.canvas);
-            this.render(160 * (this.value - this.min) / (this.max - this.min));
-            this.offset = this.canvas.getBoundingClientRect();
-            var self = this;
-            var isMouseDown = false;
-            this.canvas.addEventListener("mousedown", function (evt) {
-                isMouseDown = true;
-                var x = evt.pageX - self.offset.left;
-                var y = evt.pageY - self.offset.top;
-                self.value = self.min + (self.max - self.min) * x / 140;
-                if (self.value > self.max) self.value = self.max;
-                if (self.value < self.min) self.value = self.min;
-                self.change(self.value);
-                self.render(x);
-                evt.preventDefault();
-                evt.stopPropagation();
-            }, false);
-            this.canvas.addEventListener("mousemove", function (evt) {
-                if (isMouseDown) {
-                    var x = evt.pageX - self.offset.left;
-                    var y = evt.pageY - self.offset.top;
-                    self.value = self.min + (self.max - self.min) * x / 140;
-                    if (self.value > self.max) self.value = self.max;
-                    if (self.value < self.min) self.value = self.min;
-                    self.change(self.value);
-                    self.render(x);
-                    evt.preventDefault();
-                    evt.stopPropagation();
-                }
-            }, false);
-            document.addEventListener("mouseup", function (evt) {
-                isMouseDown = false;
-            }, false);
-        },
-        "render": function (x) {
-            this.ctx.fillStyle = this.fillStyle;
-            this.ctx.clearRect(0, 0, 500, 500);
-            this.ctx.beginPath();
-            this.ctx.fillRect(0, 0, x, 60);
-        }
-    });
-
-    //end-------------------ARE.RectAdjust---------------------end
 
     //begin-------------------ARE.Shape---------------------begin
 
@@ -1035,128 +1180,6 @@
     });
 
     //end-------------------ARE.Shape---------------------end
-
-    //begin-------------------ARE.Sprite---------------------begin
-
-    ARE.Sprite = ARE.DisplayObject.extend({
-        "ctor": function (option) {
-            this._super();
-            this.option = option;
-            this.x = option.x || 0;
-            this.y = option.y || 0;
-            this.currentFrameIndex = 0;
-            this.animationFrameIndex = 0;
-            this.currentAnimation = option.currentAnimation || null;
-            this.rect = [0, 0, 10, 10];
-            this.visible = false;
-            this.bitmaps = [],
-            this._loadedCount = 0;
-            var self = this,
-                len = this.option.imgs.length;
-            for (var i = 0; i < len; i++) {
-                var urlOrImg = this.option.imgs[i];
-                if (typeof urlOrImg === "string") {
-                    if (ARE.Bitmap[urlOrImg]) {
-                        this.bitmaps.push(new ARE.Bitmap(ARE.Bitmap[urlOrImg]));
-                        this._loadedCount++;
-                    } else {
-                        var bmp = new ARE.Bitmap();
-                        bmp._sprite = this;
-                        bmp.onImageLoad(function () {
-                            bmp._sprite._loadedCount++;
-                            if (bmp._sprite._loadedCount === len) {
-                                bmp._sprite.visible = true;
-                                delete bmp._sprite;
-                            }
-                        });
-                        bmp.useImage(this.option.imgs[i]);
-                        this.bitmaps.push(bmp);
-                    }
-                } else {
-                    this._loadedCount++;
-                    this.bitmaps.push(new ARE.Bitmap(urlOrImg));
-                }
-            }
-            if (this._loadedCount === len) {
-                this.visible = true;
-            }
-            this.img = this.bitmaps[0].img;
-            this.interval = 1e3 / option.framerate;
-            this.loop = null;
-            this.paused = false;
-            this.animationEnd = option.animationEnd || null;
-            if (this.currentAnimation) {
-                this.gotoAndPlay(this.currentAnimation);
-            }
-            this.tickAnimationEnd = option.tickAnimationEnd || null;
-        },
-        "play": function () {
-            this.paused = false;
-        },
-        "stop": function () {
-            this.paused = true;
-        },
-        "reset": function () {
-            this.currentFrameIndex = 0;
-            this.animationFrameIndex = 0;
-        },
-        "gotoAndPlay": function (animation, times) {
-            this.paused = false;
-            this.reset();
-            clearInterval(this.loop);
-            this.currentAnimation = animation;
-            var self = this;
-            var playTimes = 0;
-            this.loop = setInterval(function () {
-                if (!self.paused) {
-                    var opt = self.option;
-                    var frames = opt.animations[self.currentAnimation].frames,
-                        len = frames.length;
-                    self.animationFrameIndex++;
-                    if (self.animationFrameIndex > len - 1) {
-                        playTimes++;
-                        self.animationFrameIndex = 0;
-                        if (self.tickAnimationEnd) {
-                            self.tickAnimationEnd();
-                        }
-                        if (times && playTimes == times) {
-                            if (self.animationEnd) self.animationEnd();
-                            self.paused = true;
-                            clearInterval(self.loop);
-                            self.parent.remove(self);
-                        }
-                    }
-                    self.rect = opt.frames[frames[self.animationFrameIndex]];
-                    self.width = self.rect[2];
-                    self.height = self.rect[3];
-                    var rect = self.rect,
-                        rectLen = rect.length;
-                    rectLen > 4 && (self.regX = rect[2] * rect[4]);
-                    rectLen > 5 && (self.regY = rect[3] * rect[5]);
-                    rectLen > 6 && (self.img = self.bitmaps[rect[6]].img);
-                }
-            }, this.interval);
-        },
-        "gotoAndStop": function (animation) {
-            this.reset();
-            clearInterval(this.loop);
-            var self = this;
-            self.currentAnimation = animation;
-            var opt = self.option;
-            var frames = opt.animations[self.currentAnimation].frames,
-                len = frames.length;
-            self.rect = opt.frames[frames[self.animationFrameIndex]];
-            self.width = self.rect[2];
-            self.height = self.rect[3];
-            var rect = self.rect,
-                rectLen = rect.length;
-            rectLen > 4 && (self.regX = rect[2] * rect[4]);
-            rectLen > 5 && (self.regY = rect[3] * rect[5]);
-            rectLen > 6 && (self.img = self.bitmaps[rect[6]].img);
-        }
-    });
-
-    //end-------------------ARE.Sprite---------------------end
 
     //begin-------------------ARE.Text---------------------begin
 
@@ -1309,6 +1332,128 @@
     });
 
     //end-------------------ARE.Text---------------------end
+
+    //begin-------------------ARE.Sprite---------------------begin
+
+    ARE.Sprite = ARE.DisplayObject.extend({
+        "ctor": function (option) {
+            this._super();
+            this.option = option;
+            this.x = option.x || 0;
+            this.y = option.y || 0;
+            this.currentFrameIndex = 0;
+            this.animationFrameIndex = 0;
+            this.currentAnimation = option.currentAnimation || null;
+            this.rect = [0, 0, 10, 10];
+            this.visible = false;
+            this.bitmaps = [],
+            this._loadedCount = 0;
+            var self = this,
+                len = this.option.imgs.length;
+            for (var i = 0; i < len; i++) {
+                var urlOrImg = this.option.imgs[i];
+                if (typeof urlOrImg === "string") {
+                    if (ARE.Bitmap[urlOrImg]) {
+                        this.bitmaps.push(new ARE.Bitmap(ARE.Bitmap[urlOrImg]));
+                        this._loadedCount++;
+                    } else {
+                        var bmp = new ARE.Bitmap();
+                        bmp._sprite = this;
+                        bmp.onImageLoad(function () {
+                            bmp._sprite._loadedCount++;
+                            if (bmp._sprite._loadedCount === len) {
+                                bmp._sprite.visible = true;
+                                delete bmp._sprite;
+                            }
+                        });
+                        bmp.useImage(this.option.imgs[i]);
+                        this.bitmaps.push(bmp);
+                    }
+                } else {
+                    this._loadedCount++;
+                    this.bitmaps.push(new ARE.Bitmap(urlOrImg));
+                }
+            }
+            if (this._loadedCount === len) {
+                this.visible = true;
+            }
+            this.img = this.bitmaps[0].img;
+            this.interval = 1e3 / option.framerate;
+            this.loop = null;
+            this.paused = false;
+            this.animationEnd = option.animationEnd || null;
+            if (this.currentAnimation) {
+                this.gotoAndPlay(this.currentAnimation);
+            }
+            this.tickAnimationEnd = option.tickAnimationEnd || null;
+        },
+        "play": function () {
+            this.paused = false;
+        },
+        "stop": function () {
+            this.paused = true;
+        },
+        "reset": function () {
+            this.currentFrameIndex = 0;
+            this.animationFrameIndex = 0;
+        },
+        "gotoAndPlay": function (animation, times) {
+            this.paused = false;
+            this.reset();
+            clearInterval(this.loop);
+            this.currentAnimation = animation;
+            var self = this;
+            var playTimes = 0;
+            this.loop = setInterval(function () {
+                if (!self.paused) {
+                    var opt = self.option;
+                    var frames = opt.animations[self.currentAnimation].frames,
+                        len = frames.length;
+                    self.animationFrameIndex++;
+                    if (self.animationFrameIndex > len - 1) {
+                        playTimes++;
+                        self.animationFrameIndex = 0;
+                        if (self.tickAnimationEnd) {
+                            self.tickAnimationEnd();
+                        }
+                        if (times && playTimes == times) {
+                            if (self.animationEnd) self.animationEnd();
+                            self.paused = true;
+                            clearInterval(self.loop);
+                            self.parent.remove(self);
+                        }
+                    }
+                    self.rect = opt.frames[frames[self.animationFrameIndex]];
+                    self.width = self.rect[2];
+                    self.height = self.rect[3];
+                    var rect = self.rect,
+                        rectLen = rect.length;
+                    rectLen > 4 && (self.regX = rect[2] * rect[4]);
+                    rectLen > 5 && (self.regY = rect[3] * rect[5]);
+                    rectLen > 6 && (self.img = self.bitmaps[rect[6]].img);
+                }
+            }, this.interval);
+        },
+        "gotoAndStop": function (animation) {
+            this.reset();
+            clearInterval(this.loop);
+            var self = this;
+            self.currentAnimation = animation;
+            var opt = self.option;
+            var frames = opt.animations[self.currentAnimation].frames,
+                len = frames.length;
+            self.rect = opt.frames[frames[self.animationFrameIndex]];
+            self.width = self.rect[2];
+            self.height = self.rect[3];
+            var rect = self.rect,
+                rectLen = rect.length;
+            rectLen > 4 && (self.regX = rect[2] * rect[4]);
+            rectLen > 5 && (self.regY = rect[3] * rect[5]);
+            rectLen > 6 && (self.img = self.bitmaps[rect[6]].img);
+        }
+    });
+
+    //end-------------------ARE.Sprite---------------------end
 
     //begin-------------------ARE.Stage---------------------begin
 
@@ -1748,167 +1893,6 @@
 
     //end-------------------ARE.Stage---------------------end
 
-    //begin-------------------ARE.CanvasRenderer---------------------begin
-
-    ARE.CanvasRenderer = Class.extend({
-        "ctor": function (canvas) {
-            if (canvas) {
-                this.canvas = canvas;
-                this.ctx = this.canvas.getContext("2d");
-                this.height = this.canvas.width;
-                this.width = this.canvas.height;
-            }
-        },
-        "hitAABB": function (ctx, o, evt, type) {
-            var list = o.children.slice(0),
-                l = list.length;
-            for (var i = l - 1; i >= 0; i--) {
-                var child = list[i];
-                if (!this.isbindingEvent(child)) continue;
-                var target = this._hitAABB(ctx, child, evt, type);
-                if (target) return target;
-            }
-        },
-        "_hitAABB": function (ctx, o, evt, type) {
-            if (!o.isVisible()) {
-                return;
-            }
-            if (o instanceof ARE.Container) {
-                var list = o.children.slice(0),
-                    l = list.length;
-                for (var i = l - 1; i >= 0; i--) {
-                    var child = list[i];
-                    var target = this._hitAABB(ctx, child, evt, type);
-                    if (target) return target;
-                }
-            } else {
-                if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
-                    this._bubbleEvent(o, type, evt);
-                    return o;
-                }
-            }
-        },
-        "hitRender": function (ctx, o, evt, type) {
-            var mtx = o._hitMatrix;
-            var list = o.children.slice(0),
-                l = list.length;
-            for (var i = l - 1; i >= 0; i--) {
-                var child = list[i];
-                mtx.initialize(1, 0, 0, 1, 0, 0);
-                mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
-                if (!this.isbindingEvent(child)) continue;
-                ctx.save();
-                var target = this._hitRender(ctx, child, mtx, evt, type);
-                ctx.restore();
-                if (target) return target;
-            }
-        },
-        "_hitRender": function (ctx, o, mtx, evt, type) {
-            ctx.clearRect(0, 0, 2, 2);
-            if (!o.isVisible()) {
-                return;
-            }
-            if (mtx) {
-                o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-            } else {
-                o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
-            }
-            mtx = o._hitMatrix;
-            if (o instanceof ARE.Shape) {
-                mtx.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
-            } else {
-                mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
-            }
-            var mmyCanvas = o.cacheCanvas || o.txtCanvas || o.shapeCanvas;
-            if (mmyCanvas) {
-                ctx.globalAlpha = o.complexAlpha;
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                ctx.drawImage(mmyCanvas, 0, 0);
-            } else if (o instanceof ARE.Container) {
-                var list = o.children.slice(0),
-                    l = list.length;
-                for (var i = l - 1; i >= 0; i--) {
-                    ctx.save();
-                    var target = this._hitRender(ctx, list[i], mtx, evt, type);
-                    if (target) return target;
-                    ctx.restore();
-                }
-            } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
-                ctx.globalAlpha = o.complexAlpha;
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                var rect = o.rect;
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-            } else if (o instanceof ARE.Graphics) {
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                o.draw(ctx);
-            }
-            if (ctx.getImageData(0, 0, 1, 1).data[3] > 1 && !(o instanceof ARE.Container)) {
-                this._bubbleEvent(o, type, evt);
-                return o;
-            }
-        },
-        "_bubbleEvent": function (o, type, event) {
-            var result = o.execEvent(type, event);
-            if (result !== false) {
-                if (o.parent && o.parent.events[type] && o.parent.events[type].length > 0 && o.parent.baseInstanceof !== "Stage") {
-                    this._bubbleEvent(o.parent, type, event);
-                }
-            }
-        },
-        "isbindingEvent": function (obj) {
-            if (Object.keys(obj.events).length !== 0) return true;
-            if (obj instanceof ARE.Container) {
-                for (var i = 0, len = obj.children.length; i < len; i++) {
-                    var child = obj.children[i];
-                    if (child instanceof ARE.Container) {
-                        return this.isbindingEvent(child);
-                    } else {
-                        if (Object.keys(child.events).length !== 0) return true;
-                    }
-                }
-            }
-            return false;
-        },
-        "clear": function () {
-            this.ctx.clearRect(0, 0, this.height, this.width);
-        },
-        "renderObj": function (ctx, o) {
-            var mtx = o._matrix;
-            ctx.save();
-            ctx.globalAlpha = o.complexAlpha;
-            ctx.globalCompositeOperation = o.complexCompositeOperation;
-            var mmyCanvas = o.cacheCanvas || o.txtCanvas || o.shapeCanvas;
-            if (mmyCanvas) {
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                ctx.drawImage(mmyCanvas, 0, 0);
-            } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
-                var rect = o.rect;
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-            } else if (o instanceof ARE.Graphics) {
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                o.draw(ctx);
-            }
-            ctx.restore();
-        },
-        "clearBackUpCanvasCache": function () { },
-        "checkPointInAABB": function (x, y, AABB) {
-            var minX = AABB[0];
-            if (x < minX) return false;
-            var minY = AABB[1];
-            if (y < minY) return false;
-            var maxX = minX + AABB[2];
-            if (x > maxX) return false;
-            var maxY = minY + AABB[3];
-            if (y > maxY) return false;
-            return true;
-        }
-    });
-
-    //end-------------------ARE.CanvasRenderer---------------------end
-
     //begin-------------------ARE.FPS---------------------begin
 
     ARE.FPS = Class.extend({
@@ -1949,6 +1933,23 @@
     });
 
     //end-------------------ARE.FPS---------------------end
+
+    //begin-------------------ARE.Dom---------------------begin
+
+    ARE.Dom = Class.extend({
+        "statics": {
+            "get": function (selector) {
+                this.element = document.querySelector(selector);
+                return this;
+            },
+            "on": function (type, fn) {
+                this.element.addEventListener(type, fn, false);
+                return this;
+            }
+        }
+    });
+
+    //end-------------------ARE.Dom---------------------end
 
     //begin-------------------ARE.Matrix2D---------------------begin
 
@@ -2148,6 +2149,1175 @@
     });
 
     //end-------------------ARE.Loader---------------------end
+
+    //begin-------------------ARE.RAF---------------------begin
+
+    ARE.RAF = Class.extend({
+        "statics": {
+            "ctor": function () {
+                var requestAnimFrame = function () {
+                    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+                    function (callback, element) {
+                        window.setTimeout(callback, 1e3 / 60);
+                    };
+                }();
+                var requestInterval = function (fn, delay) {
+                    if (!window.requestAnimationFrame && !window.webkitRequestAnimationFrame && !(window.mozRequestAnimationFrame && window.mozCancelRequestAnimationFrame) && !window.oRequestAnimationFrame && !window.msRequestAnimationFrame) return window.setInterval(fn, delay);
+                    var start = new Date().getTime(),
+                        handle = new Object();
+
+                    function loop() {
+                        var current = new Date().getTime(),
+                            delta = current - start;
+                        if (delta >= delay) {
+                            fn.call();
+                            start = new Date().getTime();
+                        }
+                        handle.value = requestAnimFrame(loop);
+                    }
+                    handle.value = requestAnimFrame(loop);
+                    return handle;
+                };
+                var clearRequestInterval = function (handle) {
+                    if (handle) {
+                        setTimeout(function () {
+                            window.cancelAnimationFrame ? window.cancelAnimationFrame(handle.value) : window.webkitCancelAnimationFrame ? window.webkitCancelAnimationFrame(handle.value) : window.webkitCancelRequestAnimationFrame ? window.webkitCancelRequestAnimationFrame(handle.value) : window.mozCancelRequestAnimationFrame ? window.mozCancelRequestAnimationFrame(handle.value) : window.oCancelRequestAnimationFrame ? window.oCancelRequestAnimationFrame(handle.value) : window.msCancelRequestAnimationFrame ? window.msCancelRequestAnimationFrame(handle.value) : clearInterval(handle);
+                        }, 0);
+                    }
+                };
+                this.requestInterval = requestInterval;
+                this.clearRequestInterval = clearRequestInterval;
+            }
+        }
+    });
+
+    //end-------------------ARE.RAF---------------------end
+
+    //begin-------------------ARE.Observable---------------------begin
+
+    ARE.Observable = Class.extend({
+        "statics": {
+            "ctor": function () {
+                this.methods = ["concat", "every", "filter", "forEach", "indexOf", "join", "lastIndexOf", "map", "pop", "push", "reduce", "reduceRight", "reverse", "shift", "slice", "some", "sort", "splice", "unshift", "valueOf"],
+                this.triggerStr = ["concat", "pop", "push", "reverse", "shift", "sort", "splice", "unshift"].join(",");
+            },
+            "type": function (obj) {
+                var typeStr = Object.prototype.toString.call(obj).split(" ")[1];
+                return typeStr.substr(0, typeStr.length - 1).toLowerCase();
+            },
+            "isArray": function (obj) {
+                return this.type(obj) == "array";
+            },
+            "isInArray": function (arr, item) {
+                for (var i = arr.length; --i > -1;) {
+                    if (item === arr[i]) return true;
+                }
+                return false;
+            },
+            "isFunction": function (obj) {
+                return this.type(obj) == "function";
+            },
+            "watch": function (target, arr) {
+                return new this(target, arr);
+            }
+        },
+        "ctor": function (target, arr) {
+            for (var prop in target) {
+                if (target.hasOwnProperty(prop)) {
+                    if (arr && ARE.Observable.isInArray(arr, prop) || !arr) {
+                        this.watch(target, prop);
+                    }
+                }
+            }
+            if (target.change) throw "naming conflicts！observable will extend 'change' method to your object .";
+            var self = this;
+            target.change = function (fn) {
+                self.propertyChangedHandler = fn;
+            };
+        },
+        "onPropertyChanged": function (prop, value) {
+            this.propertyChangedHandler && this.propertyChangedHandler(prop, value);
+        },
+        "mock": function (target) {
+            var self = this;
+            ARE.Observable.methods.forEach(function (item) {
+                target[item] = function () {
+                    var result = Array.prototype[item].apply(this, Array.prototype.slice.call(arguments));
+                    for (var cprop in this) {
+                        if (this.hasOwnProperty(cprop) && cprop != "_super" && !ARE.Observable.isFunction(this[cprop])) {
+                            self.watch(this, cprop);
+                        }
+                    }
+                    if (new RegExp("\\b" + item + "\\b").test(ARE.Observable.triggerStr)) {
+                        self.onPropertyChanged("array", item);
+                    }
+                    return result;
+                };
+            });
+        },
+        "watch": function (target, prop) {
+            if (prop.substr(0, 2) == "__") return;
+            var self = this;
+            if (ARE.Observable.isFunction(target[prop])) return;
+            var currentValue = target["__" + prop] = target[prop];
+            Object.defineProperty(target, prop, {
+                get: function () {
+                    return this["__" + prop];
+                },
+                set: function (value) {
+                    this["__" + prop] = value;
+                    self.onPropertyChanged(prop, value);
+                }
+            });
+            if (ARE.Observable.isArray(target)) {
+                this.mock(target);
+            }
+            if (typeof currentValue == "object") {
+                if (ARE.Observable.isArray(currentValue)) {
+                    this.mock(currentValue);
+                }
+                for (var cprop in currentValue) {
+                    if (currentValue.hasOwnProperty(cprop) && cprop != "_super") {
+                        this.watch(currentValue, cprop);
+                    }
+                }
+            }
+        }
+    });
+
+    //end-------------------ARE.Observable---------------------end
+
+    //begin-------------------ARE.To---------------------begin
+
+    ARE.To = Class.extend({
+        "statics": {
+            "ctor": function () {
+                var self = this;
+                setTimeout(function () {
+                    self.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
+                    self.linear = ARE.TWEEN.Easing.Linear.None,
+                    self.quadraticIn = ARE.TWEEN.Easing.Quadratic.In,
+                    self.quadraticOut = ARE.TWEEN.Easing.Quadratic.Out,
+                    self.quadraticInOut = ARE.TWEEN.Easing.Quadratic.InOut,
+                    self.cubicIn = ARE.TWEEN.Easing.Cubic.In,
+                    self.cubicOut = ARE.TWEEN.Easing.Cubic.Out,
+                    self.cubicInOut = ARE.TWEEN.Easing.Cubic.InOut,
+                    self.quarticIn = ARE.TWEEN.Easing.Quartic.In,
+                    self.quarticOut = ARE.TWEEN.Easing.Quartic.Out,
+                    self.quarticInOut = ARE.TWEEN.Easing.Quartic.InOut,
+                    self.quinticIn = ARE.TWEEN.Easing.Quintic.In,
+                    self.quinticOut = ARE.TWEEN.Easing.Quintic.Out,
+                    self.quinticInOut = ARE.TWEEN.Easing.Quintic.InOut,
+                    self.sinusoidalIn = ARE.TWEEN.Easing.Sinusoidal.In,
+                    self.sinusoidalOut = ARE.TWEEN.Easing.Sinusoidal.Out,
+                    self.sinusoidalInOut = ARE.TWEEN.Easing.Sinusoidal.InOut,
+                    self.exponentialIn = ARE.TWEEN.Easing.Exponential.In,
+                    self.exponentialOut = ARE.TWEEN.Easing.Exponential.Out,
+                    self.exponentialInOut = ARE.TWEEN.Easing.Exponential.InOut,
+                    self.circularIn = ARE.TWEEN.Easing.Circular.In,
+                    self.circularOut = ARE.TWEEN.Easing.Circular.Out,
+                    self.circularInOut = ARE.TWEEN.Easing.Circular.InOut,
+                    self.elasticIn = ARE.TWEEN.Easing.Elastic.In,
+                    self.elasticOut = ARE.TWEEN.Easing.Elastic.Out,
+                    self.elasticInOut = ARE.TWEEN.Easing.Elastic.InOut,
+                    self.backIn = ARE.TWEEN.Easing.Back.In,
+                    self.backOut = ARE.TWEEN.Easing.Back.Out,
+                    self.backInOut = ARE.TWEEN.Easing.Back.InOut,
+                    self.bounceIn = ARE.TWEEN.Easing.Bounce.In,
+                    self.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
+                    self.bounceInOut = ARE.TWEEN.Easing.Bounce.InOut,
+                    self.interpolationLinear = ARE.TWEEN.Interpolation.Linear,
+                    self.interpolationBezier = ARE.TWEEN.Interpolation.Bezier,
+                    self.interpolationCatmullRom = ARE.TWEEN.Interpolation.CatmullRom;
+                }, 0);
+            },
+            "get": function (element) {
+                return new this(element);
+            }
+        },
+        "ctor": function (element) {
+            this.element = element;
+            this.cmds = [];
+            this.index = 0;
+            this.tweens = [];
+            this._pause = false;
+            this.loop = setInterval(function () {
+                ARE.TWEEN.update();
+            }, 15);
+            this.cycleCount = 0;
+        },
+        "to": function () {
+            this.cmds.push(["to"]);
+            return this;
+        },
+        "set": function (prop, value, time, ease) {
+            this.cmds[this.cmds.length - 1].push([prop, [value, time, ease]]);
+            return this;
+        },
+        "x": function () {
+            this.cmds[this.cmds.length - 1].push(["x", arguments]);
+            return this;
+        },
+        "y": function () {
+            this.cmds[this.cmds.length - 1].push(["y", arguments]);
+            return this;
+        },
+        "z": function () {
+            this.cmds[this.cmds.length - 1].push(["z", arguments]);
+            return this;
+        },
+        "rotation": function () {
+            this.cmds[this.cmds.length - 1].push(["rotation", arguments]);
+            return this;
+        },
+        "scaleX": function () {
+            this.cmds[this.cmds.length - 1].push(["scaleX", arguments]);
+            return this;
+        },
+        "scaleY": function () {
+            this.cmds[this.cmds.length - 1].push(["scaleY", arguments]);
+            return this;
+        },
+        "skewX": function () {
+            this.cmds[this.cmds.length - 1].push(["skewX", arguments]);
+            return this;
+        },
+        "skewY": function () {
+            this.cmds[this.cmds.length - 1].push(["skewY", arguments]);
+            return this;
+        },
+        "originX": function () {
+            this.cmds[this.cmds.length - 1].push(["originX", arguments]);
+            return this;
+        },
+        "originY": function () {
+            this.cmds[this.cmds.length - 1].push(["originY", arguments]);
+            return this;
+        },
+        "alpha": function () {
+            this.cmds[this.cmds.length - 1].push(["alpha", arguments]);
+            return this;
+        },
+        "begin": function (fn) {
+            this.cmds[this.cmds.length - 1].begin = fn;
+            return this;
+        },
+        "progress": function (fn) {
+            this.cmds[this.cmds.length - 1].progress = fn;
+            return this;
+        },
+        "end": function (fn) {
+            this.cmds[this.cmds.length - 1].end = fn;
+            return this;
+        },
+        "wait": function () {
+            this.cmds.push(["wait", arguments]);
+            return this;
+        },
+        "then": function () {
+            this.cmds.push(["then", arguments]);
+            return this;
+        },
+        "cycle": function () {
+            this.cmds.push(["cycle", arguments]);
+            return this;
+        },
+        "shake": function () {
+            this.cmds = this.cmds.concat([["to", ["x", {
+                "0": 10,
+                "1": 50
+            }]], ["to", ["x", {
+                "0": -10,
+                "1": 50
+            }]], ["to", ["x", {
+                "0": 10,
+                "1": 50
+            }]], ["to", ["x", {
+                "0": -10,
+                "1": 50
+            }]], ["to", ["x", {
+                "0": 10,
+                "1": 50
+            }]], ["to", ["x", {
+                "0": -10,
+                "1": 50
+            }]], ["to", ["x", {
+                "0": 10,
+                "1": 50
+            }]], ["to", ["x", {
+                "0": -10,
+                "1": 50
+            }]], ["to", ["x", {
+                "0": 10,
+                "1": 50
+            }]], ["to", ["x", {
+                "0": -10,
+                "1": 50
+            }]], ["to", ["x", {
+                "0": 10,
+                "1": 50
+            }]], ["to", ["x", {
+                "0": 0,
+                "1": 50
+            }]]]);
+            return this;
+        },
+        "rubber": function () {
+            this.cmds = this.cmds.concat([["to", ["scaleX", {
+                "0": 1.25,
+                "1": 300
+            }], ["scaleY", {
+                "0": .75,
+                "1": 300
+            }]], ["to", ["scaleX", {
+                "0": .75,
+                "1": 100
+            }], ["scaleY", {
+                "0": 1.25,
+                "1": 100
+            }]], ["to", ["scaleX", {
+                "0": 1.15,
+                "1": 100
+            }], ["scaleY", {
+                "0": .85,
+                "1": 100
+            }]], ["to", ["scaleX", {
+                "0": .95,
+                "1": 150
+            }], ["scaleY", {
+                "0": 1.05,
+                "1": 150
+            }]], ["to", ["scaleX", {
+                "0": 1.05,
+                "1": 100
+            }], ["scaleY", {
+                "0": .95,
+                "1": 100
+            }]], ["to", ["scaleX", {
+                "0": 1,
+                "1": 250
+            }], ["scaleY", {
+                "0": 1,
+                "1": 250
+            }]]]);
+            return this;
+        },
+        "bounceIn": function () {
+            this.cmds = this.cmds.concat([["to", ["scaleX", {
+                "0": 0,
+                "1": 0
+            }], ["scaleY", {
+                "0": 0,
+                "1": 0
+            }]], ["to", ["scaleX", {
+                "0": 1.35,
+                "1": 200
+            }], ["scaleY", {
+                "0": 1.35,
+                "1": 200
+            }]], ["to", ["scaleX", {
+                "0": .9,
+                "1": 100
+            }], ["scaleY", {
+                "0": .9,
+                "1": 100
+            }]], ["to", ["scaleX", {
+                "0": 1.1,
+                "1": 100
+            }], ["scaleY", {
+                "0": 1.1,
+                "1": 100
+            }]], ["to", ["scaleX", {
+                "0": .95,
+                "1": 100
+            }], ["scaleY", {
+                "0": .95,
+                "1": 100
+            }]], ["to", ["scaleX", {
+                "0": 1,
+                "1": 100
+            }], ["scaleY", {
+                "0": 1,
+                "1": 100
+            }]]]);
+            return this;
+        },
+        "flipInX": function () {
+            this.cmds = this.cmds.concat([["to", ["rotateX", {
+                "0": -90,
+                "1": 0
+            }]], ["to", ["rotateX", {
+                "0": 20,
+                "1": 300
+            }]], ["to", ["rotateX", {
+                "0": -20,
+                "1": 300
+            }]], ["to", ["rotateX", {
+                "0": 10,
+                "1": 300
+            }]], ["to", ["rotateX", {
+                "0": -5,
+                "1": 300
+            }]], ["to", ["rotateX", {
+                "0": 0,
+                "1": 300
+            }]]]);
+            return this;
+        },
+        "zoomOut": function () {
+            this.cmds = this.cmds.concat([["to", ["scaleX", {
+                "0": 0,
+                "1": 400
+            }], ["scaleY", {
+                "0": 0,
+                "1": 400
+            }]]]);
+            return this;
+        },
+        "start": function () {
+            if (this._pause) return;
+            var len = this.cmds.length;
+            if (this.index < len) {
+                this.exec(this.cmds[this.index], this.index == len - 1);
+            } else {
+                clearInterval(this.loop);
+            }
+            return this;
+        },
+        "pause": function () {
+            this._pause = true;
+            for (var i = 0, len = this.tweens.length; i < len; i++) {
+                this.tweens[i].pause();
+            }
+            if (this.currentTask == "wait") {
+                this.timeout -= new Date() - this.currentTaskBegin;
+                this.currentTaskBegin = new Date();
+            }
+        },
+        "togglePlayPause": function () {
+            if (this._pause) {
+                this.play();
+            } else {
+                this.pause();
+            }
+        },
+        "play": function () {
+            this._pause = false;
+            for (var i = 0, len = this.tweens.length; i < len; i++) {
+                this.tweens[i].play();
+            }
+            var self = this;
+            if (this.currentTask == "wait") {
+                setTimeout(function () {
+                    if (self._pause) return;
+                    self.index++;
+                    self.start();
+                    if (self.index == self.cmds.length && self.complete) self.complete();
+                }, this.timeout);
+            }
+        },
+        "exec": function (cmd, last) {
+            var len = cmd.length,
+                self = this;
+            this.currentTask = cmd[0];
+            switch (this.currentTask) {
+                case "to":
+                    self.stepCompleteCount = 0;
+                    for (var i = 1; i < len; i++) {
+                        var task = cmd[i];
+                        var ease = task[1][2];
+                        var target = {};
+                        var prop = task[0];
+                        target[prop] = task[1][0];
+                        var t = new ARE.TWEEN.Tween(this.element).to(target, task[1][1]).onStart(function () {
+                            if (cmd.start) cmd.start();
+                        }).onUpdate(function () {
+                            if (cmd.progress) cmd.progress.call(self.element);
+                            self.element[prop] = this[prop];
+                        }).easing(ease ? ease : ARE.To.linear).onComplete(function () {
+                            self.stepCompleteCount++;
+                            if (self.stepCompleteCount == len - 1) {
+                                if (cmd.end) cmd.end.call(self.element);
+                                if (last && self.complete) self.complete();
+                                self.index++;
+                                self.start();
+                            }
+                        }).start();
+                        this.tweens.push(t);
+                    }
+                    break;
+                case "wait":
+                    this.currentTaskBegin = new Date();
+                    this.timeout = cmd[1][0];
+                    setTimeout(function () {
+                        if (self._pause) return;
+                        self.index++;
+                        self.start();
+                        if (last && self.complete) self.complete();
+                    }, cmd[1][0]);
+                    break;
+                case "then":
+                    var arg = cmd[1][0];
+                    arg.index = 0;
+                    arg.complete = function () {
+                        self.index++;
+                        self.start();
+                        if (last && self.complete) self.complete();
+                    };
+                    arg.start();
+                    break;
+                case "cycle":
+                    var count = cmd[1][1];
+                    if (count && self.cycleCount == count) {
+                        self.index++;
+                        self.start();
+                        if (last && self.complete) self.complete();
+                    } else {
+                        self.cycleCount++;
+                        self.index = cmd[1][0];
+                        self.start();
+                    }
+                    break;
+            }
+        }
+    });
+
+    //end-------------------ARE.To---------------------end
+
+    //begin-------------------ARE.TWEEN---------------------begin
+
+    ARE.TWEEN = Class.extend({
+        "statics": {
+            "ctor": function () {
+                if (Date.now === undefined) {
+                    Date.now = function () {
+                        return new Date().valueOf();
+                    };
+                }
+                this._tweens = [];
+            },
+            "REVISION": "14",
+            "getAll": function () {
+                return this._tweens;
+            },
+            "removeAll": function () {
+                this._tweens = [];
+            },
+            "add": function (tween) {
+                this._tweens.push(tween);
+            },
+            "remove": function (tween) {
+                var i = this._tweens.indexOf(tween);
+                if (i !== -1) {
+                    this._tweens.splice(i, 1);
+                }
+            },
+            "update": function (time) {
+                if (this._tweens.length === 0) return false;
+                var i = 0;
+                time = time !== undefined ? time : typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
+                while (i < this._tweens.length) {
+                    if (this._tweens[i].update(time)) {
+                        i++;
+                    } else {
+                        this._tweens.splice(i, 1);
+                    }
+                }
+                return true;
+            },
+            "Tween": function (object) {
+                var _object = object;
+                var _valuesStart = {};
+                var _valuesEnd = {};
+                var _valuesStartRepeat = {};
+                var _duration = 1e3;
+                var _repeat = 0;
+                var _yoyo = false;
+                var _isPlaying = false;
+                var _reversed = false;
+                var _delayTime = 0;
+                var _startTime = null;
+                var _easingFunction = ARE.TWEEN.Easing.Linear.None;
+                var _interpolationFunction = ARE.TWEEN.Interpolation.Linear;
+                var _chainedTweens = [];
+                var _onStartCallback = null;
+                var _onStartCallbackFired = false;
+                var _onUpdateCallback = null;
+                var _onCompleteCallback = null;
+                var _onStopCallback = null;
+                var _paused = false,
+                    _passTime = null;
+                for (var field in object) {
+                    _valuesStart[field] = parseFloat(object[field], 10);
+                }
+                this.togglePlayPause = function () {
+                    if (_paused) {
+                        this.play();
+                    } else {
+                        this.pause();
+                    }
+                },
+                this.pause = function () {
+                    _paused = true;
+                    var pauseTime = typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
+                    _passTime = pauseTime - _startTime;
+                };
+                this.play = function () {
+                    _paused = false;
+                    var nowTime = typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
+                    _startTime = nowTime - _passTime;
+                };
+                this.to = function (properties, duration) {
+                    if (duration !== undefined) {
+                        _duration = duration;
+                    }
+                    _valuesEnd = properties;
+                    return this;
+                };
+                this.start = function (time) {
+                    ARE.TWEEN.add(this);
+                    _isPlaying = true;
+                    _onStartCallbackFired = false;
+                    _startTime = time !== undefined ? time : typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
+                    _startTime += _delayTime;
+                    for (var property in _valuesEnd) {
+                        if (_valuesEnd[property] instanceof Array) {
+                            if (_valuesEnd[property].length === 0) {
+                                continue;
+                            }
+                            _valuesEnd[property] = [_object[property]].concat(_valuesEnd[property]);
+                        }
+                        _valuesStart[property] = _object[property];
+                        if (_valuesStart[property] instanceof Array === false) {
+                            _valuesStart[property] *= 1;
+                        }
+                        _valuesStartRepeat[property] = _valuesStart[property] || 0;
+                    }
+                    return this;
+                };
+                this.stop = function () {
+                    if (!_isPlaying) {
+                        return this;
+                    }
+                    ARE.TWEEN.remove(this);
+                    _isPlaying = false;
+                    if (_onStopCallback !== null) {
+                        _onStopCallback.call(_object);
+                    }
+                    this.stopChainedTweens();
+                    return this;
+                };
+                this.stopChainedTweens = function () {
+                    for (var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++) {
+                        _chainedTweens[i].stop();
+                    }
+                };
+                this.delay = function (amount) {
+                    _delayTime = amount;
+                    return this;
+                };
+                this.repeat = function (times) {
+                    _repeat = times;
+                    return this;
+                };
+                this.yoyo = function (yoyo) {
+                    _yoyo = yoyo;
+                    return this;
+                };
+                this.easing = function (easing) {
+                    _easingFunction = easing;
+                    return this;
+                };
+                this.interpolation = function (interpolation) {
+                    _interpolationFunction = interpolation;
+                    return this;
+                };
+                this.chain = function () {
+                    _chainedTweens = arguments;
+                    return this;
+                };
+                this.onStart = function (callback) {
+                    _onStartCallback = callback;
+                    return this;
+                };
+                this.onUpdate = function (callback) {
+                    _onUpdateCallback = callback;
+                    return this;
+                };
+                this.onComplete = function (callback) {
+                    _onCompleteCallback = callback;
+                    return this;
+                };
+                this.onStop = function (callback) {
+                    _onStopCallback = callback;
+                    return this;
+                };
+                this.update = function (time) {
+                    if (_paused) return true;
+                    var property;
+                    if (time < _startTime) {
+                        return true;
+                    }
+                    if (_onStartCallbackFired === false) {
+                        if (_onStartCallback !== null) {
+                            _onStartCallback.call(_object);
+                        }
+                        _onStartCallbackFired = true;
+                    }
+                    var elapsed = (time - _startTime) / _duration;
+                    elapsed = elapsed > 1 ? 1 : elapsed;
+                    var value = _easingFunction(elapsed);
+                    for (property in _valuesEnd) {
+                        var start = _valuesStart[property] || 0;
+                        var end = _valuesEnd[property];
+                        if (end instanceof Array) {
+                            _object[property] = _interpolationFunction(end, value);
+                        } else {
+                            if (typeof end === "string") {
+                                end = start + parseFloat(end, 10);
+                            }
+                            if (typeof end === "number") {
+                                _object[property] = start + (end - start) * value;
+                            }
+                        }
+                    }
+                    if (_onUpdateCallback !== null) {
+                        _onUpdateCallback.call(_object, value);
+                    }
+                    if (elapsed == 1) {
+                        if (_repeat > 0) {
+                            if (isFinite(_repeat)) {
+                                _repeat--;
+                            }
+                            for (property in _valuesStartRepeat) {
+                                if (typeof _valuesEnd[property] === "string") {
+                                    _valuesStartRepeat[property] = _valuesStartRepeat[property] + parseFloat(_valuesEnd[property], 10);
+                                }
+                                if (_yoyo) {
+                                    var tmp = _valuesStartRepeat[property];
+                                    _valuesStartRepeat[property] = _valuesEnd[property];
+                                    _valuesEnd[property] = tmp;
+                                }
+                                _valuesStart[property] = _valuesStartRepeat[property];
+                            }
+                            if (_yoyo) {
+                                _reversed = !_reversed;
+                            }
+                            _startTime = time + _delayTime;
+                            return true;
+                        } else {
+                            if (_onCompleteCallback !== null) {
+                                _onCompleteCallback.call(_object);
+                            }
+                            for (var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++) {
+                                _chainedTweens[i].start(time);
+                            }
+                            return false;
+                        }
+                    }
+                    return true;
+                };
+            },
+            "Easing": {
+                "Linear": {
+                    "None": function (k) {
+                        return k;
+                    }
+                },
+                "Quadratic": {
+                    "In": function (k) {
+                        return k * k;
+                    },
+                    "Out": function (k) {
+                        return k * (2 - k);
+                    },
+                    "InOut": function (k) {
+                        if ((k *= 2) < 1) return .5 * k * k;
+                        return -.5 * (--k * (k - 2) - 1);
+                    }
+                },
+                "Cubic": {
+                    "In": function (k) {
+                        return k * k * k;
+                    },
+                    "Out": function (k) {
+                        return --k * k * k + 1;
+                    },
+                    "InOut": function (k) {
+                        if ((k *= 2) < 1) return .5 * k * k * k;
+                        return .5 * ((k -= 2) * k * k + 2);
+                    }
+                },
+                "Quartic": {
+                    "In": function (k) {
+                        return k * k * k * k;
+                    },
+                    "Out": function (k) {
+                        return 1 - --k * k * k * k;
+                    },
+                    "InOut": function (k) {
+                        if ((k *= 2) < 1) return .5 * k * k * k * k;
+                        return -.5 * ((k -= 2) * k * k * k - 2);
+                    }
+                },
+                "Quintic": {
+                    "In": function (k) {
+                        return k * k * k * k * k;
+                    },
+                    "Out": function (k) {
+                        return --k * k * k * k * k + 1;
+                    },
+                    "InOut": function (k) {
+                        if ((k *= 2) < 1) return .5 * k * k * k * k * k;
+                        return .5 * ((k -= 2) * k * k * k * k + 2);
+                    }
+                },
+                "Sinusoidal": {
+                    "In": function (k) {
+                        return 1 - Math.cos(k * Math.PI / 2);
+                    },
+                    "Out": function (k) {
+                        return Math.sin(k * Math.PI / 2);
+                    },
+                    "InOut": function (k) {
+                        return .5 * (1 - Math.cos(Math.PI * k));
+                    }
+                },
+                "Exponential": {
+                    "In": function (k) {
+                        return k === 0 ? 0 : Math.pow(1024, k - 1);
+                    },
+                    "Out": function (k) {
+                        return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
+                    },
+                    "InOut": function (k) {
+                        if (k === 0) return 0;
+                        if (k === 1) return 1;
+                        if ((k *= 2) < 1) return .5 * Math.pow(1024, k - 1);
+                        return .5 * (-Math.pow(2, -10 * (k - 1)) + 2);
+                    }
+                },
+                "Circular": {
+                    "In": function (k) {
+                        return 1 - Math.sqrt(1 - k * k);
+                    },
+                    "Out": function (k) {
+                        return Math.sqrt(1 - --k * k);
+                    },
+                    "InOut": function (k) {
+                        if ((k *= 2) < 1) return -.5 * (Math.sqrt(1 - k * k) - 1);
+                        return .5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+                    }
+                },
+                "Elastic": {
+                    "In": function (k) {
+                        var s, a = .1,
+                            p = .4;
+                        if (k === 0) return 0;
+                        if (k === 1) return 1;
+                        if (!a || a < 1) {
+                            a = 1;
+                            s = p / 4;
+                        } else s = p * Math.asin(1 / a) / (2 * Math.PI);
+                        return -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+                    },
+                    "Out": function (k) {
+                        var s, a = .1,
+                            p = .4;
+                        if (k === 0) return 0;
+                        if (k === 1) return 1;
+                        if (!a || a < 1) {
+                            a = 1;
+                            s = p / 4;
+                        } else s = p * Math.asin(1 / a) / (2 * Math.PI);
+                        return a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1;
+                    },
+                    "InOut": function (k) {
+                        var s, a = .1,
+                            p = .4;
+                        if (k === 0) return 0;
+                        if (k === 1) return 1;
+                        if (!a || a < 1) {
+                            a = 1;
+                            s = p / 4;
+                        } else s = p * Math.asin(1 / a) / (2 * Math.PI);
+                        if ((k *= 2) < 1) return -.5 * (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
+                        return a * Math.pow(2, -10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p) * .5 + 1;
+                    }
+                },
+                "Back": {
+                    "In": function (k) {
+                        var s = 1.70158;
+                        return k * k * ((s + 1) * k - s);
+                    },
+                    "Out": function (k) {
+                        var s = 1.70158;
+                        return --k * k * ((s + 1) * k + s) + 1;
+                    },
+                    "InOut": function (k) {
+                        var s = 1.70158 * 1.525;
+                        if ((k *= 2) < 1) return .5 * (k * k * ((s + 1) * k - s));
+                        return .5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
+                    }
+                },
+                "Bounce": {
+                    "In": function (k) {
+                        return 1 - ARE.TWEEN.Easing.Bounce.Out(1 - k);
+                    },
+                    "Out": function (k) {
+                        if (k < 1 / 2.75) {
+                            return 7.5625 * k * k;
+                        } else if (k < 2 / 2.75) {
+                            return 7.5625 * (k -= 1.5 / 2.75) * k + .75;
+                        } else if (k < 2.5 / 2.75) {
+                            return 7.5625 * (k -= 2.25 / 2.75) * k + .9375;
+                        } else {
+                            return 7.5625 * (k -= 2.625 / 2.75) * k + .984375;
+                        }
+                    },
+                    "InOut": function (k) {
+                        if (k < .5) return ARE.TWEEN.Easing.Bounce.In(k * 2) * .5;
+                        return ARE.TWEEN.Easing.Bounce.Out(k * 2 - 1) * .5 + .5;
+                    }
+                }
+            },
+            "Interpolation": {
+                "Linear": function (v, k) {
+                    var m = v.length - 1,
+                        f = m * k,
+                        i = Math.floor(f),
+                        fn = ARE.TWEEN.Interpolation.Utils.Linear;
+                    if (k < 0) return fn(v[0], v[1], f);
+                    if (k > 1) return fn(v[m], v[m - 1], m - f);
+                    return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
+                },
+                "Bezier": function (v, k) {
+                    var b = 0,
+                        n = v.length - 1,
+                        pw = Math.pow,
+                        bn = ARE.TWEEN.Interpolation.Utils.Bernstein,
+                        i;
+                    for (i = 0; i <= n; i++) {
+                        b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
+                    }
+                    return b;
+                },
+                "CatmullRom": function (v, k) {
+                    var m = v.length - 1,
+                        f = m * k,
+                        i = Math.floor(f),
+                        fn = ARE.TWEEN.Interpolation.Utils.CatmullRom;
+                    if (v[0] === v[m]) {
+                        if (k < 0) i = Math.floor(f = m * (1 + k));
+                        return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
+                    } else {
+                        if (k < 0) return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
+                        if (k > 1) return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
+                        return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
+                    }
+                },
+                "Utils": {
+                    "Linear": function (p0, p1, t) {
+                        return (p1 - p0) * t + p0;
+                    },
+                    "Bernstein": function (n, i) {
+                        var fc = ARE.TWEEN.Interpolation.Utils.getFactorial();
+                        return fc(n) / fc(i) / fc(n - i);
+                    },
+                    "getFactorial": function () {
+                        return function () {
+                            var a = [1];
+                            return function (n) {
+                                var s = 1,
+                                    i;
+                                if (a[n]) return a[n];
+                                for (i = n; i > 1; i--) s *= i;
+                                return a[n] = s;
+                            };
+                        }();
+                    },
+                    "CatmullRom": function (p0, p1, p2, p3, t) {
+                        var v0 = (p2 - p0) * .5,
+                            v1 = (p3 - p1) * .5,
+                            t2 = t * t,
+                            t3 = t * t2;
+                        return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
+                    }
+                }
+            }
+        }
+    });
+
+    //end-------------------ARE.TWEEN---------------------end
+
+    //begin-------------------ARE.Util---------------------begin
+
+    ARE.Util = Class.extend({
+        "statics": {
+            "random": function (min, max) {
+                return min + Math.floor(Math.random() * (max - min + 1));
+            }
+        }
+    });
+
+    //end-------------------ARE.Util---------------------end
+
+    //begin-------------------ARE.UID---------------------begin
+
+    ARE.UID = Class.extend({
+        "statics": {
+            "_nextID": 0,
+            "_nextCacheID": 1,
+            "get": function () {
+                return this._nextID++;
+            },
+            "getCacheID": function () {
+                return this._nextCacheID++;
+            }
+        }
+    });
+
+    //end-------------------ARE.UID---------------------end
+
+    //begin-------------------ARE.Vector2---------------------begin
+
+    ARE.Vector2 = Class.extend({
+        "ctor": function (x, y) {
+            this.x = x;
+            this.y = y;
+        },
+        "copy": function () {
+            return new ARE.Vector2(this.x, this.y);
+        },
+        "length": function () {
+            return Math.sqrt(this.x * this.x + this.y * this.y);
+        },
+        "sqrLength": function () {
+            return this.x * this.x + this.y * this.y;
+        },
+        "normalize": function () {
+            var inv = 1 / this.length();
+            return new ARE.Vector2(this.x * inv, this.y * inv);
+        },
+        "negate": function () {
+            return new ARE.Vector2(-this.x, -this.y);
+        },
+        "add": function (v) {
+            this.x += v.x,
+            this.y += v.y;
+        },
+        "subtract": function (v) {
+            return new ARE.Vector2(this.x - v.x, this.y - v.y);
+        },
+        "multiply": function (f) {
+            return new ARE.Vector2(this.x * f, this.y * f);
+        },
+        "divide": function (f) {
+            var invf = 1 / f;
+            return new ARE.Vector2(this.x * invf, this.y * invf);
+        },
+        "dot": function (v) {
+            return this.x * v.x + this.y * v.y;
+        }
+    });
+
+    //end-------------------ARE.Vector2---------------------end
+
+    //begin-------------------ARE.Renderer---------------------begin
+
+    ARE.Renderer = Class.extend({
+        "ctor": function (stage) {
+            this.stage = stage;
+            this.objs = [];
+            this.width = this.stage.width;
+            this.height = this.stage.height;
+            this.mainCanvas = this.stage.canvas;
+            this.renderingEngine = new ARE.CanvasRenderer(this.stage.canvas);
+            this.mainCtx = this.renderingEngine.ctx;
+        },
+        "update": function () {
+            var objs = this.objs,
+                ctx = this.mainCtx,
+                engine = this.renderingEngine;
+            objs.length = 0;
+            this.computeMatrix();
+            engine.clear();
+            var l = objs.length;
+            for (var m = 0; m < l; m++) {
+                engine.renderObj(ctx, objs[m]);
+            }
+        },
+        "computeMatrix": function () {
+            for (var i = 0, len = this.stage.children.length; i < len; i++) {
+                this._computeMatrix(this.stage.children[i]);
+            }
+        },
+        "initComplex": function (o) {
+            o.complexCompositeOperation = this._getCompositeOperation(o);
+            o.complexAlpha = this._getAlpha(o, 1);
+        },
+        "_computeMatrix": function (o, mtx) {
+            if (!o.isVisible()) {
+                return;
+            }
+            if (mtx) {
+                o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            } else {
+                o._matrix.initialize(1, 0, 0, 1, 0, 0);
+            }
+            if (o instanceof ARE.Shape) {
+                o._matrix.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+            } else {
+                o._matrix.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+            }
+            if (o instanceof ARE.Container) {
+                var list = o.children,
+                    len = list.length,
+                    i = 0;
+                for (; i < len; i++) {
+                    this._computeMatrix(list[i], o._matrix);
+                }
+            } else {
+                if (o instanceof ARE.Graphics) {
+                    this.objs.push(o);
+                    this.initComplex(o);
+                } else {
+                    o.initAABB();
+                    if (this.isInStage(o)) {
+                        this.objs.push(o);
+                        this.initComplex(o);
+                    }
+                }
+            }
+        },
+        "_getCompositeOperation": function (o) {
+            if (o.compositeOperation) return o.compositeOperation;
+            if (o.parent) return this._getCompositeOperation(o.parent);
+        },
+        "_getAlpha": function (o, alpha) {
+            var result = o.alpha * alpha;
+            if (o.parent) {
+                return this._getAlpha(o.parent, result);
+            }
+            return result;
+        },
+        "isInStage": function (o) {
+            return this.collisionBetweenAABB(o.AABB, this.stage.AABB);
+        },
+        "collisionBetweenAABB": function (AABB1, AABB2) {
+            var maxX = AABB1[0] + AABB1[2];
+            if (maxX < AABB2[0]) return false;
+            var minX = AABB1[0];
+            if (minX > AABB2[0] + AABB2[2]) return false;
+            var maxY = AABB1[1] + AABB1[3];
+            if (maxY < AABB2[1]) return false;
+            var maxY = AABB1[1];
+            if (maxY > AABB2[1] + AABB2[3]) return false;
+            return true;
+        }
+    });
+
+    //end-------------------ARE.Renderer---------------------end
 
     //begin-------------------ARE.Keyboard---------------------begin
 
@@ -2812,1135 +3982,8 @@
     });
 
     //end-------------------ARE.Keyboard---------------------end
-
-    //begin-------------------ARE.Observable---------------------begin
-
-    ARE.Observable = Class.extend({
-        "statics": {
-            "ctor": function () {
-                this.methods = ["concat", "every", "filter", "forEach", "indexOf", "join", "lastIndexOf", "map", "pop", "push", "reduce", "reduceRight", "reverse", "shift", "slice", "some", "sort", "splice", "unshift", "valueOf"],
-                this.triggerStr = ["concat", "pop", "push", "reverse", "shift", "sort", "splice", "unshift"].join(",");
-            },
-            "type": function (obj) {
-                var typeStr = Object.prototype.toString.call(obj).split(" ")[1];
-                return typeStr.substr(0, typeStr.length - 1).toLowerCase();
-            },
-            "isArray": function (obj) {
-                return this.type(obj) == "array";
-            },
-            "isInArray": function (arr, item) {
-                for (var i = arr.length; --i > -1;) {
-                    if (item === arr[i]) return true;
-                }
-                return false;
-            },
-            "isFunction": function (obj) {
-                return this.type(obj) == "function";
-            },
-            "watch": function (target, arr) {
-                return new this(target, arr);
-            }
-        },
-        "ctor": function (target, arr) {
-            for (var prop in target) {
-                if (target.hasOwnProperty(prop)) {
-                    if (arr && ARE.Observable.isInArray(arr, prop) || !arr) {
-                        this.watch(target, prop);
-                    }
-                }
-            }
-            if (target.change) throw "naming conflicts！observable will extend 'change' method to your object .";
-            var self = this;
-            target.change = function (fn) {
-                self.propertyChangedHandler = fn;
-            };
-        },
-        "onPropertyChanged": function (prop, value) {
-            this.propertyChangedHandler && this.propertyChangedHandler(prop, value);
-        },
-        "mock": function (target) {
-            var self = this;
-            ARE.Observable.methods.forEach(function (item) {
-                target[item] = function () {
-                    var result = Array.prototype[item].apply(this, Array.prototype.slice.call(arguments));
-                    for (var cprop in this) {
-                        if (this.hasOwnProperty(cprop) && cprop != "_super" && !ARE.Observable.isFunction(this[cprop])) {
-                            self.watch(this, cprop);
-                        }
-                    }
-                    if (new RegExp("\\b" + item + "\\b").test(ARE.Observable.triggerStr)) {
-                        self.onPropertyChanged("array", item);
-                    }
-                    return result;
-                };
-            });
-        },
-        "watch": function (target, prop) {
-            if (prop.substr(0, 2) == "__") return;
-            var self = this;
-            if (ARE.Observable.isFunction(target[prop])) return;
-            var currentValue = target["__" + prop] = target[prop];
-            Object.defineProperty(target, prop, {
-                get: function () {
-                    return this["__" + prop];
-                },
-                set: function (value) {
-                    this["__" + prop] = value;
-                    self.onPropertyChanged(prop, value);
-                }
-            });
-            if (ARE.Observable.isArray(target)) {
-                this.mock(target);
-            }
-            if (typeof currentValue == "object") {
-                if (ARE.Observable.isArray(currentValue)) {
-                    this.mock(currentValue);
-                }
-                for (var cprop in currentValue) {
-                    if (currentValue.hasOwnProperty(cprop) && cprop != "_super") {
-                        this.watch(currentValue, cprop);
-                    }
-                }
-            }
-        }
-    });
-
-    //end-------------------ARE.Observable---------------------end
-
-    //begin-------------------ARE.To---------------------begin
-
-    ARE.To = Class.extend({
-        "statics": {
-            "ctor": function () {
-                var self = this;
-                setTimeout(function () {
-                    self.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
-                    self.linear = ARE.TWEEN.Easing.Linear.None,
-                    self.quadraticIn = ARE.TWEEN.Easing.Quadratic.In,
-                    self.quadraticOut = ARE.TWEEN.Easing.Quadratic.Out,
-                    self.quadraticInOut = ARE.TWEEN.Easing.Quadratic.InOut,
-                    self.cubicIn = ARE.TWEEN.Easing.Cubic.In,
-                    self.cubicOut = ARE.TWEEN.Easing.Cubic.Out,
-                    self.cubicInOut = ARE.TWEEN.Easing.Cubic.InOut,
-                    self.quarticIn = ARE.TWEEN.Easing.Quartic.In,
-                    self.quarticOut = ARE.TWEEN.Easing.Quartic.Out,
-                    self.quarticInOut = ARE.TWEEN.Easing.Quartic.InOut,
-                    self.quinticIn = ARE.TWEEN.Easing.Quintic.In,
-                    self.quinticOut = ARE.TWEEN.Easing.Quintic.Out,
-                    self.quinticInOut = ARE.TWEEN.Easing.Quintic.InOut,
-                    self.sinusoidalIn = ARE.TWEEN.Easing.Sinusoidal.In,
-                    self.sinusoidalOut = ARE.TWEEN.Easing.Sinusoidal.Out,
-                    self.sinusoidalInOut = ARE.TWEEN.Easing.Sinusoidal.InOut,
-                    self.exponentialIn = ARE.TWEEN.Easing.Exponential.In,
-                    self.exponentialOut = ARE.TWEEN.Easing.Exponential.Out,
-                    self.exponentialInOut = ARE.TWEEN.Easing.Exponential.InOut,
-                    self.circularIn = ARE.TWEEN.Easing.Circular.In,
-                    self.circularOut = ARE.TWEEN.Easing.Circular.Out,
-                    self.circularInOut = ARE.TWEEN.Easing.Circular.InOut,
-                    self.elasticIn = ARE.TWEEN.Easing.Elastic.In,
-                    self.elasticOut = ARE.TWEEN.Easing.Elastic.Out,
-                    self.elasticInOut = ARE.TWEEN.Easing.Elastic.InOut,
-                    self.backIn = ARE.TWEEN.Easing.Back.In,
-                    self.backOut = ARE.TWEEN.Easing.Back.Out,
-                    self.backInOut = ARE.TWEEN.Easing.Back.InOut,
-                    self.bounceIn = ARE.TWEEN.Easing.Bounce.In,
-                    self.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
-                    self.bounceInOut = ARE.TWEEN.Easing.Bounce.InOut,
-                    self.interpolationLinear = ARE.TWEEN.Interpolation.Linear,
-                    self.interpolationBezier = ARE.TWEEN.Interpolation.Bezier,
-                    self.interpolationCatmullRom = ARE.TWEEN.Interpolation.CatmullRom;
-                }, 0);
-            },
-            "get": function (element) {
-                return new this(element);
-            }
-        },
-        "ctor": function (element) {
-            this.element = element;
-            this.cmds = [];
-            this.index = 0;
-            this.loop = setInterval(function () {
-                ARE.TWEEN.update();
-            }, 15);
-            this.cycleCount = 0;
-        },
-        "to": function () {
-            this.cmds.push(["to"]);
-            return this;
-        },
-        "set": function (prop, value, time, ease) {
-            this.cmds[this.cmds.length - 1].push([prop, [value, time, ease]]);
-            return this;
-        },
-        "x": function () {
-            this.cmds[this.cmds.length - 1].push(["x", arguments]);
-            return this;
-        },
-        "y": function () {
-            this.cmds[this.cmds.length - 1].push(["y", arguments]);
-            return this;
-        },
-        "z": function () {
-            this.cmds[this.cmds.length - 1].push(["z", arguments]);
-            return this;
-        },
-        "rotation": function () {
-            this.cmds[this.cmds.length - 1].push(["rotation", arguments]);
-            return this;
-        },
-        "scaleX": function () {
-            this.cmds[this.cmds.length - 1].push(["scaleX", arguments]);
-            return this;
-        },
-        "scaleY": function () {
-            this.cmds[this.cmds.length - 1].push(["scaleY", arguments]);
-            return this;
-        },
-        "skewX": function () {
-            this.cmds[this.cmds.length - 1].push(["skewX", arguments]);
-            return this;
-        },
-        "skewY": function () {
-            this.cmds[this.cmds.length - 1].push(["skewY", arguments]);
-            return this;
-        },
-        "originX": function () {
-            this.cmds[this.cmds.length - 1].push(["originX", arguments]);
-            return this;
-        },
-        "originY": function () {
-            this.cmds[this.cmds.length - 1].push(["originY", arguments]);
-            return this;
-        },
-        "alpha": function () {
-            this.cmds[this.cmds.length - 1].push(["alpha", arguments]);
-            return this;
-        },
-        "begin": function (fn) {
-            this.cmds[this.cmds.length - 1].begin = fn;
-            return this;
-        },
-        "progress": function (fn) {
-            this.cmds[this.cmds.length - 1].progress = fn;
-            return this;
-        },
-        "end": function (fn) {
-            this.cmds[this.cmds.length - 1].end = fn;
-            return this;
-        },
-        "wait": function () {
-            this.cmds.push(["wait", arguments]);
-            return this;
-        },
-        "then": function () {
-            this.cmds.push(["then", arguments]);
-            return this;
-        },
-        "cycle": function () {
-            this.cmds.push(["cycle", arguments]);
-            return this;
-        },
-        "shake": function () {
-            this.cmds = this.cmds.concat([["to", ["x", {
-                "0": 10,
-                "1": 50
-            }]], ["to", ["x", {
-                "0": -10,
-                "1": 50
-            }]], ["to", ["x", {
-                "0": 10,
-                "1": 50
-            }]], ["to", ["x", {
-                "0": -10,
-                "1": 50
-            }]], ["to", ["x", {
-                "0": 10,
-                "1": 50
-            }]], ["to", ["x", {
-                "0": -10,
-                "1": 50
-            }]], ["to", ["x", {
-                "0": 10,
-                "1": 50
-            }]], ["to", ["x", {
-                "0": -10,
-                "1": 50
-            }]], ["to", ["x", {
-                "0": 10,
-                "1": 50
-            }]], ["to", ["x", {
-                "0": -10,
-                "1": 50
-            }]], ["to", ["x", {
-                "0": 10,
-                "1": 50
-            }]], ["to", ["x", {
-                "0": 0,
-                "1": 50
-            }]]]);
-            return this;
-        },
-        "rubber": function () {
-            this.cmds = this.cmds.concat([["to", ["scaleX", {
-                "0": 1.25,
-                "1": 300
-            }], ["scaleY", {
-                "0": .75,
-                "1": 300
-            }]], ["to", ["scaleX", {
-                "0": .75,
-                "1": 100
-            }], ["scaleY", {
-                "0": 1.25,
-                "1": 100
-            }]], ["to", ["scaleX", {
-                "0": 1.15,
-                "1": 100
-            }], ["scaleY", {
-                "0": .85,
-                "1": 100
-            }]], ["to", ["scaleX", {
-                "0": .95,
-                "1": 150
-            }], ["scaleY", {
-                "0": 1.05,
-                "1": 150
-            }]], ["to", ["scaleX", {
-                "0": 1.05,
-                "1": 100
-            }], ["scaleY", {
-                "0": .95,
-                "1": 100
-            }]], ["to", ["scaleX", {
-                "0": 1,
-                "1": 250
-            }], ["scaleY", {
-                "0": 1,
-                "1": 250
-            }]]]);
-            return this;
-        },
-        "bounceIn": function () {
-            this.cmds = this.cmds.concat([["to", ["scaleX", {
-                "0": 0,
-                "1": 0
-            }], ["scaleY", {
-                "0": 0,
-                "1": 0
-            }]], ["to", ["scaleX", {
-                "0": 1.35,
-                "1": 200
-            }], ["scaleY", {
-                "0": 1.35,
-                "1": 200
-            }]], ["to", ["scaleX", {
-                "0": .9,
-                "1": 100
-            }], ["scaleY", {
-                "0": .9,
-                "1": 100
-            }]], ["to", ["scaleX", {
-                "0": 1.1,
-                "1": 100
-            }], ["scaleY", {
-                "0": 1.1,
-                "1": 100
-            }]], ["to", ["scaleX", {
-                "0": .95,
-                "1": 100
-            }], ["scaleY", {
-                "0": .95,
-                "1": 100
-            }]], ["to", ["scaleX", {
-                "0": 1,
-                "1": 100
-            }], ["scaleY", {
-                "0": 1,
-                "1": 100
-            }]]]);
-            return this;
-        },
-        "flipInX": function () {
-            this.cmds = this.cmds.concat([["to", ["rotateX", {
-                "0": -90,
-                "1": 0
-            }]], ["to", ["rotateX", {
-                "0": 20,
-                "1": 300
-            }]], ["to", ["rotateX", {
-                "0": -20,
-                "1": 300
-            }]], ["to", ["rotateX", {
-                "0": 10,
-                "1": 300
-            }]], ["to", ["rotateX", {
-                "0": -5,
-                "1": 300
-            }]], ["to", ["rotateX", {
-                "0": 0,
-                "1": 300
-            }]]]);
-            return this;
-        },
-        "zoomOut": function () {
-            this.cmds = this.cmds.concat([["to", ["scaleX", {
-                "0": 0,
-                "1": 400
-            }], ["scaleY", {
-                "0": 0,
-                "1": 400
-            }]]]);
-            return this;
-        },
-        "start": function () {
-            var len = this.cmds.length;
-            if (this.index < len) {
-                this.exec(this.cmds[this.index], this.index == len - 1);
-            } else {
-                clearInterval(this.loop);
-            }
-        },
-        "exec": function (cmd, last) {
-            var len = cmd.length,
-                self = this;
-            switch (cmd[0]) {
-                case "to":
-                    self.stepCompleteCount = 0;
-                    for (var i = 1; i < len; i++) {
-                        var task = cmd[i];
-                        var ease = task[1][2];
-                        var target = {};
-                        var prop = task[0];
-                        target[prop] = task[1][0];
-                        var t = new ARE.TWEEN.Tween(this.element).to(target, task[1][1]).onStart(function () {
-                            if (cmd.start) cmd.start();
-                        }).onUpdate(function () {
-                            if (cmd.progress) cmd.progress.call(self.element);
-                            self.element[prop] = this[prop];
-                        }).easing(ease ? ease : ARE.To.linear).onComplete(function () {
-                            self.stepCompleteCount++;
-                            if (self.stepCompleteCount == len - 1) {
-                                if (cmd.end) cmd.end.call(self.element);
-                                if (last && self.complete) self.complete();
-                                self.index++;
-                                self.start();
-                            }
-                        }).start();
-                    }
-                    break;
-                case "wait":
-                    setTimeout(function () {
-                        self.index++;
-                        self.start();
-                        if (last && self.complete) self.complete();
-                    }, cmd[1][0]);
-                    break;
-                case "then":
-                    var arg = cmd[1][0];
-                    arg.index = 0;
-                    arg.complete = function () {
-                        self.index++;
-                        self.start();
-                        if (last && self.complete) self.complete();
-                    };
-                    arg.start();
-                    break;
-                case "cycle":
-                    var count = cmd[1][1];
-                    if (count && self.cycleCount == count) {
-                        self.index++;
-                        self.start();
-                        if (last && self.complete) self.complete();
-                    } else {
-                        self.cycleCount++;
-                        self.index = cmd[1][0];
-                        self.start();
-                    }
-                    break;
-            }
-        }
-    });
-
-    //end-------------------ARE.To---------------------end
-
-    //begin-------------------ARE.RAF---------------------begin
-
-    ARE.RAF = Class.extend({
-        "statics": {
-            "ctor": function () {
-                var requestAnimFrame = function () {
-                    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
-                    function (callback, element) {
-                        window.setTimeout(callback, 1e3 / 60);
-                    };
-                }();
-                var requestInterval = function (fn, delay) {
-                    if (!window.requestAnimationFrame && !window.webkitRequestAnimationFrame && !(window.mozRequestAnimationFrame && window.mozCancelRequestAnimationFrame) && !window.oRequestAnimationFrame && !window.msRequestAnimationFrame) return window.setInterval(fn, delay);
-                    var start = new Date().getTime(),
-                        handle = new Object();
-
-                    function loop() {
-                        var current = new Date().getTime(),
-                            delta = current - start;
-                        if (delta >= delay) {
-                            fn.call();
-                            start = new Date().getTime();
-                        }
-                        handle.value = requestAnimFrame(loop);
-                    }
-                    handle.value = requestAnimFrame(loop);
-                    return handle;
-                };
-                var clearRequestInterval = function (handle) {
-                    if (handle) {
-                        setTimeout(function () {
-                            window.cancelAnimationFrame ? window.cancelAnimationFrame(handle.value) : window.webkitCancelAnimationFrame ? window.webkitCancelAnimationFrame(handle.value) : window.webkitCancelRequestAnimationFrame ? window.webkitCancelRequestAnimationFrame(handle.value) : window.mozCancelRequestAnimationFrame ? window.mozCancelRequestAnimationFrame(handle.value) : window.oCancelRequestAnimationFrame ? window.oCancelRequestAnimationFrame(handle.value) : window.msCancelRequestAnimationFrame ? window.msCancelRequestAnimationFrame(handle.value) : clearInterval(handle);
-                        }, 0);
-                    }
-                };
-                this.requestInterval = requestInterval;
-                this.clearRequestInterval = clearRequestInterval;
-            }
-        }
-    });
-
-    //end-------------------ARE.RAF---------------------end
-
-    //begin-------------------ARE.UID---------------------begin
-
-    ARE.UID = Class.extend({
-        "statics": {
-            "_nextID": 0,
-            "_nextCacheID": 1,
-            "get": function () {
-                return this._nextID++;
-            },
-            "getCacheID": function () {
-                return this._nextCacheID++;
-            }
-        }
-    });
-
-    //end-------------------ARE.UID---------------------end
-
-    //begin-------------------ARE.TWEEN---------------------begin
-
-    ARE.TWEEN = Class.extend({
-        "statics": {
-            "ctor": function () {
-                if (Date.now === undefined) {
-                    Date.now = function () {
-                        return new Date().valueOf();
-                    };
-                }
-                this._tweens = [];
-            },
-            "REVISION": "14",
-            "getAll": function () {
-                return this._tweens;
-            },
-            "removeAll": function () {
-                this._tweens = [];
-            },
-            "add": function (tween) {
-                this._tweens.push(tween);
-            },
-            "remove": function (tween) {
-                var i = this._tweens.indexOf(tween);
-                if (i !== -1) {
-                    this._tweens.splice(i, 1);
-                }
-            },
-            "update": function (time) {
-                if (this._tweens.length === 0) return false;
-                var i = 0;
-                time = time !== undefined ? time : typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
-                while (i < this._tweens.length) {
-                    if (this._tweens[i].update(time)) {
-                        i++;
-                    } else {
-                        this._tweens.splice(i, 1);
-                    }
-                }
-                return true;
-            },
-            "Tween": function (object) {
-                var _object = object;
-                var _valuesStart = {};
-                var _valuesEnd = {};
-                var _valuesStartRepeat = {};
-                var _duration = 1e3;
-                var _repeat = 0;
-                var _yoyo = false;
-                var _isPlaying = false;
-                var _reversed = false;
-                var _delayTime = 0;
-                var _startTime = null;
-                var _easingFunction = ARE.TWEEN.Easing.Linear.None;
-                var _interpolationFunction = ARE.TWEEN.Interpolation.Linear;
-                var _chainedTweens = [];
-                var _onStartCallback = null;
-                var _onStartCallbackFired = false;
-                var _onUpdateCallback = null;
-                var _onCompleteCallback = null;
-                var _onStopCallback = null;
-                var _paused = false,
-                    _passTime = null;
-                for (var field in object) {
-                    _valuesStart[field] = parseFloat(object[field], 10);
-                }
-                this.togglePlayPause = function () {
-                    if (_paused) {
-                        this.play();
-                    } else {
-                        this.pause();
-                    }
-                },
-                this.pause = function () {
-                    _paused = true;
-                    var pauseTime = typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
-                    _passTime = pauseTime - _startTime;
-                };
-                this.play = function () {
-                    _paused = false;
-                    var nowTime = typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
-                    _startTime = nowTime - _passTime;
-                };
-                this.to = function (properties, duration) {
-                    if (duration !== undefined) {
-                        _duration = duration;
-                    }
-                    _valuesEnd = properties;
-                    return this;
-                };
-                this.start = function (time) {
-                    ARE.TWEEN.add(this);
-                    _isPlaying = true;
-                    _onStartCallbackFired = false;
-                    _startTime = time !== undefined ? time : typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
-                    _startTime += _delayTime;
-                    for (var property in _valuesEnd) {
-                        if (_valuesEnd[property] instanceof Array) {
-                            if (_valuesEnd[property].length === 0) {
-                                continue;
-                            }
-                            _valuesEnd[property] = [_object[property]].concat(_valuesEnd[property]);
-                        }
-                        _valuesStart[property] = _object[property];
-                        if (_valuesStart[property] instanceof Array === false) {
-                            _valuesStart[property] *= 1;
-                        }
-                        _valuesStartRepeat[property] = _valuesStart[property] || 0;
-                    }
-                    return this;
-                };
-                this.stop = function () {
-                    if (!_isPlaying) {
-                        return this;
-                    }
-                    ARE.TWEEN.remove(this);
-                    _isPlaying = false;
-                    if (_onStopCallback !== null) {
-                        _onStopCallback.call(_object);
-                    }
-                    this.stopChainedTweens();
-                    return this;
-                };
-                this.stopChainedTweens = function () {
-                    for (var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++) {
-                        _chainedTweens[i].stop();
-                    }
-                };
-                this.delay = function (amount) {
-                    _delayTime = amount;
-                    return this;
-                };
-                this.repeat = function (times) {
-                    _repeat = times;
-                    return this;
-                };
-                this.yoyo = function (yoyo) {
-                    _yoyo = yoyo;
-                    return this;
-                };
-                this.easing = function (easing) {
-                    _easingFunction = easing;
-                    return this;
-                };
-                this.interpolation = function (interpolation) {
-                    _interpolationFunction = interpolation;
-                    return this;
-                };
-                this.chain = function () {
-                    _chainedTweens = arguments;
-                    return this;
-                };
-                this.onStart = function (callback) {
-                    _onStartCallback = callback;
-                    return this;
-                };
-                this.onUpdate = function (callback) {
-                    _onUpdateCallback = callback;
-                    return this;
-                };
-                this.onComplete = function (callback) {
-                    _onCompleteCallback = callback;
-                    return this;
-                };
-                this.onStop = function (callback) {
-                    _onStopCallback = callback;
-                    return this;
-                };
-                this.update = function (time) {
-                    if (_paused) return true;
-                    var property;
-                    if (time < _startTime) {
-                        return true;
-                    }
-                    if (_onStartCallbackFired === false) {
-                        if (_onStartCallback !== null) {
-                            _onStartCallback.call(_object);
-                        }
-                        _onStartCallbackFired = true;
-                    }
-                    var elapsed = (time - _startTime) / _duration;
-                    elapsed = elapsed > 1 ? 1 : elapsed;
-                    var value = _easingFunction(elapsed);
-                    for (property in _valuesEnd) {
-                        var start = _valuesStart[property] || 0;
-                        var end = _valuesEnd[property];
-                        if (end instanceof Array) {
-                            _object[property] = _interpolationFunction(end, value);
-                        } else {
-                            if (typeof end === "string") {
-                                end = start + parseFloat(end, 10);
-                            }
-                            if (typeof end === "number") {
-                                _object[property] = start + (end - start) * value;
-                            }
-                        }
-                    }
-                    if (_onUpdateCallback !== null) {
-                        _onUpdateCallback.call(_object, value);
-                    }
-                    if (elapsed == 1) {
-                        if (_repeat > 0) {
-                            if (isFinite(_repeat)) {
-                                _repeat--;
-                            }
-                            for (property in _valuesStartRepeat) {
-                                if (typeof _valuesEnd[property] === "string") {
-                                    _valuesStartRepeat[property] = _valuesStartRepeat[property] + parseFloat(_valuesEnd[property], 10);
-                                }
-                                if (_yoyo) {
-                                    var tmp = _valuesStartRepeat[property];
-                                    _valuesStartRepeat[property] = _valuesEnd[property];
-                                    _valuesEnd[property] = tmp;
-                                }
-                                _valuesStart[property] = _valuesStartRepeat[property];
-                            }
-                            if (_yoyo) {
-                                _reversed = !_reversed;
-                            }
-                            _startTime = time + _delayTime;
-                            return true;
-                        } else {
-                            if (_onCompleteCallback !== null) {
-                                _onCompleteCallback.call(_object);
-                            }
-                            for (var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++) {
-                                _chainedTweens[i].start(time);
-                            }
-                            return false;
-                        }
-                    }
-                    return true;
-                };
-            },
-            "Easing": {
-                "Linear": {
-                    "None": function (k) {
-                        return k;
-                    }
-                },
-                "Quadratic": {
-                    "In": function (k) {
-                        return k * k;
-                    },
-                    "Out": function (k) {
-                        return k * (2 - k);
-                    },
-                    "InOut": function (k) {
-                        if ((k *= 2) < 1) return .5 * k * k;
-                        return -.5 * (--k * (k - 2) - 1);
-                    }
-                },
-                "Cubic": {
-                    "In": function (k) {
-                        return k * k * k;
-                    },
-                    "Out": function (k) {
-                        return --k * k * k + 1;
-                    },
-                    "InOut": function (k) {
-                        if ((k *= 2) < 1) return .5 * k * k * k;
-                        return .5 * ((k -= 2) * k * k + 2);
-                    }
-                },
-                "Quartic": {
-                    "In": function (k) {
-                        return k * k * k * k;
-                    },
-                    "Out": function (k) {
-                        return 1 - --k * k * k * k;
-                    },
-                    "InOut": function (k) {
-                        if ((k *= 2) < 1) return .5 * k * k * k * k;
-                        return -.5 * ((k -= 2) * k * k * k - 2);
-                    }
-                },
-                "Quintic": {
-                    "In": function (k) {
-                        return k * k * k * k * k;
-                    },
-                    "Out": function (k) {
-                        return --k * k * k * k * k + 1;
-                    },
-                    "InOut": function (k) {
-                        if ((k *= 2) < 1) return .5 * k * k * k * k * k;
-                        return .5 * ((k -= 2) * k * k * k * k + 2);
-                    }
-                },
-                "Sinusoidal": {
-                    "In": function (k) {
-                        return 1 - Math.cos(k * Math.PI / 2);
-                    },
-                    "Out": function (k) {
-                        return Math.sin(k * Math.PI / 2);
-                    },
-                    "InOut": function (k) {
-                        return .5 * (1 - Math.cos(Math.PI * k));
-                    }
-                },
-                "Exponential": {
-                    "In": function (k) {
-                        return k === 0 ? 0 : Math.pow(1024, k - 1);
-                    },
-                    "Out": function (k) {
-                        return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
-                    },
-                    "InOut": function (k) {
-                        if (k === 0) return 0;
-                        if (k === 1) return 1;
-                        if ((k *= 2) < 1) return .5 * Math.pow(1024, k - 1);
-                        return .5 * (-Math.pow(2, -10 * (k - 1)) + 2);
-                    }
-                },
-                "Circular": {
-                    "In": function (k) {
-                        return 1 - Math.sqrt(1 - k * k);
-                    },
-                    "Out": function (k) {
-                        return Math.sqrt(1 - --k * k);
-                    },
-                    "InOut": function (k) {
-                        if ((k *= 2) < 1) return -.5 * (Math.sqrt(1 - k * k) - 1);
-                        return .5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
-                    }
-                },
-                "Elastic": {
-                    "In": function (k) {
-                        var s, a = .1,
-                            p = .4;
-                        if (k === 0) return 0;
-                        if (k === 1) return 1;
-                        if (!a || a < 1) {
-                            a = 1;
-                            s = p / 4;
-                        } else s = p * Math.asin(1 / a) / (2 * Math.PI);
-                        return -(a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
-                    },
-                    "Out": function (k) {
-                        var s, a = .1,
-                            p = .4;
-                        if (k === 0) return 0;
-                        if (k === 1) return 1;
-                        if (!a || a < 1) {
-                            a = 1;
-                            s = p / 4;
-                        } else s = p * Math.asin(1 / a) / (2 * Math.PI);
-                        return a * Math.pow(2, -10 * k) * Math.sin((k - s) * (2 * Math.PI) / p) + 1;
-                    },
-                    "InOut": function (k) {
-                        var s, a = .1,
-                            p = .4;
-                        if (k === 0) return 0;
-                        if (k === 1) return 1;
-                        if (!a || a < 1) {
-                            a = 1;
-                            s = p / 4;
-                        } else s = p * Math.asin(1 / a) / (2 * Math.PI);
-                        if ((k *= 2) < 1) return -.5 * (a * Math.pow(2, 10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p));
-                        return a * Math.pow(2, -10 * (k -= 1)) * Math.sin((k - s) * (2 * Math.PI) / p) * .5 + 1;
-                    }
-                },
-                "Back": {
-                    "In": function (k) {
-                        var s = 1.70158;
-                        return k * k * ((s + 1) * k - s);
-                    },
-                    "Out": function (k) {
-                        var s = 1.70158;
-                        return --k * k * ((s + 1) * k + s) + 1;
-                    },
-                    "InOut": function (k) {
-                        var s = 1.70158 * 1.525;
-                        if ((k *= 2) < 1) return .5 * (k * k * ((s + 1) * k - s));
-                        return .5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
-                    }
-                },
-                "Bounce": {
-                    "In": function (k) {
-                        return 1 - ARE.TWEEN.Easing.Bounce.Out(1 - k);
-                    },
-                    "Out": function (k) {
-                        if (k < 1 / 2.75) {
-                            return 7.5625 * k * k;
-                        } else if (k < 2 / 2.75) {
-                            return 7.5625 * (k -= 1.5 / 2.75) * k + .75;
-                        } else if (k < 2.5 / 2.75) {
-                            return 7.5625 * (k -= 2.25 / 2.75) * k + .9375;
-                        } else {
-                            return 7.5625 * (k -= 2.625 / 2.75) * k + .984375;
-                        }
-                    },
-                    "InOut": function (k) {
-                        if (k < .5) return ARE.TWEEN.Easing.Bounce.In(k * 2) * .5;
-                        return ARE.TWEEN.Easing.Bounce.Out(k * 2 - 1) * .5 + .5;
-                    }
-                }
-            },
-            "Interpolation": {
-                "Linear": function (v, k) {
-                    var m = v.length - 1,
-                        f = m * k,
-                        i = Math.floor(f),
-                        fn = ARE.TWEEN.Interpolation.Utils.Linear;
-                    if (k < 0) return fn(v[0], v[1], f);
-                    if (k > 1) return fn(v[m], v[m - 1], m - f);
-                    return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
-                },
-                "Bezier": function (v, k) {
-                    var b = 0,
-                        n = v.length - 1,
-                        pw = Math.pow,
-                        bn = ARE.TWEEN.Interpolation.Utils.Bernstein,
-                        i;
-                    for (i = 0; i <= n; i++) {
-                        b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
-                    }
-                    return b;
-                },
-                "CatmullRom": function (v, k) {
-                    var m = v.length - 1,
-                        f = m * k,
-                        i = Math.floor(f),
-                        fn = ARE.TWEEN.Interpolation.Utils.CatmullRom;
-                    if (v[0] === v[m]) {
-                        if (k < 0) i = Math.floor(f = m * (1 + k));
-                        return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
-                    } else {
-                        if (k < 0) return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
-                        if (k > 1) return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
-                        return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
-                    }
-                },
-                "Utils": {
-                    "Linear": function (p0, p1, t) {
-                        return (p1 - p0) * t + p0;
-                    },
-                    "Bernstein": function (n, i) {
-                        var fc = ARE.TWEEN.Interpolation.Utils.getFactorial();
-                        return fc(n) / fc(i) / fc(n - i);
-                    },
-                    "getFactorial": function () {
-                        return function () {
-                            var a = [1];
-                            return function (n) {
-                                var s = 1,
-                                    i;
-                                if (a[n]) return a[n];
-                                for (i = n; i > 1; i--) s *= i;
-                                return a[n] = s;
-                            };
-                        }();
-                    },
-                    "CatmullRom": function (p0, p1, p2, p3, t) {
-                        var v0 = (p2 - p0) * .5,
-                            v1 = (p3 - p1) * .5,
-                            t2 = t * t,
-                            t3 = t * t2;
-                        return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
-                    }
-                }
-            }
-        }
-    });
-
-    //end-------------------ARE.TWEEN---------------------end
-
-    //begin-------------------ARE.Util---------------------begin
-
-    ARE.Util = Class.extend({
-        "statics": {
-            "random": function (min, max) {
-                return min + Math.floor(Math.random() * (max - min + 1));
-            }
-        }
-    });
-
-    //end-------------------ARE.Util---------------------end
-
-    //begin-------------------ARE.Vector2---------------------begin
-
-    ARE.Vector2 = Class.extend({
-        "ctor": function (x, y) {
-            this.x = x;
-            this.y = y;
-        },
-        "copy": function () {
-            return new ARE.Vector2(this.x, this.y);
-        },
-        "length": function () {
-            return Math.sqrt(this.x * this.x + this.y * this.y);
-        },
-        "sqrLength": function () {
-            return this.x * this.x + this.y * this.y;
-        },
-        "normalize": function () {
-            var inv = 1 / this.length();
-            return new ARE.Vector2(this.x * inv, this.y * inv);
-        },
-        "negate": function () {
-            return new ARE.Vector2(-this.x, -this.y);
-        },
-        "add": function (v) {
-            this.x += v.x,
-            this.y += v.y;
-        },
-        "subtract": function (v) {
-            return new ARE.Vector2(this.x - v.x, this.y - v.y);
-        },
-        "multiply": function (f) {
-            return new ARE.Vector2(this.x * f, this.y * f);
-        },
-        "divide": function (f) {
-            var invf = 1 / f;
-            return new ARE.Vector2(this.x * invf, this.y * invf);
-        },
-        "dot": function (v) {
-            return this.x * v.x + this.y * v.y;
-        }
-    });
-
-    //end-------------------ARE.Vector2---------------------end
-
-    //begin-------------------ARE.Renderer---------------------begin
-
-    ARE.Renderer = Class.extend({
-        "ctor": function (stage) {
-            this.stage = stage;
-            this.objs = [];
-            this.width = this.stage.width;
-            this.height = this.stage.height;
-            this.mainCanvas = this.stage.canvas;
-            this.renderingEngine = new ARE.CanvasRenderer(this.stage.canvas);
-            this.mainCtx = this.renderingEngine.ctx;
-        },
-        "update": function () {
-            var objs = this.objs,
-                ctx = this.mainCtx,
-                engine = this.renderingEngine;
-            objs.length = 0;
-            this.computeMatrix();
-            engine.clear();
-            var l = objs.length;
-            for (var m = 0; m < l; m++) {
-                engine.renderObj(ctx, objs[m]);
-            }
-        },
-        "computeMatrix": function () {
-            for (var i = 0, len = this.stage.children.length; i < len; i++) {
-                this._computeMatrix(this.stage.children[i]);
-            }
-        },
-        "initComplex": function (o) {
-            o.complexCompositeOperation = this._getCompositeOperation(o);
-            o.complexAlpha = this._getAlpha(o, 1);
-        },
-        "_computeMatrix": function (o, mtx) {
-            if (!o.isVisible()) {
-                return;
-            }
-            if (mtx) {
-                o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-            } else {
-                o._matrix.initialize(1, 0, 0, 1, 0, 0);
-            }
-            if (o instanceof ARE.Shape) {
-                o._matrix.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
-            } else {
-                o._matrix.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
-            }
-            if (o instanceof ARE.Container) {
-                var list = o.children,
-                    len = list.length,
-                    i = 0;
-                for (; i < len; i++) {
-                    this._computeMatrix(list[i], o._matrix);
-                }
-            } else {
-                if (o instanceof ARE.Graphics) {
-                    this.objs.push(o);
-                    this.initComplex(o);
-                } else {
-                    o.initAABB();
-                    if (this.isInStage(o)) {
-                        this.objs.push(o);
-                        this.initComplex(o);
-                    }
-                }
-            }
-        },
-        "_getCompositeOperation": function (o) {
-            if (o.compositeOperation) return o.compositeOperation;
-            if (o.parent) return this._getCompositeOperation(o.parent);
-        },
-        "_getAlpha": function (o, alpha) {
-            var result = o.alpha * alpha;
-            if (o.parent) {
-                return this._getAlpha(o.parent, result);
-            }
-            return result;
-        },
-        "isInStage": function (o) {
-            return this.collisionBetweenAABB(o.AABB, this.stage.AABB);
-        },
-        "collisionBetweenAABB": function (AABB1, AABB2) {
-            var maxX = AABB1[0] + AABB1[2];
-            if (maxX < AABB2[0]) return false;
-            var minX = AABB1[0];
-            if (minX > AABB2[0] + AABB2[2]) return false;
-            var maxY = AABB1[1] + AABB1[3];
-            if (maxY < AABB2[1]) return false;
-            var maxY = AABB1[1];
-            if (maxY > AABB2[1] + AABB2[3]) return false;
-            return true;
-        }
-    });
-
-    //end-------------------ARE.Renderer---------------------end
     if (typeof module != 'undefined' && module.exports && this.module !== module) { module.exports = ARE }
     else if (typeof define === 'function' && define.amd) { define(ARE) }
-    else { window.ARE = ARE };
-})();
+    else { win.ARE = ARE };
+
+})(Function('return this')())

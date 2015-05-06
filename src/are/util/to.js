@@ -51,6 +51,8 @@ ARE.To = Class.extend({
         this.element = element;
         this.cmds = [];
         this.index = 0;
+        this.tweens = [];
+        this._pause = false;
         this.loop = setInterval(function() {
             ARE.TWEEN.update();
         }, 15);
@@ -241,17 +243,52 @@ ARE.To = Class.extend({
         return this;
     },
     "start": function() {
+        if (this._pause) return;
         var len = this.cmds.length;
         if (this.index < len) {
             this.exec(this.cmds[this.index], this.index == len - 1);
         } else {
             clearInterval(this.loop);
         }
+        return this;
+    },
+    "pause": function() {
+        this._pause = true;
+        for (var i = 0, len = this.tweens.length; i < len; i++) {
+            this.tweens[i].pause();
+        }
+        if (this.currentTask == "wait") {
+            this.timeout -= new Date() - this.currentTaskBegin;
+            this.currentTaskBegin = new Date();
+        }
+    },
+    "togglePlayPause": function() {
+        if (this._pause) {
+            this.play();
+        } else {
+            this.pause();
+        }
+    },
+    "play": function() {
+        this._pause = false;
+        for (var i = 0, len = this.tweens.length; i < len; i++) {
+            this.tweens[i].play();
+        }
+        var self = this;
+        if (this.currentTask == "wait") {
+            setTimeout(function() {
+                if (self._pause) return;
+                self.index++;
+                self.start();
+                if (self.index == self.cmds.length && self.complete) self.complete();
+            }, this.timeout);
+        }
     },
     "exec": function(cmd, last) {
         var len = cmd.length,
             self = this;
-        switch (cmd[0]) {
+        this.currentTask = cmd[0];
+        switch (this.currentTask) {
         case "to":
             self.stepCompleteCount = 0;
             for (var i = 1; i < len; i++) {
@@ -274,10 +311,14 @@ ARE.To = Class.extend({
                         self.start();
                     }
                 }).start();
+                this.tweens.push(t);
             }
             break;
         case "wait":
+            this.currentTaskBegin = new Date();
+            this.timeout = cmd[1][0];
             setTimeout(function() {
+                if (self._pause) return;
                 self.index++;
                 self.start();
                 if (last && self.complete) self.complete();
