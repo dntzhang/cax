@@ -13,18 +13,17 @@
     
     </div>
   <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
-<img src="../asset/img/github.png" alt="" />
+<img src="asset/img/github.png" alt="" />
  </a>
-    <script src="../src/Box2dWeb-2.1.a.3.min.js"></script>
-<script src="../dist/are.js"></script>
+<script src="../are.js"></script>
 
-    <script src="../src/tank.js"></script>
+    <script src="src/tank.js"></script>
     <script>
         ; (function (ARE) {
             var Stage = ARE.Stage, Bitmap = ARE.Bitmap, Loader = ARE.Loader;
             var ld = new Loader(), stage = new Stage("#ourCanvas");
             ld.loadRes([
-                { id: "tanks", src: "../asset/img/tanks.png" }
+                { id: "tanks", src: "asset/img/tanks.png" }
             ]);
             ld.complete(function () {
                 var tank = new Tank({

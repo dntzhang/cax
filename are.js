@@ -1,9 +1,9 @@
-ï»¿/* Alloy Game Engine
+/* Alloy Game Engine
  * By AlloyTeam http://www.alloyteam.com/
  * Github: https://github.com/AlloyTeam/AlloyGameEngine
  * MIT Licensed.
  */
-;(function () {
+; (function () {
     var initializing = false, fnTest = /xyz/.test(function () { xyz; }) ? /\b_super\b/ : /.*/;
 
     // The base Class implementation (does nothing)
@@ -52,7 +52,7 @@
                 this.ctor.apply(this, arguments);
         }
 
-        //ç»§æ‰¿çˆ¶ç±»çš„é™æ€å±žæ€§
+        //¼Ì³Ð¸¸ÀàµÄ¾²Ì¬ÊôÐÔ
         for (var key in this) {
             if (this.hasOwnProperty(key) && key != "extend")
                 Class[key] = this[key];
@@ -61,13 +61,13 @@
         // Populate our constructed prototype object
         Class.prototype = prototype;
 
-        //é™æ€å±žæ€§å’Œæ–¹æ³•
+        //¾²Ì¬ÊôÐÔºÍ·½·¨
         if (prop.statics) {
             for (var name in prop.statics) {
                 if (prop.statics.hasOwnProperty(name)) {
                     Class[name] = prop.statics[name];
                     if (name == "ctor") {
-                        //æå‰æ‰§è¡Œé™æ€æž„é€ å‡½æ•°
+                        //ÌáÇ°Ö´ÐÐ¾²Ì¬¹¹Ôìº¯Êý
                         Class[name]();
                     }
                 }
@@ -91,169 +91,49 @@
     };
 })();
 
+
 ; (function (win) {
-
     var ARE = {};
-    //begin-------------------ARE.CanvasRenderer---------------------begin
+    //begin-------------------ARE.FPS---------------------begin
 
-    ARE.CanvasRenderer = Class.extend({
-        "ctor": function (canvas) {
-            if (canvas) {
-                this.canvas = canvas;
-                this.ctx = this.canvas.getContext("2d");
-                this.height = this.canvas.width;
-                this.width = this.canvas.height;
+    ARE.FPS = Class.extend({
+        "statics": {
+            "get": function () {
+                if (!this.instance) this.instance = new this();
+                this.instance._computeFPS();
+                return this.instance;
             }
         },
-        "hitAABB": function (ctx, o, evt, type) {
-            var list = o.children.slice(0),
-                l = list.length;
-            for (var i = l - 1; i >= 0; i--) {
-                var child = list[i];
-                if (!this.isbindingEvent(child)) continue;
-                var target = this._hitAABB(ctx, child, evt, type);
-                if (target) return target;
-            }
-        },
-        "_hitAABB": function (ctx, o, evt, type) {
-            if (!o.isVisible()) {
-                return;
-            }
-            if (o instanceof ARE.Container) {
-                var list = o.children.slice(0),
-                    l = list.length;
-                for (var i = l - 1; i >= 0; i--) {
-                    var child = list[i];
-                    var target = this._hitAABB(ctx, child, evt, type);
-                    if (target) return target;
+        "ctor": function () {
+            this.last = new Date();
+            this.current = null;
+            this.value = 0;
+            this.totalValue = 0;
+            this.fpsList = [];
+            this.count = 0;
+            var self = this;
+            setInterval(function () {
+                var lastIndex = self.fpsList.length - 1;
+                self.value = self.fpsList[lastIndex];
+                if (lastIndex > 500) {
+                    self.fpsList.shift();
                 }
-            } else {
-                if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
-                    this._bubbleEvent(o, type, evt);
-                    return o;
-                }
-            }
+                self.averageFPS = Math.ceil(self.totalValue / self.count);
+            }, 500);
         },
-        "hitRender": function (ctx, o, evt, type) {
-            var mtx = o._hitMatrix;
-            var list = o.children.slice(0),
-                l = list.length;
-            for (var i = l - 1; i >= 0; i--) {
-                var child = list[i];
-                mtx.initialize(1, 0, 0, 1, 0, 0);
-                mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
-                if (!this.isbindingEvent(child)) continue;
-                ctx.save();
-                var target = this._hitRender(ctx, child, mtx, evt, type);
-                ctx.restore();
-                if (target) return target;
+        "_computeFPS": function () {
+            this.current = new Date();
+            if (this.current - this.last > 0) {
+                var fps = Math.ceil(1e3 / (this.current - this.last));
+                this.fpsList.push(fps);
+                this.count++;
+                this.totalValue += fps;
+                this.last = this.current;
             }
-        },
-        "_hitRender": function (ctx, o, mtx, evt, type) {
-            ctx.clearRect(0, 0, 2, 2);
-            if (!o.isVisible()) {
-                return;
-            }
-            if (mtx) {
-                o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-            } else {
-                o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
-            }
-            mtx = o._hitMatrix;
-            if (o instanceof ARE.Shape) {
-                mtx.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
-            } else {
-                mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
-            }
-            var mmyCanvas = o.cacheCanvas || o.txtCanvas || o.shapeCanvas;
-            if (mmyCanvas) {
-                ctx.globalAlpha = o.complexAlpha;
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                ctx.drawImage(mmyCanvas, 0, 0);
-            } else if (o instanceof ARE.Container) {
-                var list = o.children.slice(0),
-                    l = list.length;
-                for (var i = l - 1; i >= 0; i--) {
-                    ctx.save();
-                    var target = this._hitRender(ctx, list[i], mtx, evt, type);
-                    if (target) return target;
-                    ctx.restore();
-                }
-            } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
-                ctx.globalAlpha = o.complexAlpha;
-                ctx.globalCompositeOperation = o.complexCompositeOperation;
-                var rect = o.rect;
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-            } else if (o instanceof ARE.Graphics) {
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                o.draw(ctx);
-            }
-            if (ctx.getImageData(0, 0, 1, 1).data[3] > 1 && !(o instanceof ARE.Container)) {
-                this._bubbleEvent(o, type, evt);
-                return o;
-            }
-        },
-        "_bubbleEvent": function (o, type, event) {
-            var result = o.execEvent(type, event);
-            if (result !== false) {
-                if (o.parent && o.parent.events[type] && o.parent.events[type].length > 0 && o.parent.baseInstanceof !== "Stage") {
-                    this._bubbleEvent(o.parent, type, event);
-                }
-            }
-        },
-        "isbindingEvent": function (obj) {
-            if (Object.keys(obj.events).length !== 0) return true;
-            if (obj instanceof ARE.Container) {
-                for (var i = 0, len = obj.children.length; i < len; i++) {
-                    var child = obj.children[i];
-                    if (child instanceof ARE.Container) {
-                        return this.isbindingEvent(child);
-                    } else {
-                        if (Object.keys(child.events).length !== 0) return true;
-                    }
-                }
-            }
-            return false;
-        },
-        "clear": function () {
-            this.ctx.clearRect(0, 0, this.height, this.width);
-        },
-        "renderObj": function (ctx, o) {
-            var mtx = o._matrix;
-            ctx.save();
-            ctx.globalAlpha = o.complexAlpha;
-            ctx.globalCompositeOperation = o.complexCompositeOperation;
-            var mmyCanvas = o.cacheCanvas || o.txtCanvas || o.shapeCanvas;
-            if (mmyCanvas) {
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                ctx.drawImage(mmyCanvas, 0, 0);
-            } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
-                var rect = o.rect;
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-            } else if (o instanceof ARE.Graphics) {
-                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-                o.draw(ctx);
-            }
-            ctx.restore();
-        },
-        "clearBackUpCanvasCache": function () { },
-        "checkPointInAABB": function (x, y, AABB) {
-            var minX = AABB[0];
-            if (x < minX) return false;
-            var minY = AABB[1];
-            if (y < minY) return false;
-            var maxX = minX + AABB[2];
-            if (x > maxX) return false;
-            var maxY = minY + AABB[3];
-            if (y > maxY) return false;
-            return true;
         }
     });
 
-    //end-------------------ARE.CanvasRenderer---------------------end
+    //end-------------------ARE.FPS---------------------end
 
     //begin-------------------ARE.DisplayObject---------------------begin
 
@@ -294,17 +174,35 @@
             this.cursor = "default";
         },
         "_watch": function (target, prop, onPropertyChanged) {
-            var self = this,
-                currentValue = target["__" + prop] = this[prop];
-            Object.defineProperty(target, prop, {
-                get: function () {
-                    return this["__" + prop];
-                },
-                set: function (value) {
-                    this["__" + prop] = value;
-                    onPropertyChanged.apply(target, [prop, value]);
+            var self = this;
+            if (typeof prop === "string") {
+                var currentValue = target["__" + prop] = this[prop];
+                Object.defineProperty(target, prop, {
+                    get: function () {
+                        return this["__" + prop];
+                    },
+                    set: function (value) {
+                        this["__" + prop] = value;
+                        onPropertyChanged.apply(target, [prop, value]);
+                    }
+                });
+            } else {
+                for (var i = 0, len = prop.length; i < len; i++) {
+                    var propName = prop[i];
+                    var currentValue = target["__" + propName] = this[propName];
+                    (function (propName) {
+                        Object.defineProperty(target, propName, {
+                            get: function () {
+                                return this["__" + propName];
+                            },
+                            set: function (value) {
+                                this["__" + propName] = value;
+                                onPropertyChanged.apply(target, [propName, value]);
+                            }
+                        });
+                    })(propName);
                 }
-            });
+            }
         },
         "isVisible": function () {
             return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0 && this.textureReady);
@@ -544,6 +442,193 @@
 
     //end-------------------ARE.DisplayObject---------------------end
 
+    //begin-------------------ARE.CircleShape---------------------begin
+
+    ARE.CircleShape = ARE.DisplayObject.extend({
+        "ctor": function (r, color, isHollow) {
+            this._super();
+            this.r = r || 1;
+            this.color = color || "black";
+            this.isHollow = isHollow;
+            this.width = this.height = 2 * r;
+            this.shapeCanvas = document.createElement("canvas");
+            this.shapeCanvas.width = this.width;
+            this.shapeCanvas.height = this.height;
+            this.shapeCtx = this.shapeCanvas.getContext("2d");
+            this.draw();
+            this.cacheID = ARE.UID.getCacheID();
+        },
+        "draw": function (ctx) {
+            var ctx = this.shapeCtx;
+            ctx.beginPath();
+            ctx.arc(this.r, this.r, this.r, 0, Math.PI * 2);
+            this.originX = this.originY = .5;
+            this.isHollow ? (ctx.strokeStyle = this.color, ctx.stroke()) : (ctx.fillStyle = this.color, ctx.fill());
+        }
+    });
+
+    //end-------------------ARE.CircleShape---------------------end
+
+    //begin-------------------ARE.DomElement---------------------begin
+
+    ARE.DomElement = ARE.DisplayObject.extend({
+        "ctor": function (selector) {
+            this._super();
+            this.element = typeof selector == "string" ? document.querySelector(selector) : selector;
+            var element = this.element;
+            var observer = ARE.Observable.watch(this, ["x", "y", "scaleX", "scaleY", "perspective", "rotation", "skewX", "skewY", "regX", "regY"]);
+            var self = this;
+            observer.propertyChangedHandler = function () {
+                var mtx = self._matrix.identity().appendTransform(self.x, self.y, self.scaleX, self.scaleY, self.rotation, self.skewX, self.skewY, self.regX, self.regY);
+                self.element.style.transform = self.element.style.msTransform = self.element.style.OTransform = self.element.style.MozTransform = self.element.style.webkitTransform = "matrix(" + mtx.a + "," + mtx.b + "," + mtx.c + "," + mtx.d + "," + mtx.tx + "," + mtx.ty + ")";
+            };
+            delete this.visible;
+            Object.defineProperty(this, "visible", {
+                set: function (value) {
+                    this._visible = value;
+                    if (this._visible) {
+                        this.element.style.visibility = "visible";
+                    } else {
+                        this.element.style.visibility = "hidden";
+                    }
+                },
+                get: function () {
+                    return this._visible;
+                }
+            });
+            delete this.alpha;
+            Object.defineProperty(this, "alpha", {
+                set: function (value) {
+                    this._opacity = value;
+                    this.element.style.opacity = value;
+                },
+                get: function () {
+                    return this._opacity;
+                }
+            });
+            this.visible = true;
+            this.alpha = 1;
+            this.element.style.visibility = "hidden";
+            this.element.style.position = "absolute";
+        },
+        "isVisible": function () {
+            return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);
+        }
+    });
+
+    //end-------------------ARE.DomElement---------------------end
+
+    //begin-------------------ARE.Bitmap---------------------begin
+
+    ARE.Bitmap = ARE.DisplayObject.extend({
+        "ctor": function (img) {
+            this._super();
+            if (arguments.length === 0) return;
+            if (typeof img == "string") {
+                this._initWithSrc(img);
+            } else {
+                this._init(img);
+            }
+        },
+        "_initWithSrc": function (img) {
+            var cacheImg = ARE.Bitmap[img];
+            if (cacheImg) {
+                this._init(cacheImg);
+            } else {
+                var self = this;
+                this.textureReady = false;
+                this.img = document.createElement("img");
+                this.img.onload = function () {
+                    if (!self.rect) self.rect = [0, 0, self.img.width, self.img.height];
+                    self.width = self.rect[2];
+                    self.height = self.rect[3];
+                    self.regX = self.width * self.originX;
+                    self.regY = self.height * self.originY;
+                    ARE.Bitmap[img] = self.img;
+                    self.textureReady = true;
+                    self.imageLoadHandle && self.imageLoadHandle();
+                    if (self.filter) self.filter = self.filter;
+                };
+                this.img.src = img;
+            }
+        },
+        "_init": function (img) {
+            if (!img) return;
+            this.img = img;
+            this.width = img.width;
+            this.height = img.height;
+            Object.defineProperty(this, "rect", {
+                get: function () {
+                    return this["__rect"];
+                },
+                set: function (value) {
+                    this["__rect"] = value;
+                    this.width = value[2];
+                    this.height = value[3];
+                    this.regX = value[2] * this.originX;
+                    this.regY = value[3] * this.originY;
+                }
+            });
+            this.rect = [0, 0, img.width, img.height];
+        },
+        "useImage": function (img) {
+            if (typeof img == "string") {
+                this._initWithSrc(img);
+            } else {
+                this._init(img);
+                this.imageLoadHandle && this.imageLoadHandle();
+            }
+        },
+        "onImageLoad": function (fn) {
+            this.imageLoadHandle = fn;
+        },
+        "clone": function () {
+            var o = new ARE.Bitmap(this.img);
+            o.rect = this.rect.slice(0);
+            this.cloneProps(o);
+            return o;
+        },
+        "flipX": function () { },
+        "flipY": function () { }
+    });
+
+    //end-------------------ARE.Bitmap---------------------end
+
+    //begin-------------------ARE.Particle---------------------begin
+
+    ARE.Particle = ARE.Bitmap.extend({
+        "ctor": function (option) {
+            this._super(option.texture);
+            this.originX = .5;
+            this.originY = .5;
+            this.position = option.position;
+            this.x = this.position.x;
+            this.y = this.position.y;
+            this.rotation = option.rotation || 0;
+            this.velocity = option.velocity;
+            this.acceleration = option.acceleration || new ARE.Vector2(0, 0);
+            this.rotatingSpeed = option.rotatingSpeed || 0;
+            this.rotatingAcceleration = option.rotatingAcceleration || 0;
+            this.hideSpeed = option.hideSpeed || .01;
+            this.zoomSpeed = option.hideSpeed || .01;
+            this.isAlive = true;
+            this.img = option.texture;
+            this.img.src = "";
+        },
+        "tick": function () {
+            this.velocity.add(this.acceleration);
+            this.position.add(this.velocity.multiply(.1));
+            this.rotatingSpeed += this.rotatingAcceleration;
+            this.rotation += this.rotatingSpeed;
+            this.alpha -= this.hideSpeed;
+            this.x = this.position.x;
+            this.y = this.position.y;
+            this.alpha = this.alpha;
+        }
+    });
+
+    //end-------------------ARE.Particle---------------------end
+
     //begin-------------------ARE.Container---------------------begin
 
     ARE.Container = ARE.DisplayObject.extend({
@@ -674,308 +759,6 @@
 
     //end-------------------ARE.Container---------------------end
 
-    //begin-------------------ARE.DomElement---------------------begin
-
-    ARE.DomElement = ARE.DisplayObject.extend({
-        "ctor": function (selector) {
-            this._super();
-            this.element = typeof selector == "string" ? document.querySelector(selector) : selector;
-            var element = this.element;
-            var observer = ARE.Observable.watch(this, ["x", "y", "scaleX", "scaleY", "perspective", "rotation", "skewX", "skewY", "regX", "regY"]);
-            var self = this;
-            observer.propertyChangedHandler = function () {
-                var mtx = self._matrix.identity().appendTransform(self.x, self.y, self.scaleX, self.scaleY, self.rotation, self.skewX, self.skewY, self.regX, self.regY);
-                self.element.style.transform = self.element.style.msTransform = self.element.style.OTransform = self.element.style.MozTransform = self.element.style.webkitTransform = "matrix(" + mtx.a + "," + mtx.b + "," + mtx.c + "," + mtx.d + "," + mtx.tx + "," + mtx.ty + ")";
-            };
-            delete this.visible;
-            Object.defineProperty(this, "visible", {
-                set: function (value) {
-                    this._visible = value;
-                    if (this._visible) {
-                        this.element.style.visibility = "visible";
-                    } else {
-                        this.element.style.visibility = "hidden";
-                    }
-                },
-                get: function () {
-                    return this._visible;
-                }
-            });
-            delete this.alpha;
-            Object.defineProperty(this, "alpha", {
-                set: function (value) {
-                    this._opacity = value;
-                    this.element.style.opacity = value;
-                },
-                get: function () {
-                    return this._opacity;
-                }
-            });
-            this.visible = true;
-            this.alpha = 1;
-            this.element.style.visibility = "hidden";
-            this.element.style.position = "absolute";
-        },
-        "isVisible": function () {
-            return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);
-        }
-    });
-
-    //end-------------------ARE.DomElement---------------------end
-
-    //begin-------------------ARE.Graphics---------------------begin
-
-    ARE.Graphics = ARE.DisplayObject.extend({
-        "ctor": function () {
-            this._super();
-            this.cmds = [];
-            this.assMethod = ["fillStyle", "strokeStyle", "lineWidth"];
-        },
-        "draw": function (ctx) {
-            for (var i = 0, len = this.cmds.length; i < len; i++) {
-                var cmd = this.cmds[i];
-                if (this.assMethod.join("-").match(new RegExp("\\b" + cmd[0] + "\\b", "g"))) {
-                    ctx[cmd[0]] = cmd[1][0];
-                } else {
-                    ctx[cmd[0]].apply(ctx, Array.prototype.slice.call(cmd[1]));
-                }
-            }
-        },
-        "clearRect": function (x, y, width, height) {
-            this.cmds.push(["clearRect", arguments]);
-            return this;
-        },
-        "clear": function () {
-            this.cmds.length = 0;
-            return this;
-        },
-        "strokeRect": function () {
-            this.cmds.push(["strokeRect", arguments]);
-            return this;
-        },
-        "fillRect": function () {
-            this.cmds.push(["fillRect", arguments]);
-            return this;
-        },
-        "beginPath": function () {
-            this.cmds.push(["beginPath", arguments]);
-            return this;
-        },
-        "arc": function () {
-            this.cmds.push(["arc", arguments]);
-            return this;
-        },
-        "closePath": function () {
-            this.cmds.push(["closePath", arguments]);
-            return this;
-        },
-        "fillStyle": function () {
-            this.cmds.push(["fillStyle", arguments]);
-            return this;
-        },
-        "fill": function () {
-            this.cmds.push(["fill", arguments]);
-            return this;
-        },
-        "strokeStyle": function () {
-            this.cmds.push(["strokeStyle", arguments]);
-            return this;
-        },
-        "lineWidth": function () {
-            this.cmds.push(["lineWidth", arguments]);
-            return this;
-        },
-        "stroke": function () {
-            this.cmds.push(["stroke", arguments]);
-            return this;
-        },
-        "moveTo": function () {
-            this.cmds.push(["moveTo", arguments]);
-            return this;
-        },
-        "lineTo": function () {
-            this.cmds.push(["lineTo", arguments]);
-            return this;
-        },
-        "bezierCurveTo": function () {
-            this.cmds.push(["bezierCurveTo", arguments]);
-            return this;
-        },
-        "clone": function () { }
-    });
-
-    //end-------------------ARE.Graphics---------------------end
-
-    //begin-------------------ARE.Bitmap---------------------begin
-
-    ARE.Bitmap = ARE.DisplayObject.extend({
-        "ctor": function (img) {
-            this._super();
-            if (arguments.length === 0) return;
-            if (typeof img == "string") {
-                this._initWithSrc(img);
-            } else {
-                this._init(img);
-            }
-        },
-        "_initWithSrc": function (img) {
-            var cacheImg = ARE.Bitmap[img];
-            if (cacheImg) {
-                this._init(cacheImg);
-            } else {
-                var self = this;
-                this.textureReady = false;
-                this.img = document.createElement("img");
-                this.img.onload = function () {
-                    if (!self.rect) self.rect = [0, 0, self.img.width, self.img.height];
-                    self.width = self.rect[2];
-                    self.height = self.rect[3];
-                    self.regX = self.width * self.originX;
-                    self.regY = self.height * self.originY;
-                    ARE.Bitmap[img] = self.img;
-                    self.textureReady = true;
-                    self.imageLoadHandle && self.imageLoadHandle();
-                    if (self.filter) self.filter = self.filter;
-                };
-                this.img.src = img;
-            }
-        },
-        "_init": function (img) {
-            if (!img) return;
-            this.img = img;
-            this.width = img.width;
-            this.height = img.height;
-            Object.defineProperty(this, "rect", {
-                get: function () {
-                    return this["__rect"];
-                },
-                set: function (value) {
-                    this["__rect"] = value;
-                    this.width = value[2];
-                    this.height = value[3];
-                    this.regX = value[2] * this.originX;
-                    this.regY = value[3] * this.originY;
-                }
-            });
-            this.rect = [0, 0, img.width, img.height];
-        },
-        "useImage": function (img) {
-            if (typeof img == "string") {
-                this._initWithSrc(img);
-            } else {
-                this._init(img);
-                this.imageLoadHandle && this.imageLoadHandle();
-            }
-        },
-        "onImageLoad": function (fn) {
-            this.imageLoadHandle = fn;
-        },
-        "clone": function () {
-            var o = new ARE.Bitmap(this.img);
-            o.rect = this.rect.slice(0);
-            this.cloneProps(o);
-            return o;
-        },
-        "flipX": function () { },
-        "flipY": function () { }
-    });
-
-    //end-------------------ARE.Bitmap---------------------end
-
-    //begin-------------------ARE.Particle---------------------begin
-
-    ARE.Particle = ARE.Bitmap.extend({
-        "ctor": function (option) {
-            this._super(option.texture);
-            this.originX = .5;
-            this.originY = .5;
-            this.position = option.position;
-            this.x = this.position.x;
-            this.y = this.position.y;
-            this.rotation = option.rotation || 0;
-            this.velocity = option.velocity;
-            this.acceleration = option.acceleration || new ARE.Vector2(0, 0);
-            this.rotatingSpeed = option.rotatingSpeed || 0;
-            this.rotatingAcceleration = option.rotatingAcceleration || 0;
-            this.hideSpeed = option.hideSpeed || .01;
-            this.zoomSpeed = option.hideSpeed || .01;
-            this.isAlive = true;
-            this.img = option.texture;
-            this.img.src = "";
-        },
-        "tick": function () {
-            this.velocity.add(this.acceleration);
-            this.position.add(this.velocity.multiply(.1));
-            this.rotatingSpeed += this.rotatingAcceleration;
-            this.rotation += this.rotatingSpeed;
-            this.alpha -= this.hideSpeed;
-            this.x = this.position.x;
-            this.y = this.position.y;
-            this.alpha = this.alpha;
-        }
-    });
-
-    //end-------------------ARE.Particle---------------------end
-
-    //begin-------------------ARE.RectAdjust---------------------begin
-
-    ARE.RectAdjust = Class.extend({
-        "ctor": function (option) {
-            this.min = option.min;
-            this.max = option.max;
-            this.value = option.value;
-            this.change = option.change;
-            this.renderTo = option.renderTo;
-            this.fillStyle = option.fillStyle;
-            this.canvas = document.createElement("canvas");
-            this.canvas.width = 140;
-            this.canvas.height = 16;
-            this.canvas.style.cssText = "border:1px solid black;";
-            this.ctx = this.canvas.getContext("2d");
-            this.renderTo.appendChild(this.canvas);
-            this.render(160 * (this.value - this.min) / (this.max - this.min));
-            this.offset = this.canvas.getBoundingClientRect();
-            var self = this;
-            var isMouseDown = false;
-            this.canvas.addEventListener("mousedown", function (evt) {
-                isMouseDown = true;
-                var x = evt.pageX - self.offset.left;
-                var y = evt.pageY - self.offset.top;
-                self.value = self.min + (self.max - self.min) * x / 140;
-                if (self.value > self.max) self.value = self.max;
-                if (self.value < self.min) self.value = self.min;
-                self.change(self.value);
-                self.render(x);
-                evt.preventDefault();
-                evt.stopPropagation();
-            }, false);
-            this.canvas.addEventListener("mousemove", function (evt) {
-                if (isMouseDown) {
-                    var x = evt.pageX - self.offset.left;
-                    var y = evt.pageY - self.offset.top;
-                    self.value = self.min + (self.max - self.min) * x / 140;
-                    if (self.value > self.max) self.value = self.max;
-                    if (self.value < self.min) self.value = self.min;
-                    self.change(self.value);
-                    self.render(x);
-                    evt.preventDefault();
-                    evt.stopPropagation();
-                }
-            }, false);
-            document.addEventListener("mouseup", function (evt) {
-                isMouseDown = false;
-            }, false);
-        },
-        "render": function (x) {
-            this.ctx.fillStyle = this.fillStyle;
-            this.ctx.clearRect(0, 0, 500, 500);
-            this.ctx.beginPath();
-            this.ctx.fillRect(0, 0, x, 60);
-        }
-    });
-
-    //end-------------------ARE.RectAdjust---------------------end
-
     //begin-------------------ARE.ParticleSystem---------------------begin
 
     ARE.ParticleSystem = ARE.Container.extend({
@@ -1066,272 +849,91 @@
 
     //end-------------------ARE.ParticleSystem---------------------end
 
-    //begin-------------------ARE.Shape---------------------begin
+    //begin-------------------ARE.RectAdjust---------------------begin
 
-    ARE.Shape = ARE.DisplayObject.extend({
-        "ctor": function (width, height, debug) {
+    ARE.RectAdjust = Class.extend({
+        "ctor": function (option) {
+            this.min = option.min;
+            this.max = option.max;
+            this.value = option.value;
+            this.change = option.change;
+            this.renderTo = option.renderTo;
+            this.fillStyle = option.fillStyle;
+            this.canvas = document.createElement("canvas");
+            this.canvas.width = 140;
+            this.canvas.height = 16;
+            this.canvas.style.cssText = "border:1px solid black;";
+            this.ctx = this.canvas.getContext("2d");
+            this.renderTo.appendChild(this.canvas);
+            this.render(160 * (this.value - this.min) / (this.max - this.min));
+            this.offset = this.canvas.getBoundingClientRect();
+            var self = this;
+            var isMouseDown = false;
+            this.canvas.addEventListener("mousedown", function (evt) {
+                isMouseDown = true;
+                var x = evt.pageX - self.offset.left;
+                var y = evt.pageY - self.offset.top;
+                self.value = self.min + (self.max - self.min) * x / 140;
+                if (self.value > self.max) self.value = self.max;
+                if (self.value < self.min) self.value = self.min;
+                self.change(self.value);
+                self.render(x);
+                evt.preventDefault();
+                evt.stopPropagation();
+            }, false);
+            this.canvas.addEventListener("mousemove", function (evt) {
+                if (isMouseDown) {
+                    var x = evt.pageX - self.offset.left;
+                    var y = evt.pageY - self.offset.top;
+                    self.value = self.min + (self.max - self.min) * x / 140;
+                    if (self.value > self.max) self.value = self.max;
+                    if (self.value < self.min) self.value = self.min;
+                    self.change(self.value);
+                    self.render(x);
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                }
+            }, false);
+            document.addEventListener("mouseup", function (evt) {
+                isMouseDown = false;
+            }, false);
+        },
+        "render": function (x) {
+            this.ctx.fillStyle = this.fillStyle;
+            this.ctx.clearRect(0, 0, 500, 500);
+            this.ctx.beginPath();
+            this.ctx.fillRect(0, 0, x, 60);
+        }
+    });
+
+    //end-------------------ARE.RectAdjust---------------------end
+
+    //begin-------------------ARE.RectShape---------------------begin
+
+    ARE.RectShape = ARE.DisplayObject.extend({
+        "ctor": function (width, height, color, isHollow) {
             this._super();
-            this.cmds = [];
-            this.assMethod = ["fillStyle", "strokeStyle", "lineWidth"];
+            this.color = color || "black";
+            this.isHollow = isHollow;
             this.width = width;
             this.height = height;
-            this._width = width;
-            this._height = height;
+            this.originX = this.originY = .5;
             this.shapeCanvas = document.createElement("canvas");
             this.shapeCanvas.width = this.width;
             this.shapeCanvas.height = this.height;
             this.shapeCtx = this.shapeCanvas.getContext("2d");
-            if (debug) {
-                this.fillStyle("red");
-                this.fillRect(0, 0, width, height);
-            }
-            this._watch(this, "scaleX", function (prop, value) {
-                this.width = this._width * value;
-                this.height = this._height * this.scaleY;
-                this.originX = this.originX;
-                this.shapeCanvas.width = this.width;
-                this.shapeCanvas.height = this.height;
-                this.shapeCtx.scale(value, this.scaleY);
-                this.end();
-            });
-            this._watch(this, "scaleY", function (prop, value) {
-                this.width = this._width * this.scaleX;
-                this.height = this._height * value;
-                this.originY = this.originY;
-                this.shapeCanvas.width = this.width;
-                this.shapeCanvas.height = this.height;
-                this.shapeCtx.scale(this.scaleX, value);
-                this.end();
-            });
-        },
-        "end": function () {
+            this.draw();
             this.cacheID = ARE.UID.getCacheID();
-            var ctx = this.shapeCtx;
-            for (var i = 0, len = this.cmds.length; i < len; i++) {
-                var cmd = this.cmds[i];
-                if (this.assMethod.join("-").match(new RegExp("\\b" + cmd[0] + "\\b", "g"))) {
-                    ctx[cmd[0]] = cmd[1][0];
-                } else {
-                    ctx[cmd[0]].apply(ctx, Array.prototype.slice.call(cmd[1]));
-                }
-            }
-        },
-        "clearRect": function (x, y, width, height) {
-            this.cacheID = ARE.UID.getCacheID();
-            this.shapeCtx.clearRect(x, y, width, height);
-        },
-        "clear": function () {
-            this.cacheID = ARE.UID.getCacheID();
-            this.shapeCtx.clearRect(0, 0, this.width, this.height);
-        },
-        "strokeRect": function () {
-            this.cmds.push(["strokeRect", arguments]);
-            return this;
-        },
-        "fillRect": function () {
-            this.cmds.push(["fillRect", arguments]);
-            return this;
-        },
-        "beginPath": function () {
-            this.cmds.push(["beginPath", arguments]);
-            return this;
-        },
-        "arc": function () {
-            this.cmds.push(["arc", arguments]);
-            return this;
-        },
-        "closePath": function () {
-            this.cmds.push(["closePath", arguments]);
-            return this;
-        },
-        "fillStyle": function () {
-            this.cmds.push(["fillStyle", arguments]);
-            return this;
-        },
-        "fill": function () {
-            this.cmds.push(["fill", arguments]);
-            return this;
-        },
-        "strokeStyle": function () {
-            this.cmds.push(["strokeStyle", arguments]);
-            return this;
-        },
-        "lineWidth": function () {
-            this.cmds.push(["lineWidth", arguments]);
-            return this;
-        },
-        "stroke": function () {
-            this.cmds.push(["stroke", arguments]);
-            return this;
-        },
-        "moveTo": function () {
-            this.cmds.push(["moveTo", arguments]);
-            return this;
-        },
-        "lineTo": function () {
-            this.cmds.push(["lineTo", arguments]);
-            return this;
-        },
-        "bezierCurveTo": function () {
-            this.cmds.push(["bezierCurveTo", arguments]);
-            return this;
-        },
-        "clone": function () { }
-    });
-
-    //end-------------------ARE.Shape---------------------end
-
-    //begin-------------------ARE.Text---------------------begin
-
-    ARE.Text = ARE.DisplayObject.extend({
-        "ctor": function (option) {
-            this._super();
-            this.txt = option.txt;
-            this.fontSize = option.fontSize;
-            this.fontFamily = option.fontFamily;
-            this.color = option.color;
-            this.textAlign = "center";
-            this.textBaseline = "top";
-            this.maxWidth = option.maxWidth || 2e3;
-            this.square = option.square || false;
-            this.txtCanvas = document.createElement("canvas");
-            this.txtCtx = this.txtCanvas.getContext("2d");
-            var drawOption = this.getDrawOption({
-                txt: this.txt,
-                maxWidth: this.maxWidth,
-                square: this.square,
-                size: this.fontSize,
-                alignment: this.textAlign,
-                color: this.color || "black",
-                fontFamily: this.fontFamily
-            });
-            this.cacheID = ARE.UID.getCacheID();
-            this.width = drawOption.calculatedWidth;
-            this.height = drawOption.calculatedHeight;
-        },
-        "getDrawOption": function (option) {
-            var canvas = this.txtCanvas;
-            var ctx = this.txtCtx;
-            var canvasX, canvasY;
-            var textX, textY;
-            var text = [];
-            var textToWrite = option.txt;
-            var maxWidth = option.maxWidth;
-            var squareTexture = option.square;
-            var textHeight = option.size;
-            var textAlignment = option.alignment;
-            var textColour = option.color;
-            var fontFamily = option.fontFamily;
-            var backgroundColour = option.backgroundColour;
-            ctx.font = textHeight + "px " + fontFamily;
-            if (maxWidth && this.measureText(ctx, textToWrite) > maxWidth) {
-                maxWidth = this.createMultilineText(ctx, textToWrite, maxWidth, text);
-                canvasX = this.getPowerOfTwo(maxWidth);
-            } else {
-                text.push(textToWrite);
-                canvasX = this.getPowerOfTwo(ctx.measureText(textToWrite).width);
-            }
-            canvasY = this.getPowerOfTwo(textHeight * (text.length + 1));
-            if (squareTexture) {
-                canvasX > canvasY ? canvasY = canvasX : canvasX = canvasY;
-            }
-            option.calculatedWidth = canvasX;
-            option.calculatedHeight = canvasY;
-            canvas.width = canvasX;
-            canvas.height = canvasY;
-            switch (textAlignment) {
-                case "left":
-                    textX = 0;
-                    break;
-                case "center":
-                    textX = canvasX / 2;
-                    break;
-                case "right":
-                    textX = canvasX;
-                    break;
-            }
-            textY = canvasY / 2;
-            ctx.fillStyle = textColour;
-            ctx.textAlign = textAlignment;
-            ctx.textBaseline = "middle";
-            ctx.font = textHeight + "px " + fontFamily;
-            var offset = (canvasY - textHeight * (text.length + 1)) * .5;
-            option.cmd = [];
-            for (var i = 0; i < text.length; i++) {
-                if (text.length > 1) {
-                    textY = (i + 1) * textHeight + offset;
-                }
-                option.cmd.push({
-                    text: text[i],
-                    x: textX,
-                    y: textY
-                });
-                ctx.fillText(text[i], textX, textY);
-            }
-            return option;
-        },
-        "getPowerOfTwo": function (value, pow) {
-            var pow = pow || 1;
-            while (pow < value) {
-                pow *= 2;
-            }
-            return pow;
-        },
-        "measureText": function (ctx, textToMeasure) {
-            return ctx.measureText(textToMeasure).width;
-        },
-        "createMultilineText": function (ctx, textToWrite, maxWidth, text) {
-            textToWrite = textToWrite.replace("\n", " ");
-            var currentText = textToWrite;
-            var futureText;
-            var subWidth = 0;
-            var maxLineWidth = 0;
-            var wordArray = textToWrite.split(" ");
-            var wordsInCurrent, wordArrayLength;
-            wordsInCurrent = wordArrayLength = wordArray.length;
-            while (this.measureText(ctx, currentText) > maxWidth && wordsInCurrent > 1) {
-                wordsInCurrent--;
-                var linebreak = false;
-                currentText = futureText = "";
-                for (var i = 0; i < wordArrayLength; i++) {
-                    if (i < wordsInCurrent) {
-                        currentText += wordArray[i];
-                        if (i + 1 < wordsInCurrent) {
-                            currentText += " ";
-                        }
-                    } else {
-                        futureText += wordArray[i];
-                        if (i + 1 < wordArrayLength) {
-                            futureText += " ";
-                        }
-                    }
-                }
-            }
-            text.push(currentText);
-            maxLineWidth = this.measureText(ctx, currentText);
-            if (futureText) {
-                subWidth = this.createMultilineText(ctx, futureText, maxWidth, text);
-                if (subWidth > maxLineWidth) {
-                    maxLineWidth = subWidth;
-                }
-            }
-            return maxLineWidth;
         },
         "draw": function (ctx) {
-            ctx.fillStyle = this.color;
-            ctx.font = this.font;
-            ctx.textAlign = this.textAlign || "left";
-            ctx.textBaseline = this.textBaseline || "top";
-            ctx.fillText(this.text, 0, 0);
-        },
-        "clone": function () {
-            var t = new ARE.Text(this.text, this.font, this.color);
-            this.cloneProps(t);
-            return t;
+            var ctx = this.shapeCtx;
+            ctx.beginPath();
+            ctx.arc(this.r, this.r, this.r, 0, Math.PI * 2);
+            this.isHollow ? (ctx.strokeStyle = this.color, ctx.strokeRect(0, 0, this.width, this.height)) : (ctx.fillStyle = this.color, ctx.fillRect(0, 0, this.width, this.height));
         }
     });
 
-    //end-------------------ARE.Text---------------------end
+    //end-------------------ARE.RectShape---------------------end
 
     //begin-------------------ARE.Sprite---------------------begin
 
@@ -1454,6 +1056,122 @@
     });
 
     //end-------------------ARE.Sprite---------------------end
+
+    //begin-------------------ARE.Shape---------------------begin
+
+    ARE.Shape = ARE.DisplayObject.extend({
+        "ctor": function (width, height, debug) {
+            this._super();
+            this.cmds = [];
+            this.assMethod = ["fillStyle", "strokeStyle", "lineWidth"];
+            this.width = width;
+            this.height = height;
+            this._width = width;
+            this._height = height;
+            this.shapeCanvas = document.createElement("canvas");
+            this.shapeCanvas.width = this.width;
+            this.shapeCanvas.height = this.height;
+            this.shapeCtx = this.shapeCanvas.getContext("2d");
+            if (debug) {
+                this.fillStyle("red");
+                this.fillRect(0, 0, width, height);
+            }
+            this._watch(this, "scaleX", function (prop, value) {
+                this.width = this._width * value;
+                this.height = this._height * this.scaleY;
+                this.originX = this.originX;
+                this.shapeCanvas.width = this.width;
+                this.shapeCanvas.height = this.height;
+                this.shapeCtx.scale(value, this.scaleY);
+                this.end();
+            });
+            this._watch(this, "scaleY", function (prop, value) {
+                this.width = this._width * this.scaleX;
+                this.height = this._height * value;
+                this.originY = this.originY;
+                this.shapeCanvas.width = this.width;
+                this.shapeCanvas.height = this.height;
+                this.shapeCtx.scale(this.scaleX, value);
+                this.end();
+            });
+        },
+        "end": function () {
+            this._preCacheId = this.cacheID;
+            this.cacheID = ARE.UID.getCacheID();
+            var ctx = this.shapeCtx;
+            for (var i = 0, len = this.cmds.length; i < len; i++) {
+                var cmd = this.cmds[i];
+                if (this.assMethod.join("-").match(new RegExp("\\b" + cmd[0] + "\\b", "g"))) {
+                    ctx[cmd[0]] = cmd[1][0];
+                } else {
+                    ctx[cmd[0]].apply(ctx, Array.prototype.slice.call(cmd[1]));
+                }
+            }
+        },
+        "clearRect": function (x, y, width, height) {
+            this.cacheID = ARE.UID.getCacheID();
+            this.shapeCtx.clearRect(x, y, width, height);
+        },
+        "clear": function () {
+            this.cacheID = ARE.UID.getCacheID();
+            this.shapeCtx.clearRect(0, 0, this.width, this.height);
+        },
+        "strokeRect": function () {
+            this.cmds.push(["strokeRect", arguments]);
+            return this;
+        },
+        "fillRect": function () {
+            this.cmds.push(["fillRect", arguments]);
+            return this;
+        },
+        "beginPath": function () {
+            this.cmds.push(["beginPath", arguments]);
+            return this;
+        },
+        "arc": function () {
+            this.cmds.push(["arc", arguments]);
+            return this;
+        },
+        "closePath": function () {
+            this.cmds.push(["closePath", arguments]);
+            return this;
+        },
+        "fillStyle": function () {
+            this.cmds.push(["fillStyle", arguments]);
+            return this;
+        },
+        "fill": function () {
+            this.cmds.push(["fill", arguments]);
+            return this;
+        },
+        "strokeStyle": function () {
+            this.cmds.push(["strokeStyle", arguments]);
+            return this;
+        },
+        "lineWidth": function () {
+            this.cmds.push(["lineWidth", arguments]);
+            return this;
+        },
+        "stroke": function () {
+            this.cmds.push(["stroke", arguments]);
+            return this;
+        },
+        "moveTo": function () {
+            this.cmds.push(["moveTo", arguments]);
+            return this;
+        },
+        "lineTo": function () {
+            this.cmds.push(["lineTo", arguments]);
+            return this;
+        },
+        "bezierCurveTo": function () {
+            this.cmds.push(["bezierCurveTo", arguments]);
+            return this;
+        },
+        "clone": function () { }
+    });
+
+    //end-------------------ARE.Shape---------------------end
 
     //begin-------------------ARE.Stage---------------------begin
 
@@ -1893,46 +1611,193 @@
 
     //end-------------------ARE.Stage---------------------end
 
-    //begin-------------------ARE.FPS---------------------begin
+    //begin-------------------ARE.Text---------------------begin
 
-    ARE.FPS = Class.extend({
-        "statics": {
-            "get": function () {
-                if (!this.instance) this.instance = new this();
-                this.instance._computeFPS();
-                return this.instance;
-            }
+    ARE.Text = ARE.DisplayObject.extend({
+        "ctor": function (value, font, color) {
+            this._super();
+            this.value = value;
+            this.font = font;
+            this.color = color;
+            this.textAlign = "left";
+            this.textBaseline = "top";
         },
-        "ctor": function () {
-            this.last = new Date();
-            this.current = null;
-            this.value = 0;
-            this.totalValue = 0;
-            this.fpsList = [];
-            this.count = 0;
-            var self = this;
-            setInterval(function () {
-                var lastIndex = self.fpsList.length - 1;
-                self.value = self.fpsList[lastIndex];
-                if (lastIndex > 500) {
-                    self.fpsList.shift();
-                }
-                self.averageFPS = Math.ceil(self.totalValue / self.count);
-            }, 500);
+        "draw": function (ctx) {
+            ctx.fillStyle = this.color;
+            ctx.font = this.font;
+            ctx.textAlign = this.textAlign || "left";
+            ctx.textBaseline = this.textBaseline || "top";
+            ctx.fillText(this.value, 0, 0);
         },
-        "_computeFPS": function () {
-            this.current = new Date();
-            if (this.current - this.last > 0) {
-                var fps = Math.ceil(1e3 / (this.current - this.last));
-                this.fpsList.push(fps);
-                this.count++;
-                this.totalValue += fps;
-                this.last = this.current;
-            }
+        "clone": function () {
+            var t = new ARE.Text(this.text, this.font, this.color);
+            this.cloneProps(t);
+            return t;
         }
     });
 
-    //end-------------------ARE.FPS---------------------end
+    //end-------------------ARE.Text---------------------end
+
+    //begin-------------------ARE.CanvasRenderer---------------------begin
+
+    ARE.CanvasRenderer = Class.extend({
+        "ctor": function (canvas) {
+            if (canvas) {
+                this.canvas = canvas;
+                this.ctx = this.canvas.getContext("2d");
+                this.height = this.canvas.width;
+                this.width = this.canvas.height;
+            }
+        },
+        "hitAABB": function (ctx, o, evt, type) {
+            var list = o.children.slice(0),
+                l = list.length;
+            for (var i = l - 1; i >= 0; i--) {
+                var child = list[i];
+                if (!this.isbindingEvent(child)) continue;
+                var target = this._hitAABB(ctx, child, evt, type);
+                if (target) return target;
+            }
+        },
+        "_hitAABB": function (ctx, o, evt, type) {
+            if (!o.isVisible()) {
+                return;
+            }
+            if (o instanceof ARE.Container) {
+                var list = o.children.slice(0),
+                    l = list.length;
+                for (var i = l - 1; i >= 0; i--) {
+                    var child = list[i];
+                    var target = this._hitAABB(ctx, child, evt, type);
+                    if (target) return target;
+                }
+            } else {
+                if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
+                    this._bubbleEvent(o, type, evt);
+                    return o;
+                }
+            }
+        },
+        "hitRender": function (ctx, o, evt, type) {
+            var mtx = o._hitMatrix;
+            var list = o.children.slice(0),
+                l = list.length;
+            for (var i = l - 1; i >= 0; i--) {
+                var child = list[i];
+                mtx.initialize(1, 0, 0, 1, 0, 0);
+                mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+                if (!this.isbindingEvent(child)) continue;
+                ctx.save();
+                var target = this._hitRender(ctx, child, mtx, evt, type);
+                ctx.restore();
+                if (target) return target;
+            }
+        },
+        "_hitRender": function (ctx, o, mtx, evt, type) {
+            ctx.clearRect(0, 0, 2, 2);
+            if (!o.isVisible()) {
+                return;
+            }
+            if (mtx) {
+                o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            } else {
+                o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
+            }
+            mtx = o._hitMatrix;
+            if (o instanceof ARE.Shape) {
+                mtx.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+            } else {
+                mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+            }
+            var mmyCanvas = o.cacheCanvas || o.txtCanvas || o.shapeCanvas;
+            if (mmyCanvas) {
+                ctx.globalAlpha = o.complexAlpha;
+                ctx.globalCompositeOperation = o.complexCompositeOperation;
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                ctx.drawImage(mmyCanvas, 0, 0);
+            } else if (o instanceof ARE.Container) {
+                var list = o.children.slice(0),
+                    l = list.length;
+                for (var i = l - 1; i >= 0; i--) {
+                    ctx.save();
+                    var target = this._hitRender(ctx, list[i], mtx, evt, type);
+                    if (target) return target;
+                    ctx.restore();
+                }
+            } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+                ctx.globalAlpha = o.complexAlpha;
+                ctx.globalCompositeOperation = o.complexCompositeOperation;
+                var rect = o.rect;
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+            } else if (o instanceof ARE.Graphics) {
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                o.draw(ctx);
+            }
+            if (ctx.getImageData(0, 0, 1, 1).data[3] > 1 && !(o instanceof ARE.Container)) {
+                this._bubbleEvent(o, type, evt);
+                return o;
+            }
+        },
+        "_bubbleEvent": function (o, type, event) {
+            var result = o.execEvent(type, event);
+            if (result !== false) {
+                if (o.parent && o.parent.events[type] && o.parent.events[type].length > 0 && o.parent.baseInstanceof !== "Stage") {
+                    this._bubbleEvent(o.parent, type, event);
+                }
+            }
+        },
+        "isbindingEvent": function (obj) {
+            if (Object.keys(obj.events).length !== 0) return true;
+            if (obj instanceof ARE.Container) {
+                for (var i = 0, len = obj.children.length; i < len; i++) {
+                    var child = obj.children[i];
+                    if (child instanceof ARE.Container) {
+                        return this.isbindingEvent(child);
+                    } else {
+                        if (Object.keys(child.events).length !== 0) return true;
+                    }
+                }
+            }
+            return false;
+        },
+        "clear": function () {
+            this.ctx.clearRect(0, 0, this.height, this.width);
+        },
+        "renderObj": function (ctx, o) {
+            var mtx = o._matrix;
+            ctx.save();
+            ctx.globalAlpha = o.complexAlpha;
+            ctx.globalCompositeOperation = o.complexCompositeOperation;
+            var mmyCanvas = o.cacheCanvas || o.txtCanvas || o.shapeCanvas;
+            if (mmyCanvas) {
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                ctx.drawImage(mmyCanvas, 0, 0);
+            } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+                var rect = o.rect;
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+            } else if (o instanceof ARE.Graphics || o instanceof ARE.Text) {
+                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+                o.draw(ctx);
+            }
+            ctx.restore();
+        },
+        "clearBackUpCanvasCache": function () { },
+        "checkPointInAABB": function (x, y, AABB) {
+            var minX = AABB[0];
+            if (x < minX) return false;
+            var minY = AABB[1];
+            if (y < minY) return false;
+            var maxX = minX + AABB[2];
+            if (x > maxX) return false;
+            var maxY = minY + AABB[3];
+            if (y > maxY) return false;
+            return true;
+        }
+    });
+
+    //end-------------------ARE.CanvasRenderer---------------------end
 
     //begin-------------------ARE.Dom---------------------begin
 
@@ -1950,6 +1815,217 @@
     });
 
     //end-------------------ARE.Dom---------------------end
+
+    //begin-------------------ARE.WebGLRenderer---------------------begin
+
+    ARE.WebGLRenderer = Class.extend({
+        "ctor": function (canvas) {
+            this.surface = canvas;
+            this.snapToPixel = true;
+            this.canvasRenderer = new ARE.CanvasRenderer();
+            this.textureCache = {};
+            this.textureCanvasCache = {};
+            this.initSurface(this.surface);
+        },
+        "initSurface": function (surface) {
+            var options = {
+                depth: false,
+                alpha: true,
+                preserveDrawingBuffer: true,
+                antialias: false,
+                premultipliedAlpha: true
+            };
+            var ctx = undefined;
+            try {
+                ctx = surface.ctx = surface.getContext("webgl", options) || surface.getContext("experimental-webgl", options);
+                ctx.viewportWidth = surface.width;
+                ctx.viewportHeight = surface.height;
+            } catch (e) { }
+            if (!ctx) {
+                alert("Could not initialise WebGL. Make sure you've updated your browser, or try a different one like Google Chrome.");
+            }
+            var textureShader = ctx.createShader(ctx.FRAGMENT_SHADER);
+            ctx.shaderSource(textureShader, "" + "precision mediump float;\n" + "varying vec3 vTextureCoord;\n" + "varying float vAlpha;\n" + "uniform float uAlpha;\n" + "uniform sampler2D uSampler0;\n" + "void main(void) { \n" + "vec4 color = texture2D(uSampler0, vTextureCoord.st);  \n" + "gl_FragColor = vec4(color.rgb, color.a * vAlpha);\n" + "}");
+            ctx.compileShader(textureShader);
+            if (!ctx.getShaderParameter(textureShader, ctx.COMPILE_STATUS)) {
+                alert(ctx.getShaderInfoLog(textureShader));
+            }
+            var vertexShader = ctx.createShader(ctx.VERTEX_SHADER);
+            ctx.shaderSource(vertexShader, "" + "attribute vec2 aVertexPosition;\n" + "attribute vec3 aTextureCoord;\n" + "attribute float aAlpha;\n" + "uniform bool uSnapToPixel;\n" + "const mat4 pMatrix = mat4(" + 2 / ctx.viewportWidth + ",0,0,0, 0," + -2 / ctx.viewportHeight + ",0,0, 0,0,-2,   0, -1,1,-1,1); \n" + "varying vec3 vTextureCoord;\n" + "varying float vAlpha;\n" + "void main(void) { \n" + "vTextureCoord = aTextureCoord; \n" + "vAlpha = aAlpha; \n" + "gl_Position = pMatrix * vec4(aVertexPosition.x,aVertexPosition.y,0.0, 1.0);\n" + "}");
+            ctx.compileShader(vertexShader);
+            if (!ctx.getShaderParameter(vertexShader, ctx.COMPILE_STATUS)) {
+                alert(ctx.getShaderInfoLog(vertexShader));
+            }
+            var program = surface.shader = ctx.createProgram();
+            ctx.attachShader(program, vertexShader);
+            ctx.attachShader(program, textureShader);
+            ctx.linkProgram(program);
+            if (!ctx.getProgramParameter(program, ctx.LINK_STATUS)) {
+                alert("Could not initialise shaders");
+            }
+            ctx.enableVertexAttribArray(program.vertexPositionAttribute = ctx.getAttribLocation(program, "aVertexPosition"));
+            ctx.enableVertexAttribArray(program.uvCoordAttribute = ctx.getAttribLocation(program, "aTextureCoord"));
+            ctx.enableVertexAttribArray(program.colorAttribute = ctx.getAttribLocation(program, "aAlpha"));
+            program.alphaUniform = ctx.getUniformLocation(program, "uAlpha");
+            program.snapToUniform = ctx.getUniformLocation(program, "uSnapToPixel");
+            ctx.useProgram(program);
+            this._vertexDataCount = 5;
+            this._degToRad = Math.PI / 180;
+            if (window.Float32Array) {
+                this.vertices = new window.Float32Array(this._vertexDataCount * 4);
+            } else {
+                this.vertices = new Array(this._vertexDataCount * 4);
+            }
+            this.arrayBuffer = ctx.createBuffer();
+            this.indexBuffer = ctx.createBuffer();
+            ctx.bindBuffer(ctx.ARRAY_BUFFER, this.arrayBuffer);
+            ctx.bindBuffer(ctx.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+            var byteCount = this._vertexDataCount * 4;
+            ctx.vertexAttribPointer(program.vertexPositionAttribute, 2, ctx.FLOAT, 0, byteCount, 0);
+            ctx.vertexAttribPointer(program.uvCoordAttribute, 2, ctx.FLOAT, 0, byteCount, 2 * 4);
+            ctx.vertexAttribPointer(program.colorAttribute, 1, ctx.FLOAT, 0, byteCount, 4 * 4);
+            if (window.Uint16Array) {
+                this.indices = new window.Uint16Array(6);
+            } else {
+                this.indices = new Array(6);
+            }
+            for (var i = 0, l = this.indices.length; i < l; i += 6) {
+                var j = i * 4 / 6;
+                this.indices.set([j, j + 1, j + 2, j, j + 2, j + 3], i);
+            }
+            ctx.bufferData(ctx.ARRAY_BUFFER, this.vertices, ctx.STREAM_DRAW);
+            ctx.bufferData(ctx.ELEMENT_ARRAY_BUFFER, this.indices, ctx.STATIC_DRAW);
+            ctx.viewport(0, 0, ctx.viewportWidth, ctx.viewportHeight);
+            ctx.colorMask(true, true, true, true);
+            ctx.blendFuncSeparate(ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA, ctx.SRC_ALPHA, ctx.ONE);
+            ctx.enable(ctx.BLEND);
+            ctx.disable(ctx.DEPTH_TEST);
+            surface.init = true;
+            this.ctx = ctx;
+        },
+        "_initTexture": function (src, ctx) {
+            if (!this.textureCache[src.src]) {
+                src.glTexture = ctx.createTexture();
+                src.glTexture.image = src;
+                ctx.activeTexture(ctx.TEXTURE0);
+                ctx.bindTexture(ctx.TEXTURE_2D, src.glTexture);
+                ctx.texImage2D(ctx.TEXTURE_2D, 0, ctx.RGBA, ctx.RGBA, ctx.UNSIGNED_BYTE, src.glTexture.image);
+                ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
+                ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.LINEAR);
+                ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_S, ctx.CLAMP_TO_EDGE);
+                ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_T, ctx.CLAMP_TO_EDGE);
+                this.textureCache[src.src] = src.glTexture;
+                ctx.uniform1i(ctx.getUniformLocation(ctx.canvas.shader, "uSampler0"), 0);
+            } else {
+                src.glTexture = this.textureCache[src.src];
+                ctx.activeTexture(ctx.TEXTURE0);
+                ctx.bindTexture(ctx.TEXTURE_2D, src.glTexture);
+            }
+        },
+        "_initCache": function (o, src, ctx) {
+            if (!this.textureCanvasCache[o.cacheID]) {
+                this.textureCanvasCache[this._preCacheId] = null;
+                src.glTexture = ctx.createTexture();
+                src.glTexture.image = src;
+                ctx.activeTexture(ctx.TEXTURE0);
+                ctx.bindTexture(ctx.TEXTURE_2D, src.glTexture);
+                ctx.texImage2D(ctx.TEXTURE_2D, 0, ctx.RGBA, ctx.RGBA, ctx.UNSIGNED_BYTE, src.glTexture.image);
+                ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MAG_FILTER, ctx.LINEAR);
+                ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_MIN_FILTER, ctx.LINEAR);
+                ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_S, ctx.CLAMP_TO_EDGE);
+                ctx.texParameteri(ctx.TEXTURE_2D, ctx.TEXTURE_WRAP_T, ctx.CLAMP_TO_EDGE);
+                ctx.uniform1i(ctx.getUniformLocation(ctx.canvas.shader, "uSampler0"), 0);
+                this.textureCanvasCache[o.cacheID] = src.glTexture;
+            } else {
+                src.glTexture = this.textureCanvasCache[o.cacheID];
+                ctx.activeTexture(ctx.TEXTURE0);
+                ctx.bindTexture(ctx.TEXTURE_2D, src.glTexture);
+            }
+        },
+        "updateCache": function (ctx, o, w, h) {
+            ctx.clearRect(0, 0, w + 1, h + 1);
+            this.renderCache(ctx, o);
+        },
+        "renderCache": function (ctx, o) {
+            if (!o.isVisible()) {
+                return;
+            }
+            if (o instanceof ARE.Container || o instanceof ARE.Stage) {
+                var list = o.children.slice(0);
+                for (var i = 0, l = list.length; i < l; i++) {
+                    ctx.save();
+                    this.canvasRenderer.render(ctx, list[i]);
+                    ctx.restore();
+                }
+            } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+                var rect = o.rect;
+                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+            } else if (o.txtCanvas) {
+                ctx.drawImage(o.txtCanvas, 0, 0);
+            } else if (o.shapeCanvas) {
+                ctx.drawImage(o.shapeCanvas, 0, 0);
+            }
+        },
+        "clear": function () {
+            this.ctx.clear(this.ctx.COLOR_BUFFER_BIT);
+        },
+        "renderObj": function (ctx, o) {
+            var mtx = o._matrix,
+                leftSide = 0,
+                topSide = 0,
+                rightSide = 0,
+                bottomSide = 0;
+            var uFrame = 0,
+                vFrame = 0,
+                u = 1,
+                v = 1,
+                img = 0;
+            if (o.complexCompositeOperation === "lighter") {
+                ctx.blendFunc(ctx.SRC_ALPHA, ctx.ONE);
+            } else {
+                ctx.blendFunc(ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA);
+            }
+            var mmyCanvas = o.cacheCanvas || o.txtCanvas || o.shapeCanvas;
+            if (mmyCanvas) {
+                this._initCache(o, mmyCanvas, ctx);
+                rightSide = leftSide + mmyCanvas.width;
+                bottomSide = topSide + mmyCanvas.height;
+            } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+                var rect = o.rect;
+                img = o.img;
+                this._initTexture(img, ctx);
+                rightSide = leftSide + rect[2];
+                bottomSide = topSide + rect[3];
+                u = rect[2] / img.width;
+                v = rect[3] / img.height;
+                uFrame = rect[0] / img.width;
+                vFrame = rect[1] / img.height;
+            }
+            var a = mtx.a,
+                b = mtx.b,
+                c = mtx.c,
+                d = mtx.d,
+                tx = mtx.tx,
+                ty = mtx.ty,
+                lma = leftSide * a,
+                lmb = leftSide * b,
+                tmc = topSide * c,
+                tmd = topSide * d,
+                rma = rightSide * a,
+                rmb = rightSide * b,
+                bmc = bottomSide * c,
+                bmd = bottomSide * d;
+            var alpha = o.complexAlpha;
+            this.vertices.set([lma + tmc + tx, lmb + tmd + ty, uFrame, vFrame, alpha, lma + bmc + tx, lmb + bmd + ty, uFrame, vFrame + v, alpha, rma + bmc + tx, rmb + bmd + ty, uFrame + u, vFrame + v, alpha, rma + tmc + tx, rmb + tmd + ty, uFrame + u, vFrame, alpha], 0);
+            ctx.bufferSubData(ctx.ARRAY_BUFFER, 0, this.vertices);
+            ctx.drawElements(ctx.TRIANGLES, 6, ctx.UNSIGNED_SHORT, 0);
+        },
+        "clearBackUpCanvasCache": function () {
+            this.textureCanvasCache[1] = null;
+        }
+    });
+
+    //end-------------------ARE.WebGLRenderer---------------------end
 
     //begin-------------------ARE.Matrix2D---------------------begin
 
@@ -2150,49 +2226,6 @@
 
     //end-------------------ARE.Loader---------------------end
 
-    //begin-------------------ARE.RAF---------------------begin
-
-    ARE.RAF = Class.extend({
-        "statics": {
-            "ctor": function () {
-                var requestAnimFrame = function () {
-                    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
-                    function (callback, element) {
-                        window.setTimeout(callback, 1e3 / 60);
-                    };
-                }();
-                var requestInterval = function (fn, delay) {
-                    if (!window.requestAnimationFrame && !window.webkitRequestAnimationFrame && !(window.mozRequestAnimationFrame && window.mozCancelRequestAnimationFrame) && !window.oRequestAnimationFrame && !window.msRequestAnimationFrame) return window.setInterval(fn, delay);
-                    var start = new Date().getTime(),
-                        handle = new Object();
-
-                    function loop() {
-                        var current = new Date().getTime(),
-                            delta = current - start;
-                        if (delta >= delay) {
-                            fn.call();
-                            start = new Date().getTime();
-                        }
-                        handle.value = requestAnimFrame(loop);
-                    }
-                    handle.value = requestAnimFrame(loop);
-                    return handle;
-                };
-                var clearRequestInterval = function (handle) {
-                    if (handle) {
-                        setTimeout(function () {
-                            window.cancelAnimationFrame ? window.cancelAnimationFrame(handle.value) : window.webkitCancelAnimationFrame ? window.webkitCancelAnimationFrame(handle.value) : window.webkitCancelRequestAnimationFrame ? window.webkitCancelRequestAnimationFrame(handle.value) : window.mozCancelRequestAnimationFrame ? window.mozCancelRequestAnimationFrame(handle.value) : window.oCancelRequestAnimationFrame ? window.oCancelRequestAnimationFrame(handle.value) : window.msCancelRequestAnimationFrame ? window.msCancelRequestAnimationFrame(handle.value) : clearInterval(handle);
-                        }, 0);
-                    }
-                };
-                this.requestInterval = requestInterval;
-                this.clearRequestInterval = clearRequestInterval;
-            }
-        }
-    });
-
-    //end-------------------ARE.RAF---------------------end
-
     //begin-------------------ARE.Observable---------------------begin
 
     ARE.Observable = Class.extend({
@@ -2229,7 +2262,7 @@
                     }
                 }
             }
-            if (target.change) throw "naming conflictsï¼observable will extend 'change' method to your object .";
+            if (target.change) throw "naming conflicts£¡observable will extend 'change' method to your object .";
             var self = this;
             target.change = function (fn) {
                 self.propertyChangedHandler = fn;
@@ -2286,6 +2319,49 @@
     });
 
     //end-------------------ARE.Observable---------------------end
+
+    //begin-------------------ARE.RAF---------------------begin
+
+    ARE.RAF = Class.extend({
+        "statics": {
+            "ctor": function () {
+                var requestAnimFrame = function () {
+                    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+                    function (callback, element) {
+                        window.setTimeout(callback, 1e3 / 60);
+                    };
+                }();
+                var requestInterval = function (fn, delay) {
+                    if (!window.requestAnimationFrame && !window.webkitRequestAnimationFrame && !(window.mozRequestAnimationFrame && window.mozCancelRequestAnimationFrame) && !window.oRequestAnimationFrame && !window.msRequestAnimationFrame) return window.setInterval(fn, delay);
+                    var start = new Date().getTime(),
+                        handle = new Object();
+
+                    function loop() {
+                        var current = new Date().getTime(),
+                            delta = current - start;
+                        if (delta >= delay) {
+                            fn.call();
+                            start = new Date().getTime();
+                        }
+                        handle.value = requestAnimFrame(loop);
+                    }
+                    handle.value = requestAnimFrame(loop);
+                    return handle;
+                };
+                var clearRequestInterval = function (handle) {
+                    if (handle) {
+                        setTimeout(function () {
+                            window.cancelAnimationFrame ? window.cancelAnimationFrame(handle.value) : window.webkitCancelAnimationFrame ? window.webkitCancelAnimationFrame(handle.value) : window.webkitCancelRequestAnimationFrame ? window.webkitCancelRequestAnimationFrame(handle.value) : window.mozCancelRequestAnimationFrame ? window.mozCancelRequestAnimationFrame(handle.value) : window.oCancelRequestAnimationFrame ? window.oCancelRequestAnimationFrame(handle.value) : window.msCancelRequestAnimationFrame ? window.msCancelRequestAnimationFrame(handle.value) : clearInterval(handle);
+                        }, 0);
+                    }
+                };
+                this.requestInterval = requestInterval;
+                this.clearRequestInterval = clearRequestInterval;
+            }
+        }
+    });
+
+    //end-------------------ARE.RAF---------------------end
 
     //begin-------------------ARE.To---------------------begin
 
@@ -2683,6 +2759,35 @@
     });
 
     //end-------------------ARE.To---------------------end
+
+    //begin-------------------ARE.UID---------------------begin
+
+    ARE.UID = Class.extend({
+        "statics": {
+            "_nextID": 0,
+            "_nextCacheID": 1,
+            "get": function () {
+                return this._nextID++;
+            },
+            "getCacheID": function () {
+                return this._nextCacheID++;
+            }
+        }
+    });
+
+    //end-------------------ARE.UID---------------------end
+
+    //begin-------------------ARE.Util---------------------begin
+
+    ARE.Util = Class.extend({
+        "statics": {
+            "random": function (min, max) {
+                return min + Math.floor(Math.random() * (max - min + 1));
+            }
+        }
+    });
+
+    //end-------------------ARE.Util---------------------end
 
     //begin-------------------ARE.TWEEN---------------------begin
 
@@ -3150,35 +3255,6 @@
 
     //end-------------------ARE.TWEEN---------------------end
 
-    //begin-------------------ARE.Util---------------------begin
-
-    ARE.Util = Class.extend({
-        "statics": {
-            "random": function (min, max) {
-                return min + Math.floor(Math.random() * (max - min + 1));
-            }
-        }
-    });
-
-    //end-------------------ARE.Util---------------------end
-
-    //begin-------------------ARE.UID---------------------begin
-
-    ARE.UID = Class.extend({
-        "statics": {
-            "_nextID": 0,
-            "_nextCacheID": 1,
-            "get": function () {
-                return this._nextID++;
-            },
-            "getCacheID": function () {
-                return this._nextCacheID++;
-            }
-        }
-    });
-
-    //end-------------------ARE.UID---------------------end
-
     //begin-------------------ARE.Vector2---------------------begin
 
     ARE.Vector2 = Class.extend({
@@ -3223,16 +3299,186 @@
 
     //end-------------------ARE.Vector2---------------------end
 
+    //begin-------------------ARE.Label---------------------begin
+
+    ARE.Label = ARE.DisplayObject.extend({
+        "ctor": function (option) {
+            this._super();
+            this.value = option.value;
+            this.fontSize = option.fontSize;
+            this.fontFamily = option.fontFamily;
+            this.color = option.color;
+            this.textAlign = "center";
+            this.textBaseline = "top";
+            this.maxWidth = option.maxWidth || 2e3;
+            this.square = option.square || false;
+            this.txtCanvas = document.createElement("canvas");
+            this.txtCtx = this.txtCanvas.getContext("2d");
+            this.setDrawOption();
+            this._watch(this, ["value", "fontSize", "color", "fontFamily"], function (a, b) {
+                this.setDrawOption();
+            });
+        },
+        "setDrawOption": function () {
+            var drawOption = this.getDrawOption({
+                txt: this.value,
+                maxWidth: this.maxWidth,
+                square: this.square,
+                size: this.fontSize,
+                alignment: this.textAlign,
+                color: this.color || "black",
+                fontFamily: this.fontFamily
+            });
+            this.cacheID = ARE.UID.getCacheID();
+            this.width = drawOption.calculatedWidth;
+            this.height = drawOption.calculatedHeight;
+        },
+        "getDrawOption": function (option) {
+            var canvas = this.txtCanvas;
+            var ctx = this.txtCtx;
+            var canvasX, canvasY;
+            var textX, textY;
+            var text = [];
+            var textToWrite = option.txt;
+            var maxWidth = option.maxWidth;
+            var squareTexture = option.square;
+            var textHeight = option.size;
+            var textAlignment = option.alignment;
+            var textColour = option.color;
+            var fontFamily = option.fontFamily;
+            var backgroundColour = option.backgroundColour;
+            ctx.font = textHeight + "px " + fontFamily;
+            if (maxWidth && this.measureText(ctx, textToWrite) > maxWidth) {
+                maxWidth = this.createMultilineText(ctx, textToWrite, maxWidth, text);
+                canvasX = this.getPowerOfTwo(maxWidth);
+            } else {
+                text.push(textToWrite);
+                canvasX = this.getPowerOfTwo(ctx.measureText(textToWrite).width);
+            }
+            canvasY = this.getPowerOfTwo(textHeight * (text.length + 1));
+            if (squareTexture) {
+                canvasX > canvasY ? canvasY = canvasX : canvasX = canvasY;
+            }
+            option.calculatedWidth = canvasX;
+            option.calculatedHeight = canvasY;
+            canvas.width = canvasX;
+            canvas.height = canvasY;
+            switch (textAlignment) {
+                case "left":
+                    textX = 0;
+                    break;
+                case "center":
+                    textX = canvasX / 2;
+                    break;
+                case "right":
+                    textX = canvasX;
+                    break;
+            }
+            textY = canvasY / 2;
+            ctx.fillStyle = textColour;
+            ctx.textAlign = textAlignment;
+            ctx.textBaseline = "middle";
+            ctx.font = textHeight + "px " + fontFamily;
+            var offset = (canvasY - textHeight * (text.length + 1)) * .5;
+            option.cmd = [];
+            for (var i = 0; i < text.length; i++) {
+                if (text.length > 1) {
+                    textY = (i + 1) * textHeight + offset;
+                }
+                option.cmd.push({
+                    text: text[i],
+                    x: textX,
+                    y: textY
+                });
+                ctx.fillText(text[i], textX, textY);
+            }
+            return option;
+        },
+        "getPowerOfTwo": function (value, pow) {
+            var pow = pow || 1;
+            while (pow < value) {
+                pow *= 2;
+            }
+            return pow;
+        },
+        "measureText": function (ctx, textToMeasure) {
+            return ctx.measureText(textToMeasure).width;
+        },
+        "createMultilineText": function (ctx, textToWrite, maxWidth, text) {
+            textToWrite = textToWrite.replace("\n", " ");
+            var currentText = textToWrite;
+            var futureText;
+            var subWidth = 0;
+            var maxLineWidth = 0;
+            var wordArray = textToWrite.split(" ");
+            var wordsInCurrent, wordArrayLength;
+            wordsInCurrent = wordArrayLength = wordArray.length;
+            while (this.measureText(ctx, currentText) > maxWidth && wordsInCurrent > 1) {
+                wordsInCurrent--;
+                var linebreak = false;
+                currentText = futureText = "";
+                for (var i = 0; i < wordArrayLength; i++) {
+                    if (i < wordsInCurrent) {
+                        currentText += wordArray[i];
+                        if (i + 1 < wordsInCurrent) {
+                            currentText += " ";
+                        }
+                    } else {
+                        futureText += wordArray[i];
+                        if (i + 1 < wordArrayLength) {
+                            futureText += " ";
+                        }
+                    }
+                }
+            }
+            text.push(currentText);
+            maxLineWidth = this.measureText(ctx, currentText);
+            if (futureText) {
+                subWidth = this.createMultilineText(ctx, futureText, maxWidth, text);
+                if (subWidth > maxLineWidth) {
+                    maxLineWidth = subWidth;
+                }
+            }
+            return maxLineWidth;
+        },
+        "draw": function (ctx) {
+            ctx.fillStyle = this.color;
+            ctx.font = this.font;
+            ctx.textAlign = this.textAlign || "left";
+            ctx.textBaseline = this.textBaseline || "top";
+            ctx.fillText(this.text, 0, 0);
+        }
+    });
+
+    //end-------------------ARE.Label---------------------end
+
     //begin-------------------ARE.Renderer---------------------begin
 
     ARE.Renderer = Class.extend({
-        "ctor": function (stage) {
+        "ctor": function (stage, closegl) {
             this.stage = stage;
             this.objs = [];
             this.width = this.stage.width;
             this.height = this.stage.height;
             this.mainCanvas = this.stage.canvas;
-            this.renderingEngine = new ARE.CanvasRenderer(this.stage.canvas);
+            var canvasSupport = !!window.CanvasRenderingContext2D,
+                webglSupport = function () {
+                    try {
+                        var canvas = document.createElement("canvas");
+                        return !!(window.WebGLRenderingContext && (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
+                    } catch (e) {
+                        return false;
+                    }
+                }();
+            if (webglSupport && !closegl) {
+                this.renderingEngine = new ARE.WebGLRenderer(this.stage.canvas);
+            } else {
+                if (canvasSupport) {
+                    this.renderingEngine = new ARE.CanvasRenderer(this.stage.canvas);
+                } else {
+                    throw "your browser does not support canvas and webgl ";
+                }
+            }
             this.mainCtx = this.renderingEngine.ctx;
         },
         "update": function () {
@@ -3278,7 +3524,7 @@
                     this._computeMatrix(list[i], o._matrix);
                 }
             } else {
-                if (o instanceof ARE.Graphics) {
+                if (o instanceof ARE.Graphics || o instanceof ARE.Text) {
                     this.objs.push(o);
                     this.initComplex(o);
                 } else {
@@ -3318,6 +3564,89 @@
     });
 
     //end-------------------ARE.Renderer---------------------end
+
+    //begin-------------------ARE.Graphics---------------------begin
+
+    ARE.Graphics = ARE.DisplayObject.extend({
+        "ctor": function () {
+            this._super();
+            this.cmds = [];
+            this.assMethod = ["fillStyle", "strokeStyle", "lineWidth"];
+        },
+        "draw": function (ctx) {
+            for (var i = 0, len = this.cmds.length; i < len; i++) {
+                var cmd = this.cmds[i];
+                if (this.assMethod.join("-").match(new RegExp("\\b" + cmd[0] + "\\b", "g"))) {
+                    ctx[cmd[0]] = cmd[1][0];
+                } else {
+                    ctx[cmd[0]].apply(ctx, Array.prototype.slice.call(cmd[1]));
+                }
+            }
+        },
+        "clearRect": function (x, y, width, height) {
+            this.cmds.push(["clearRect", arguments]);
+            return this;
+        },
+        "clear": function () {
+            this.cmds.length = 0;
+            return this;
+        },
+        "strokeRect": function () {
+            this.cmds.push(["strokeRect", arguments]);
+            return this;
+        },
+        "fillRect": function () {
+            this.cmds.push(["fillRect", arguments]);
+            return this;
+        },
+        "beginPath": function () {
+            this.cmds.push(["beginPath", arguments]);
+            return this;
+        },
+        "arc": function () {
+            this.cmds.push(["arc", arguments]);
+            return this;
+        },
+        "closePath": function () {
+            this.cmds.push(["closePath", arguments]);
+            return this;
+        },
+        "fillStyle": function () {
+            this.cmds.push(["fillStyle", arguments]);
+            return this;
+        },
+        "fill": function () {
+            this.cmds.push(["fill", arguments]);
+            return this;
+        },
+        "strokeStyle": function () {
+            this.cmds.push(["strokeStyle", arguments]);
+            return this;
+        },
+        "lineWidth": function () {
+            this.cmds.push(["lineWidth", arguments]);
+            return this;
+        },
+        "stroke": function () {
+            this.cmds.push(["stroke", arguments]);
+            return this;
+        },
+        "moveTo": function () {
+            this.cmds.push(["moveTo", arguments]);
+            return this;
+        },
+        "lineTo": function () {
+            this.cmds.push(["lineTo", arguments]);
+            return this;
+        },
+        "bezierCurveTo": function () {
+            this.cmds.push(["bezierCurveTo", arguments]);
+            return this;
+        },
+        "clone": function () { }
+    });
+
+    //end-------------------ARE.Graphics---------------------end
 
     //begin-------------------ARE.Keyboard---------------------begin
 
@@ -3985,5 +4314,4 @@
     if (typeof module != 'undefined' && module.exports && this.module !== module) { module.exports = ARE }
     else if (typeof define === 'function' && define.amd) { define(ARE) }
     else { win.ARE = ARE };
-
-})(Function('return this')())
+})(Function('return this')());

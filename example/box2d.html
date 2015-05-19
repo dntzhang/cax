@@ -13,10 +13,10 @@
      
     </div>
   <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
-<img src="../asset/img/github.png" alt="" />
+<img src="asset/img/github.png" alt="" />
  </a>
-    <script src="../src/Box2dWeb-2.1.a.3.min.js"></script>
-    <script src="../dist/are.js"></script>
+    <script src="src/Box2dWeb-2.1.a.3.min.js"></script>
+    <script src="../are.js"></script>
 
     <script>
         ; (function (ARE) {
@@ -97,7 +97,7 @@
                 fixtureDef.shape = polygonShape;
                 var body = world.CreateBody(bodyDef);
                 bodies.push(body);
-                body.bitmap = new Bitmap("../asset/img/box.jpg");
+                body.bitmap = new Bitmap("asset/img/box.jpg");
                 body.bitmap.originX = body.bitmap.originY = 0.5;
                 body.bitmap.scaleX = width / 200;
                 body.bitmap.scaleY = height / 200;
@@ -117,7 +117,7 @@
                 fixtureDef.shape = polygonShape;
                 var body = world.CreateBody(bodyDef);
                 bodies.push(body);
-                body.bitmap = new Bitmap("../asset/img/basketball.png");
+                body.bitmap = new Bitmap("asset/img/basketball.png");
                 body.bitmap.originX = body.bitmap.originY = 0.5;
                 body.bitmap.scaleX = body.bitmap.scaleY = r * 2 / 128;
                 stage.add(body.bitmap)

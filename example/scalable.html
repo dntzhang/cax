@@ -12,14 +12,14 @@
     
       <canvas  width="500" id="ourCanvas" height="500"></canvas>
 
-<script src="../dist/are.js"></script>
+<script src="../are.js"></script>
 
     <script>
         (function (ARE) {
             var Stage = ARE.Stage, Bitmap = ARE.Bitmap, Loader = ARE.Loader, Vector2 = ARE.Vector2, FPS = ARE.FPS;
 
             var ld = new Loader(), tank, stage = new Stage("#ourCanvas");
-            ld.loadRes([{ id: "atLogo", src: "../asset/img/atLogo.png" }]);
+            ld.loadRes([{ id: "atLogo", src: "asset/img/atLogo.png" }]);
             var range1 = document.querySelector("#range1");
             var range2 = document.querySelector("#range2");
 

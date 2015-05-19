@@ -15,13 +15,20 @@
 
     <script>
         (function (ARE) {
-            var Stage = ARE.Stage, Text = ARE.Text;
-            //webgl不支持渲染Text，你可以使用ARE.Label
-            var stage = new Stage("#ourCanvas",true);
-            stage.debug = true;
-            var text = new Text("Alloy Game Engine", "35px arial", "red");
-            text.y = 140;
-            stage.add(text);
+            var Stage = ARE.Stage, Label = ARE.Label;
+
+
+
+            var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
+            var label = new Label({
+                value: "Alloy Game Engine",
+                fontSize: 35,
+                fontFamily: "arial"
+
+            });
+
+            label.y = 140;
+            stage.add(label);
 
         })(ARE);
     </script>

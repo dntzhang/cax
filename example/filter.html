@@ -20,9 +20,9 @@
     </div>
 
      <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
-<img src="../asset/img/github.png" alt="" />
+<img src="asset/img/github.png" alt="" />
  </a>
-    <script src="../dist/are.js"></script>
+    <script src="../are.js"></script>
 
     <script>
         ; (function (ARE) {
@@ -31,7 +31,7 @@
             var ld = new Loader(), bmp;
             var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
             ld.loadRes([
-                { id: "atLogo", src: "../asset/img/atLogo.png" }
+                { id: "atLogo", src: "asset/img/atLogo.png" }
             ]);
             ld.complete(function () {
                 bmp = new Bitmap(ld.get("atLogo"));

@@ -12,21 +12,21 @@
  </div>
     </div>
     <div id="testDom" style="text-align:center;">
-        <div class="textwidget"><a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=6ae26f614ccf38b5495b20e80714a45b97e3146b0e61754b42f91a64bf7526f5"><img class="lh_lazyimg" border="0" src="../asset/img/11.jpg"  style="opacity: 1;"></a>
+        <div class="textwidget"><a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=6ae26f614ccf38b5495b20e80714a45b97e3146b0e61754b42f91a64bf7526f5"><img class="lh_lazyimg" border="0" src="asset/img/11.jpg"  style="opacity: 1;"></a>
 <a target="_blank" href="http://alloyteam.qq.com" style="text-align: center;" alt="点击加入AlloyTeam公众群" title="点击加入AlloyTeam公众群">
 <p>AlloyTeam</p>
 </a></div>
     </div>
   <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
-<img src="../asset/img/github.png" alt="" />
+<img src="asset/img/github.png" alt="" />
  </a>
-    <script src="../dist/are.js"></script>
+    <script src="../are.js"></script>
     <script>
         ; (function (ARE) {
             var Stage = ARE.Stage, Bitmap = ARE.Bitmap, DomElement = ARE.DomElement;
 
         var stage = new Stage("#ourCanvas");
-
+        stage.openDom();
         var domElement = new DomElement("#testDom");
        
         domElement.y = 180;
@@ -35,7 +35,7 @@
         stage.add(domElement);
         //stage.scalable(1, 1);
 
-        var bmp = new Bitmap("../asset/img/atLogo.png");
+        var bmp = new Bitmap("asset/img/atLogo.png");
         bmp.originX = 0.5;
         bmp.originY = 0.5;
         bmp.x = stage.width / 2;

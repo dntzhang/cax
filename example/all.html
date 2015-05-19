@@ -6,44 +6,15 @@
 <body>   
     <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);background-color:black;"></canvas> 
            <div style="text-align:center;">移动鼠标改变发射点位置</div>
-          <div style="text-align:center;">FPS:<span id="fps"></span></div>
+        
     </div>
    
    <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
-<img src="../asset/img/github.png" alt="" />
+<img src="asset/img/github.png" alt="" />
  </a>
-    <script src="../src/are/base.js"></script>
-
-    <script src="../src/are/util/dom.js"></script>
-    <script src="../src/are/util/fps.js"></script>
-    <script src="../src/are/util/keyboard.js"></script>
-    <script src="../src/are/util/loader.js"></script>
-    <script src="../src/are/util/matrix2d.js"></script>
-    <script src="../src/are/util/observable.js"></script>
-    <script src="../src/are/util/raf.js"></script>
-    <script src="../src/are/util/tween.js"></script>
-    <script src="../src/are/util/to.js"></script>
-    <script src="../src/are/util/uid.js"></script>
-    <script src="../src/are/util/util.js"></script>
-    <script src="../src/are/util/vector2.js"></script>
-
-    <script src="../src/are/renderer/canvas-renderer.js"></script>
-    <script src="../src/are/renderer/renderer.js"></script>
-
-    <script src="../src/are/display/display-object.js"></script>
-    <script src="../src/are/display/bitmap.js"></script>
-    <script src="../src/are/display/container.js"></script>
-    <script src="../src/are/display/dom-element.js"></script>
-    <script src="../src/are/display/particle.js"></script>
-    <script src="../src/are/display/particle-system.js"></script>
-    <script src="../src/are/display/rect-adjust.js"></script>
-    <script src="../src/are/display/shape.js"></script>
-    <script src="../src/are/display/graphics.js"></script>
-    <script src="../src/are/display/sprite.js"></script>
-    <script src="../src/are/display/stage.js"></script>
-    <script src="../src/are/display/text.js"></script>
 
 
+    <script src="../are.js"></script>
     <script>
         (function (ARE) {
             var Stage = ARE.Stage, Bitmap = ARE.Bitmap, ParticleSystem = ARE.ParticleSystem, Shape = ARE.Shape, Loader = ARE.Loader, Text = ARE.Text, Vector2 = ARE.Vector2, FPS = ARE.FPS, Sprite = ARE.Sprite;
@@ -71,11 +42,10 @@
                 ps.emitY = evt.stageY;
             })
 
-            var fpsDiv = document.getElementById("fps");
+           
 
 
-
-            var bmp = new Bitmap("../asset/img/atLogo.png");
+            var bmp = new Bitmap("asset/img/atLogo.png");
             //（0.5,0.5）==〉The center is the point of rotation
             bmp.originX = 0.5;
             bmp.originY = 0.5;
@@ -88,11 +58,10 @@
             })
             //add object to stage
             stage.add(bmp);
-
+            stage.debug = true;
             var step = 0.01;
             //loop
             stage.onTick(function () {
-                fpsDiv.innerHTML = FPS.get();
                 bmp.rotation += 0.5;
                 if (bmp.scaleX > 1 || bmp.scaleX < 0.5) {
                     step *= -1;
@@ -126,9 +95,9 @@
 
             var ld = new Loader()
             ld.loadRes([
-                { id: "kmd", src: "../asset/img/kmd.png" },
-                { id: "pig", src: "../asset/img/pig.png" },
-                { id: "hero", src: "../asset/img/hero-m.png" }]
+                { id: "kmd", src: "asset/img/kmd.png" },
+                { id: "pig", src: "asset/img/pig.png" },
+                { id: "hero", src: "asset/img/hero-m.png" }]
                 );
             ld.complete(function () {
                 var sprite = new Sprite({
