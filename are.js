@@ -172,7 +172,11 @@
             });
             this._preAABB = [-1, -1, 0, 0];
             this.cursor = "default";
-            this.onMouseOver(function () { });
+            this.onHover(function () {
+                this._setCursor(this, this.cursor)
+            }, function () {
+                this._setCursor(this, "default");
+            });
         },
         "_watch": function (target, prop, onPropertyChanged) {
             var self = this;
@@ -219,11 +223,6 @@
                 for (var i = 0, len = fns.length; i < len; i++) {
                     result = fns[i].call(this, event);
                 }
-            }
-            if (type === "mouseover" && this.cursor !== "default") {
-                this._setCursor(this, this.cursor);
-            } else if (type === "mouseout") {
-                this._setCursor(this, "default");
             }
             return result;
         },
