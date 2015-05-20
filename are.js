@@ -149,6 +149,7 @@
             this.id = ARE.UID.get();
             this.cacheID = 0;
             this.baseInstanceof = "DisplayObject";
+            this.tickFPS = 60;
             var self = this;
             this._watch(this, "originX", function (prop, value) {
                 if (typeof value === "string") {
@@ -1450,7 +1451,7 @@
             return [_l + Math.max(document.documentElement.scrollLeft, document.body.scrollLeft), _t + Math.max(document.documentElement.scrollTop, document.body.scrollTop)];
         },
         "_tick": function (container) {
-            if (container && container.tick) {
+            if (container && container.tick && container.tickFPS > 0) {
                 this._initInterval(container);
                 if (!container.hasOwnProperty("_tickInterval")) {
                     container.tick();
@@ -1469,7 +1470,7 @@
             for (var i = 0; i < len; i++) {
                 var child = children[i];
                 if (child) {
-                    if (child.tick) {
+                    if (child.tick && child.tickFPS > 0) {
                         this._initInterval(child);
                         if (!child.hasOwnProperty("_tickInterval")) {
                             child.tick();
@@ -1491,11 +1492,7 @@
         },
         "_initInterval": function (obj) {
             if (obj.hasOwnProperty("tickFPS")) {
-                if (obj.tickFPS == 0) {
-                    obj._tickInterval = 1e4;
-                } else {
                     obj._tickInterval = 1e3 / obj.tickFPS;
-                }
             }
         },
         "tick": function (fn) {
