@@ -57,6 +57,14 @@ stage.onTick(function () {
     bmp.scaleY += step;
 });
 ```
+
+教程
+=================
+* [AlloyRenderingEngine入门](http://www.alloyteam.com/2015/04/6726/)
+* [AlloyRenderingEngine之Shape](http://www.alloyteam.com/2015/04/alloyrenderingengine-zhi-shape/)
+* [AlloyRenderingEngine继承](http://www.alloyteam.com/2015/04/alloyrenderingengine-ji-cheng/)
+* [AlloyRenderingEngine文本框组件](http://www.alloyteam.com/2015/05/alloyrenderingengine-wen-ben-kuang-zu-jian/)
+
 工具推荐
 =================
 * [texture packer](https://www.codeandweb.com/texturepacker)
