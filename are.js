@@ -1266,16 +1266,20 @@
             this.canvas.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
             this.canvas.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
             this.canvas.addEventListener("touchend", this._handleMouseUp.bind(this), false);
-            window.addEventListener("resize", function () {
-                self.offset = self._getXY(self.canvas);
-                if (self.domSurface) {
-                    self.domSurface.style.left = self.offset[0] + "px";
-                    self.domSurface.style.top = self.offset[1] + "px";
-                }
-                if (self._scaleX) {
-                    self.scaleToScreen(self._scaleX, self._scaleY);
-                }
-            }, false);
+            document.addEventListener("DOMContentLoaded", this.adjustLayout.bind(this), false);
+            window.addEventListener("load", this.adjustLayout.bind(this), false);
+            window.addEventListener("resize", this.adjustLayout.bind(this), false);
+        },
+        "adjustLayout": function () {
+            this.offset = this._getXY(this.canvas);
+            if (this.domSurface) {
+                this.domSurface.style.left = this.offset[0] + "px";
+                this.domSurface.style.top = this.offset[1] + "px";
+
+            }
+            if (this._scaleX) {
+                this.scaleToScreen(this._scaleX, this._scaleY);
+            }
         },
         "openDom": function () {
             this._initDomSurface();
