@@ -64,6 +64,7 @@ stage.onTick(function () {
 * [AlloyRenderingEngine之Shape](http://www.alloyteam.com/2015/04/alloyrenderingengine-zhi-shape/)
 * [AlloyRenderingEngine继承](http://www.alloyteam.com/2015/04/alloyrenderingengine-ji-cheng/)
 * [AlloyRenderingEngine文本框组件](http://www.alloyteam.com/2015/05/alloyrenderingengine-wen-ben-kuang-zu-jian/)
+* [AlloyRenderingEngine燃烧的进度条](http://www.alloyteam.com/2015/05/alloyrenderingengine-ran-shao-di-jin-du-tiao/)
 
 工具推荐
 =================
