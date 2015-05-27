@@ -56,7 +56,7 @@ ARE.Sprite = ARE.DisplayObject.extend({
     "play": function() {
         this.paused = false;
     },
-    "stop": function() {
+    "pause": function () {
         this.paused = true;
     },
     "reset": function() {

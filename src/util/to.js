@@ -262,7 +262,7 @@ ARE.To = Class.extend({
             this.currentTaskBegin = new Date();
         }
     },
-    "togglePlayPause": function() {
+    "toggle": function() {
         if (this._pause) {
             this.play();
         } else {

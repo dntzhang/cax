@@ -18,12 +18,12 @@ ARE.Stage = ARE.Container.extend({
         this._scaleX = this._scaleY = null;
         this.offset = this._getXY(this.canvas);
         this.overObj = null;
-        this.pause = false;
+        this._paused = false;
         this.fps = 63;
         this.interval = Math.floor(1e3 / this.fps);
         var self = this;
         self.loop = setInterval(function() {
-            if (self.pause) return;
+            if (self._paused) return;
             self._tick(self);
         }, self.interval);
         Object.defineProperty(this, "useRequestAnimFrame", {
@@ -103,6 +103,20 @@ ARE.Stage = ARE.Container.extend({
         }
         if (this._scaleX) {
             this.scaleToScreen(this._scaleX, this._scaleY);
+        }
+    },
+    "pause": function () {
+        this._paused = true;
+
+    },
+    "play": function () {
+        this._paused = false;
+    },
+    "toggle": function () {
+        if (this._paused) {
+            this.play();
+        } else {
+            this.pause();
         }
     },
     "openDom": function() {

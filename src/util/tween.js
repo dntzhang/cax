@@ -65,7 +65,7 @@ ARE.TWEEN = Class.extend({
             for (var field in object) {
                 _valuesStart[field] = parseFloat(object[field], 10);
             }
-            this.togglePlayPause = function() {
+            this.toggle = function() {
                 if (_paused) {
                     this.play();
                 } else {
