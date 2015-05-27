@@ -7,7 +7,7 @@
      
     <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> </div>
  <div  style="text-align:center;">
-     <input type="button" id="pBtn" value="play" /><input type="button" id="sBtn"  value="stop" />
+     <input type="button" id="pBtn" value="play" /><input type="button" id="sBtn"  value="pause" />
   <input type="button" id="gapBtn"  value="gotoAndPlay" /><input type="button" id="pasBtn" value="gotoAndStop" />   <input type="button" id="gapoBtn"  value="gotoAndPlayOnce" />
  
  </div>
@@ -18,7 +18,7 @@
 
     <script>
         (function (ARE) {
-            var Stage = ARE.Stage, Sprite = ARE.Sprite, Loader = ARE.Loader;
+            var Stage = ARE.Stage, Sprite = ARE.Sprite, Loader = ARE.Loader, Dom=ARE.Dom;
 
             	
 	
@@ -73,10 +73,10 @@
                     },
                     currentAnimation: "walk",
                     tickAnimationEnd: function () {
-                        alert("播完一轮");
+                        //alert("播完一轮");
                     },
                     animationEnd: function () {
-                        alert("播放完成")
+                        //alert("播放完成")
                     }
                 });
                 //sp.hover(function () {
@@ -89,7 +89,7 @@
                     sprite.play();
                 })
                 Dom.get("#sBtn").on("click", function () {
-                    sprite.stop();
+                    sprite.pause();
                 })
                 Dom.get("#gapBtn").on("click", function () {
                     sprite.gotoAndPlay("happy");
