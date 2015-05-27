@@ -1695,48 +1695,56 @@ ARE.RAF = Class.extend({
 
 ARE.To = Class.extend({
     "statics": {
-        "ctor": function() {
-            var self = this;
-            setTimeout(function() {
-                self.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
-                self.linear = ARE.TWEEN.Easing.Linear.None,
-                self.quadraticIn = ARE.TWEEN.Easing.Quadratic.In,
-                self.quadraticOut = ARE.TWEEN.Easing.Quadratic.Out,
-                self.quadraticInOut = ARE.TWEEN.Easing.Quadratic.InOut,
-                self.cubicIn = ARE.TWEEN.Easing.Cubic.In,
-                self.cubicOut = ARE.TWEEN.Easing.Cubic.Out,
-                self.cubicInOut = ARE.TWEEN.Easing.Cubic.InOut,
-                self.quarticIn = ARE.TWEEN.Easing.Quartic.In,
-                self.quarticOut = ARE.TWEEN.Easing.Quartic.Out,
-                self.quarticInOut = ARE.TWEEN.Easing.Quartic.InOut,
-                self.quinticIn = ARE.TWEEN.Easing.Quintic.In,
-                self.quinticOut = ARE.TWEEN.Easing.Quintic.Out,
-                self.quinticInOut = ARE.TWEEN.Easing.Quintic.InOut,
-                self.sinusoidalIn = ARE.TWEEN.Easing.Sinusoidal.In,
-                self.sinusoidalOut = ARE.TWEEN.Easing.Sinusoidal.Out,
-                self.sinusoidalInOut = ARE.TWEEN.Easing.Sinusoidal.InOut,
-                self.exponentialIn = ARE.TWEEN.Easing.Exponential.In,
-                self.exponentialOut = ARE.TWEEN.Easing.Exponential.Out,
-                self.exponentialInOut = ARE.TWEEN.Easing.Exponential.InOut,
-                self.circularIn = ARE.TWEEN.Easing.Circular.In,
-                self.circularOut = ARE.TWEEN.Easing.Circular.Out,
-                self.circularInOut = ARE.TWEEN.Easing.Circular.InOut,
-                self.elasticIn = ARE.TWEEN.Easing.Elastic.In,
-                self.elasticOut = ARE.TWEEN.Easing.Elastic.Out,
-                self.elasticInOut = ARE.TWEEN.Easing.Elastic.InOut,
-                self.backIn = ARE.TWEEN.Easing.Back.In,
-                self.backOut = ARE.TWEEN.Easing.Back.Out,
-                self.backInOut = ARE.TWEEN.Easing.Back.InOut,
-                self.bounceIn = ARE.TWEEN.Easing.Bounce.In,
-                self.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
-                self.bounceInOut = ARE.TWEEN.Easing.Bounce.InOut,
-                self.interpolationLinear = ARE.TWEEN.Interpolation.Linear,
-                self.interpolationBezier = ARE.TWEEN.Interpolation.Bezier,
-                self.interpolationCatmullRom = ARE.TWEEN.Interpolation.CatmullRom;
-            }, 0);
+        "ctor": function () {
+            this.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
+            this.linear = ARE.TWEEN.Easing.Linear.None,
+            this.quadraticIn = ARE.TWEEN.Easing.Quadratic.In,
+            this.quadraticOut = ARE.TWEEN.Easing.Quadratic.Out,
+            this.quadraticInOut = ARE.TWEEN.Easing.Quadratic.InOut,
+            this.cubicIn = ARE.TWEEN.Easing.Cubic.In,
+            this.cubicOut = ARE.TWEEN.Easing.Cubic.Out,
+            this.cubicInOut = ARE.TWEEN.Easing.Cubic.InOut,
+            this.quarticIn = ARE.TWEEN.Easing.Quartic.In,
+            this.quarticOut = ARE.TWEEN.Easing.Quartic.Out,
+            this.quarticInOut = ARE.TWEEN.Easing.Quartic.InOut,
+            this.quinticIn = ARE.TWEEN.Easing.Quintic.In,
+            this.quinticOut = ARE.TWEEN.Easing.Quintic.Out,
+            this.quinticInOut = ARE.TWEEN.Easing.Quintic.InOut,
+            this.sinusoidalIn = ARE.TWEEN.Easing.Sinusoidal.In,
+            this.sinusoidalOut = ARE.TWEEN.Easing.Sinusoidal.Out,
+            this.sinusoidalInOut = ARE.TWEEN.Easing.Sinusoidal.InOut,
+            this.exponentialIn = ARE.TWEEN.Easing.Exponential.In,
+            this.exponentialOut = ARE.TWEEN.Easing.Exponential.Out,
+            this.exponentialInOut = ARE.TWEEN.Easing.Exponential.InOut,
+            this.circularIn = ARE.TWEEN.Easing.Circular.In,
+            this.circularOut = ARE.TWEEN.Easing.Circular.Out,
+            this.circularInOut = ARE.TWEEN.Easing.Circular.InOut,
+            this.elasticIn = ARE.TWEEN.Easing.Elastic.In,
+            this.elasticOut = ARE.TWEEN.Easing.Elastic.Out,
+            this.elasticInOut = ARE.TWEEN.Easing.Elastic.InOut,
+            this.backIn = ARE.TWEEN.Easing.Back.In,
+            this.backOut = ARE.TWEEN.Easing.Back.Out,
+            this.backInOut = ARE.TWEEN.Easing.Back.InOut,
+            this.bounceIn = ARE.TWEEN.Easing.Bounce.In,
+            this.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
+            this.bounceInOut = ARE.TWEEN.Easing.Bounce.InOut,
+            this.interpolationLinear = ARE.TWEEN.Interpolation.Linear,
+            this.interpolationBezier = ARE.TWEEN.Interpolation.Bezier,
+            this.interpolationCatmullRom = ARE.TWEEN.Interpolation.CatmullRom;
         },
         "get": function(element) {
-            return new this(element);
+            var to = new this(element);
+            var stage = this.getStage(element)
+            stage.toList.push(to);
+            return to;
+        },
+        "getStage": function (element) {
+            if(!element.parent) throw "please add the object to the stage , then animate it."
+            if (element.parent instanceof ARE.Stage) {
+                return element.parent;
+            }else{
+                return this.getStage(element.parent);
+            }
         }
     },
     "ctor": function(element) {
@@ -3907,6 +3915,7 @@ ARE.Stage = ARE.Container.extend({
         this._paused = false;
         this.fps = 63;
         this.interval = Math.floor(1e3 / this.fps);
+        this.toList = [];
         var self = this;
         self.loop = setInterval(function() {
             if (self._paused) return;
@@ -3993,10 +4002,44 @@ ARE.Stage = ARE.Container.extend({
     },
     "pause": function () {
         this._paused = true;
+        this._pauseSprite(this);
+        this._pauseTween();
 
     },
     "play": function () {
         this._paused = false;
+        this._playSprite(this);
+        this._playTween();
+    },
+    "_pauseSprite": function (obj) {
+        for (var i = 0, len = obj.children.length; i < len; i++) {
+            var child = obj.children[i];
+            if (child instanceof ARE.Container) {
+                this._pauseSprite(child);
+            } else if (child instanceof ARE.Sprite) {
+                child.pause();
+            }
+        }
+    },
+    "_pauseTween": function () {
+        for (var i = 0, len = this.toList.length; i < len; i++) {
+            this.toList[i].pause();
+        }
+    },
+    "_playSprite": function (obj) {
+        for (var i = 0, len = obj.children.length; i < len; i++) {
+            var child = obj.children[i];
+            if (child instanceof ARE.Container) {
+                this._playSprite(child);
+            } else if (child instanceof ARE.Sprite) {
+                child.play();
+            }
+        }
+    },
+    "_playTween": function () {
+        for (var i = 0, len = this.toList.length; i < len; i++) {
+            this.toList[i].play();
+        }
     },
     "toggle": function () {
         if (this._paused) {

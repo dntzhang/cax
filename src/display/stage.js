@@ -21,6 +21,7 @@ ARE.Stage = ARE.Container.extend({
         this._paused = false;
         this.fps = 63;
         this.interval = Math.floor(1e3 / this.fps);
+        this.toList = [];
         var self = this;
         self.loop = setInterval(function() {
             if (self._paused) return;
@@ -107,10 +108,44 @@ ARE.Stage = ARE.Container.extend({
     },
     "pause": function () {
         this._paused = true;
+        this._pauseSprite(this);
+        this._pauseTween();
 
     },
     "play": function () {
         this._paused = false;
+        this._playSprite(this);
+        this._playTween();
+    },
+    "_pauseSprite": function (obj) {
+        for (var i = 0, len = obj.children.length; i < len; i++) {
+            var child = obj.children[i];
+            if (child instanceof ARE.Container) {
+                this._pauseSprite(child);
+            } else if (child instanceof ARE.Sprite) {
+                child.pause();
+            }
+        }
+    },
+    "_pauseTween": function () {
+        for (var i = 0, len = this.toList.length; i < len; i++) {
+            this.toList[i].pause();
+        }
+    },
+    "_playSprite": function (obj) {
+        for (var i = 0, len = obj.children.length; i < len; i++) {
+            var child = obj.children[i];
+            if (child instanceof ARE.Container) {
+                this._playSprite(child);
+            } else if (child instanceof ARE.Sprite) {
+                child.play();
+            }
+        }
+    },
+    "_playTween": function () {
+        for (var i = 0, len = this.toList.length; i < len; i++) {
+            this.toList[i].play();
+        }
     },
     "toggle": function () {
         if (this._paused) {
