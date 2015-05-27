@@ -26,9 +26,11 @@
                 var bmp = new Bitmap(ld.get("hero"));
                 bmp.originX = 0.5;
                 bmp.originY = 0.5;
+                bmp.cursor = "move";
                 bmp.x = stage.width / 2;
                 bmp.y = stage.height / 2;
                 var ctt = new Container();
+               
                 ctt.add(bmp);
                 bmp.onPressMove(function (evt) {
                     this.x = evt.stageX;
@@ -38,6 +40,7 @@
                 stage.add(ctt);
 
                 var bmp2 = new Bitmap(ld.get("hero"));
+                bmp2.cursor = "pointer";
                 bmp2.x = 100;
                 bmp2.y = 100;
                 bmp2.originX = bmp2.originY = 0.5;
@@ -47,7 +50,9 @@
                     bmp2.scale = 1;
 
                 })
-
+                bmp2.onClick(function () {
+                    alert(1);
+                })
                 stage.add(bmp2);
             });
 

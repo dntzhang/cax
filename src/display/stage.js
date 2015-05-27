@@ -268,6 +268,7 @@ ARE.Stage = ARE.Container.extend({
                     } else {
                         this.hitRenderer._bubbleEvent(child, "mousemove", evt);
                     }
+                    this._setCursorByOverObject(child);
                 } else {
                     this.overObj = child;
                     this.hitRenderer._bubbleEvent(child, "mouseover", evt);
@@ -480,6 +481,15 @@ ARE.Stage = ARE.Container.extend({
     "setCursor": function(type) {
         this.canvas.style.cursor = type;
         if (this.domSurface) this.domSurface.style.cursor = type;
+    },
+    "_setCursorByOverObject": function (obj) {
+        if (obj.cursor !== "default") {
+            this.setCursor(obj.cursor);
+        } else {
+            if (obj.parent) {
+                this._setCursorByOverObject(obj.parent);
+            }
+        }
     }
 });
 

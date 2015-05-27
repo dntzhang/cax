@@ -2655,9 +2655,9 @@ ARE.DisplayObject = Class.extend({
         });
         this._preAABB = [-1, -1, 0, 0];
         this.cursor = "default";
-        this.onHover(function() {
-            this._setCursor(this, this.cursor);
-        }, function() {
+        this.onHover(function () {
+            //this._setCursor(this, this.cursor);
+        }, function () {
             this._setCursor(this, "default");
         });
     },
@@ -2709,11 +2709,13 @@ ARE.DisplayObject = Class.extend({
         }
         return result;
     },
-    "_setCursor": function(obj, type) {
-        if (obj.parent instanceof ARE.Stage) {
-            obj.parent.setCursor(type);
-        } else {
-            this._setCursor(obj.parent, type);
+    "_setCursor": function (obj, type) {
+        if (obj) {
+            if (obj.parent instanceof ARE.Stage) {
+                obj.parent.setCursor(type);
+            } else {
+                this._setCursor(obj.parent, type);
+            }
         }
     },
     "clone": function() {
@@ -4162,6 +4164,7 @@ ARE.Stage = ARE.Container.extend({
                     } else {
                         this.hitRenderer._bubbleEvent(child, "mousemove", evt);
                     }
+                    this._setCursorByOverObject(child);
                 } else {
                     this.overObj = child;
                     this.hitRenderer._bubbleEvent(child, "mouseover", evt);
@@ -4374,6 +4377,15 @@ ARE.Stage = ARE.Container.extend({
     "setCursor": function(type) {
         this.canvas.style.cursor = type;
         if (this.domSurface) this.domSurface.style.cursor = type;
+    },
+    "_setCursorByOverObject": function (obj) {
+        if (obj.cursor !== "default") {
+            this.setCursor(obj.cursor);
+        } else {
+            if (obj.parent) {
+                this._setCursorByOverObject(obj.parent);
+            }
+        }
     }
 });
 

@@ -37,9 +37,9 @@ ARE.DisplayObject = Class.extend({
         });
         this._preAABB = [-1, -1, 0, 0];
         this.cursor = "default";
-        this.onHover(function() {
-            this._setCursor(this, this.cursor);
-        }, function() {
+        this.onHover(function () {
+            //this._setCursor(this, this.cursor);
+        }, function () {
             this._setCursor(this, "default");
         });
     },
@@ -91,11 +91,13 @@ ARE.DisplayObject = Class.extend({
         }
         return result;
     },
-    "_setCursor": function(obj, type) {
-        if (obj.parent instanceof ARE.Stage) {
-            obj.parent.setCursor(type);
-        } else {
-            this._setCursor(obj.parent, type);
+    "_setCursor": function (obj, type) {
+        if (obj) {
+            if (obj.parent instanceof ARE.Stage) {
+                obj.parent.setCursor(type);
+            } else {
+                this._setCursor(obj.parent, type);
+            }
         }
     },
     "clone": function() {
