@@ -6,12 +6,14 @@
     
 <body>   
     <div style="text-align: center;position:absolute;z-index:2000;">
-        <input id="range1" type="range" name="range" min="0" max="1" step="0.1" value="1" />
-         <input id="range2" type="range" name="range" min="0" max="1" step="0.1" value="1" />
+        <input id="range1" type="range" name="range" min="0" max="1" step="0.1" value="0.5" />
+         <input id="range2" type="range" name="range" min="0" max="1" step="0.1" value="0.5" />
     </div>
     
-      <canvas  width="500" id="ourCanvas" height="500"></canvas>
-
+      <canvas  width="500" id="ourCanvas" height="500" style="background-color:#ccc;"></canvas>
+       <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
+<img src="asset/img/github.png" alt="" />
+ </a>
 <script src="../dist/are.js"></script>
 
     <script>
@@ -26,11 +28,11 @@
             stage.scaleToScreen(range1.value, range2.value);
             var self = this;
             ld.complete(function () {
-         
+
 
                 var bmp = new Bitmap(ld.get("atLogo"));
                 //（0.5,0.5）==〉The center is the point of rotation
-         
+
                 //bind click event, the event monitor can be accurate to pixel
                 bmp.on("click", function () {
                     //apply a random filter to the bmp
@@ -68,10 +70,10 @@
             });
 
 
-            
-      
 
-        
+
+
+
         })(ARE);
     </script>
 </body>
