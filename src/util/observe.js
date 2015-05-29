@@ -147,5 +147,5 @@
         this.length = length;
     }
 
-    ARE.Observe = observe;
+    are.Observe = observe;
 })();

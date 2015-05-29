@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.RectShape---------------------begin
+//begin-------------------are.RectShape---------------------begin
 
-ARE.RectShape = ARE.DisplayObject.extend({
+are.RectShape = are.DisplayObject.extend({
     "ctor": function(width, height, color, isHollow) {
         this._super();
         this.color = color || "black";
@@ -14,7 +14,7 @@ ARE.RectShape = ARE.DisplayObject.extend({
         this.shapeCanvas.height = this.height;
         this.shapeCtx = this.shapeCanvas.getContext("2d");
         this.draw();
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = are.UID.getCacheID();
     },
     "draw": function(ctx) {
         var ctx = this.shapeCtx;
@@ -24,4 +24,4 @@ ARE.RectShape = ARE.DisplayObject.extend({
     }
 });
 
-//end-------------------ARE.RectShape---------------------end
+//end-------------------are.RectShape---------------------end

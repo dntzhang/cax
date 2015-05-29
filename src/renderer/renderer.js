@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Renderer---------------------begin
+//begin-------------------are.Renderer---------------------begin
 
-ARE.Renderer = Class.extend({
+are.Renderer = Class.extend({
     "ctor": function(stage, closegl) {
         this.stage = stage;
         this.objs = [];
@@ -18,10 +18,10 @@ ARE.Renderer = Class.extend({
                 }
             }();
         if (webglSupport && !closegl) {
-            this.renderingEngine = new ARE.WebGLRenderer(this.stage.canvas);
+            this.renderingEngine = new are.WebGLRenderer(this.stage.canvas);
         } else {
             if (canvasSupport) {
-                this.renderingEngine = new ARE.CanvasRenderer(this.stage.canvas);
+                this.renderingEngine = new are.CanvasRenderer(this.stage.canvas);
             } else {
                 throw "your browser does not support canvas and webgl ";
             }
@@ -58,12 +58,12 @@ ARE.Renderer = Class.extend({
         } else {
             o._matrix.initialize(1, 0, 0, 1, 0, 0);
         }
-        if (o instanceof ARE.Shape) {
+        if (o instanceof are.Shape) {
             o._matrix.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
         } else {
             o._matrix.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
         }
-        if (o instanceof ARE.Container) {
+        if (o instanceof are.Container) {
             var list = o.children,
                 len = list.length,
                 i = 0;
@@ -71,7 +71,7 @@ ARE.Renderer = Class.extend({
                 this._computeMatrix(list[i], o._matrix);
             }
         } else {
-            if (o instanceof ARE.Graphics || o instanceof ARE.Text) {
+            if (o instanceof are.Graphics || o instanceof are.Text) {
                 this.objs.push(o);
                 this.initComplex(o);
             } else {
@@ -110,4 +110,4 @@ ARE.Renderer = Class.extend({
     }
 });
 
-//end-------------------ARE.Renderer---------------------end
+//end-------------------are.Renderer---------------------end

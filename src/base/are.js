@@ -1,2 +1,2 @@
 //AlloyRenderingEngine
-var ARE={};
+var are={};

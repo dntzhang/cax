@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Container---------------------begin
+//begin-------------------are.Container---------------------begin
 
-ARE.Container = ARE.DisplayObject.extend({
+are.Container = are.DisplayObject.extend({
     "ctor": function() {
         this._super();
         this.children = [];
@@ -15,8 +15,8 @@ ARE.Container = ARE.DisplayObject.extend({
                 if (item) {
                     this.children.push(item);
                     item.parent = this;
-                    if (item instanceof ARE.DomElement) {
-                        ARE.Stage.domSurface.appendChild(item.element);
+                    if (item instanceof are.DomElement) {
+                        are.Stage.domSurface.appendChild(item.element);
                         item.element.style.visibility = "visible";
                         var style = window.getComputedStyle(item.element, null);
                         item.width = parseInt(style.width);
@@ -28,8 +28,8 @@ ARE.Container = ARE.DisplayObject.extend({
             if (obj) {
                 this.children.push(obj);
                 obj.parent = this;
-                if (obj instanceof ARE.DomElement) {
-                    ARE.Stage.domSurface.appendChild(obj.element);
+                if (obj instanceof are.DomElement) {
+                    are.Stage.domSurface.appendChild(obj.element);
                     obj.element.style.visibility = "visible";
                     var style = window.getComputedStyle(obj.element, null);
                     obj.width = parseInt(style.width);
@@ -48,8 +48,8 @@ ARE.Container = ARE.DisplayObject.extend({
                     if (this.children[k].id == currentObj.id) {
                         currentObj.parent = null;
                         this.children.splice(k, 1);
-                        if (currentObj instanceof ARE.DomElement) {
-                            ARE.Stage.domSurface.removeChild(currentObj.element);
+                        if (currentObj instanceof are.DomElement) {
+                            are.Stage.domSurface.removeChild(currentObj.element);
                         }
                         break;
                     }
@@ -60,8 +60,8 @@ ARE.Container = ARE.DisplayObject.extend({
                 if (this.children[i].id == obj.id) {
                     obj.parent = null;
                     this.children.splice(i, 1);
-                    if (obj instanceof ARE.DomElement) {
-                        ARE.Stage.domSurface.removeChild(obj.element);
+                    if (obj instanceof are.DomElement) {
+                        are.Stage.domSurface.removeChild(obj.element);
                     }
                     break;
                 }
@@ -69,7 +69,7 @@ ARE.Container = ARE.DisplayObject.extend({
         }
     },
     "clone": function() {
-        var o = new ARE.Container();
+        var o = new are.Container();
         this.cloneProps(o);
         var arr = o.children = [];
         for (var i = this.children.length - 1; i > -1; i--) {
@@ -127,4 +127,4 @@ ARE.Container = ARE.DisplayObject.extend({
     }
 });
 
-//end-------------------ARE.Container---------------------end
+//end-------------------are.Container---------------------end

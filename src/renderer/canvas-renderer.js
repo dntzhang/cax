@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.CanvasRenderer---------------------begin
+//begin-------------------are.CanvasRenderer---------------------begin
 
-ARE.CanvasRenderer = Class.extend({
+are.CanvasRenderer = Class.extend({
     "ctor": function(canvas) {
         if (canvas) {
             this.canvas = canvas;
@@ -24,7 +24,7 @@ ARE.CanvasRenderer = Class.extend({
         if (!o.isVisible()) {
             return;
         }
-        if (o instanceof ARE.Container) {
+        if (o instanceof are.Container) {
             var list = o.children.slice(0),
                 l = list.length;
             for (var i = l - 1; i >= 0; i--) {
@@ -65,7 +65,7 @@ ARE.CanvasRenderer = Class.extend({
             o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
         }
         mtx = o._hitMatrix;
-        if (o instanceof ARE.Shape) {
+        if (o instanceof are.Shape) {
             mtx.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
         } else {
             mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
@@ -76,7 +76,7 @@ ARE.CanvasRenderer = Class.extend({
             ctx.globalCompositeOperation = o.complexCompositeOperation;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(mmyCanvas, 0, 0);
-        } else if (o instanceof ARE.Container) {
+        } else if (o instanceof are.Container) {
             var list = o.children.slice(0),
                 l = list.length;
             for (var i = l - 1; i >= 0; i--) {
@@ -85,17 +85,17 @@ ARE.CanvasRenderer = Class.extend({
                 if (target) return target;
                 ctx.restore();
             }
-        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+        } else if (o instanceof are.Bitmap || o instanceof are.Sprite) {
             ctx.globalAlpha = o.complexAlpha;
             ctx.globalCompositeOperation = o.complexCompositeOperation;
             var rect = o.rect;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-        } else if (o instanceof ARE.Graphics) {
+        } else if (o instanceof are.Graphics) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             o.draw(ctx);
         }
-        if (ctx.getImageData(0, 0, 1, 1).data[3] > 1 && !(o instanceof ARE.Container)) {
+        if (ctx.getImageData(0, 0, 1, 1).data[3] > 1 && !(o instanceof are.Container)) {
             this._bubbleEvent(o, type, evt);
             return o;
         }
@@ -110,10 +110,10 @@ ARE.CanvasRenderer = Class.extend({
     },
     "isbindingEvent": function(obj) {
         if (Object.keys(obj.events).length !== 0) return true;
-        if (obj instanceof ARE.Container) {
+        if (obj instanceof are.Container) {
             for (var i = 0, len = obj.children.length; i < len; i++) {
                 var child = obj.children[i];
-                if (child instanceof ARE.Container) {
+                if (child instanceof are.Container) {
                     return this.isbindingEvent(child);
                 } else {
                     if (Object.keys(child.events).length !== 0) return true;
@@ -134,11 +134,11 @@ ARE.CanvasRenderer = Class.extend({
         if (mmyCanvas) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(mmyCanvas, 0, 0);
-        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+        } else if (o instanceof are.Bitmap || o instanceof are.Sprite) {
             var rect = o.rect;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-        } else if (o instanceof ARE.Graphics || o instanceof ARE.Text) {
+        } else if (o instanceof are.Graphics || o instanceof are.Text) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             o.draw(ctx);
         }
@@ -158,4 +158,4 @@ ARE.CanvasRenderer = Class.extend({
     }
 });
 
-//end-------------------ARE.CanvasRenderer---------------------end
+//end-------------------are.CanvasRenderer---------------------end

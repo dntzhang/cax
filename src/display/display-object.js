@@ -1,16 +1,16 @@
 
-//begin-------------------ARE.DisplayObject---------------------begin
+//begin-------------------are.DisplayObject---------------------begin
 
-ARE.DisplayObject = Class.extend({
+are.DisplayObject = Class.extend({
     "ctor": function() {
         this.alpha = this.scaleX = this.scaleY = this.scale = 1;
         this.x = this.y = this.rotation = this.originX = this.originY = this.skewX = this.skewY = this.width = this.height = this.regX = this.regY = 0;
         this.textureReady = true;
         this.visible = true;
-        this._matrix = new ARE.Matrix2D();
-        this._hitMatrix = new ARE.Matrix2D();
+        this._matrix = new are.Matrix2D();
+        this._hitMatrix = new are.Matrix2D();
         this.events = {};
-        this.id = ARE.UID.get();
+        this.id = are.UID.get();
         this.cacheID = 0;
         this.baseInstanceof = "DisplayObject";
         this.tickFPS = 60;
@@ -93,7 +93,7 @@ ARE.DisplayObject = Class.extend({
     },
     "_setCursor": function (obj, type) {
         if (obj) {
-            if (obj.parent instanceof ARE.Stage) {
+            if (obj.parent instanceof are.Stage) {
                 obj.parent.setCursor(type);
             } else {
                 this._setCursor(obj.parent, type);
@@ -101,7 +101,7 @@ ARE.DisplayObject = Class.extend({
         }
     },
     "clone": function() {
-        var o = new ARE.DisplayObject();
+        var o = new are.DisplayObject();
         this.cloneProps(o);
         return o;
     },
@@ -128,7 +128,7 @@ ARE.DisplayObject = Class.extend({
             this.cacheCanvas.height = bound.height;
             this.cacheCtx = this.cacheCanvas.getContext("2d");
         }
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = are.UID.getCacheID();
         this.updateCache(this.cacheCtx, this, bound.width, bound.width);
     },
     "uncache": function() {
@@ -239,14 +239,14 @@ ARE.DisplayObject = Class.extend({
         if (!o.isVisible()) {
             return;
         }
-        if (o instanceof ARE.Container || o instanceof ARE.Stage) {
+        if (o instanceof are.Container || o instanceof are.Stage) {
             var list = o.children.slice(0);
             for (var i = 0, l = list.length; i < l; i++) {
                 ctx.save();
                 this.render(ctx, list[i]);
                 ctx.restore();
             }
-        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+        } else if (o instanceof are.Bitmap || o instanceof are.Sprite) {
             var rect = o.rect;
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         } else if (o.txtCanvas) {
@@ -303,4 +303,4 @@ ARE.DisplayObject = Class.extend({
     }
 });
 
-//end-------------------ARE.DisplayObject---------------------end
+//end-------------------are.DisplayObject---------------------end

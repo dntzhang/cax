@@ -17,8 +17,8 @@
 <script src="../dist/are.js"></script>
 
     <script>
-        (function (ARE) {
-            var Stage = ARE.Stage, Bitmap = ARE.Bitmap, Loader = ARE.Loader, Vector2 = ARE.Vector2, FPS = ARE.FPS;
+        (function (are) {
+            var Stage = are.Stage, Bitmap = are.Bitmap, Loader = are.Loader, Vector2 = are.Vector2, FPS = are.FPS;
 
             var ld = new Loader(), tank, stage = new Stage("#ourCanvas");
             ld.loadRes([{ id: "atLogo", src: "asset/img/atLogo.png" }]);
@@ -74,7 +74,7 @@
 
 
 
-        })(ARE);
+        })(are);
     </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Dom---------------------begin
+//begin-------------------are.Dom---------------------begin
 
-ARE.Dom = Class.extend({
+are.Dom = Class.extend({
     "statics": {
         "get": function(selector) {
             this.element = document.querySelector(selector);
@@ -14,4 +14,4 @@ ARE.Dom = Class.extend({
     }
 });
 
-//end-------------------ARE.Dom---------------------end
+//end-------------------are.Dom---------------------end

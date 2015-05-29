@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Stage---------------------begin
+//begin-------------------are.Stage---------------------begin
 
-ARE.Stage = ARE.Container.extend({
+are.Stage = are.Container.extend({
     "ctor": function(canvas, closegl) {
         this._super();
         this.canvas = typeof canvas == "string" ? document.querySelector(canvas) : canvas;
@@ -9,11 +9,11 @@ ARE.Stage = ARE.Container.extend({
         this.height = this.canvas.height;
         this.AABB = [0, 0, this.width, this.height];
         this.hitAABB = false;
-        this.hitRenderer = new ARE.CanvasRenderer();
+        this.hitRenderer = new are.CanvasRenderer();
         this.hitCanvas = document.createElement("canvas");
         this.hitCanvas.width = 1;
         this.hitCanvas.height = 1;
-        this.stageRenderer = new ARE.Renderer(this, closegl);
+        this.stageRenderer = new are.Renderer(this, closegl);
         this.hitCtx = this.hitCanvas.getContext("2d");
         this._scaleX = this._scaleY = null;
         this.offset = this._getXY(this.canvas);
@@ -32,11 +32,11 @@ ARE.Stage = ARE.Container.extend({
                 this._useRequestAnimFrame = value;
                 if (value) {
                     clearInterval(self.loop);
-                    self.loop = ARE.RAF.requestInterval(function() {
+                    self.loop = are.RAF.requestInterval(function() {
                         self._tick(self);
                     }, self.interval);
                 } else {
-                    ARE.RAF.clearRequestInterval(self.loop);
+                    are.RAF.clearRequestInterval(self.loop);
                     self.loop = setInterval(function() {
                         self._tick(self);
                     }, self.interval);
@@ -52,13 +52,13 @@ ARE.Stage = ARE.Container.extend({
             if (this.useRequestAnimFrame) {
                 clearInterval(this.loop);
                 try {
-                    ARE.RAF.clearRequestInterval(this.loop);
+                    are.RAF.clearRequestInterval(this.loop);
                 } catch (e) {}
-                this.loop = ARE.RAF.requestInterval(function() {
+                this.loop = are.RAF.requestInterval(function() {
                     self._tick(self);
                 }, this.interval);
             } else {
-                ARE.RAF.clearRequestInterval(this.loop);
+                are.RAF.clearRequestInterval(this.loop);
                 try {
                     clearInterval(this.loop);
                 } catch (e) {}
@@ -120,9 +120,9 @@ ARE.Stage = ARE.Container.extend({
     "_pauseSprite": function (obj) {
         for (var i = 0, len = obj.children.length; i < len; i++) {
             var child = obj.children[i];
-            if (child instanceof ARE.Container) {
+            if (child instanceof are.Container) {
                 this._pauseSprite(child);
-            } else if (child instanceof ARE.Sprite) {
+            } else if (child instanceof are.Sprite) {
                 child.pause();
             }
         }
@@ -135,9 +135,9 @@ ARE.Stage = ARE.Container.extend({
     "_playSprite": function (obj) {
         for (var i = 0, len = obj.children.length; i < len; i++) {
             var child = obj.children[i];
-            if (child instanceof ARE.Container) {
+            if (child instanceof are.Container) {
                 this._playSprite(child);
-            } else if (child instanceof ARE.Sprite) {
+            } else if (child instanceof are.Sprite) {
                 child.play();
             }
         }
@@ -207,7 +207,7 @@ ARE.Stage = ARE.Container.extend({
         style.left = this.offset[0] + "px";
         style.top = this.offset[1] + "px";
         document.body.appendChild(this.domSurface);
-        ARE.Stage.domSurface = this.domSurface;
+        are.Stage.domSurface = this.domSurface;
         this.domSurface.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
         this.domSurface.addEventListener("click", this._handleClick.bind(this), false);
         this.domSurface.addEventListener("mousedown", this._handleMouseDown.bind(this), false);
@@ -388,10 +388,10 @@ ARE.Stage = ARE.Container.extend({
         this.interval = Math.floor(1e3 / fps);
     },
     "onKeyboard": function(keyCombo, onDownCallback, onUpCallback) {
-        ARE.Keyboard.on(keyCombo, onDownCallback, onUpCallback);
+        are.Keyboard.on(keyCombo, onDownCallback, onUpCallback);
     },
     "getActiveKeys": function() {
-        return ARE.Keyboard.getActiveKeys();
+        return are.Keyboard.getActiveKeys();
     },
     "scaleToScreen": function(scaleX, scaleY) {
         if (scaleX === 1 && scaleY === 1) {
@@ -442,7 +442,7 @@ ARE.Stage = ARE.Container.extend({
             if (child.baseInstanceof == "Container" || child.baseInstanceof == "Stage") {
                 for (var i = 0, len = child.children.length; i < len; i++) {
                     var subChild = child.children[i];
-                    if (subChild instanceof ARE.Container) {
+                    if (subChild instanceof are.Container) {
                         getCount(subChild);
                     } else {
                         count++;
@@ -456,13 +456,13 @@ ARE.Stage = ARE.Container.extend({
         return count;
     },
     "getRenderingMode": function() {
-        if (this.stageRenderer.renderingEngine instanceof ARE.CanvasRenderer) {
+        if (this.stageRenderer.renderingEngine instanceof are.CanvasRenderer) {
             return "Canvas";
         }
         return "WebGL";
     },
     "getFPS": function() {
-        var fps = ARE.FPS.get();
+        var fps = are.FPS.get();
         this.fpsValue = fps.value;
         this.averageFPS = fps.averageFPS;
     },
@@ -493,4 +493,4 @@ ARE.Stage = ARE.Container.extend({
     }
 });
 
-//end-------------------ARE.Stage---------------------end
+//end-------------------are.Stage---------------------end

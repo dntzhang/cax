@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.ParticleSystem---------------------begin
+//begin-------------------are.ParticleSystem---------------------begin
 
-ARE.ParticleSystem = ARE.Container.extend({
+are.ParticleSystem = are.Container.extend({
     "ctor": function(option) {
         this._super();
         this.speed = option.speed;
@@ -20,11 +20,11 @@ ARE.ParticleSystem = ARE.Container.extend({
         this.emitY = option.emitY;
         var self = this;
         if (typeof option.texture === "string") {
-            if (ARE.Bitmap[option.texture]) {
-                this.texture = ARE.Bitmap[option.texture];
+            if (are.Bitmap[option.texture]) {
+                this.texture = are.Bitmap[option.texture];
                 this.generateFilterTexture(this.texture);
             } else {
-                this.bitmap = new ARE.Bitmap();
+                this.bitmap = new are.Bitmap();
                 this.bitmap._parent = this;
                 this.bitmap.onImageLoad(function() {
                     this._parent.texture = this.img;
@@ -43,17 +43,17 @@ ARE.ParticleSystem = ARE.Container.extend({
         this.hideSpeed = option.hideSpeed || .01;
     },
     "generateFilterTexture": function(texture) {
-        var bitmap = new ARE.Bitmap(texture);
+        var bitmap = new are.Bitmap(texture);
         bitmap.filter = this.filter;
         this.filterTexture = bitmap.cacheCanvas;
     },
     "emit": function() {
-        var angle = (this.angle + ARE.Util.random(-this.angleRange / 2, this.angleRange / 2)) * Math.PI / 180;
+        var angle = (this.angle + are.Util.random(-this.angleRange / 2, this.angleRange / 2)) * Math.PI / 180;
         var halfX = this.emitArea[0] / 2,
             harfY = this.emitArea[1] / 2;
-        var particle = new ARE.Particle({
-    position: new ARE.Vector2(this.emitX + ARE.Util.random(-halfX, halfX), this.emitY + ARE.Util.random(-harfY, harfY)),
-    velocity: new ARE.Vector2(this.speed * Math.cos(angle), this.speed * Math.sin(angle)),
+        var particle = new are.Particle({
+    position: new are.Vector2(this.emitX + are.Util.random(-halfX, halfX), this.emitY + are.Util.random(-harfY, harfY)),
+    velocity: new are.Vector2(this.speed * Math.cos(angle), this.speed * Math.sin(angle)),
     texture: this.filterTexture,
     acceleration: this.gravity,
     hideSpeed: this.hideSpeed
@@ -87,4 +87,4 @@ ARE.ParticleSystem = ARE.Container.extend({
     }
 });
 
-//end-------------------ARE.ParticleSystem---------------------end
+//end-------------------are.ParticleSystem---------------------end

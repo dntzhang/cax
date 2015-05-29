@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Shape---------------------begin
+//begin-------------------are.Shape---------------------begin
 
-ARE.Shape = ARE.DisplayObject.extend({
+are.Shape = are.DisplayObject.extend({
     "ctor": function(width, height, debug) {
         this._super();
         this.cmds = [];
@@ -39,7 +39,7 @@ ARE.Shape = ARE.DisplayObject.extend({
     },
     "end": function() {
         this._preCacheId = this.cacheID;
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = are.UID.getCacheID();
         var ctx = this.shapeCtx;
         for (var i = 0, len = this.cmds.length; i < len; i++) {
             var cmd = this.cmds[i];
@@ -51,11 +51,11 @@ ARE.Shape = ARE.DisplayObject.extend({
         }
     },
     "clearRect": function(x, y, width, height) {
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = are.UID.getCacheID();
         this.shapeCtx.clearRect(x, y, width, height);
     },
     "clear": function() {
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = are.UID.getCacheID();
         this.shapeCtx.clearRect(0, 0, this.width, this.height);
     },
     "strokeRect": function() {
@@ -113,4 +113,4 @@ ARE.Shape = ARE.DisplayObject.extend({
     "clone": function() {}
 });
 
-//end-------------------ARE.Shape---------------------end
+//end-------------------are.Shape---------------------end

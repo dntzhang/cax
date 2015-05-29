@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.RAF---------------------begin
+//begin-------------------are.RAF---------------------begin
 
-ARE.RAF = Class.extend({
+are.RAF = Class.extend({
     "statics": {
         "ctor": function() {
             var requestAnimFrame = function() {
@@ -40,4 +40,4 @@ ARE.RAF = Class.extend({
     }
 });
 
-//end-------------------ARE.RAF---------------------end
+//end-------------------are.RAF---------------------end

@@ -13,8 +13,8 @@
 <script src="../dist/are.js"></script>
 
     <script>
-        (function (ARE) {
-            var Stage = ARE.Stage, Bitmap = ARE.Bitmap, Loader = ARE.Loader, To = ARE.To;
+        (function (are) {
+            var Stage = are.Stage, Bitmap = are.Bitmap, Loader = are.Loader, To = are.To;
 
             var ld = new Loader(), bmp;
             var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
@@ -56,7 +56,7 @@
             });
 
 
-        })(ARE);
+        })(are);
     </script>
 </body>
 </html>

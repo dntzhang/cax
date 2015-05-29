@@ -15,8 +15,8 @@
 <script src="../dist/are.js"></script>
 
     <script>
-        (function (ARE) {
-            var Stage = ARE.Stage, Bitmap = ARE.Bitmap, ParticleSystem = ARE.ParticleSystem, Vector2 = ARE.Vector2, FPS = ARE.FPS;
+        (function (are) {
+            var Stage = are.Stage, Bitmap = are.Bitmap, ParticleSystem = are.ParticleSystem, Vector2 = are.Vector2, FPS = are.FPS;
 
             var pgBmp, stage = new Stage("#ourCanvas", localStorage.webgl == "1");
             stage.debug = true;
@@ -42,7 +42,7 @@
                 ps.emitY = evt.stageY;
             })
 
-        })(ARE);
+        })(are);
     </script>
 </body>
 </html>
