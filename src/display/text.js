@@ -1,7 +1,7 @@
 
-//begin-------------------are.Text---------------------begin
+//begin-------------------ARE.Text---------------------begin
 
-are.Text = are.DisplayObject.extend({
+ARE.Text = ARE.DisplayObject.extend({
     "ctor": function(value, font, color) {
         this._super();
         this.value = value;
@@ -18,10 +18,10 @@ are.Text = are.DisplayObject.extend({
         ctx.fillText(this.value, 0, 0);
     },
     "clone": function() {
-        var t = new are.Text(this.text, this.font, this.color);
+        var t = new ARE.Text(this.text, this.font, this.color);
         this.cloneProps(t);
         return t;
     }
 });
 
-//end-------------------are.Text---------------------end
+//end-------------------ARE.Text---------------------end

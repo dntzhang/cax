@@ -23,9 +23,9 @@
     <script src="../dist/are.js"></script>
 	<script src="src/render-control.js"></script>
     <script>
-        (function (are) {
+        (function (ARE) {
             
-            var Stage = are.Stage, Bitmap = are.Bitmap, ParticleSystem = are.ParticleSystem, Shape = are.Shape, Loader = are.Loader, Label = are.Label, Vector2 = are.Vector2, FPS = are.FPS, Sprite = are.Sprite;
+            var Stage = ARE.Stage, Bitmap = ARE.Bitmap, ParticleSystem = ARE.ParticleSystem, Shape = ARE.Shape, Loader = ARE.Loader, Label = ARE.Label, Vector2 = ARE.Vector2, FPS = ARE.FPS, Sprite = ARE.Sprite;
 
             var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
 
@@ -158,7 +158,7 @@
                 stage.add(sprite);
             });
 
-        })(are);
+        })(ARE);
     </script>
 </body>
 </html>

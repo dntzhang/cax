@@ -1,7 +1,7 @@
 
-//begin-------------------are.RectAdjust---------------------begin
+//begin-------------------ARE.RectAdjust---------------------begin
 
-are.RectAdjust = Class.extend({
+ARE.RectAdjust = Class.extend({
     "ctor": function(option) {
         this.min = option.min;
         this.max = option.max;
@@ -56,4 +56,4 @@ are.RectAdjust = Class.extend({
     }
 });
 
-//end-------------------are.RectAdjust---------------------end
+//end-------------------ARE.RectAdjust---------------------end

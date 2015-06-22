@@ -1,7 +1,7 @@
 
-//begin-------------------are.TWEEN---------------------begin
+//begin-------------------ARE.TWEEN---------------------begin
 
-are.TWEEN = Class.extend({
+ARE.TWEEN = Class.extend({
     "statics": {
         "ctor": function() {
             if (Date.now === undefined) {
@@ -52,8 +52,8 @@ are.TWEEN = Class.extend({
             var _reversed = false;
             var _delayTime = 0;
             var _startTime = null;
-            var _easingFunction = are.TWEEN.Easing.Linear.None;
-            var _interpolationFunction = are.TWEEN.Interpolation.Linear;
+            var _easingFunction = ARE.TWEEN.Easing.Linear.None;
+            var _interpolationFunction = ARE.TWEEN.Interpolation.Linear;
             var _chainedTweens = [];
             var _onStartCallback = null;
             var _onStartCallbackFired = false;
@@ -90,7 +90,7 @@ are.TWEEN = Class.extend({
                 return this;
             };
             this.start = function(time) {
-                are.TWEEN.add(this);
+                ARE.TWEEN.add(this);
                 _isPlaying = true;
                 _onStartCallbackFired = false;
                 _startTime = time !== undefined ? time : typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
@@ -114,7 +114,7 @@ are.TWEEN = Class.extend({
                 if (!_isPlaying) {
                     return this;
                 }
-                are.TWEEN.remove(this);
+                ARE.TWEEN.remove(this);
                 _isPlaying = false;
                 if (_onStopCallback !== null) {
                     _onStopCallback.call(_object);
@@ -377,7 +377,7 @@ are.TWEEN = Class.extend({
             },
             "Bounce": {
                 "In": function(k) {
-                    return 1 - are.TWEEN.Easing.Bounce.Out(1 - k);
+                    return 1 - ARE.TWEEN.Easing.Bounce.Out(1 - k);
                 },
                 "Out": function(k) {
                     if (k < 1 / 2.75) {
@@ -391,8 +391,8 @@ are.TWEEN = Class.extend({
                     }
                 },
                 "InOut": function(k) {
-                    if (k < .5) return are.TWEEN.Easing.Bounce.In(k * 2) * .5;
-                    return are.TWEEN.Easing.Bounce.Out(k * 2 - 1) * .5 + .5;
+                    if (k < .5) return ARE.TWEEN.Easing.Bounce.In(k * 2) * .5;
+                    return ARE.TWEEN.Easing.Bounce.Out(k * 2 - 1) * .5 + .5;
                 }
             }
         },
@@ -401,7 +401,7 @@ are.TWEEN = Class.extend({
                 var m = v.length - 1,
                     f = m * k,
                     i = Math.floor(f),
-                    fn = are.TWEEN.Interpolation.Utils.Linear;
+                    fn = ARE.TWEEN.Interpolation.Utils.Linear;
                 if (k < 0) return fn(v[0], v[1], f);
                 if (k > 1) return fn(v[m], v[m - 1], m - f);
                 return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
@@ -410,7 +410,7 @@ are.TWEEN = Class.extend({
                 var b = 0,
                     n = v.length - 1,
                     pw = Math.pow,
-                    bn = are.TWEEN.Interpolation.Utils.Bernstein,
+                    bn = ARE.TWEEN.Interpolation.Utils.Bernstein,
                     i;
                 for (i = 0; i <= n; i++) {
                     b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
@@ -421,7 +421,7 @@ are.TWEEN = Class.extend({
                 var m = v.length - 1,
                     f = m * k,
                     i = Math.floor(f),
-                    fn = are.TWEEN.Interpolation.Utils.CatmullRom;
+                    fn = ARE.TWEEN.Interpolation.Utils.CatmullRom;
                 if (v[0] === v[m]) {
                     if (k < 0) i = Math.floor(f = m * (1 + k));
                     return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
@@ -436,7 +436,7 @@ are.TWEEN = Class.extend({
                     return (p1 - p0) * t + p0;
                 },
                 "Bernstein": function(n, i) {
-                    var fc = are.TWEEN.Interpolation.Utils.getFactorial();
+                    var fc = ARE.TWEEN.Interpolation.Utils.getFactorial();
                     return fc(n) / fc(i) / fc(n - i);
                 },
                 "getFactorial": function() {
@@ -463,4 +463,4 @@ are.TWEEN = Class.extend({
     }
 });
 
-//end-------------------are.TWEEN---------------------end
+//end-------------------ARE.TWEEN---------------------end

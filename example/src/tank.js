@@ -1,8 +1,8 @@
-﻿var Tank = are.Container.extend({
+﻿var Tank = ARE.Container.extend({
     ctor: function (option) {
         this._super();
 
-        this.body = new are.Bitmap(option.img);
+        this.body = new ARE.Bitmap(option.img);
         this.body.rect=[109, 5, 31, 44];
         this.body.originX = 0.5;
         this.body.originY = 0.5;

@@ -9,7 +9,7 @@
     } else if (typeof exports === 'object') {
         module.exports = factory();
     } else {
-        root.are = factory();
+        root.ARE = factory();
     }
 }(this, function () {
 'use strict';
@@ -100,12 +100,12 @@ Class.extend = function (prop) {
     return _Class;
 };
 //AlloyRenderingEngine
-var are={};
+var ARE={};
 
 
-//begin-------------------are.TWEEN---------------------begin
+//begin-------------------ARE.TWEEN---------------------begin
 
-are.TWEEN = Class.extend({
+ARE.TWEEN = Class.extend({
     "statics": {
         "ctor": function() {
             if (Date.now === undefined) {
@@ -156,8 +156,8 @@ are.TWEEN = Class.extend({
             var _reversed = false;
             var _delayTime = 0;
             var _startTime = null;
-            var _easingFunction = are.TWEEN.Easing.Linear.None;
-            var _interpolationFunction = are.TWEEN.Interpolation.Linear;
+            var _easingFunction = ARE.TWEEN.Easing.Linear.None;
+            var _interpolationFunction = ARE.TWEEN.Interpolation.Linear;
             var _chainedTweens = [];
             var _onStartCallback = null;
             var _onStartCallbackFired = false;
@@ -194,7 +194,7 @@ are.TWEEN = Class.extend({
                 return this;
             };
             this.start = function(time) {
-                are.TWEEN.add(this);
+                ARE.TWEEN.add(this);
                 _isPlaying = true;
                 _onStartCallbackFired = false;
                 _startTime = time !== undefined ? time : typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
@@ -218,7 +218,7 @@ are.TWEEN = Class.extend({
                 if (!_isPlaying) {
                     return this;
                 }
-                are.TWEEN.remove(this);
+                ARE.TWEEN.remove(this);
                 _isPlaying = false;
                 if (_onStopCallback !== null) {
                     _onStopCallback.call(_object);
@@ -481,7 +481,7 @@ are.TWEEN = Class.extend({
             },
             "Bounce": {
                 "In": function(k) {
-                    return 1 - are.TWEEN.Easing.Bounce.Out(1 - k);
+                    return 1 - ARE.TWEEN.Easing.Bounce.Out(1 - k);
                 },
                 "Out": function(k) {
                     if (k < 1 / 2.75) {
@@ -495,8 +495,8 @@ are.TWEEN = Class.extend({
                     }
                 },
                 "InOut": function(k) {
-                    if (k < .5) return are.TWEEN.Easing.Bounce.In(k * 2) * .5;
-                    return are.TWEEN.Easing.Bounce.Out(k * 2 - 1) * .5 + .5;
+                    if (k < .5) return ARE.TWEEN.Easing.Bounce.In(k * 2) * .5;
+                    return ARE.TWEEN.Easing.Bounce.Out(k * 2 - 1) * .5 + .5;
                 }
             }
         },
@@ -505,7 +505,7 @@ are.TWEEN = Class.extend({
                 var m = v.length - 1,
                     f = m * k,
                     i = Math.floor(f),
-                    fn = are.TWEEN.Interpolation.Utils.Linear;
+                    fn = ARE.TWEEN.Interpolation.Utils.Linear;
                 if (k < 0) return fn(v[0], v[1], f);
                 if (k > 1) return fn(v[m], v[m - 1], m - f);
                 return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
@@ -514,7 +514,7 @@ are.TWEEN = Class.extend({
                 var b = 0,
                     n = v.length - 1,
                     pw = Math.pow,
-                    bn = are.TWEEN.Interpolation.Utils.Bernstein,
+                    bn = ARE.TWEEN.Interpolation.Utils.Bernstein,
                     i;
                 for (i = 0; i <= n; i++) {
                     b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
@@ -525,7 +525,7 @@ are.TWEEN = Class.extend({
                 var m = v.length - 1,
                     f = m * k,
                     i = Math.floor(f),
-                    fn = are.TWEEN.Interpolation.Utils.CatmullRom;
+                    fn = ARE.TWEEN.Interpolation.Utils.CatmullRom;
                 if (v[0] === v[m]) {
                     if (k < 0) i = Math.floor(f = m * (1 + k));
                     return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
@@ -540,7 +540,7 @@ are.TWEEN = Class.extend({
                     return (p1 - p0) * t + p0;
                 },
                 "Bernstein": function(n, i) {
-                    var fc = are.TWEEN.Interpolation.Utils.getFactorial();
+                    var fc = ARE.TWEEN.Interpolation.Utils.getFactorial();
                     return fc(n) / fc(i) / fc(n - i);
                 },
                 "getFactorial": function() {
@@ -567,12 +567,12 @@ are.TWEEN = Class.extend({
     }
 });
 
-//end-------------------are.TWEEN---------------------end
+//end-------------------ARE.TWEEN---------------------end
 
 
-//begin-------------------are.Dom---------------------begin
+//begin-------------------ARE.Dom---------------------begin
 
-are.Dom = Class.extend({
+ARE.Dom = Class.extend({
     "statics": {
         "get": function(selector) {
             this.element = document.querySelector(selector);
@@ -585,12 +585,12 @@ are.Dom = Class.extend({
     }
 });
 
-//end-------------------are.Dom---------------------end
+//end-------------------ARE.Dom---------------------end
 
 
-//begin-------------------are.FPS---------------------begin
+//begin-------------------ARE.FPS---------------------begin
 
-are.FPS = Class.extend({
+ARE.FPS = Class.extend({
     "statics": {
         "get": function() {
             if (!this.instance) this.instance = new this();
@@ -627,12 +627,12 @@ are.FPS = Class.extend({
     }
 });
 
-//end-------------------are.FPS---------------------end
+//end-------------------ARE.FPS---------------------end
 
 
-//begin-------------------are.Keyboard---------------------begin
+//begin-------------------ARE.Keyboard---------------------begin
 
-are.Keyboard = Class.extend({
+ARE.Keyboard = Class.extend({
     "statics": {
         "ctor": function() {
             var KeyboardJS = {},
@@ -1292,12 +1292,12 @@ are.Keyboard = Class.extend({
     }
 });
 
-//end-------------------are.Keyboard---------------------end
+//end-------------------ARE.Keyboard---------------------end
 
 
-//begin-------------------are.Loader---------------------begin
+//begin-------------------ARE.Loader---------------------begin
 
-are.Loader = Class.extend({
+ARE.Loader = Class.extend({
     "ctor": function() {
         this.audios = {};
         this.res = {};
@@ -1411,12 +1411,12 @@ are.Loader = Class.extend({
     }
 });
 
-//end-------------------are.Loader---------------------end
+//end-------------------ARE.Loader---------------------end
 
 
-//begin-------------------are.Matrix2D---------------------begin
+//begin-------------------ARE.Matrix2D---------------------begin
 
-are.Matrix2D = Class.extend({
+ARE.Matrix2D = Class.extend({
     "statics": {
         "DEG_TO_RAD": 0.017453292519943295
     },
@@ -1436,7 +1436,7 @@ are.Matrix2D = Class.extend({
     },
     "appendTransform": function(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
         if (rotation % 360) {
-            var r = rotation * are.Matrix2D.DEG_TO_RAD;
+            var r = rotation * ARE.Matrix2D.DEG_TO_RAD;
             var cos = Math.cos(r);
             var sin = Math.sin(r);
         } else {
@@ -1444,8 +1444,8 @@ are.Matrix2D = Class.extend({
             sin = 0;
         }
         if (skewX || skewY) {
-            skewX *= are.Matrix2D.DEG_TO_RAD;
-            skewY *= are.Matrix2D.DEG_TO_RAD;
+            skewX *= ARE.Matrix2D.DEG_TO_RAD;
+            skewY *= ARE.Matrix2D.DEG_TO_RAD;
             this.append(Math.cos(skewY), Math.sin(skewY), -Math.sin(skewX), Math.cos(skewX), x, y);
             this.append(cos * scaleX, sin * scaleX, -sin * scaleY, cos * scaleY, 0, 0);
         } else {
@@ -1493,7 +1493,7 @@ are.Matrix2D = Class.extend({
     }
 });
 
-//end-------------------are.Matrix2D---------------------end
+//end-------------------ARE.Matrix2D---------------------end
 
 ; (function () {
     var observe = function (target, arr, callback) {
@@ -1644,12 +1644,12 @@ are.Matrix2D = Class.extend({
         this.length = length;
     }
 
-    are.Observe = observe;
+    ARE.Observe = observe;
 })();
 
-//begin-------------------are.RAF---------------------begin
+//begin-------------------ARE.RAF---------------------begin
 
-are.RAF = Class.extend({
+ARE.RAF = Class.extend({
     "statics": {
         "ctor": function() {
             var requestAnimFrame = function() {
@@ -1688,49 +1688,49 @@ are.RAF = Class.extend({
     }
 });
 
-//end-------------------are.RAF---------------------end
+//end-------------------ARE.RAF---------------------end
 
 
-//begin-------------------are.To---------------------begin
+//begin-------------------ARE.To---------------------begin
 
-are.To = Class.extend({
+ARE.To = Class.extend({
     "statics": {
         "ctor": function () {
-            this.bounceOut = are.TWEEN.Easing.Bounce.Out,
-            this.linear = are.TWEEN.Easing.Linear.None,
-            this.quadraticIn = are.TWEEN.Easing.Quadratic.In,
-            this.quadraticOut = are.TWEEN.Easing.Quadratic.Out,
-            this.quadraticInOut = are.TWEEN.Easing.Quadratic.InOut,
-            this.cubicIn = are.TWEEN.Easing.Cubic.In,
-            this.cubicOut = are.TWEEN.Easing.Cubic.Out,
-            this.cubicInOut = are.TWEEN.Easing.Cubic.InOut,
-            this.quarticIn = are.TWEEN.Easing.Quartic.In,
-            this.quarticOut = are.TWEEN.Easing.Quartic.Out,
-            this.quarticInOut = are.TWEEN.Easing.Quartic.InOut,
-            this.quinticIn = are.TWEEN.Easing.Quintic.In,
-            this.quinticOut = are.TWEEN.Easing.Quintic.Out,
-            this.quinticInOut = are.TWEEN.Easing.Quintic.InOut,
-            this.sinusoidalIn = are.TWEEN.Easing.Sinusoidal.In,
-            this.sinusoidalOut = are.TWEEN.Easing.Sinusoidal.Out,
-            this.sinusoidalInOut = are.TWEEN.Easing.Sinusoidal.InOut,
-            this.exponentialIn = are.TWEEN.Easing.Exponential.In,
-            this.exponentialOut = are.TWEEN.Easing.Exponential.Out,
-            this.exponentialInOut = are.TWEEN.Easing.Exponential.InOut,
-            this.circularIn = are.TWEEN.Easing.Circular.In,
-            this.circularOut = are.TWEEN.Easing.Circular.Out,
-            this.circularInOut = are.TWEEN.Easing.Circular.InOut,
-            this.elasticIn = are.TWEEN.Easing.Elastic.In,
-            this.elasticOut = are.TWEEN.Easing.Elastic.Out,
-            this.elasticInOut = are.TWEEN.Easing.Elastic.InOut,
-            this.backIn = are.TWEEN.Easing.Back.In,
-            this.backOut = are.TWEEN.Easing.Back.Out,
-            this.backInOut = are.TWEEN.Easing.Back.InOut,
-            this.bounceIn = are.TWEEN.Easing.Bounce.In,
-            this.bounceOut = are.TWEEN.Easing.Bounce.Out,
-            this.bounceInOut = are.TWEEN.Easing.Bounce.InOut,
-            this.interpolationLinear = are.TWEEN.Interpolation.Linear,
-            this.interpolationBezier = are.TWEEN.Interpolation.Bezier,
-            this.interpolationCatmullRom = are.TWEEN.Interpolation.CatmullRom;
+            this.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
+            this.linear = ARE.TWEEN.Easing.Linear.None,
+            this.quadraticIn = ARE.TWEEN.Easing.Quadratic.In,
+            this.quadraticOut = ARE.TWEEN.Easing.Quadratic.Out,
+            this.quadraticInOut = ARE.TWEEN.Easing.Quadratic.InOut,
+            this.cubicIn = ARE.TWEEN.Easing.Cubic.In,
+            this.cubicOut = ARE.TWEEN.Easing.Cubic.Out,
+            this.cubicInOut = ARE.TWEEN.Easing.Cubic.InOut,
+            this.quarticIn = ARE.TWEEN.Easing.Quartic.In,
+            this.quarticOut = ARE.TWEEN.Easing.Quartic.Out,
+            this.quarticInOut = ARE.TWEEN.Easing.Quartic.InOut,
+            this.quinticIn = ARE.TWEEN.Easing.Quintic.In,
+            this.quinticOut = ARE.TWEEN.Easing.Quintic.Out,
+            this.quinticInOut = ARE.TWEEN.Easing.Quintic.InOut,
+            this.sinusoidalIn = ARE.TWEEN.Easing.Sinusoidal.In,
+            this.sinusoidalOut = ARE.TWEEN.Easing.Sinusoidal.Out,
+            this.sinusoidalInOut = ARE.TWEEN.Easing.Sinusoidal.InOut,
+            this.exponentialIn = ARE.TWEEN.Easing.Exponential.In,
+            this.exponentialOut = ARE.TWEEN.Easing.Exponential.Out,
+            this.exponentialInOut = ARE.TWEEN.Easing.Exponential.InOut,
+            this.circularIn = ARE.TWEEN.Easing.Circular.In,
+            this.circularOut = ARE.TWEEN.Easing.Circular.Out,
+            this.circularInOut = ARE.TWEEN.Easing.Circular.InOut,
+            this.elasticIn = ARE.TWEEN.Easing.Elastic.In,
+            this.elasticOut = ARE.TWEEN.Easing.Elastic.Out,
+            this.elasticInOut = ARE.TWEEN.Easing.Elastic.InOut,
+            this.backIn = ARE.TWEEN.Easing.Back.In,
+            this.backOut = ARE.TWEEN.Easing.Back.Out,
+            this.backInOut = ARE.TWEEN.Easing.Back.InOut,
+            this.bounceIn = ARE.TWEEN.Easing.Bounce.In,
+            this.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
+            this.bounceInOut = ARE.TWEEN.Easing.Bounce.InOut,
+            this.interpolationLinear = ARE.TWEEN.Interpolation.Linear,
+            this.interpolationBezier = ARE.TWEEN.Interpolation.Bezier,
+            this.interpolationCatmullRom = ARE.TWEEN.Interpolation.CatmullRom;
         },
         "get": function(element) {
             var to = new this(element);
@@ -1740,7 +1740,7 @@ are.To = Class.extend({
         },
         "getStage": function (element) {
             if(!element.parent) throw "please add the object to the stage , then animate it."
-            if (element.parent instanceof are.Stage) {
+            if (element.parent instanceof ARE.Stage) {
                 return element.parent;
             }else{
                 return this.getStage(element.parent);
@@ -1754,7 +1754,7 @@ are.To = Class.extend({
         this.tweens = [];
         this._pause = false;
         this.loop = setInterval(function() {
-            are.TWEEN.update();
+            ARE.TWEEN.update();
         }, 15);
         this.cycleCount = 0;
     },
@@ -1997,12 +1997,12 @@ are.To = Class.extend({
                 var target = {};
                 var prop = task[0];
                 target[prop] = task[1][0];
-                var t = new are.TWEEN.Tween(this.element).to(target, task[1][1]).onStart(function() {
+                var t = new ARE.TWEEN.Tween(this.element).to(target, task[1][1]).onStart(function() {
                     if (cmd.start) cmd.start();
                 }).onUpdate(function() {
                     if (cmd.progress) cmd.progress.call(self.element);
                     self.element[prop] = this[prop];
-                }).easing(ease ? ease : are.To.linear).onComplete(function() {
+                }).easing(ease ? ease : ARE.To.linear).onComplete(function() {
                     self.stepCompleteCount++;
                     if (self.stepCompleteCount == len - 1) {
                         if (cmd.end) cmd.end.call(self.element);
@@ -2050,12 +2050,12 @@ are.To = Class.extend({
     }
 });
 
-//end-------------------are.To---------------------end
+//end-------------------ARE.To---------------------end
 
 
-//begin-------------------are.UID---------------------begin
+//begin-------------------ARE.UID---------------------begin
 
-are.UID = Class.extend({
+ARE.UID = Class.extend({
     "statics": {
         "_nextID": 0,
         "_nextCacheID": 1,
@@ -2068,12 +2068,12 @@ are.UID = Class.extend({
     }
 });
 
-//end-------------------are.UID---------------------end
+//end-------------------ARE.UID---------------------end
 
 
-//begin-------------------are.Util---------------------begin
+//begin-------------------ARE.Util---------------------begin
 
-are.Util = Class.extend({
+ARE.Util = Class.extend({
     "statics": {
         "random": function(min, max) {
             return min + Math.floor(Math.random() * (max - min + 1));
@@ -2081,18 +2081,18 @@ are.Util = Class.extend({
     }
 });
 
-//end-------------------are.Util---------------------end
+//end-------------------ARE.Util---------------------end
 
 
-//begin-------------------are.Vector2---------------------begin
+//begin-------------------ARE.Vector2---------------------begin
 
-are.Vector2 = Class.extend({
+ARE.Vector2 = Class.extend({
     "ctor": function(x, y) {
         this.x = x;
         this.y = y;
     },
     "copy": function() {
-        return new are.Vector2(this.x, this.y);
+        return new ARE.Vector2(this.x, this.y);
     },
     "length": function() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
@@ -2102,36 +2102,36 @@ are.Vector2 = Class.extend({
     },
     "normalize": function() {
         var inv = 1 / this.length();
-        return new are.Vector2(this.x * inv, this.y * inv);
+        return new ARE.Vector2(this.x * inv, this.y * inv);
     },
     "negate": function() {
-        return new are.Vector2(-this.x, -this.y);
+        return new ARE.Vector2(-this.x, -this.y);
     },
     "add": function(v) {
         this.x += v.x,
         this.y += v.y;
     },
     "subtract": function(v) {
-        return new are.Vector2(this.x - v.x, this.y - v.y);
+        return new ARE.Vector2(this.x - v.x, this.y - v.y);
     },
     "multiply": function(f) {
-        return new are.Vector2(this.x * f, this.y * f);
+        return new ARE.Vector2(this.x * f, this.y * f);
     },
     "divide": function(f) {
         var invf = 1 / f;
-        return new are.Vector2(this.x * invf, this.y * invf);
+        return new ARE.Vector2(this.x * invf, this.y * invf);
     },
     "dot": function(v) {
         return this.x * v.x + this.y * v.y;
     }
 });
 
-//end-------------------are.Vector2---------------------end
+//end-------------------ARE.Vector2---------------------end
 
 
-//begin-------------------are.Renderer---------------------begin
+//begin-------------------ARE.Renderer---------------------begin
 
-are.Renderer = Class.extend({
+ARE.Renderer = Class.extend({
     "ctor": function(stage, closegl) {
         this.stage = stage;
         this.objs = [];
@@ -2148,10 +2148,10 @@ are.Renderer = Class.extend({
                 }
             }();
         if (webglSupport && !closegl) {
-            this.renderingEngine = new are.WebGLRenderer(this.stage.canvas);
+            this.renderingEngine = new ARE.WebGLRenderer(this.stage.canvas);
         } else {
             if (canvasSupport) {
-                this.renderingEngine = new are.CanvasRenderer(this.stage.canvas);
+                this.renderingEngine = new ARE.CanvasRenderer(this.stage.canvas);
             } else {
                 throw "your browser does not support canvas and webgl ";
             }
@@ -2188,12 +2188,12 @@ are.Renderer = Class.extend({
         } else {
             o._matrix.initialize(1, 0, 0, 1, 0, 0);
         }
-        if (o instanceof are.Shape) {
+        if (o instanceof ARE.Shape) {
             o._matrix.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
         } else {
             o._matrix.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
         }
-        if (o instanceof are.Container) {
+        if (o instanceof ARE.Container) {
             var list = o.children,
                 len = list.length,
                 i = 0;
@@ -2201,7 +2201,7 @@ are.Renderer = Class.extend({
                 this._computeMatrix(list[i], o._matrix);
             }
         } else {
-            if (o instanceof are.Graphics || o instanceof are.Text) {
+            if (o instanceof ARE.Graphics || o instanceof ARE.Text) {
                 this.objs.push(o);
                 this.initComplex(o);
             } else {
@@ -2240,12 +2240,12 @@ are.Renderer = Class.extend({
     }
 });
 
-//end-------------------are.Renderer---------------------end
+//end-------------------ARE.Renderer---------------------end
 
 
-//begin-------------------are.CanvasRenderer---------------------begin
+//begin-------------------ARE.CanvasRenderer---------------------begin
 
-are.CanvasRenderer = Class.extend({
+ARE.CanvasRenderer = Class.extend({
     "ctor": function(canvas) {
         if (canvas) {
             this.canvas = canvas;
@@ -2268,7 +2268,7 @@ are.CanvasRenderer = Class.extend({
         if (!o.isVisible()) {
             return;
         }
-        if (o instanceof are.Container) {
+        if (o instanceof ARE.Container) {
             var list = o.children.slice(0),
                 l = list.length;
             for (var i = l - 1; i >= 0; i--) {
@@ -2309,7 +2309,7 @@ are.CanvasRenderer = Class.extend({
             o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
         }
         mtx = o._hitMatrix;
-        if (o instanceof are.Shape) {
+        if (o instanceof ARE.Shape) {
             mtx.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
         } else {
             mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
@@ -2320,7 +2320,7 @@ are.CanvasRenderer = Class.extend({
             ctx.globalCompositeOperation = o.complexCompositeOperation;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(mmyCanvas, 0, 0);
-        } else if (o instanceof are.Container) {
+        } else if (o instanceof ARE.Container) {
             var list = o.children.slice(0),
                 l = list.length;
             for (var i = l - 1; i >= 0; i--) {
@@ -2329,17 +2329,17 @@ are.CanvasRenderer = Class.extend({
                 if (target) return target;
                 ctx.restore();
             }
-        } else if (o instanceof are.Bitmap || o instanceof are.Sprite) {
+        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
             ctx.globalAlpha = o.complexAlpha;
             ctx.globalCompositeOperation = o.complexCompositeOperation;
             var rect = o.rect;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-        } else if (o instanceof are.Graphics) {
+        } else if (o instanceof ARE.Graphics) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             o.draw(ctx);
         }
-        if (ctx.getImageData(0, 0, 1, 1).data[3] > 1 && !(o instanceof are.Container)) {
+        if (ctx.getImageData(0, 0, 1, 1).data[3] > 1 && !(o instanceof ARE.Container)) {
             this._bubbleEvent(o, type, evt);
             return o;
         }
@@ -2354,10 +2354,10 @@ are.CanvasRenderer = Class.extend({
     },
     "isbindingEvent": function(obj) {
         if (Object.keys(obj.events).length !== 0) return true;
-        if (obj instanceof are.Container) {
+        if (obj instanceof ARE.Container) {
             for (var i = 0, len = obj.children.length; i < len; i++) {
                 var child = obj.children[i];
-                if (child instanceof are.Container) {
+                if (child instanceof ARE.Container) {
                     return this.isbindingEvent(child);
                 } else {
                     if (Object.keys(child.events).length !== 0) return true;
@@ -2378,11 +2378,11 @@ are.CanvasRenderer = Class.extend({
         if (mmyCanvas) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(mmyCanvas, 0, 0);
-        } else if (o instanceof are.Bitmap || o instanceof are.Sprite) {
+        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
             var rect = o.rect;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-        } else if (o instanceof are.Graphics || o instanceof are.Text) {
+        } else if (o instanceof ARE.Graphics || o instanceof ARE.Text) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             o.draw(ctx);
         }
@@ -2402,16 +2402,16 @@ are.CanvasRenderer = Class.extend({
     }
 });
 
-//end-------------------are.CanvasRenderer---------------------end
+//end-------------------ARE.CanvasRenderer---------------------end
 
 
-//begin-------------------are.WebGLRenderer---------------------begin
+//begin-------------------ARE.WebGLRenderer---------------------begin
 
-are.WebGLRenderer = Class.extend({
+ARE.WebGLRenderer = Class.extend({
     "ctor": function(canvas) {
         this.surface = canvas;
         this.snapToPixel = true;
-        this.canvasRenderer = new are.CanvasRenderer();
+        this.canvasRenderer = new ARE.CanvasRenderer();
         this.textureCache = {};
         this.textureCanvasCache = {};
         this.initSurface(this.surface);
@@ -2539,14 +2539,14 @@ are.WebGLRenderer = Class.extend({
         if (!o.isVisible()) {
             return;
         }
-        if (o instanceof are.Container || o instanceof are.Stage) {
+        if (o instanceof ARE.Container || o instanceof ARE.Stage) {
             var list = o.children.slice(0);
             for (var i = 0, l = list.length; i < l; i++) {
                 ctx.save();
                 this.canvasRenderer.render(ctx, list[i]);
                 ctx.restore();
             }
-        } else if (o instanceof are.Bitmap || o instanceof are.Sprite) {
+        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
             var rect = o.rect;
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         } else if (o.txtCanvas) {
@@ -2579,7 +2579,7 @@ are.WebGLRenderer = Class.extend({
             this._initCache(o, mmyCanvas, ctx);
             rightSide = leftSide + mmyCanvas.width;
             bottomSide = topSide + mmyCanvas.height;
-        } else if (o instanceof are.Bitmap || o instanceof are.Sprite) {
+        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
             var rect = o.rect;
             img = o.img;
             this._initTexture(img, ctx);
@@ -2614,21 +2614,21 @@ are.WebGLRenderer = Class.extend({
     }
 });
 
-//end-------------------are.WebGLRenderer---------------------end
+//end-------------------ARE.WebGLRenderer---------------------end
 
 
-//begin-------------------are.DisplayObject---------------------begin
+//begin-------------------ARE.DisplayObject---------------------begin
 
-are.DisplayObject = Class.extend({
+ARE.DisplayObject = Class.extend({
     "ctor": function() {
         this.alpha = this.scaleX = this.scaleY = this.scale = 1;
         this.x = this.y = this.rotation = this.originX = this.originY = this.skewX = this.skewY = this.width = this.height = this.regX = this.regY = 0;
         this.textureReady = true;
         this.visible = true;
-        this._matrix = new are.Matrix2D();
-        this._hitMatrix = new are.Matrix2D();
+        this._matrix = new ARE.Matrix2D();
+        this._hitMatrix = new ARE.Matrix2D();
         this.events = {};
-        this.id = are.UID.get();
+        this.id = ARE.UID.get();
         this.cacheID = 0;
         this.baseInstanceof = "DisplayObject";
         this.tickFPS = 60;
@@ -2711,7 +2711,7 @@ are.DisplayObject = Class.extend({
     },
     "_setCursor": function (obj, type) {
         if (obj) {
-            if (obj.parent instanceof are.Stage) {
+            if (obj.parent instanceof ARE.Stage) {
                 obj.parent.setCursor(type);
             } else {
                 this._setCursor(obj.parent, type);
@@ -2719,7 +2719,7 @@ are.DisplayObject = Class.extend({
         }
     },
     "clone": function() {
-        var o = new are.DisplayObject();
+        var o = new ARE.DisplayObject();
         this.cloneProps(o);
         return o;
     },
@@ -2746,7 +2746,7 @@ are.DisplayObject = Class.extend({
             this.cacheCanvas.height = bound.height;
             this.cacheCtx = this.cacheCanvas.getContext("2d");
         }
-        this.cacheID = are.UID.getCacheID();
+        this.cacheID = ARE.UID.getCacheID();
         this.updateCache(this.cacheCtx, this, bound.width, bound.width);
     },
     "uncache": function() {
@@ -2857,14 +2857,14 @@ are.DisplayObject = Class.extend({
         if (!o.isVisible()) {
             return;
         }
-        if (o instanceof are.Container || o instanceof are.Stage) {
+        if (o instanceof ARE.Container || o instanceof ARE.Stage) {
             var list = o.children.slice(0);
             for (var i = 0, l = list.length; i < l; i++) {
                 ctx.save();
                 this.render(ctx, list[i]);
                 ctx.restore();
             }
-        } else if (o instanceof are.Bitmap || o instanceof are.Sprite) {
+        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
             var rect = o.rect;
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         } else if (o.txtCanvas) {
@@ -2921,12 +2921,12 @@ are.DisplayObject = Class.extend({
     }
 });
 
-//end-------------------are.DisplayObject---------------------end
+//end-------------------ARE.DisplayObject---------------------end
 
 
-//begin-------------------are.Bitmap---------------------begin
+//begin-------------------ARE.Bitmap---------------------begin
 
-are.Bitmap = are.DisplayObject.extend({
+ARE.Bitmap = ARE.DisplayObject.extend({
     "ctor": function(img) {
         this._super();
         if (arguments.length === 0) return;
@@ -2937,7 +2937,7 @@ are.Bitmap = are.DisplayObject.extend({
         }
     },
     "_initWithSrc": function(img) {
-        var cacheImg = are.Bitmap[img];
+        var cacheImg = ARE.Bitmap[img];
         if (cacheImg) {
             this._init(cacheImg);
         } else {
@@ -2950,7 +2950,7 @@ are.Bitmap = are.DisplayObject.extend({
                 self.height = self.rect[3];
                 self.regX = self.width * self.originX;
                 self.regY = self.height * self.originY;
-                are.Bitmap[img] = self.img;
+                ARE.Bitmap[img] = self.img;
                 self.textureReady = true;
                 self.imageLoadHandle && self.imageLoadHandle();
                 if (self.filter) self.filter = self.filter;
@@ -2989,7 +2989,7 @@ are.Bitmap = are.DisplayObject.extend({
         this.imageLoadHandle = fn;
     },
     "clone": function() {
-        var o = new are.Bitmap(this.img);
+        var o = new ARE.Bitmap(this.img);
         o.rect = this.rect.slice(0);
         this.cloneProps(o);
         return o;
@@ -2998,12 +2998,12 @@ are.Bitmap = are.DisplayObject.extend({
     "flipY": function() {}
 });
 
-//end-------------------are.Bitmap---------------------end
+//end-------------------ARE.Bitmap---------------------end
 
 
-//begin-------------------are.CircleShape---------------------begin
+//begin-------------------ARE.CircleShape---------------------begin
 
-are.CircleShape = are.DisplayObject.extend({
+ARE.CircleShape = ARE.DisplayObject.extend({
     "ctor": function(r, color, isHollow) {
         this._super();
         this.r = r || 1;
@@ -3015,7 +3015,7 @@ are.CircleShape = are.DisplayObject.extend({
         this.shapeCanvas.height = this.height;
         this.shapeCtx = this.shapeCanvas.getContext("2d");
         this.draw();
-        this.cacheID = are.UID.getCacheID();
+        this.cacheID = ARE.UID.getCacheID();
     },
     "draw": function(ctx) {
         var ctx = this.shapeCtx;
@@ -3026,12 +3026,12 @@ are.CircleShape = are.DisplayObject.extend({
     }
 });
 
-//end-------------------are.CircleShape---------------------end
+//end-------------------ARE.CircleShape---------------------end
 
 
-//begin-------------------are.Container---------------------begin
+//begin-------------------ARE.Container---------------------begin
 
-are.Container = are.DisplayObject.extend({
+ARE.Container = ARE.DisplayObject.extend({
     "ctor": function() {
         this._super();
         this.children = [];
@@ -3045,8 +3045,8 @@ are.Container = are.DisplayObject.extend({
                 if (item) {
                     this.children.push(item);
                     item.parent = this;
-                    if (item instanceof are.DomElement) {
-                        are.Stage.domSurface.appendChild(item.element);
+                    if (item instanceof ARE.DomElement) {
+                        ARE.Stage.domSurface.appendChild(item.element);
                         item.element.style.visibility = "visible";
                         var style = window.getComputedStyle(item.element, null);
                         item.width = parseInt(style.width);
@@ -3058,8 +3058,8 @@ are.Container = are.DisplayObject.extend({
             if (obj) {
                 this.children.push(obj);
                 obj.parent = this;
-                if (obj instanceof are.DomElement) {
-                    are.Stage.domSurface.appendChild(obj.element);
+                if (obj instanceof ARE.DomElement) {
+                    ARE.Stage.domSurface.appendChild(obj.element);
                     obj.element.style.visibility = "visible";
                     var style = window.getComputedStyle(obj.element, null);
                     obj.width = parseInt(style.width);
@@ -3078,8 +3078,8 @@ are.Container = are.DisplayObject.extend({
                     if (this.children[k].id == currentObj.id) {
                         currentObj.parent = null;
                         this.children.splice(k, 1);
-                        if (currentObj instanceof are.DomElement) {
-                            are.Stage.domSurface.removeChild(currentObj.element);
+                        if (currentObj instanceof ARE.DomElement) {
+                            ARE.Stage.domSurface.removeChild(currentObj.element);
                         }
                         break;
                     }
@@ -3090,8 +3090,8 @@ are.Container = are.DisplayObject.extend({
                 if (this.children[i].id == obj.id) {
                     obj.parent = null;
                     this.children.splice(i, 1);
-                    if (obj instanceof are.DomElement) {
-                        are.Stage.domSurface.removeChild(obj.element);
+                    if (obj instanceof ARE.DomElement) {
+                        ARE.Stage.domSurface.removeChild(obj.element);
                     }
                     break;
                 }
@@ -3099,7 +3099,7 @@ are.Container = are.DisplayObject.extend({
         }
     },
     "clone": function() {
-        var o = new are.Container();
+        var o = new ARE.Container();
         this.cloneProps(o);
         var arr = o.children = [];
         for (var i = this.children.length - 1; i > -1; i--) {
@@ -3157,14 +3157,14 @@ are.Container = are.DisplayObject.extend({
     }
 });
 
-//end-------------------are.Container---------------------end
+//end-------------------ARE.Container---------------------end
 
-are.DomElement = are.DisplayObject.extend({
+ARE.DomElement = ARE.DisplayObject.extend({
     "ctor": function (selector) {
         this._super();
         this.element = typeof selector == "string" ? document.querySelector(selector) : selector;
         var element = this.element;
-        var observer = are.Observe(this, ["x", "y", "scaleX", "scaleY", "perspective", "rotation", "skewX", "skewY", "regX", "regY"], function () {
+        var observer = ARE.Observe(this, ["x", "y", "scaleX", "scaleY", "perspective", "rotation", "skewX", "skewY", "regX", "regY"], function () {
             var mtx = this._matrix.identity().appendTransform(this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.skewX, this.skewY, this.regX, this.regY);
             this.element.style.transform = this.element.style.msTransform = this.element.style.OTransform = this.element.style.MozTransform = this.element.style.webkitTransform = "matrix(" + mtx.a + "," + mtx.b + "," + mtx.c + "," + mtx.d + "," + mtx.tx + "," + mtx.ty + ")";
         });
@@ -3202,9 +3202,9 @@ are.DomElement = are.DisplayObject.extend({
     }
 });
 
-//begin-------------------are.Graphics---------------------begin
+//begin-------------------ARE.Graphics---------------------begin
 
-are.Graphics = are.DisplayObject.extend({
+ARE.Graphics = ARE.DisplayObject.extend({
     "ctor": function() {
         this._super();
         this.cmds = [];
@@ -3283,12 +3283,12 @@ are.Graphics = are.DisplayObject.extend({
     "clone": function() {}
 });
 
-//end-------------------are.Graphics---------------------end
+//end-------------------ARE.Graphics---------------------end
 
 
-//begin-------------------are.Label---------------------begin
+//begin-------------------ARE.Label---------------------begin
 
-are.Label = are.DisplayObject.extend({
+ARE.Label = ARE.DisplayObject.extend({
     "ctor": function(option) {
         this._super();
         this.value = option.value;
@@ -3316,7 +3316,7 @@ are.Label = are.DisplayObject.extend({
             color: this.color || "black",
             fontFamily: this.fontFamily
         });
-        this.cacheID = are.UID.getCacheID();
+        this.cacheID = ARE.UID.getCacheID();
         this.width = drawOption.calculatedWidth;
         this.height = drawOption.calculatedHeight;
     },
@@ -3437,12 +3437,12 @@ are.Label = are.DisplayObject.extend({
     }
 });
 
-//end-------------------are.Label---------------------end
+//end-------------------ARE.Label---------------------end
 
 
-//begin-------------------are.Particle---------------------begin
+//begin-------------------ARE.Particle---------------------begin
 
-are.Particle = are.Bitmap.extend({
+ARE.Particle = ARE.Bitmap.extend({
     "ctor": function(option) {
         this._super(option.texture);
         this.originX = .5;
@@ -3452,7 +3452,7 @@ are.Particle = are.Bitmap.extend({
         this.y = this.position.y;
         this.rotation = option.rotation || 0;
         this.velocity = option.velocity;
-        this.acceleration = option.acceleration || new are.Vector2(0, 0);
+        this.acceleration = option.acceleration || new ARE.Vector2(0, 0);
         this.rotatingSpeed = option.rotatingSpeed || 0;
         this.rotatingAcceleration = option.rotatingAcceleration || 0;
         this.hideSpeed = option.hideSpeed || .01;
@@ -3473,12 +3473,12 @@ are.Particle = are.Bitmap.extend({
     }
 });
 
-//end-------------------are.Particle---------------------end
+//end-------------------ARE.Particle---------------------end
 
 
-//begin-------------------are.ParticleSystem---------------------begin
+//begin-------------------ARE.ParticleSystem---------------------begin
 
-are.ParticleSystem = are.Container.extend({
+ARE.ParticleSystem = ARE.Container.extend({
     "ctor": function(option) {
         this._super();
         this.speed = option.speed;
@@ -3497,11 +3497,11 @@ are.ParticleSystem = are.Container.extend({
         this.emitY = option.emitY;
         var self = this;
         if (typeof option.texture === "string") {
-            if (are.Bitmap[option.texture]) {
-                this.texture = are.Bitmap[option.texture];
+            if (ARE.Bitmap[option.texture]) {
+                this.texture = ARE.Bitmap[option.texture];
                 this.generateFilterTexture(this.texture);
             } else {
-                this.bitmap = new are.Bitmap();
+                this.bitmap = new ARE.Bitmap();
                 this.bitmap._parent = this;
                 this.bitmap.onImageLoad(function() {
                     this._parent.texture = this.img;
@@ -3520,17 +3520,17 @@ are.ParticleSystem = are.Container.extend({
         this.hideSpeed = option.hideSpeed || .01;
     },
     "generateFilterTexture": function(texture) {
-        var bitmap = new are.Bitmap(texture);
+        var bitmap = new ARE.Bitmap(texture);
         bitmap.filter = this.filter;
         this.filterTexture = bitmap.cacheCanvas;
     },
     "emit": function() {
-        var angle = (this.angle + are.Util.random(-this.angleRange / 2, this.angleRange / 2)) * Math.PI / 180;
+        var angle = (this.angle + ARE.Util.random(-this.angleRange / 2, this.angleRange / 2)) * Math.PI / 180;
         var halfX = this.emitArea[0] / 2,
             harfY = this.emitArea[1] / 2;
-        var particle = new are.Particle({
-    position: new are.Vector2(this.emitX + are.Util.random(-halfX, halfX), this.emitY + are.Util.random(-harfY, harfY)),
-    velocity: new are.Vector2(this.speed * Math.cos(angle), this.speed * Math.sin(angle)),
+        var particle = new ARE.Particle({
+    position: new ARE.Vector2(this.emitX + ARE.Util.random(-halfX, halfX), this.emitY + ARE.Util.random(-harfY, harfY)),
+    velocity: new ARE.Vector2(this.speed * Math.cos(angle), this.speed * Math.sin(angle)),
     texture: this.filterTexture,
     acceleration: this.gravity,
     hideSpeed: this.hideSpeed
@@ -3564,12 +3564,12 @@ are.ParticleSystem = are.Container.extend({
     }
 });
 
-//end-------------------are.ParticleSystem---------------------end
+//end-------------------ARE.ParticleSystem---------------------end
 
 
-//begin-------------------are.RectAdjust---------------------begin
+//begin-------------------ARE.RectAdjust---------------------begin
 
-are.RectAdjust = Class.extend({
+ARE.RectAdjust = Class.extend({
     "ctor": function(option) {
         this.min = option.min;
         this.max = option.max;
@@ -3624,12 +3624,12 @@ are.RectAdjust = Class.extend({
     }
 });
 
-//end-------------------are.RectAdjust---------------------end
+//end-------------------ARE.RectAdjust---------------------end
 
 
-//begin-------------------are.RectShape---------------------begin
+//begin-------------------ARE.RectShape---------------------begin
 
-are.RectShape = are.DisplayObject.extend({
+ARE.RectShape = ARE.DisplayObject.extend({
     "ctor": function(width, height, color, isHollow) {
         this._super();
         this.color = color || "black";
@@ -3642,7 +3642,7 @@ are.RectShape = are.DisplayObject.extend({
         this.shapeCanvas.height = this.height;
         this.shapeCtx = this.shapeCanvas.getContext("2d");
         this.draw();
-        this.cacheID = are.UID.getCacheID();
+        this.cacheID = ARE.UID.getCacheID();
     },
     "draw": function(ctx) {
         var ctx = this.shapeCtx;
@@ -3652,12 +3652,12 @@ are.RectShape = are.DisplayObject.extend({
     }
 });
 
-//end-------------------are.RectShape---------------------end
+//end-------------------ARE.RectShape---------------------end
 
 
-//begin-------------------are.Shape---------------------begin
+//begin-------------------ARE.Shape---------------------begin
 
-are.Shape = are.DisplayObject.extend({
+ARE.Shape = ARE.DisplayObject.extend({
     "ctor": function(width, height, debug) {
         this._super();
         this.cmds = [];
@@ -3695,7 +3695,7 @@ are.Shape = are.DisplayObject.extend({
     },
     "end": function() {
         this._preCacheId = this.cacheID;
-        this.cacheID = are.UID.getCacheID();
+        this.cacheID = ARE.UID.getCacheID();
         var ctx = this.shapeCtx;
         for (var i = 0, len = this.cmds.length; i < len; i++) {
             var cmd = this.cmds[i];
@@ -3707,11 +3707,11 @@ are.Shape = are.DisplayObject.extend({
         }
     },
     "clearRect": function(x, y, width, height) {
-        this.cacheID = are.UID.getCacheID();
+        this.cacheID = ARE.UID.getCacheID();
         this.shapeCtx.clearRect(x, y, width, height);
     },
     "clear": function() {
-        this.cacheID = are.UID.getCacheID();
+        this.cacheID = ARE.UID.getCacheID();
         this.shapeCtx.clearRect(0, 0, this.width, this.height);
     },
     "strokeRect": function() {
@@ -3769,12 +3769,12 @@ are.Shape = are.DisplayObject.extend({
     "clone": function() {}
 });
 
-//end-------------------are.Shape---------------------end
+//end-------------------ARE.Shape---------------------end
 
 
-//begin-------------------are.Sprite---------------------begin
+//begin-------------------ARE.Sprite---------------------begin
 
-are.Sprite = are.DisplayObject.extend({
+ARE.Sprite = ARE.DisplayObject.extend({
     "ctor": function(option) {
         this._super();
         this.option = option;
@@ -3792,11 +3792,11 @@ are.Sprite = are.DisplayObject.extend({
         for (var i = 0; i < len; i++) {
             var urlOrImg = this.option.imgs[i];
             if (typeof urlOrImg === "string") {
-                if (are.Bitmap[urlOrImg]) {
-                    this.bitmaps.push(new are.Bitmap(are.Bitmap[urlOrImg]));
+                if (ARE.Bitmap[urlOrImg]) {
+                    this.bitmaps.push(new ARE.Bitmap(ARE.Bitmap[urlOrImg]));
                     this._loadedCount++;
                 } else {
-                    var bmp = new are.Bitmap();
+                    var bmp = new ARE.Bitmap();
                     bmp._sprite = this;
                     bmp.onImageLoad(function() {
                         bmp._sprite._loadedCount++;
@@ -3810,7 +3810,7 @@ are.Sprite = are.DisplayObject.extend({
                 }
             } else {
                 this._loadedCount++;
-                this.bitmaps.push(new are.Bitmap(urlOrImg));
+                this.bitmaps.push(new ARE.Bitmap(urlOrImg));
             }
         }
         if (this._loadedCount === len) {
@@ -3892,12 +3892,12 @@ are.Sprite = are.DisplayObject.extend({
     }
 });
 
-//end-------------------are.Sprite---------------------end
+//end-------------------ARE.Sprite---------------------end
 
 
-//begin-------------------are.Stage---------------------begin
+//begin-------------------ARE.Stage---------------------begin
 
-are.Stage = are.Container.extend({
+ARE.Stage = ARE.Container.extend({
     "ctor": function(canvas, closegl) {
         this._super();
         this.canvas = typeof canvas == "string" ? document.querySelector(canvas) : canvas;
@@ -3905,11 +3905,11 @@ are.Stage = are.Container.extend({
         this.height = this.canvas.height;
         this.AABB = [0, 0, this.width, this.height];
         this.hitAABB = false;
-        this.hitRenderer = new are.CanvasRenderer();
+        this.hitRenderer = new ARE.CanvasRenderer();
         this.hitCanvas = document.createElement("canvas");
         this.hitCanvas.width = 1;
         this.hitCanvas.height = 1;
-        this.stageRenderer = new are.Renderer(this, closegl);
+        this.stageRenderer = new ARE.Renderer(this, closegl);
         this.hitCtx = this.hitCanvas.getContext("2d");
         this._scaleX = this._scaleY = null;
         this.offset = this._getXY(this.canvas);
@@ -3928,11 +3928,11 @@ are.Stage = are.Container.extend({
                 this._useRequestAnimFrame = value;
                 if (value) {
                     clearInterval(self.loop);
-                    self.loop = are.RAF.requestInterval(function() {
+                    self.loop = ARE.RAF.requestInterval(function() {
                         self._tick(self);
                     }, self.interval);
                 } else {
-                    are.RAF.clearRequestInterval(self.loop);
+                    ARE.RAF.clearRequestInterval(self.loop);
                     self.loop = setInterval(function() {
                         self._tick(self);
                     }, self.interval);
@@ -3948,13 +3948,13 @@ are.Stage = are.Container.extend({
             if (this.useRequestAnimFrame) {
                 clearInterval(this.loop);
                 try {
-                    are.RAF.clearRequestInterval(this.loop);
+                    ARE.RAF.clearRequestInterval(this.loop);
                 } catch (e) {}
-                this.loop = are.RAF.requestInterval(function() {
+                this.loop = ARE.RAF.requestInterval(function() {
                     self._tick(self);
                 }, this.interval);
             } else {
-                are.RAF.clearRequestInterval(this.loop);
+                ARE.RAF.clearRequestInterval(this.loop);
                 try {
                     clearInterval(this.loop);
                 } catch (e) {}
@@ -4016,9 +4016,9 @@ are.Stage = are.Container.extend({
     "_pauseSprite": function (obj) {
         for (var i = 0, len = obj.children.length; i < len; i++) {
             var child = obj.children[i];
-            if (child instanceof are.Container) {
+            if (child instanceof ARE.Container) {
                 this._pauseSprite(child);
-            } else if (child instanceof are.Sprite) {
+            } else if (child instanceof ARE.Sprite) {
                 child.pause();
             }
         }
@@ -4031,9 +4031,9 @@ are.Stage = are.Container.extend({
     "_playSprite": function (obj) {
         for (var i = 0, len = obj.children.length; i < len; i++) {
             var child = obj.children[i];
-            if (child instanceof are.Container) {
+            if (child instanceof ARE.Container) {
                 this._playSprite(child);
-            } else if (child instanceof are.Sprite) {
+            } else if (child instanceof ARE.Sprite) {
                 child.play();
             }
         }
@@ -4103,7 +4103,7 @@ are.Stage = are.Container.extend({
         style.left = this.offset[0] + "px";
         style.top = this.offset[1] + "px";
         document.body.appendChild(this.domSurface);
-        are.Stage.domSurface = this.domSurface;
+        ARE.Stage.domSurface = this.domSurface;
         this.domSurface.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
         this.domSurface.addEventListener("click", this._handleClick.bind(this), false);
         this.domSurface.addEventListener("mousedown", this._handleMouseDown.bind(this), false);
@@ -4284,10 +4284,10 @@ are.Stage = are.Container.extend({
         this.interval = Math.floor(1e3 / fps);
     },
     "onKeyboard": function(keyCombo, onDownCallback, onUpCallback) {
-        are.Keyboard.on(keyCombo, onDownCallback, onUpCallback);
+        ARE.Keyboard.on(keyCombo, onDownCallback, onUpCallback);
     },
     "getActiveKeys": function() {
-        return are.Keyboard.getActiveKeys();
+        return ARE.Keyboard.getActiveKeys();
     },
     "scaleToScreen": function(scaleX, scaleY) {
         if (scaleX === 1 && scaleY === 1) {
@@ -4338,7 +4338,7 @@ are.Stage = are.Container.extend({
             if (child.baseInstanceof == "Container" || child.baseInstanceof == "Stage") {
                 for (var i = 0, len = child.children.length; i < len; i++) {
                     var subChild = child.children[i];
-                    if (subChild instanceof are.Container) {
+                    if (subChild instanceof ARE.Container) {
                         getCount(subChild);
                     } else {
                         count++;
@@ -4352,13 +4352,13 @@ are.Stage = are.Container.extend({
         return count;
     },
     "getRenderingMode": function() {
-        if (this.stageRenderer.renderingEngine instanceof are.CanvasRenderer) {
+        if (this.stageRenderer.renderingEngine instanceof ARE.CanvasRenderer) {
             return "Canvas";
         }
         return "WebGL";
     },
     "getFPS": function() {
-        var fps = are.FPS.get();
+        var fps = ARE.FPS.get();
         this.fpsValue = fps.value;
         this.averageFPS = fps.averageFPS;
     },
@@ -4389,12 +4389,12 @@ are.Stage = are.Container.extend({
     }
 });
 
-//end-------------------are.Stage---------------------end
+//end-------------------ARE.Stage---------------------end
 
 
-//begin-------------------are.Text---------------------begin
+//begin-------------------ARE.Text---------------------begin
 
-are.Text = are.DisplayObject.extend({
+ARE.Text = ARE.DisplayObject.extend({
     "ctor": function(value, font, color) {
         this._super();
         this.value = value;
@@ -4411,14 +4411,14 @@ are.Text = are.DisplayObject.extend({
         ctx.fillText(this.value, 0, 0);
     },
     "clone": function() {
-        var t = new are.Text(this.text, this.font, this.color);
+        var t = new ARE.Text(this.text, this.font, this.color);
         this.cloneProps(t);
         return t;
     }
 });
 
-//end-------------------are.Text---------------------end
+//end-------------------ARE.Text---------------------end
 
 
-return are;
+return ARE;
 }));

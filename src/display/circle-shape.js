@@ -1,7 +1,7 @@
 
-//begin-------------------are.CircleShape---------------------begin
+//begin-------------------ARE.CircleShape---------------------begin
 
-are.CircleShape = are.DisplayObject.extend({
+ARE.CircleShape = ARE.DisplayObject.extend({
     "ctor": function(r, color, isHollow) {
         this._super();
         this.r = r || 1;
@@ -13,7 +13,7 @@ are.CircleShape = are.DisplayObject.extend({
         this.shapeCanvas.height = this.height;
         this.shapeCtx = this.shapeCanvas.getContext("2d");
         this.draw();
-        this.cacheID = are.UID.getCacheID();
+        this.cacheID = ARE.UID.getCacheID();
     },
     "draw": function(ctx) {
         var ctx = this.shapeCtx;
@@ -24,4 +24,4 @@ are.CircleShape = are.DisplayObject.extend({
     }
 });
 
-//end-------------------are.CircleShape---------------------end
+//end-------------------ARE.CircleShape---------------------end

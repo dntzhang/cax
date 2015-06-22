@@ -1,7 +1,7 @@
 
-//begin-------------------are.Graphics---------------------begin
+//begin-------------------ARE.Graphics---------------------begin
 
-are.Graphics = are.DisplayObject.extend({
+ARE.Graphics = ARE.DisplayObject.extend({
     "ctor": function() {
         this._super();
         this.cmds = [];
@@ -80,4 +80,4 @@ are.Graphics = are.DisplayObject.extend({
     "clone": function() {}
 });
 
-//end-------------------are.Graphics---------------------end
+//end-------------------ARE.Graphics---------------------end

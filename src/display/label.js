@@ -1,7 +1,7 @@
 
-//begin-------------------are.Label---------------------begin
+//begin-------------------ARE.Label---------------------begin
 
-are.Label = are.DisplayObject.extend({
+ARE.Label = ARE.DisplayObject.extend({
     "ctor": function(option) {
         this._super();
         this.value = option.value;
@@ -29,7 +29,7 @@ are.Label = are.DisplayObject.extend({
             color: this.color || "black",
             fontFamily: this.fontFamily
         });
-        this.cacheID = are.UID.getCacheID();
+        this.cacheID = ARE.UID.getCacheID();
         this.width = drawOption.calculatedWidth;
         this.height = drawOption.calculatedHeight;
     },
@@ -150,4 +150,4 @@ are.Label = are.DisplayObject.extend({
     }
 });
 
-//end-------------------are.Label---------------------end
+//end-------------------ARE.Label---------------------end

@@ -1,7 +1,7 @@
 
-//begin-------------------are.Loader---------------------begin
+//begin-------------------ARE.Loader---------------------begin
 
-are.Loader = Class.extend({
+ARE.Loader = Class.extend({
     "ctor": function() {
         this.audios = {};
         this.res = {};
@@ -115,4 +115,4 @@ are.Loader = Class.extend({
     }
 });
 
-//end-------------------are.Loader---------------------end
+//end-------------------ARE.Loader---------------------end

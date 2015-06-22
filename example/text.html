@@ -14,16 +14,16 @@
 <script src="../dist/are.js"></script>
 
     <script>
-        (function (are) {
-            var Stage = are.Stage, Text = are.Text;
-            //webgl不支持渲染Text，你可以使用are.Label
+        (function (ARE) {
+            var Stage = ARE.Stage, Text = ARE.Text;
+            //webgl不支持渲染Text，你可以使用ARE.Label
             var stage = new Stage("#ourCanvas",true);
             stage.debug = true;
             var text = new Text("Alloy Game Engine", "35px arial", "red");
             text.y = 140;
             stage.add(text);
 
-        })(are);
+        })(ARE);
     </script>
 </body>
 </html>

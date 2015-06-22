@@ -1,7 +1,7 @@
 
-//begin-------------------are.Particle---------------------begin
+//begin-------------------ARE.Particle---------------------begin
 
-are.Particle = are.Bitmap.extend({
+ARE.Particle = ARE.Bitmap.extend({
     "ctor": function(option) {
         this._super(option.texture);
         this.originX = .5;
@@ -11,7 +11,7 @@ are.Particle = are.Bitmap.extend({
         this.y = this.position.y;
         this.rotation = option.rotation || 0;
         this.velocity = option.velocity;
-        this.acceleration = option.acceleration || new are.Vector2(0, 0);
+        this.acceleration = option.acceleration || new ARE.Vector2(0, 0);
         this.rotatingSpeed = option.rotatingSpeed || 0;
         this.rotatingAcceleration = option.rotatingAcceleration || 0;
         this.hideSpeed = option.hideSpeed || .01;
@@ -32,4 +32,4 @@ are.Particle = are.Bitmap.extend({
     }
 });
 
-//end-------------------are.Particle---------------------end
+//end-------------------ARE.Particle---------------------end

@@ -9,7 +9,7 @@
     } else if (typeof exports === 'object') {
         module.exports = factory();
     } else {
-        root.are = factory();
+        root.ARE = factory();
     }
 }(this, function () {
 'use strict';

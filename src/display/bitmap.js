@@ -1,7 +1,7 @@
 
-//begin-------------------are.Bitmap---------------------begin
+//begin-------------------ARE.Bitmap---------------------begin
 
-are.Bitmap = are.DisplayObject.extend({
+ARE.Bitmap = ARE.DisplayObject.extend({
     "ctor": function(img) {
         this._super();
         if (arguments.length === 0) return;
@@ -12,7 +12,7 @@ are.Bitmap = are.DisplayObject.extend({
         }
     },
     "_initWithSrc": function(img) {
-        var cacheImg = are.Bitmap[img];
+        var cacheImg = ARE.Bitmap[img];
         if (cacheImg) {
             this._init(cacheImg);
         } else {
@@ -25,7 +25,7 @@ are.Bitmap = are.DisplayObject.extend({
                 self.height = self.rect[3];
                 self.regX = self.width * self.originX;
                 self.regY = self.height * self.originY;
-                are.Bitmap[img] = self.img;
+                ARE.Bitmap[img] = self.img;
                 self.textureReady = true;
                 self.imageLoadHandle && self.imageLoadHandle();
                 if (self.filter) self.filter = self.filter;
@@ -64,7 +64,7 @@ are.Bitmap = are.DisplayObject.extend({
         this.imageLoadHandle = fn;
     },
     "clone": function() {
-        var o = new are.Bitmap(this.img);
+        var o = new ARE.Bitmap(this.img);
         o.rect = this.rect.slice(0);
         this.cloneProps(o);
         return o;
@@ -73,4 +73,4 @@ are.Bitmap = are.DisplayObject.extend({
     "flipY": function() {}
 });
 
-//end-------------------are.Bitmap---------------------end
+//end-------------------ARE.Bitmap---------------------end

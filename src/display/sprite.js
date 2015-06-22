@@ -1,7 +1,7 @@
 
-//begin-------------------are.Sprite---------------------begin
+//begin-------------------ARE.Sprite---------------------begin
 
-are.Sprite = are.DisplayObject.extend({
+ARE.Sprite = ARE.DisplayObject.extend({
     "ctor": function(option) {
         this._super();
         this.option = option;
@@ -19,11 +19,11 @@ are.Sprite = are.DisplayObject.extend({
         for (var i = 0; i < len; i++) {
             var urlOrImg = this.option.imgs[i];
             if (typeof urlOrImg === "string") {
-                if (are.Bitmap[urlOrImg]) {
-                    this.bitmaps.push(new are.Bitmap(are.Bitmap[urlOrImg]));
+                if (ARE.Bitmap[urlOrImg]) {
+                    this.bitmaps.push(new ARE.Bitmap(ARE.Bitmap[urlOrImg]));
                     this._loadedCount++;
                 } else {
-                    var bmp = new are.Bitmap();
+                    var bmp = new ARE.Bitmap();
                     bmp._sprite = this;
                     bmp.onImageLoad(function() {
                         bmp._sprite._loadedCount++;
@@ -37,7 +37,7 @@ are.Sprite = are.DisplayObject.extend({
                 }
             } else {
                 this._loadedCount++;
-                this.bitmaps.push(new are.Bitmap(urlOrImg));
+                this.bitmaps.push(new ARE.Bitmap(urlOrImg));
             }
         }
         if (this._loadedCount === len) {
@@ -119,4 +119,4 @@ are.Sprite = are.DisplayObject.extend({
     }
 });
 
-//end-------------------are.Sprite---------------------end
+//end-------------------ARE.Sprite---------------------end

@@ -1,44 +1,44 @@
 
-//begin-------------------are.To---------------------begin
+//begin-------------------ARE.To---------------------begin
 
-are.To = Class.extend({
+ARE.To = Class.extend({
     "statics": {
         "ctor": function () {
-            this.bounceOut = are.TWEEN.Easing.Bounce.Out,
-            this.linear = are.TWEEN.Easing.Linear.None,
-            this.quadraticIn = are.TWEEN.Easing.Quadratic.In,
-            this.quadraticOut = are.TWEEN.Easing.Quadratic.Out,
-            this.quadraticInOut = are.TWEEN.Easing.Quadratic.InOut,
-            this.cubicIn = are.TWEEN.Easing.Cubic.In,
-            this.cubicOut = are.TWEEN.Easing.Cubic.Out,
-            this.cubicInOut = are.TWEEN.Easing.Cubic.InOut,
-            this.quarticIn = are.TWEEN.Easing.Quartic.In,
-            this.quarticOut = are.TWEEN.Easing.Quartic.Out,
-            this.quarticInOut = are.TWEEN.Easing.Quartic.InOut,
-            this.quinticIn = are.TWEEN.Easing.Quintic.In,
-            this.quinticOut = are.TWEEN.Easing.Quintic.Out,
-            this.quinticInOut = are.TWEEN.Easing.Quintic.InOut,
-            this.sinusoidalIn = are.TWEEN.Easing.Sinusoidal.In,
-            this.sinusoidalOut = are.TWEEN.Easing.Sinusoidal.Out,
-            this.sinusoidalInOut = are.TWEEN.Easing.Sinusoidal.InOut,
-            this.exponentialIn = are.TWEEN.Easing.Exponential.In,
-            this.exponentialOut = are.TWEEN.Easing.Exponential.Out,
-            this.exponentialInOut = are.TWEEN.Easing.Exponential.InOut,
-            this.circularIn = are.TWEEN.Easing.Circular.In,
-            this.circularOut = are.TWEEN.Easing.Circular.Out,
-            this.circularInOut = are.TWEEN.Easing.Circular.InOut,
-            this.elasticIn = are.TWEEN.Easing.Elastic.In,
-            this.elasticOut = are.TWEEN.Easing.Elastic.Out,
-            this.elasticInOut = are.TWEEN.Easing.Elastic.InOut,
-            this.backIn = are.TWEEN.Easing.Back.In,
-            this.backOut = are.TWEEN.Easing.Back.Out,
-            this.backInOut = are.TWEEN.Easing.Back.InOut,
-            this.bounceIn = are.TWEEN.Easing.Bounce.In,
-            this.bounceOut = are.TWEEN.Easing.Bounce.Out,
-            this.bounceInOut = are.TWEEN.Easing.Bounce.InOut,
-            this.interpolationLinear = are.TWEEN.Interpolation.Linear,
-            this.interpolationBezier = are.TWEEN.Interpolation.Bezier,
-            this.interpolationCatmullRom = are.TWEEN.Interpolation.CatmullRom;
+            this.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
+            this.linear = ARE.TWEEN.Easing.Linear.None,
+            this.quadraticIn = ARE.TWEEN.Easing.Quadratic.In,
+            this.quadraticOut = ARE.TWEEN.Easing.Quadratic.Out,
+            this.quadraticInOut = ARE.TWEEN.Easing.Quadratic.InOut,
+            this.cubicIn = ARE.TWEEN.Easing.Cubic.In,
+            this.cubicOut = ARE.TWEEN.Easing.Cubic.Out,
+            this.cubicInOut = ARE.TWEEN.Easing.Cubic.InOut,
+            this.quarticIn = ARE.TWEEN.Easing.Quartic.In,
+            this.quarticOut = ARE.TWEEN.Easing.Quartic.Out,
+            this.quarticInOut = ARE.TWEEN.Easing.Quartic.InOut,
+            this.quinticIn = ARE.TWEEN.Easing.Quintic.In,
+            this.quinticOut = ARE.TWEEN.Easing.Quintic.Out,
+            this.quinticInOut = ARE.TWEEN.Easing.Quintic.InOut,
+            this.sinusoidalIn = ARE.TWEEN.Easing.Sinusoidal.In,
+            this.sinusoidalOut = ARE.TWEEN.Easing.Sinusoidal.Out,
+            this.sinusoidalInOut = ARE.TWEEN.Easing.Sinusoidal.InOut,
+            this.exponentialIn = ARE.TWEEN.Easing.Exponential.In,
+            this.exponentialOut = ARE.TWEEN.Easing.Exponential.Out,
+            this.exponentialInOut = ARE.TWEEN.Easing.Exponential.InOut,
+            this.circularIn = ARE.TWEEN.Easing.Circular.In,
+            this.circularOut = ARE.TWEEN.Easing.Circular.Out,
+            this.circularInOut = ARE.TWEEN.Easing.Circular.InOut,
+            this.elasticIn = ARE.TWEEN.Easing.Elastic.In,
+            this.elasticOut = ARE.TWEEN.Easing.Elastic.Out,
+            this.elasticInOut = ARE.TWEEN.Easing.Elastic.InOut,
+            this.backIn = ARE.TWEEN.Easing.Back.In,
+            this.backOut = ARE.TWEEN.Easing.Back.Out,
+            this.backInOut = ARE.TWEEN.Easing.Back.InOut,
+            this.bounceIn = ARE.TWEEN.Easing.Bounce.In,
+            this.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
+            this.bounceInOut = ARE.TWEEN.Easing.Bounce.InOut,
+            this.interpolationLinear = ARE.TWEEN.Interpolation.Linear,
+            this.interpolationBezier = ARE.TWEEN.Interpolation.Bezier,
+            this.interpolationCatmullRom = ARE.TWEEN.Interpolation.CatmullRom;
         },
         "get": function(element) {
             var to = new this(element);
@@ -48,7 +48,7 @@ are.To = Class.extend({
         },
         "getStage": function (element) {
             if(!element.parent) throw "please add the object to the stage , then animate it."
-            if (element.parent instanceof are.Stage) {
+            if (element.parent instanceof ARE.Stage) {
                 return element.parent;
             }else{
                 return this.getStage(element.parent);
@@ -62,7 +62,7 @@ are.To = Class.extend({
         this.tweens = [];
         this._pause = false;
         this.loop = setInterval(function() {
-            are.TWEEN.update();
+            ARE.TWEEN.update();
         }, 15);
         this.cycleCount = 0;
     },
@@ -305,12 +305,12 @@ are.To = Class.extend({
                 var target = {};
                 var prop = task[0];
                 target[prop] = task[1][0];
-                var t = new are.TWEEN.Tween(this.element).to(target, task[1][1]).onStart(function() {
+                var t = new ARE.TWEEN.Tween(this.element).to(target, task[1][1]).onStart(function() {
                     if (cmd.start) cmd.start();
                 }).onUpdate(function() {
                     if (cmd.progress) cmd.progress.call(self.element);
                     self.element[prop] = this[prop];
-                }).easing(ease ? ease : are.To.linear).onComplete(function() {
+                }).easing(ease ? ease : ARE.To.linear).onComplete(function() {
                     self.stepCompleteCount++;
                     if (self.stepCompleteCount == len - 1) {
                         if (cmd.end) cmd.end.call(self.element);
@@ -358,4 +358,4 @@ are.To = Class.extend({
     }
 });
 
-//end-------------------are.To---------------------end
+//end-------------------ARE.To---------------------end

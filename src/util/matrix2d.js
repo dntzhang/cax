@@ -1,7 +1,7 @@
 
-//begin-------------------are.Matrix2D---------------------begin
+//begin-------------------ARE.Matrix2D---------------------begin
 
-are.Matrix2D = Class.extend({
+ARE.Matrix2D = Class.extend({
     "statics": {
         "DEG_TO_RAD": 0.017453292519943295
     },
@@ -21,7 +21,7 @@ are.Matrix2D = Class.extend({
     },
     "appendTransform": function(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
         if (rotation % 360) {
-            var r = rotation * are.Matrix2D.DEG_TO_RAD;
+            var r = rotation * ARE.Matrix2D.DEG_TO_RAD;
             var cos = Math.cos(r);
             var sin = Math.sin(r);
         } else {
@@ -29,8 +29,8 @@ are.Matrix2D = Class.extend({
             sin = 0;
         }
         if (skewX || skewY) {
-            skewX *= are.Matrix2D.DEG_TO_RAD;
-            skewY *= are.Matrix2D.DEG_TO_RAD;
+            skewX *= ARE.Matrix2D.DEG_TO_RAD;
+            skewY *= ARE.Matrix2D.DEG_TO_RAD;
             this.append(Math.cos(skewY), Math.sin(skewY), -Math.sin(skewX), Math.cos(skewX), x, y);
             this.append(cos * scaleX, sin * scaleX, -sin * scaleY, cos * scaleY, 0, 0);
         } else {
@@ -78,4 +78,4 @@ are.Matrix2D = Class.extend({
     }
 });
 
-//end-------------------are.Matrix2D---------------------end
+//end-------------------ARE.Matrix2D---------------------end

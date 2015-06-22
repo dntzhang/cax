@@ -1,7 +1,7 @@
 
-//begin-------------------are.Keyboard---------------------begin
+//begin-------------------ARE.Keyboard---------------------begin
 
-are.Keyboard = Class.extend({
+ARE.Keyboard = Class.extend({
     "statics": {
         "ctor": function() {
             var KeyboardJS = {},
@@ -661,4 +661,4 @@ are.Keyboard = Class.extend({
     }
 });
 
-//end-------------------are.Keyboard---------------------end
+//end-------------------ARE.Keyboard---------------------end

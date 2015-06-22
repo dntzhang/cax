@@ -1,11 +1,11 @@
 
-//begin-------------------are.WebGLRenderer---------------------begin
+//begin-------------------ARE.WebGLRenderer---------------------begin
 
-are.WebGLRenderer = Class.extend({
+ARE.WebGLRenderer = Class.extend({
     "ctor": function(canvas) {
         this.surface = canvas;
         this.snapToPixel = true;
-        this.canvasRenderer = new are.CanvasRenderer();
+        this.canvasRenderer = new ARE.CanvasRenderer();
         this.textureCache = {};
         this.textureCanvasCache = {};
         this.initSurface(this.surface);
@@ -133,14 +133,14 @@ are.WebGLRenderer = Class.extend({
         if (!o.isVisible()) {
             return;
         }
-        if (o instanceof are.Container || o instanceof are.Stage) {
+        if (o instanceof ARE.Container || o instanceof ARE.Stage) {
             var list = o.children.slice(0);
             for (var i = 0, l = list.length; i < l; i++) {
                 ctx.save();
                 this.canvasRenderer.render(ctx, list[i]);
                 ctx.restore();
             }
-        } else if (o instanceof are.Bitmap || o instanceof are.Sprite) {
+        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
             var rect = o.rect;
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         } else if (o.txtCanvas) {
@@ -173,7 +173,7 @@ are.WebGLRenderer = Class.extend({
             this._initCache(o, mmyCanvas, ctx);
             rightSide = leftSide + mmyCanvas.width;
             bottomSide = topSide + mmyCanvas.height;
-        } else if (o instanceof are.Bitmap || o instanceof are.Sprite) {
+        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
             var rect = o.rect;
             img = o.img;
             this._initTexture(img, ctx);
@@ -208,4 +208,4 @@ are.WebGLRenderer = Class.extend({
     }
 });
 
-//end-------------------are.WebGLRenderer---------------------end
+//end-------------------ARE.WebGLRenderer---------------------end

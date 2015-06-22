@@ -1,7 +1,7 @@
 
-//begin-------------------are.UID---------------------begin
+//begin-------------------ARE.UID---------------------begin
 
-are.UID = Class.extend({
+ARE.UID = Class.extend({
     "statics": {
         "_nextID": 0,
         "_nextCacheID": 1,
@@ -14,4 +14,4 @@ are.UID = Class.extend({
     }
 });
 
-//end-------------------are.UID---------------------end
+//end-------------------ARE.UID---------------------end
