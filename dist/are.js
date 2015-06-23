@@ -2347,7 +2347,8 @@ ARE.CanvasRenderer = Class.extend({
     "_bubbleEvent": function(o, type, event) {
         var result = o.execEvent(type, event);
         if (result !== false) {
-            if (o.parent && o.parent.events[type] && o.parent.events[type].length > 0 && o.parent.baseInstanceof !== "Stage") {
+            //&& o.parent.baseInstanceof !== "Stage"
+            if (o.parent && o.parent.events[type] && o.parent.events[type].length > 0 ) {
                 this._bubbleEvent(o.parent, type, event);
             }
         }
@@ -2660,6 +2661,8 @@ ARE.DisplayObject = Class.extend({
         }, function () {
             this._setCursor(this, "default");
         });
+        //自带冒泡功能，不然不绑不会冒到stage
+        this.onClick(function () { });
     },
     "_watch": function(target, prop, onPropertyChanged) {
         var self = this;
@@ -4133,14 +4136,8 @@ ARE.Stage = ARE.Container.extend({
             evt.stageX = Math.round(p.x);
             evt.stageY = Math.round(p.y);
         }
-        var callbacks = this.events[evt.type];
-        if (callbacks) {
-            for (var i = 0, len = callbacks.length; i < len; i++) {
-                var callback = callbacks[i];
-                callback(evt);
-            }
-        }
-        evt.preventDefault();
+   
+        //evt.preventDefault();
     },
     "_handleClick": function(evt) {
         this._correctionEvent(evt);
@@ -4200,12 +4197,23 @@ ARE.Stage = ARE.Container.extend({
         this._correctionEvent(evt);
         this._getObjectUnderPoint(evt, evt.type);
     },
-    "_getObjectUnderPoint": function(evt, type) {
+    "_getObjectUnderPoint": function (evt, type) {
+        var child;
         if (this.hitAABB) {
-            return this.hitRenderer.hitAABB(this.hitCtx, this, evt, type);
+            child= this.hitRenderer.hitAABB(this.hitCtx, this, evt, type);
         } else {
-            return this.hitRenderer.hitRender(this.hitCtx, this, evt, type);
+            child= this.hitRenderer.hitRender(this.hitCtx, this, evt, type);
         }
+        if (!child) {
+            var callbacks = this.events[evt.type];
+            if (callbacks) {
+                for (var i = 0, len = callbacks.length; i < len; i++) {
+                    var callback = callbacks[i];
+                    callback.call(this,evt);
+                }
+            }
+        }
+        return child;
     },
     "_getXY": function(el) {
         var _t = 0,

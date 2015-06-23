@@ -237,14 +237,8 @@ ARE.Stage = ARE.Container.extend({
             evt.stageX = Math.round(p.x);
             evt.stageY = Math.round(p.y);
         }
-        var callbacks = this.events[evt.type];
-        if (callbacks) {
-            for (var i = 0, len = callbacks.length; i < len; i++) {
-                var callback = callbacks[i];
-                callback(evt);
-            }
-        }
-        evt.preventDefault();
+   
+        //evt.preventDefault();
     },
     "_handleClick": function(evt) {
         this._correctionEvent(evt);
@@ -304,12 +298,23 @@ ARE.Stage = ARE.Container.extend({
         this._correctionEvent(evt);
         this._getObjectUnderPoint(evt, evt.type);
     },
-    "_getObjectUnderPoint": function(evt, type) {
+    "_getObjectUnderPoint": function (evt, type) {
+        var child;
         if (this.hitAABB) {
-            return this.hitRenderer.hitAABB(this.hitCtx, this, evt, type);
+            child= this.hitRenderer.hitAABB(this.hitCtx, this, evt, type);
         } else {
-            return this.hitRenderer.hitRender(this.hitCtx, this, evt, type);
+            child= this.hitRenderer.hitRender(this.hitCtx, this, evt, type);
         }
+        if (!child) {
+            var callbacks = this.events[evt.type];
+            if (callbacks) {
+                for (var i = 0, len = callbacks.length; i < len; i++) {
+                    var callback = callbacks[i];
+                    callback.call(this,evt);
+                }
+            }
+        }
+        return child;
     },
     "_getXY": function(el) {
         var _t = 0,
