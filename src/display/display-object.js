@@ -42,8 +42,6 @@ ARE.DisplayObject = Class.extend({
         }, function () {
             this._setCursor(this, "default");
         });
-        //自带冒泡功能，不然不绑不会冒到stage
-        this.onClick(function () { });
     },
     "_watch": function(target, prop, onPropertyChanged) {
         var self = this;

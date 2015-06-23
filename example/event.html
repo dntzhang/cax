@@ -18,9 +18,7 @@
 
             var ld = new Loader();
             var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
-            stage.onClick(function () {
-                alert(1)
-            })
+         
             ld.loadRes([
                 { id: "hero", src: "asset/img/atLogo.png" }]
                 );
@@ -54,8 +52,6 @@
                 })
                 bmp2.onClick(function () {
                     alert(1);
-                    //阻止冒泡
-                    return false;
                 })
                 stage.add(bmp2);
             });
