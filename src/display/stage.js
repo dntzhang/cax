@@ -189,7 +189,6 @@ ARE.Stage = ARE.Container.extend({
                 callback(event);
             }
         }
-        event.preventDefault();
         if (this.overObj) {
             this.hitRenderer._bubbleEvent(this.overObj, "mousewheel", event);
         }
@@ -221,7 +220,8 @@ ARE.Stage = ARE.Container.extend({
     "update": function() {
         this.stageRenderer.update();
     },
-    "_correctionEvent": function(evt,type) {
+    "_correctionEvent": function (evt, type) {
+        this.adjustLayout();
         if (evt.touches) {
             var firstTouch = evt.touches[0];
             if (firstTouch) {
@@ -244,7 +244,6 @@ ARE.Stage = ARE.Container.extend({
                 callback(evt);
             }
         }
-        evt.preventDefault();
     },
     "_handleClick": function(evt) {
         this._correctionEvent(evt, evt.type);
