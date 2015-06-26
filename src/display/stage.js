@@ -181,7 +181,7 @@ ARE.Stage = ARE.Container.extend({
         });
     },
     "_handleMouseWheel": function(event) {
-        this._correctionEvent(event);
+        this._correctionEvent(event, event.type);
         var callbacks = this.events["mousewheel"];
         if (callbacks) {
             for (var i = 0, len = callbacks.length; i < len; i++) {
@@ -221,7 +221,7 @@ ARE.Stage = ARE.Container.extend({
     "update": function() {
         this.stageRenderer.update();
     },
-    "_correctionEvent": function(evt) {
+    "_correctionEvent": function(evt,type) {
         if (evt.touches) {
             var firstTouch = evt.touches[0];
             if (firstTouch) {
@@ -237,7 +237,7 @@ ARE.Stage = ARE.Container.extend({
             evt.stageX = Math.round(p.x);
             evt.stageY = Math.round(p.y);
         }
-        var callbacks = this.events[evt.type];
+        var callbacks = this.events[type];
         if (callbacks) {
             for (var i = 0, len = callbacks.length; i < len; i++) {
                 var callback = callbacks[i];
@@ -247,11 +247,11 @@ ARE.Stage = ARE.Container.extend({
         evt.preventDefault();
     },
     "_handleClick": function(evt) {
-        this._correctionEvent(evt);
+        this._correctionEvent(evt, evt.type);
         this._getObjectUnderPoint(evt, evt.type);
     },
     "_handleMouseMove": function(evt) {
-        this._correctionEvent(evt);
+        this._correctionEvent(evt, evt.type);
         if (this._pressmoveObjs) {
             var pressmoveHandle = this._pressmoveObjs.events["pressmove"];
             pressmoveHandle && this._pressmoveObjs.execEvent("pressmove", evt);
@@ -289,7 +289,7 @@ ARE.Stage = ARE.Container.extend({
         if (o.parent) this._getPressmoveTarget(o.parent);
     },
     "_handleMouseDown": function(evt) {
-        this._correctionEvent(evt);
+        this._correctionEvent(evt, "pressdown");
         var child = this._getObjectUnderPoint(evt, "pressdown");
         if (child) {
             this._getPressmoveTarget(child);
@@ -297,11 +297,11 @@ ARE.Stage = ARE.Container.extend({
     },
     "_handleMouseUp": function(evt) {
         this._pressmoveObjs = null;
-        this._correctionEvent(evt);
+        this._correctionEvent(evt, "pressup");
         this._getObjectUnderPoint(evt, "pressup");
     },
     "_handleDblClick": function(evt) {
-        this._correctionEvent(evt);
+        this._correctionEvent(evt, evt.type);
         this._getObjectUnderPoint(evt, evt.type);
     },
     "_getObjectUnderPoint": function(evt, type) {
