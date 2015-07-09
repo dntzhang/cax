@@ -416,6 +416,7 @@ ARE.Stage = ARE.Container.extend({
         canvas.style.left = 100 * (1 - scaleX) / 2 + "%";
         canvas.style.top = 100 * (1 - scaleY) / 2 + "%";
         canvas.style.border = "0px solid #ccc";
+        this.offset = this._getXY(this.canvas);
         var domSurface = this.domSurface;
         if (domSurface) {
             domSurface.style.position = "absolute";
