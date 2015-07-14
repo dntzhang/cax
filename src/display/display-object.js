@@ -81,15 +81,17 @@ ARE.DisplayObject = Class.extend({
         this.events[type] || (this.events[type] = []);
         this.events[type].push(fn);
     },
-    "execEvent": function(type, event) {
-        var fns = this.events[type],
-            result = true;
-        if (fns) {
-            for (var i = 0, len = fns.length; i < len; i++) {
-                result = fns[i].call(this, event);
+    "execEvent": function (type, event) {
+        if (this.events) {
+            var fns = this.events[type],
+                result = true;
+            if (fns) {
+                for (var i = 0, len = fns.length; i < len; i++) {
+                    result = fns[i].call(this, event);
+                }
             }
+            return result;
         }
-        return result;
     },
     "_setCursor": function (obj, type) {
         if (obj) {
