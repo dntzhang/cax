@@ -10,6 +10,7 @@ ARE.Label = ARE.DisplayObject.extend({
         this.color = option.color;
         this.textAlign = "center";
         this.textBaseline = "top";
+        this.fontWeight = option.fontWeight || "";
         this.maxWidth = option.maxWidth || 2e3;
         this.square = option.square || false;
         this.txtCanvas = document.createElement("canvas");
@@ -27,7 +28,8 @@ ARE.Label = ARE.DisplayObject.extend({
             size: this.fontSize,
             alignment: this.textAlign,
             color: this.color || "black",
-            fontFamily: this.fontFamily
+            fontFamily: this.fontFamily,
+            fontWeight:this.fontWeight
         });
         this.cacheID = ARE.UID.getCacheID();
         this.width = drawOption.calculatedWidth;
@@ -46,6 +48,7 @@ ARE.Label = ARE.DisplayObject.extend({
         var textAlignment = option.alignment;
         var textColour = option.color;
         var fontFamily = option.fontFamily;
+        var fontWeight = option.fontWeight;
         var backgroundColour = option.backgroundColour;
         ctx.font = textHeight + "px " + fontFamily;
         if (maxWidth && this.measureText(ctx, textToWrite) > maxWidth) {
@@ -78,7 +81,7 @@ ARE.Label = ARE.DisplayObject.extend({
         ctx.fillStyle = textColour;
         ctx.textAlign = textAlignment;
         ctx.textBaseline = "middle";
-        ctx.font = textHeight + "px " + fontFamily;
+        ctx.font = fontWeight+" "+textHeight + "px " + fontFamily;
         var offset = (canvasY - textHeight * (text.length + 1)) * .5;
         option.cmd = [];
         for (var i = 0; i < text.length; i++) {

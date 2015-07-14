@@ -45,7 +45,7 @@ ARE.Container = ARE.DisplayObject.extend({
             for (var j = 0; j < len; j++) {
                 var currentObj = arguments[j];
                 for (var k = childLen; --k >= 0;) {
-                    if (this.children[k].id == currentObj.id) {
+                    if (currentObj&&this.children[k].id == currentObj.id) {
                         currentObj.parent = null;
                         this.children.splice(k, 1);
                         if (currentObj instanceof ARE.DomElement) {
@@ -57,7 +57,7 @@ ARE.Container = ARE.DisplayObject.extend({
             }
         } else {
             for (var i = childLen; --i >= 0;) {
-                if (this.children[i].id == obj.id) {
+                if (obj&&this.children[i].id == obj.id) {
                     obj.parent = null;
                     this.children.splice(i, 1);
                     if (obj instanceof ARE.DomElement) {
