@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>粒子编辑器</title>
+    <style>
+        	#drop-target {		
+			width: 80px;
+			height: 60px;
+			background-color: #eee;
+			border:3px dashed black;
+			text-align: center;
+			padding: 12px;
+            margin:0 auto;
+		}
+    </style>
+</head>
+<body style="background-color: #ccc; font-family: Microsoft YaHei !important;">
+    <div style="width: 850px; height: 500px; margin: 0 auto; text-align: center; overflow: hidden;">
+        <div style="float: left;">
+            <div>
+                <span id="emitAngleCtrl"></span>
+
+            </div>
+            <div>
+                <div id="rangeCtrl"></div>
+                <div>力度角度控制器</div>
+            </div>
+            <div style="margin-top: 10px;">
+                <div id="rCtrl"></div>
+                <div id="gCtrl"></div>
+                <div id="bCtrl"></div>
+                <div id="aCtrl"></div>
+                <div>纹理滤镜控制器</div>
+            </div>
+            <div style="margin-top: 10px;">
+                <div id="widthCtrl"></div>
+                <div id="heightCtrl"></div>
+                <div>发射区域控制器</div>
+            </div>
+              <div style="margin-top: 10px;">
+                <div id="viewOption"><input type="button" value="查看配置" /></div>
+              
+            </div>
+        </div>
+        <div style="float: left; margin-left: 10px;">
+            <canvas width="500" height="500" id="ourCanvas" style="background-color:black;"></canvas>
+        </div>
+        <div style="float: left; margin-left: 10px;">
+            <div>
+                <div id="gravityCtrl"></div>
+                <div>重力场控制器</div>
+            </div>
+            <div style="margin-top: 10px;">
+                <select id="ttSlt">
+                    <option value="0">圆圈</option>
+                    <option value="1">AlloyTeam Logo</option>
+                      <option value="2">雪花</option>
+                      <option value="3">星星</option>
+                      <option value="4">烟雾</option>
+                      <option value="5">正六边形</option>
+                     <option value="6">五角星</option>
+                </select>
+            </div>
+            <div>纹理选择器</div>
+            	<div id="drop-target">从电脑拖拽图片到这里创建新纹理</div>
+             <div style="margin-top: 10px;">
+                <div id="scaleCtrl"></div>
+              
+                <div>缩放比例控制器</div>
+            </div>
+
+              <div style="margin-top: 10px;">
+                <div id="emitFQ"></div>
+              
+                <div>发射频率控制器</div>
+            </div>
+
+            <div style="margin-top: 10px;">
+              
+                   <div id="downloadOption"><input type="button" value="下载配置" /></div>
+                <div>(webkit only)</div>
+            </div>
+        </div>
+
+    </div>
+    <div id="popup" style="position:absolute;left:50%; top:50%; width:400px;height:400px;margin-left:-200px;margin-top:-200px;overflow:hidden;display:none;">
+        <div style="position:absolute;right:0px;z-index:100;top:0px;z-index:10000"><img id="closeBtn" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAAAlgAAAJYAJvGvrMAAAH5SURBVEjHlZRNSxtBGMd/a0xB2C8gRCwUPHhqaDG02qZ6iUUC3iJ+gV48id/Bk4lvN8X2UvAqeFT0EAV7aqGEQiMVk/Fi60ktTYzbwzbJMzuz6/Z5Tjszv//s8zYOpiV4wjhZ0gzSB/zhjM+U2adKkwesh2esc0oTL+B3nLHJC3qj8H4WuTBQ6ZcUSYXhaQ65j8R9LzNiw1/zNQbse5Up8/b4uC+R0WM/EJsNrq3QNQ3xdcRAG3dYFBtNShSoGXidWZa16qy2K/IcJfAVXCBPXcMV04DLipD4yZhf+XVR6xLuv/+SEj4O4FLirrO+RRKGqHYWbpgRmWlLdHGAGW5EWE/hnZaaOnlNQnGh4XpoLebho5EsKTHJ21Dcw2MHKpZ8S4ko3OMcbi0Vt0nYcI97QjpNkdPwnCi15j0hg+UQtmPYb+v908a50BC+xcLDJGqwHYnntFyYErswpw2ICrSNQgVaS2+kBRjmR2fhllnLYb2oBa2V05BgQwzTsnWYuhIuS2KY3pMEeMnlg+PsS7gURcBXvPFVExRjPCg1Cixpg7fWfeJTlMVGvCfthMeyxhm+hzS13c95FWyTKU7/A7fOa4bjWPgn8/a2DbDKr0j4ijUGo0YryShbKFoG2kLxgaxf+a45FpFHDDNBljQpHMBD8YVD9qjQCB7+CxkJW5OVVxAhAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE0LTA0LTI2VDA4OjM2OjI4KzA4OjAwMpyc0AAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNC0wNC0yNlQwODozNjoyOCswODowMEPBJGwAAABNdEVYdHNvZnR3YXJlAEltYWdlTWFnaWNrIDYuOC44LTcgUTE2IHg4Nl82NCAyMDE0LTAyLTI4IGh0dHA6Ly93d3cuaW1hZ2VtYWdpY2sub3JnWaRffwAAAGN0RVh0c3ZnOmNvbW1lbnQAIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgcgt1lgAAABh0RVh0VGh1bWI6OkRvY3VtZW50OjpQYWdlcwAxp/+7LwAAABh0RVh0VGh1bWI6OkltYWdlOjpIZWlnaHQANzAwexzXggAAABd0RVh0VGh1bWI6OkltYWdlOjpXaWR0aAA3MDDo7YffAAAAGXRFWHRUaHVtYjo6TWltZXR5cGUAaW1hZ2UvcG5nP7JWTgAAABd0RVh0VGh1bWI6Ok1UaW1lADEzOTg0NzI1ODgnSfk8AAAAE3RFWHRUaHVtYjo6U2l6ZQAxNS40S0JCTcLMXQAAAGJ0RVh0VGh1bWI6OlVSSQBmaWxlOi8vL2hvbWUvZnRwLzE1MjAvZWFzeWljb24uY24vZWFzeWljb24uY24vY2RuLWltZy5lYXN5aWNvbi5jbi9wbmcvMTE1MjMvMTE1MjM0NS5wbmcAXxxyAAAAAElFTkSuQmCC " ></div>
+        <textarea cols="70" rows="30" id="optTextarea"></textarea>
+    </div>
+    <div style="text-align: center;">create by <a href="http://alloyteam.com/">AlloyTeam</a></div>
+    <script src="lib/are.js"></script>
+    <script src="lib/blob.js"></script>
+    <script src="src/PE.js"></script>
+    <script src="src/Util.js"></script>
+    <script src="src/Vector2.js"></script>
+    <script src="src/CircleAdjust.js"></script>
+    <script src="src/RectAdjust.js"></script>
+    <script src="src/Main.js"></script>
+</body>
+</html>

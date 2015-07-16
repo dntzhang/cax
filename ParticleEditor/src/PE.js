@@ -1,0 +1,2 @@
+﻿//Particle Editor
+var PE = {};
