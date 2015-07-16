@@ -28,7 +28,7 @@ AlloyRenderingEngine
 ### 一分钟快速入门
 要实现下面的效果：
 
-![usage](https://raw.githubusercontent.com/AlloyTeam/AlloyGameEngine/master/example/asset/img/usage2.gif)
+![usage](https://raw.githubusercontent.com/AlloyTeam/AlloyGameEngine/master/AlloyRenderingEngine/example/asset/img/usage2.gif)
 
 可以使用下面的代码:
 
