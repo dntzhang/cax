@@ -70,7 +70,6 @@ stage.onTick(function () {
 * [texture packer](https://www.codeandweb.com/texturepacker)
 * [tiled](http://www.mapeditor.org/)
 * [particle editor](http://alloyteam.github.io/AlloyGameEngine/pe/)
-* [text to texture](http://alloyteam.github.io/AlloyRenderingEngine/example/glTxt.html)
 * [combine images](http://kmdjs.github.io/combineimages/)
 * [image splitter](http://kmdjs.github.io/imagesplitter/)
 * [thumbnail generator](http://kmdjs.github.io/thumbnailgenerator/)
