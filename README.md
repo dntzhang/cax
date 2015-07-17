@@ -67,12 +67,12 @@ stage.onTick(function () {
 
 工具推荐
 =================
-* [texture packer](https://www.codeandweb.com/texturepacker)
-* [tiled](http://www.mapeditor.org/)
 * [particle editor](http://alloyteam.github.io/AlloyGameEngine/pe/)
 * [combine images](http://kmdjs.github.io/combineimages/)
 * [image splitter](http://kmdjs.github.io/imagesplitter/)
 * [thumbnail generator](http://kmdjs.github.io/thumbnailgenerator/)
 * [image zoom](http://kmdjs.github.io/zoom/)
-
+* [texture packer](https://www.codeandweb.com/texturepacker)
+* [tiled](http://www.mapeditor.org/)
+* 
 This content is released under the (http://opensource.org/licenses/MIT) MIT License.
