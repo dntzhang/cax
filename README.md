@@ -8,6 +8,7 @@ AlloyRenderingEngine
 超快的2d渲染引擎，支持webgl和canvas渲染
 
 ### 基础例子
+
 * [bitmap](http://alloyteam.github.io/AlloyGameEngine/example/bitmap.html) 
 * [transform](http://alloyteam.github.io/AlloyGameEngine/example/transform.html) 
 * [event](http://alloyteam.github.io/AlloyGameEngine/example/event.html) 
