@@ -74,5 +74,5 @@ stage.onTick(function () {
 * [image zoom](http://kmdjs.github.io/zoom/)
 * [texture packer](https://www.codeandweb.com/texturepacker)
 * [tiled](http://www.mapeditor.org/)
-* 
+
 This content is released under the (http://opensource.org/licenses/MIT) MIT License.
