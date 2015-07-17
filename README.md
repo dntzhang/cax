@@ -1,7 +1,7 @@
 Alloy Game Engine
 =================
 
-一款强大的javascript游戏引擎.
+让游戏制作变得超级容易
 
 AlloyRenderingEngine
 =================
