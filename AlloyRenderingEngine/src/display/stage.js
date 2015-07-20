@@ -95,6 +95,7 @@ ARE.Stage = ARE.Container.extend({
         document.addEventListener("DOMContentLoaded", this.adjustLayout.bind(this), false);
         window.addEventListener("load", this.adjustLayout.bind(this), false);
         window.addEventListener("resize", this.adjustLayout.bind(this), false);
+        this.autoUpdate = true;
     },
     "adjustLayout": function() {
         this.offset = this._getXY(this.canvas);
@@ -374,7 +375,7 @@ ARE.Stage = ARE.Container.extend({
     },
     "tick": function(fn) {
         this.tickFn && this.tickFn();
-        this.update();
+        if(this.autoUpdate)this.update();
         if (this.debug) {
             this.getFPS();
             this.debugDiv.innerHTML = "fps : " + this.fpsValue + " <br/>average fps : " + this.averageFPS + " <br/>object count : " + this.getTotalCount() + " <br/>rendering mode : " + this.getRenderingMode() + " <br/>inner object count  : " + this.stageRenderer.objs.length;
