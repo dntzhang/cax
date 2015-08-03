@@ -83,3 +83,5 @@ Class.extend = function (prop) {
     };
     return _Class;
 };
+
+window.Class = Class;

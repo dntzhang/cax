@@ -43,6 +43,7 @@ gulp.task('concat', function () {
         'src/display/label.js',
         'src/display/particle.js',
         'src/display/particle-system.js',
+        'src/display/particle-explosion.js',
         'src/display/rect-adjust.js',
         'src/display/rect-shape.js',
         'src/display/shape.js',
