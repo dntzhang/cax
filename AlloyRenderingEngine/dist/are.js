@@ -3890,6 +3890,7 @@ ARE.Stage = ARE.Container.extend({
         this.fps = 63;
         this.interval = Math.floor(1e3 / this.fps);
         this.toList = [];
+        this.tickFns = [];
         var self = this;
         self.loop = setInterval(function() {
             if (self._paused) return;
@@ -4169,12 +4170,18 @@ ARE.Stage = ARE.Container.extend({
                 container.tick();
             } else {
                 container._tickIntervalCurrent = new Date();
-                if (!container._tickIntervalLast) container._tickIntervalLast = new Date();
-                var itv = container._tickIntervalCurrent - container._tickIntervalLast;
-                if (itv * 2 > container._tickInterval) {
+                if (!container._tickIntervalLast) {
+                    container._tickIntervalLast = new Date();
+                    container._tickIntervalPrev = new Date();
+                }
+              
+                var itv = (container._tickIntervalCurrent - container._tickIntervalLast) +( container._tickIntervalCurrent - container._tickIntervalPrev);
+                if (itv > container._tickInterval) {
                     container.tick();
                     container._tickIntervalLast = container._tickIntervalCurrent;
                 }
+                container._tickIntervalPrev= new Date();
+                
             }
         }
         var children = container.children,
@@ -4188,12 +4195,17 @@ ARE.Stage = ARE.Container.extend({
                         child.tick();
                     } else {
                         child._tickIntervalCurrent = new Date();
-                        if (!child._tickIntervalLast) child._tickIntervalLast = new Date();
-                        var itv = child._tickIntervalCurrent - child._tickIntervalLast;
-                        if (itv * 2 > child._tickInterval) {
+                        if (!child._tickIntervalLast){
+                            child._tickIntervalLast = new Date();                        
+                            child._tickIntervalPrev = new Date();
+                        }
+                        var itv =( child._tickIntervalCurrent - child._tickIntervalLast)+(child._tickIntervalCurrent-child._tickIntervalPrev);
+                        if (itv > child._tickInterval) {
                             child.tick();
                             child._tickIntervalLast = child._tickIntervalCurrent;
                         }
+                        child._tickIntervalPrev= new Date();
+                       
                     }
                 }
                 if (child.baseInstanceof == "Container") {
@@ -4207,16 +4219,37 @@ ARE.Stage = ARE.Container.extend({
             obj._tickInterval = 1e3 / obj.tickFPS;
         }
     },
-    "tick": function(fn) {
-        this.tickFn && this.tickFn();
+    "tick": function () {
+        for (var i = 0, len = this.tickFns.length; i < len; i++) {
+            var fn = this.tickFns[i];
+            if (!fn.hasOwnProperty("_ARE_PrevDate")) {
+                fn();
+                continue;
+            }
+            fn._ARE_CurrentDate = new Date();
+            var interval = (fn._ARE_CurrentDate - fn._ARE_PrevDate) + (fn._ARE_CurrentDate - fn._ARE_LastDate);
+       
+            if (interval > fn._ARE_Interval) {
+                fn();
+                fn._ARE_PrevDate = fn._ARE_CurrentDate;
+            }
+            fn._ARE_LastDate = fn._ARE_CurrentDate;
+        }
+       
         if(this.autoUpdate)this.update();
         if (this.debug) {
             this.getFPS();
             this.debugDiv.innerHTML = "fps : " + this.fpsValue + " <br/>average fps : " + this.averageFPS + " <br/>object count : " + this.getTotalCount() + " <br/>rendering mode : " + this.getRenderingMode() + " <br/>inner object count  : " + this.stageRenderer.objs.length;
         }
     },
-    "onTick": function(fn) {
-        this.tickFn = fn;
+    "onTick": function(fn,interval) {
+        this.tickFns.push(fn);
+        if (interval !== undefined) {
+            fn._ARE_PrevDate = new Date();
+            fn._ARE_CurrentDate = new Date();
+            fn._ARE_LastDate = new Date();
+            fn._ARE_Interval = interval;
+        }
     },
     "setFPS": function(fps) {
         this.interval = Math.floor(1e3 / fps);
