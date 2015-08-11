@@ -38,7 +38,6 @@ gulp.task('concat', function () {
         'src/display/bitmap.js',
         'src/display/circle-shape.js',
         'src/display/container.js',
-        'src/display/dom-element.js',
         'src/display/graphics.js',
         'src/display/label.js',
         'src/display/particle.js',

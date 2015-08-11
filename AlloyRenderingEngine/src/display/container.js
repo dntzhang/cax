@@ -15,26 +15,12 @@ ARE.Container = ARE.DisplayObject.extend({
                 if (item) {
                     this.children.push(item);
                     item.parent = this;
-                    if (item instanceof ARE.DomElement) {
-                        ARE.Stage.domSurface.appendChild(item.element);
-                        item.element.style.visibility = "visible";
-                        var style = window.getComputedStyle(item.element, null);
-                        item.width = parseInt(style.width);
-                        item.height = parseInt(style.height);
-                    }
                 }
             }
         } else {
             if (obj) {
                 this.children.push(obj);
                 obj.parent = this;
-                if (obj instanceof ARE.DomElement) {
-                    ARE.Stage.domSurface.appendChild(obj.element);
-                    obj.element.style.visibility = "visible";
-                    var style = window.getComputedStyle(obj.element, null);
-                    obj.width = parseInt(style.width);
-                    obj.height = parseInt(style.height);
-                }
             }
         }
     },
@@ -48,9 +34,6 @@ ARE.Container = ARE.DisplayObject.extend({
                     if (currentObj&&this.children[k].id == currentObj.id) {
                         currentObj.parent = null;
                         this.children.splice(k, 1);
-                        if (currentObj instanceof ARE.DomElement) {
-                            ARE.Stage.domSurface.removeChild(currentObj.element);
-                        }
                         break;
                     }
                 }
@@ -60,9 +43,6 @@ ARE.Container = ARE.DisplayObject.extend({
                 if (obj&&this.children[i].id == obj.id) {
                     obj.parent = null;
                     this.children.splice(i, 1);
-                    if (obj instanceof ARE.DomElement) {
-                        ARE.Stage.domSurface.removeChild(obj.element);
-                    }
                     break;
                 }
             }

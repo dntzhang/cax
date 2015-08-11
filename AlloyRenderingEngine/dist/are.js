@@ -3049,26 +3049,12 @@ ARE.Container = ARE.DisplayObject.extend({
                 if (item) {
                     this.children.push(item);
                     item.parent = this;
-                    if (item instanceof ARE.DomElement) {
-                        ARE.Stage.domSurface.appendChild(item.element);
-                        item.element.style.visibility = "visible";
-                        var style = window.getComputedStyle(item.element, null);
-                        item.width = parseInt(style.width);
-                        item.height = parseInt(style.height);
-                    }
                 }
             }
         } else {
             if (obj) {
                 this.children.push(obj);
                 obj.parent = this;
-                if (obj instanceof ARE.DomElement) {
-                    ARE.Stage.domSurface.appendChild(obj.element);
-                    obj.element.style.visibility = "visible";
-                    var style = window.getComputedStyle(obj.element, null);
-                    obj.width = parseInt(style.width);
-                    obj.height = parseInt(style.height);
-                }
             }
         }
     },
@@ -3082,9 +3068,6 @@ ARE.Container = ARE.DisplayObject.extend({
                     if (currentObj&&this.children[k].id == currentObj.id) {
                         currentObj.parent = null;
                         this.children.splice(k, 1);
-                        if (currentObj instanceof ARE.DomElement) {
-                            ARE.Stage.domSurface.removeChild(currentObj.element);
-                        }
                         break;
                     }
                 }
@@ -3094,9 +3077,6 @@ ARE.Container = ARE.DisplayObject.extend({
                 if (obj&&this.children[i].id == obj.id) {
                     obj.parent = null;
                     this.children.splice(i, 1);
-                    if (obj instanceof ARE.DomElement) {
-                        ARE.Stage.domSurface.removeChild(obj.element);
-                    }
                     break;
                 }
             }
@@ -3163,48 +3143,6 @@ ARE.Container = ARE.DisplayObject.extend({
 
 //end-------------------ARE.Container---------------------end
 
-ARE.DomElement = ARE.DisplayObject.extend({
-    "ctor": function (selector) {
-        this._super();
-        this.element = typeof selector == "string" ? document.querySelector(selector) : selector;
-        var element = this.element;
-        var observer = ARE.Observe(this, ["x", "y", "scaleX", "scaleY", "perspective", "rotation", "skewX", "skewY", "regX", "regY"], function () {
-            var mtx = this._matrix.identity().appendTransform(this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.skewX, this.skewY, this.regX, this.regY);
-            this.element.style.transform = this.element.style.msTransform = this.element.style.OTransform = this.element.style.MozTransform = this.element.style.webkitTransform = "matrix(" + mtx.a + "," + mtx.b + "," + mtx.c + "," + mtx.d + "," + mtx.tx + "," + mtx.ty + ")";
-        });
-        delete this.visible;
-        Object.defineProperty(this, "visible", {
-            set: function (value) {
-                this._visible = value;
-                if (this._visible) {
-                    this.element.style.visibility = "visible";
-                } else {
-                    this.element.style.visibility = "hidden";
-                }
-            },
-            get: function () {
-                return this._visible;
-            }
-        });
-        delete this.alpha;
-        Object.defineProperty(this, "alpha", {
-            set: function (value) {
-                this._opacity = value;
-                this.element.style.opacity = value;
-            },
-            get: function () {
-                return this._opacity;
-            }
-        });
-        this.visible = true;
-        this.alpha = 1;
-        this.element.style.visibility = "hidden";
-        this.element.style.position = "absolute";
-    },
-    "isVisible": function () {
-        return !!(this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0);
-    }
-});
 
 //begin-------------------ARE.Graphics---------------------begin
 
@@ -4029,10 +3967,6 @@ ARE.Stage = ARE.Container.extend({
     },
     "adjustLayout": function() {
         this.offset = this._getXY(this.canvas);
-        if (this.domSurface) {
-            this.domSurface.style.left = this.offset[0] + "px";
-            this.domSurface.style.top = this.offset[1] + "px";
-        }
         if (this._scaleX) {
             this.scaleToScreen(this._scaleX, this._scaleY);
         }
@@ -4085,12 +4019,6 @@ ARE.Stage = ARE.Container.extend({
             this.pause();
         }
     },
-    "openDom": function() {
-        this._initDomSurface();
-    },
-    "closeDom": function() {
-        document.body.removeChild(this.domSurface);
-    },
     "openDebug": function() {},
     "closeDebug": function() {},
     "_initDebug": function() {
@@ -4123,30 +4051,6 @@ ARE.Stage = ARE.Container.extend({
         if (this.overObj) {
             this.hitRenderer._bubbleEvent(this.overObj, "mousewheel", event);
         }
-    },
-    "_initDomSurface": function() {
-        var self = this;
-        this.domSurface = document.createElement("div");
-        var style = this.domSurface.style;
-        style.width = this.width + "px";
-        style.height = this.height + "px";
-        style.backgroundColor = "rgba(255,255,255,0)";
-        style.zIndex = 1003;
-        style.position = "absolute";
-        style.border = "0px solid red";
-        style.left = this.offset[0] + "px";
-        style.top = this.offset[1] + "px";
-        document.body.appendChild(this.domSurface);
-        ARE.Stage.domSurface = this.domSurface;
-        this.domSurface.addEventListener("mousemove", this._handleMouseMove.bind(this), false);
-        this.domSurface.addEventListener("click", this._handleClick.bind(this), false);
-        this.domSurface.addEventListener("mousedown", this._handleMouseDown.bind(this), false);
-        this.domSurface.addEventListener("mouseup", this._handleMouseUp.bind(this), false);
-        this.domSurface.addEventListener("dblclick", this._handleDblClick.bind(this), false);
-        this.addEvent(this.domSurface, "mousewheel", this._handleMouseWheel.bind(this));
-        this.domSurface.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
-        this.domSurface.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
-        this.domSurface.addEventListener("touchend", this._handleMouseUp.bind(this), false);
     },
     "update": function() {
         this.stageRenderer.update();
@@ -4348,16 +4252,6 @@ ARE.Stage = ARE.Container.extend({
         canvas.style.top = 100 * (1 - scaleY) / 2 + "%";
         canvas.style.border = "0px solid #ccc";
         this.offset = this._getXY(this.canvas);
-        var domSurface = this.domSurface;
-        if (domSurface) {
-            domSurface.style.position = "absolute";
-            domSurface.style.border = "0px solid #ccc";
-            domSurface.style.transform = domSurface.style.msTransform = domSurface.style.OTransform = domSurface.style.MozTransform = domSurface.style.webkitTransform = "scale(" + window.innerWidth * this._scaleX / this.width + "," + window.innerHeight * this._scaleY / this.height + ")";
-            this.offset = this._getXY(this.canvas);
-            this.offset2 = this._getXY(domSurface);
-            domSurface.style.left = parseInt(domSurface.style.left) - this.offset2[0] + this.offset[0] + "px";
-            domSurface.style.top = parseInt(domSurface.style.top) - this.offset2[1] + this.offset[1] + "px";
-        }
     },
     "correctingXY": function(x, y) {
         return {
@@ -4411,7 +4305,6 @@ ARE.Stage = ARE.Container.extend({
     },
     "setCursor": function(type) {
         this.canvas.style.cursor = type;
-        if (this.domSurface) this.domSurface.style.cursor = type;
     },
     "_setCursorByOverObject": function (obj) {
         if (obj.cursor !== "default") {
