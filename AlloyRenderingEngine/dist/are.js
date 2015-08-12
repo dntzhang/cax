@@ -2792,6 +2792,12 @@ ARE.DisplayObject = Class.extend({
         this.cacheID = null;
         this._matrix = null;
         this.events = null;
+        if (this.children) {
+            var i=0, len=this.children.length ;
+            for(;i<len;i++){
+                this.destroy(this.children[i]);
+            }
+        }
         if (this.parent) {
             this.parent.remove(this);
         }
@@ -4346,6 +4352,15 @@ ARE.Stage = ARE.Container.extend({
             if (obj.parent) {
                 this._setCursorByOverObject(obj.parent);
             }
+        }
+    },
+    "destroy": function () {
+        this._super();
+        this.canvas.parentNode.removeChild(this.canvas);
+        if (this.useRequestAnimFrame) {
+            ARE.RAF.clearRequestInterval(this.loop);
+        } else {
+            clearInterval(this.loop);
         }
     }
 });

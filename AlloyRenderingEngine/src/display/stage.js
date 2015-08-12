@@ -479,6 +479,15 @@ ARE.Stage = ARE.Container.extend({
                 this._setCursorByOverObject(obj.parent);
             }
         }
+    },
+    "destroy": function () {
+        this._super();
+        this.canvas.parentNode.removeChild(this.canvas);
+        if (this.useRequestAnimFrame) {
+            ARE.RAF.clearRequestInterval(this.loop);
+        } else {
+            clearInterval(this.loop);
+        }
     }
 });
 
