@@ -2948,6 +2948,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
             var self = this;
             this.textureReady = false;
             this.img = document.createElement("img");
+            this.img.crossOrigin = "Anonymous";
             this.img.onload = function() {
                 if (!self.rect) self.rect = [0, 0, self.img.width, self.img.height];
                 self.width = self.rect[2];
