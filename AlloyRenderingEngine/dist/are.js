@@ -1318,9 +1318,12 @@ ARE.Loader = Class.extend({
     "loadRes": function(arr) {
         this.resCount = arr.length;
         for (var i = 0; i < arr.length; i++) {
-            if (this._getTypeByExtension(arr[i].src.match(this.FILE_PATTERN)[5]) == "audio") {
+            var type=this._getTypeByExtension(arr[i].src.match(this.FILE_PATTERN)[5]);
+            if (type === "audio") {
                 this.loadAudio(arr[i].id, arr[i].src);
-            } else {
+            } else if (type === "js") {
+                this.loadScript(arr[i].src);
+            } else if (type === "img") {
                 this.loadImage(arr[i].id, arr[i].src);
             }
         }
@@ -1367,6 +1370,27 @@ ARE.Loader = Class.extend({
             tag.load();
         }
     },
+    "loadScript": function (url) {
+        var script = document.createElement("script")
+        script.type = "text/javascript";
+        var self = this;
+        if (script.readyState) {  //IE
+            script.onreadystatechange = function () {
+                if (script.readyState == "loaded" ||
+                        script.readyState == "complete") {
+                    script.onreadystatechange = null;
+                    self._handleLoad();
+                }
+            };
+        } else {  //Others
+            script.onload = function () {
+                self._handleLoad();
+            };
+        }
+
+        script.src = url;
+        document.getElementsByTagName("head")[0].appendChild(script);
+    },
     "checkComplete": function() {
         if (this.loadedCount === this.resCount) {
             this.handleComplete();
@@ -1383,9 +1407,11 @@ ARE.Loader = Class.extend({
         ++this.playing[id];
         if (this.playing[id] >= this.ns) this.playing[id] = 0;
     },
-    "_handleLoad": function(currentImg, id) {
-        this._clean(currentImg);
-        this.res[id] = currentImg;
+    "_handleLoad": function (currentImg, id) {
+        if (currentImg) {
+            this._clean(currentImg);
+            this.res[id] = currentImg;        
+        }
         this.loadedCount++;
         if (this.handleProgress) this.handleProgress(this.loadedCount, this.resCount);
         this.checkComplete();
@@ -1403,6 +1429,8 @@ ARE.Loader = Class.extend({
         case "mp3":
         case "wav":
             return "audio";
+        case "js":
+            return "js";
         }
     },
     "_clean": function(tag) {
