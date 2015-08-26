@@ -156,7 +156,7 @@ ARE.Stage = ARE.Container.extend({
     "closeDebug": function() {},
     "_initDebug": function() {
         this.debugDiv = document.createElement("div");
-        this.debugDiv.style.cssText = "display:none;position:absolute;z-index:2000;left:0;top:0;background-color:yellow;font-size:16px;";
+        this.debugDiv.style.cssText = "display:none;position:absolute;z-index:2000;left:0;bottom:0;background-color:yellow;font-size:16px;";
         document.body.appendChild(this.debugDiv);
         Object.defineProperty(this, "debug", {
             set: function(value) {
@@ -371,7 +371,7 @@ ARE.Stage = ARE.Container.extend({
         if(this.autoUpdate)this.update();
         if (this.debug) {
             this.getFPS();
-            this.debugDiv.innerHTML = "fps : " + this.fpsValue + " <br/>average fps : " + this.averageFPS + " <br/>object count : " + this.getTotalCount() + " <br/>rendering mode : " + this.getRenderingMode() + " <br/>inner object count  : " + this.stageRenderer.objs.length;
+            this.debugDiv.innerHTML = "fps : " + this.fpsValue +  " <br/>object count : " + this.getTotalCount() + " <br/>rendering mode : " + this.getRenderingMode() + " <br/>inner object count  : " + this.stageRenderer.objs.length;
         }
     },
     "onTick": function(fn,interval) {
@@ -454,7 +454,6 @@ ARE.Stage = ARE.Container.extend({
     "getFPS": function() {
         var fps = ARE.FPS.get();
         this.fpsValue = fps.value;
-        this.averageFPS = fps.averageFPS;
     },
     "addEvent": function(el, type, fn, capture) {
         if (type === "mousewheel" && document.mozHidden !== undefined) {
