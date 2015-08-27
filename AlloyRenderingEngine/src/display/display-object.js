@@ -35,7 +35,6 @@ ARE.DisplayObject = Class.extend({
         this._watch(this, "scale", function(prop, value) {
             this.scaleX = this.scaleY = this.scale;
         });
-        this._preAABB = [-1, -1, 0, 0];
         this.cursor = "default";
         this.onHover(function () {
             //this._setCursor(this, this.cursor);
