@@ -1308,7 +1308,7 @@ ARE.Loader = Class.extend({
         this.loadedCount = 0;
         this.resCount = -1;
         this.FILE_PATTERN = /(\w+:\/{2})?((?:\w+\.){2}\w+)?(\/?[\S]+\/|\/)?([\w\-%\.]+)(?:\.)(\w+)?(\?\S+)?/i;
-        this.ns = 3;
+        this.ns = 6;
         this.sounds = [];
         for (var i = 0; i < this.ns; i++) this.sounds.push([]);
         this.playing = [];
@@ -1404,8 +1404,10 @@ ARE.Loader = Class.extend({
     "progress": function(fn) {
         this.handleProgress = fn;
     },
-    "playSound": function(id) {
-        this.sounds[this.playing[id]][id].play();
+    "playSound": function (id, volume) {
+        var sound = this.sounds[this.playing[id]][id];
+        sound.volume = volume === undefined ? 1 : volume;
+        sound.play();
         ++this.playing[id];
         if (this.playing[id] >= this.ns) this.playing[id] = 0;
     },
