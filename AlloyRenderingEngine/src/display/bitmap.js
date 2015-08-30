@@ -19,8 +19,10 @@ ARE.Bitmap = ARE.DisplayObject.extend({
         if (arguments.length === 0) return;
         if (typeof img == "string") {
             this._initWithSrc(img);
+            this.imgSrc = img;
         } else {
             this._init(img);
+            this.imgSrc = img.src;
         }
     },
     "_initWithSrc": function(img) {
@@ -61,11 +63,17 @@ ARE.Bitmap = ARE.DisplayObject.extend({
         this.imageLoadHandle = fn;
     },
     "clone": function () {
-        if (!this.textureReady) throw "texture is not ready";
-        var o = new ARE.Bitmap(this.img);
-        o.rect = this.rect.slice(0);
-        this.cloneProps(o);
-        return o;
+        if (this.textureReady) {
+            var o = new ARE.Bitmap(this.img);
+            o.rect = this.rect.slice(0);
+            this.cloneProps(o);
+            return o;
+        } else {
+            var o = new ARE.Bitmap(this.imgSrc);
+            this.rect&&(o.rect = this.rect.slice(0));
+            this.cloneProps(o);
+            return o;
+        }
     },
     "flipX": function() {},
     "flipY": function() {}
