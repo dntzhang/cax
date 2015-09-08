@@ -47,6 +47,11 @@ ARE.ParticleSystem = ARE.Container.extend({
         bitmap.filter = this.filter;
         this.filterTexture = bitmap.cacheCanvas;
     },
+    "changeFilter": function (filter) {
+        var bitmap = new ARE.Bitmap(this.texture);
+        bitmap.filter = filter;
+        this.filterTexture = bitmap.cacheCanvas;
+    },
     "emit": function() {
         var angle = (this.angle + ARE.Util.random(-this.angleRange / 2, this.angleRange / 2)) * Math.PI / 180;
         var halfX = this.emitArea[0] / 2,
