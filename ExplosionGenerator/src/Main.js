@@ -238,7 +238,7 @@
                 canRecord = false;
             }
             setTimeout(function () {
-               // ps.maxCount = 0;
+                ps.maxCount = 0;
                 //if (beginRecord) {
                 //    setTimeout(function () {
                 //        beginRecord = false;
@@ -265,6 +265,7 @@
                 if (frameCount > 60) {
                     beginRecord = false;
                     canRecord = false;
+                    frameCount = 0;
                 }
                 currentTime = new Date();           
                     preTime = currentTime;
