@@ -2381,7 +2381,7 @@ ARE.CanvasRenderer = Class.extend({
     "_bubbleEvent": function(o, type, event) {
         var result = o.execEvent(type, event);
         if (result !== false) {
-            if (o.parent && o.parent.events[type] && o.parent.events[type].length > 0 && o.parent.baseInstanceof !== "Stage") {
+            if (o.parent && o.parent.events && o.parent.events[type] && o.parent.events[type].length > 0 && o.parent.baseInstanceof !== "Stage") {
                 this._bubbleEvent(o.parent, type, event);
             }
         }
