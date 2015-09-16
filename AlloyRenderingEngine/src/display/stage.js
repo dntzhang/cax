@@ -23,10 +23,14 @@ ARE.Stage = ARE.Container.extend({
         this.interval = Math.floor(1e3 / this.fps);
         this.toList = [];
         this.tickFns = [];
+        this.beginTick = null;
+        this.endTick = null;
         var self = this;
         self.loop = setInterval(function() {
             if (self._paused) return;
+            self.beginTick && self.beginTick();
             self._tick(self);
+            self.endTick && self.endTick();
         }, self.interval);
         Object.defineProperty(this, "useRequestAnimFrame", {
             set: function(value) {
