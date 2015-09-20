@@ -2,7 +2,7 @@
 //begin-------------------ARE.Renderer---------------------begin
 
 ARE.Renderer = Class.extend({
-    "ctor": function(stage, closegl) {
+    "ctor": function (stage, openWebGL) {
         this.stage = stage;
         this.objs = [];
         this.width = this.stage.width;
@@ -17,7 +17,7 @@ ARE.Renderer = Class.extend({
                     return false;
                 }
             }();
-        if (webglSupport && !closegl) {
+        if (webglSupport && openWebGL) {
             this.renderingEngine = new ARE.WebGLRenderer(this.stage.canvas);
         } else {
             if (canvasSupport) {

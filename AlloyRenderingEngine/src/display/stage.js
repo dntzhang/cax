@@ -2,7 +2,7 @@
 //begin-------------------ARE.Stage---------------------begin
 
 ARE.Stage = ARE.Container.extend({
-    "ctor": function(canvas, closegl) {
+    "ctor": function(canvas, openWebGL) {
         this._super();
         this.canvas = typeof canvas == "string" ? document.querySelector(canvas) : canvas;
         this.width = this.canvas.width;
@@ -13,7 +13,7 @@ ARE.Stage = ARE.Container.extend({
         this.hitCanvas = document.createElement("canvas");
         this.hitCanvas.width = 1;
         this.hitCanvas.height = 1;
-        this.stageRenderer = new ARE.Renderer(this, closegl);
+        this.stageRenderer = new ARE.Renderer(this, openWebGL);
         this.hitCtx = this.hitCanvas.getContext("2d");
         this._scaleX = this._scaleY = null;
         this.offset = this._getXY(this.canvas);

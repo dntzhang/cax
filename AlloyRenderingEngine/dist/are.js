@@ -2166,7 +2166,7 @@ ARE.Vector2 = Class.extend({
 //begin-------------------ARE.Renderer---------------------begin
 
 ARE.Renderer = Class.extend({
-    "ctor": function(stage, closegl) {
+    "ctor": function (stage, openWebGL) {
         this.stage = stage;
         this.objs = [];
         this.width = this.stage.width;
@@ -2181,7 +2181,7 @@ ARE.Renderer = Class.extend({
                     return false;
                 }
             }();
-        if (webglSupport && !closegl) {
+        if (webglSupport && openWebGL) {
             this.renderingEngine = new ARE.WebGLRenderer(this.stage.canvas);
         } else {
             if (canvasSupport) {
@@ -3912,7 +3912,7 @@ ARE.Sprite = ARE.DisplayObject.extend({
 //begin-------------------ARE.Stage---------------------begin
 
 ARE.Stage = ARE.Container.extend({
-    "ctor": function(canvas, closegl) {
+    "ctor": function(canvas, openWebGL) {
         this._super();
         this.canvas = typeof canvas == "string" ? document.querySelector(canvas) : canvas;
         this.width = this.canvas.width;
@@ -3923,7 +3923,7 @@ ARE.Stage = ARE.Container.extend({
         this.hitCanvas = document.createElement("canvas");
         this.hitCanvas.width = 1;
         this.hitCanvas.height = 1;
-        this.stageRenderer = new ARE.Renderer(this, closegl);
+        this.stageRenderer = new ARE.Renderer(this, openWebGL);
         this.hitCtx = this.hitCanvas.getContext("2d");
         this._scaleX = this._scaleY = null;
         this.offset = this._getXY(this.canvas);
