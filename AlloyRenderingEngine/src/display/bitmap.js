@@ -75,6 +75,9 @@ ARE.Bitmap = ARE.DisplayObject.extend({
             return o;
         }
     },
+    "clip": function (fn) {
+        this._clipFn = fn;
+    },
     "flipX": function() {},
     "flipY": function() {}
 });

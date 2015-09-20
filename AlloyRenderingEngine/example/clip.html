@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Alloy Render Engine</title>
+</head>
+<body>   
+    <div style="text-align:center;"><canvas width="640" id="ourCanvas" height="400" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> 
+  
+    </div>
+  <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
+<img src="asset/img/github.png" alt="" />
+ </a>
+    <script src="../dist/are.js"></script>
+
+    <script>
+        ;(function (ARE) {
+            var Stage = ARE.Stage, Bitmap = ARE.Bitmap;
+            var stage = new Stage("#ourCanvas");
+            var bmp = new Bitmap("asset/img/clip.jpg");
+            stage.add(bmp);
+            var x = 100,y=100,speedX=1,r=100,speedY=1;
+            stage.onTick(function () {
+                x += speedX;
+                y += speedY;
+                if (x > stage.width-r) {
+                    x = stage.width - r;
+                    speedX *= -1;
+                }
+                if (x < r) {
+                    x = r;
+                    speedX *= -1;
+                }
+                if (y > stage.height - r) {
+                    y = stage.height - r;
+                    speedY *= -1;
+                }
+                if (y < r) {
+                    y = r;
+                    speedY *= -1;
+                }
+                bmp.clip(function (ctx) {
+                    ctx.arc(x, y, r, 0, Math.PI * 2, true);
+                })
+            })
+
+        })(ARE)
+
+    </script>
+</body>
+</html>

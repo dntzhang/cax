@@ -135,6 +135,12 @@ ARE.CanvasRenderer = Class.extend({
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(mmyCanvas, 0, 0);
         } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+            if (o._clipFn) {
+                ctx.beginPath();
+                o._clipFn(ctx);
+                ctx.closePath();
+                ctx.clip();
+            } 
             var rect = o.rect;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
