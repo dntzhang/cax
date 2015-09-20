@@ -2415,7 +2415,7 @@ ARE.CanvasRenderer = Class.extend({
         } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
             if (o._clipFn) {
                 ctx.beginPath();
-                o._clipFn(ctx);
+                o._clipFn.call(ctx);
                 ctx.closePath();
                 ctx.clip();
             } 

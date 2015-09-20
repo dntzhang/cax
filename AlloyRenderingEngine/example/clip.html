@@ -38,8 +38,8 @@
                     y = r;
                     speedY *= -1;
                 }
-                bmp.clip(function (ctx) {
-                    ctx.arc(x, y, r, 0, Math.PI * 2, true);
+                bmp.clip(function () {
+                    this.arc(x, y, r, 0, Math.PI * 2, true);
                 })
             })
 
