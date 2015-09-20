@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Alloy Render Engine</title>
@@ -17,9 +17,10 @@
         (function (ARE) {
             var Stage = ARE.Stage, Text = ARE.Text;
             //webgl不支持渲染Text，你可以使用ARE.Label
-            var stage = new Stage("#ourCanvas",true);
+            var stage = new Stage("#ourCanvas");
             stage.debug = true;
             var text = new Text("Alloy Game Engine", "35px arial", "red");
+            text.x = 100;
             text.y = 140;
             stage.add(text);
 
