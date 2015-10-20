@@ -2408,6 +2408,7 @@ ARE.CanvasRenderer = Class.extend({
         ctx.save();
         ctx.globalAlpha = o.complexAlpha;
         ctx.globalCompositeOperation = o.complexCompositeOperation;
+        o.shadow && this._applyShadow(ctx, o.shadow);
         var mmyCanvas = o.cacheCanvas || o.txtCanvas || o.shapeCanvas;
         if (mmyCanvas) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
@@ -2427,6 +2428,12 @@ ARE.CanvasRenderer = Class.extend({
             o.draw(ctx);
         }
         ctx.restore();
+    },
+    "_applyShadow" : function(ctx, shadow) {
+        ctx.shadowColor = shadow.color || "transparent";
+        ctx.shadowOffsetX = shadow.offsetX||0;
+        ctx.shadowOffsetY = shadow.offsetY||0;
+        ctx.shadowBlur = shadow.blur||0;
     },
     "clearBackUpCanvasCache": function() {},
     "checkPointInAABB": function(x, y, AABB) {
