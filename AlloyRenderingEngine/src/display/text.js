@@ -21,6 +21,11 @@ ARE.Text = ARE.DisplayObject.extend({
         var t = new ARE.Text(this.text, this.font, this.color);
         this.cloneProps(t);
         return t;
+    },
+    "getWidth": function () {
+        var measureCtx = document.createElement("canvas").getContext("2d");
+        measureCtx.font = this.font;
+        return measureCtx.measureText(this.value).width;
     }
 });
 
