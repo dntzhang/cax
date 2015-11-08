@@ -56,6 +56,7 @@ ARE.Shape = ARE.DisplayObject.extend({
     },
     "clear": function() {
         this.cacheID = ARE.UID.getCacheID();
+        this.cmds.length = 0;
         this.shapeCtx.clearRect(0, 0, this.width, this.height);
     },
     "strokeRect": function() {
