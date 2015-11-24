@@ -4028,6 +4028,7 @@ ARE.Stage = ARE.Container.extend({
         window.addEventListener("load", this.adjustLayout.bind(this), false);
         window.addEventListener("resize", this.adjustLayout.bind(this), false);
         this.autoUpdate = true;
+        this.scaleType = "normal";
     },
     "adjustLayout": function() {
         this.offset = this._getXY(this.canvas);
@@ -4131,7 +4132,7 @@ ARE.Stage = ARE.Container.extend({
             evt.stageX = evt.pageX - this.offset[0];
             evt.stageY = evt.pageY - this.offset[1];
         }
-        if (this._scaleX) {
+        if (this.scaleType !== "normal") {
             var p = this.correctingXY(evt.stageX, evt.stageY);
             evt.stageX = Math.round(p.x);
             evt.stageY = Math.round(p.y);
@@ -4323,7 +4324,8 @@ ARE.Stage = ARE.Container.extend({
     "getActiveKeys": function() {
         return ARE.Keyboard.getActiveKeys();
     },
-    "scaleToScreen": function(scaleX, scaleY) {
+    "scaleToScreen": function (scaleX, scaleY) {
+        this.scaleType = "screen";
         if (scaleX === 1 && scaleY === 1) {
             document.body.style.overflow = "hidden";
             document.documentElement.style.overflow = "hidden";
@@ -4349,11 +4351,34 @@ ARE.Stage = ARE.Container.extend({
         canvas.style.border = "0px solid #ccc";
         this.offset = this._getXY(this.canvas);
     },
-    "correctingXY": function(x, y) {
-        return {
-            x: x * this.width / (window.innerWidth * this._scaleX),
-            y: y * this.height / (window.innerHeight * this._scaleY)
-        };
+    "scaleToBox": function (w, h) {
+        this.scaleType = "box";
+        if (w === window.innerWidth && h === window.innerHeight) {
+            document.body.style.overflow = "hidden";
+            document.documentElement.style.overflow = "hidden";
+        }
+        var canvas = this.canvas;
+        canvas.style.position = "absolute";
+        canvas.style.width = w + "px";
+        canvas.style.height = h + "px";
+        canvas.style.left = (window.innerWidth - w) / 2 + "px";
+        canvas.style.top = (window.innerHeight - h) / 2 + "px";
+        canvas.style.border = "0px solid #ccc";
+        this.offset = this._getXY(this.canvas);
+    },
+    "correctingXY": function (x, y) {
+        if (this.scaleType === "box") {
+            console.log(x * this.width / parseInt(this.canvas.style.width), y * this.height / parseInt(this.canvas.style.height))
+            return {
+                x: x * this.width / parseInt( this.canvas.style.width),
+                y: y * this.height / parseInt(this.canvas.style.height)
+            };
+        } else {
+            return {
+                x: x * this.width / (window.innerWidth * this._scaleX),
+                y: y * this.height / (window.innerHeight * this._scaleY)
+            };
+        }
     },
     "getTotalCount": function() {
         var count = 0;
