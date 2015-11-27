@@ -40,17 +40,17 @@ ARE.To = Class.extend({
             this.interpolationBezier = ARE.TWEEN.Interpolation.Bezier,
             this.interpolationCatmullRom = ARE.TWEEN.Interpolation.CatmullRom;
         },
-        "get": function(element) {
+        "get": function (element) {
             var to = new this(element);
             var stage = this.getStage(element)
-            stage.toList.push(to);
+            stage && stage.toList.push(to);
             return to;
         },
         "getStage": function (element) {
-            if(!element.parent) throw "please add the object to the stage , then animate it."
+            if (!element.parent) return;
             if (element.parent instanceof ARE.Stage) {
                 return element.parent;
-            }else{
+            } else {
                 return this.getStage(element.parent);
             }
         }
