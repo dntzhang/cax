@@ -23,7 +23,7 @@ AlloyRenderingEngine
 * [keyboard event](http://alloyteam.github.io/AlloyGameEngine/example/keyboardevents.html) 
 * [collision](http://alloyteam.github.io/AlloyGameEngine/example/collision.html) 
 * [scalable](http://alloyteam.github.io/AlloyGameEngine/example/scalable.html)
-
+* [cursor](http://alloyteam.github.io/AlloyGameEngine/example/cursor.html)
 
 ### 一分钟快速入门
 要实现下面的效果：
