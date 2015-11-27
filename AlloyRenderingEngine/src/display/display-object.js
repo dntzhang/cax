@@ -39,7 +39,7 @@ ARE.DisplayObject = Class.extend({
         this.onHover(function () {
             //this._setCursor(this, this.cursor);
         }, function () {
-            this._setCursor(this, "default");
+            this._setCursor(this, ARE.DefaultCursor);
         });
     },
     "_watch": function(target, prop, onPropertyChanged) {

@@ -104,6 +104,7 @@ window.Class = Class;
 //AlloyRenderingEngine
 var ARE={};
 
+ARE.DefaultCursor = "default";
 
 //begin-------------------ARE.TWEEN---------------------begin
 
@@ -2704,7 +2705,7 @@ ARE.DisplayObject = Class.extend({
         this.onHover(function () {
             //this._setCursor(this, this.cursor);
         }, function () {
-            this._setCursor(this, "default");
+            this._setCursor(this, ARE.DefaultCursor);
         });
     },
     "_watch": function(target, prop, onPropertyChanged) {
@@ -4029,6 +4030,8 @@ ARE.Stage = ARE.Container.extend({
         window.addEventListener("resize", this.adjustLayout.bind(this), false);
         this.autoUpdate = true;
         this.scaleType = "normal";
+
+        this.setCursor(ARE.DefaultCursor);
     },
     "adjustLayout": function() {
         this.offset = this._getXY(this.canvas);
@@ -4368,7 +4371,6 @@ ARE.Stage = ARE.Container.extend({
     },
     "correctingXY": function (x, y) {
         if (this.scaleType === "box") {
-            console.log(x * this.width / parseInt(this.canvas.style.width), y * this.height / parseInt(this.canvas.style.height))
             return {
                 x: x * this.width / parseInt( this.canvas.style.width),
                 y: y * this.height / parseInt(this.canvas.style.height)

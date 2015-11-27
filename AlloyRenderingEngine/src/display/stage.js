@@ -102,6 +102,8 @@ ARE.Stage = ARE.Container.extend({
         window.addEventListener("resize", this.adjustLayout.bind(this), false);
         this.autoUpdate = true;
         this.scaleType = "normal";
+
+        this.setCursor(ARE.DefaultCursor);
     },
     "adjustLayout": function() {
         this.offset = this._getXY(this.canvas);
