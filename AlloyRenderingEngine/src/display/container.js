@@ -70,6 +70,7 @@ ARE.Container = ARE.DisplayObject.extend({
         while (kids.length) {
             var kid = kids.pop();
             kid.destroy();
+            kid = null;
         }
     },
     "swapChildrenAt": function(index1, index2) {
