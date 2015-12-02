@@ -25,7 +25,9 @@ ARE.Text = ARE.DisplayObject.extend({
     "getWidth": function () {
         var measureCtx = document.createElement("canvas").getContext("2d");
         measureCtx.font = this.font;
-        return measureCtx.measureText(this.value).width;
+        var width = measureCtx.measureText(this.value).width;
+        measureCtx = null;
+        return width;
     }
 });
 
