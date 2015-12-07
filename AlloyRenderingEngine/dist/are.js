@@ -106,6 +106,8 @@ var ARE={};
 
 ARE.DefaultCursor = "default";
 
+ARE.Cache = {};
+
 //begin-------------------ARE.TWEEN---------------------begin
 
 ARE.TWEEN = Class.extend({
@@ -3001,7 +3003,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
         }
     },
     "_initWithSrc": function(img) {
-        var cacheImg = ARE.Bitmap[img];
+        var cacheImg = ARE.Cache[img];
         if (cacheImg) {
             this._init(cacheImg);
         } else {
@@ -3011,7 +3013,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
             this.img.crossOrigin = "Anonymous";
             this.img.onload = function () {
                 if (!self.rect) self.rect = [0, 0, self.img.width, self.img.height];
-                ARE.Bitmap[img] = self.img;
+                ARE.Cache[img] = self.img;
                 self.textureReady = true;
                 self.imageLoadHandle && self.imageLoadHandle();
                 if (self.filter) self.filter = self.filter;
@@ -3159,6 +3161,7 @@ ARE.Container = ARE.DisplayObject.extend({
         while (kids.length) {
             var kid = kids.pop();
             kid.destroy();
+            kid = null;
         }
     },
     "swapChildrenAt": function(index1, index2) {
@@ -3497,8 +3500,8 @@ ARE.ParticleSystem = ARE.Container.extend({
         this.emitY = option.emitY;
         var self = this;
         if (typeof option.texture === "string") {
-            if (ARE.Bitmap[option.texture]) {
-                this.texture = ARE.Bitmap[option.texture];
+            if (ARE.Cache[option.texture]) {
+                this.texture = ARE.Cache[option.texture];
                 this.generateFilterTexture(this.texture);
             } else {
                 this.bitmap = new ARE.Bitmap();
@@ -3825,8 +3828,8 @@ ARE.Sprite = ARE.DisplayObject.extend({
         for (var i = 0; i < len; i++) {
             var urlOrImg = this.option.imgs[i];
             if (typeof urlOrImg === "string") {
-                if (ARE.Bitmap[urlOrImg]) {
-                    this.bitmaps.push(new ARE.Bitmap(ARE.Bitmap[urlOrImg]));
+                if (ARE.Cache[urlOrImg]) {
+                    this.bitmaps.push(new ARE.Bitmap(ARE.Cache[urlOrImg]));
                     this._loadedCount++;
                 } else {
                     var bmp = new ARE.Bitmap();
@@ -4478,7 +4481,9 @@ ARE.Text = ARE.DisplayObject.extend({
     "getWidth": function () {
         var measureCtx = document.createElement("canvas").getContext("2d");
         measureCtx.font = this.font;
-        return measureCtx.measureText(this.value).width;
+        var width = measureCtx.measureText(this.value).width;
+        measureCtx = null;
+        return width;
     }
 });
 

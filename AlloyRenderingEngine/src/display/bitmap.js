@@ -26,7 +26,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
         }
     },
     "_initWithSrc": function(img) {
-        var cacheImg = ARE.Bitmap[img];
+        var cacheImg = ARE.Cache[img];
         if (cacheImg) {
             this._init(cacheImg);
         } else {
@@ -36,7 +36,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
             this.img.crossOrigin = "Anonymous";
             this.img.onload = function () {
                 if (!self.rect) self.rect = [0, 0, self.img.width, self.img.height];
-                ARE.Bitmap[img] = self.img;
+                ARE.Cache[img] = self.img;
                 self.textureReady = true;
                 self.imageLoadHandle && self.imageLoadHandle();
                 if (self.filter) self.filter = self.filter;

@@ -19,8 +19,8 @@ ARE.Sprite = ARE.DisplayObject.extend({
         for (var i = 0; i < len; i++) {
             var urlOrImg = this.option.imgs[i];
             if (typeof urlOrImg === "string") {
-                if (ARE.Bitmap[urlOrImg]) {
-                    this.bitmaps.push(new ARE.Bitmap(ARE.Bitmap[urlOrImg]));
+                if (ARE.Cache[urlOrImg]) {
+                    this.bitmaps.push(new ARE.Bitmap(ARE.Cache[urlOrImg]));
                     this._loadedCount++;
                 } else {
                     var bmp = new ARE.Bitmap();

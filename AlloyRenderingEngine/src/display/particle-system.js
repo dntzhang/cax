@@ -20,8 +20,8 @@ ARE.ParticleSystem = ARE.Container.extend({
         this.emitY = option.emitY;
         var self = this;
         if (typeof option.texture === "string") {
-            if (ARE.Bitmap[option.texture]) {
-                this.texture = ARE.Bitmap[option.texture];
+            if (ARE.Cache[option.texture]) {
+                this.texture = ARE.Cache[option.texture];
                 this.generateFilterTexture(this.texture);
             } else {
                 this.bitmap = new ARE.Bitmap();
