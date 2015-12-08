@@ -16,6 +16,7 @@ ARE.Label = ARE.DisplayObject.extend({
         this.txtCanvas = document.createElement("canvas");
         this.txtCtx = this.txtCanvas.getContext("2d");
         this.setDrawOption();
+        this.shadow = option.shadow;
         this._watch(this, ["value", "fontSize", "color", "fontFamily"], function(a, b) {
             this.setDrawOption();
         });
@@ -29,7 +30,8 @@ ARE.Label = ARE.DisplayObject.extend({
             alignment: this.textAlign,
             color: this.color || "black",
             fontFamily: this.fontFamily,
-            fontWeight:this.fontWeight
+            fontWeight: this.fontWeight,
+            shadow: this.shadow
         });
         this.cacheID = ARE.UID.getCacheID();
         this.width = drawOption.calculatedWidth;
@@ -81,7 +83,13 @@ ARE.Label = ARE.DisplayObject.extend({
         ctx.fillStyle = textColour;
         ctx.textAlign = textAlignment;
         ctx.textBaseline = "middle";
-        ctx.font = fontWeight+" "+textHeight + "px " + fontFamily;
+        ctx.font = fontWeight + " " + textHeight + "px " + fontFamily;
+        if (option.shadow) {
+            ctx.shadowColor = option.shadow.color || "transparent";
+            ctx.shadowOffsetX = option.shadow.offsetX || 0;
+            ctx.shadowOffsetY = option.shadow.offsetY || 0;
+            ctx.shadowBlur = option.shadow.blur || 0;
+        } 
         var offset = (canvasY - textHeight * (text.length + 1)) * .5;
         option.cmd = [];
         for (var i = 0; i < text.length; i++) {
