@@ -14,7 +14,6 @@
 }(this, function () {
 'use strict';
 
-var initializing = false, fnTest = /xyz/.test(function () { xyz; }) ? /\b_super\b/ : /.*/;
 
 // The base Class implementation (does nothing)
 var Class = function () { };
@@ -22,19 +21,14 @@ var Class = function () { };
 // Create a new Class that inherits from this class
 Class.extend = function (prop) {
     var _super = this.prototype;
-
-    // Instantiate a base class (but only create the instance,
-    // don't run the init constructor)
-    initializing = true;
-    var prototype = new this();
-    initializing = false;
+    var prototype = Object.create(_super);
 
     // Copy the properties over onto the new prototype
     for (var name in prop) {
         if (name != "statics") {
             // Check if we're overwriting an existing function
             prototype[name] = typeof prop[name] == "function" &&
-              typeof _super[name] == "function" && fnTest.test(prop[name]) ?
+              typeof _super[name] == "function"  ?
               (function (name, fn) {
                   return function () {
                       var tmp = this._super;
@@ -58,7 +52,7 @@ Class.extend = function (prop) {
     // The dummy class constructor
     function _Class() {
         // All construction is actually done in the init method
-        if (!initializing && this.ctor)
+
             this.ctor.apply(this, arguments);
     }
 
@@ -71,6 +65,7 @@ Class.extend = function (prop) {
     // Populate our constructed prototype object
     _Class.prototype = prototype;
 
+    _Class.prototype._super = Object.create(_super);
     //静态属性和方法
     if (prop.statics) {
         for (var name in prop.statics) {
@@ -91,12 +86,6 @@ Class.extend = function (prop) {
     // And make this class extendable
     _Class.extend = Class.extend;
 
-    //add implementation method
-    _Class.implement = function (prop) {
-        for (var name in prop) {
-            prototype[name] = prop[name];
-        }
-    };
     return _Class;
 };
 
