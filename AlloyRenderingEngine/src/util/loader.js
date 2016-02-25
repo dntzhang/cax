@@ -62,7 +62,7 @@ ARE.Loader = Class.extend({
                 self.sounds[i][id] = new Audio(src);
             }
             self.loadedCount++;
-            self.handleProgress(self.loadedCount, self.resCount);
+            self.handleProgress&&self.handleProgress(self.loadedCount, self.resCount);
             self._clean(this);
             this.removeEventListener && this.removeEventListener("canplaythrough", _audioCanPlayHandler, false);
             self.checkComplete();
