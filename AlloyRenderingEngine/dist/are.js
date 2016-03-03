@@ -1324,7 +1324,6 @@ ARE.Loader = Class.extend({
     },
     "loadImage": function(id, src) {
         var img = document.createElement("img");
-        img.crossOrigin = "Anonymous";
         var self = this;
         img.onload = function() {
             self._handleLoad(this, id);
@@ -3013,6 +3012,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
     "_init": function(img) {
         if (!img) return;
         this.img = img;
+        this.img.crossOrigin = "Anonymous";
         this.width = img.width;
         this.height = img.height;
         this.rect = [0, 0, img.width, img.height];

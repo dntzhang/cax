@@ -32,7 +32,6 @@ ARE.Loader = Class.extend({
     },
     "loadImage": function(id, src) {
         var img = document.createElement("img");
-        img.crossOrigin = "Anonymous";
         var self = this;
         img.onload = function() {
             self._handleLoad(this, id);

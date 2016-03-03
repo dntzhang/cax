@@ -47,6 +47,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
     "_init": function(img) {
         if (!img) return;
         this.img = img;
+        this.img.crossOrigin = "Anonymous";
         this.width = img.width;
         this.height = img.height;
         this.rect = [0, 0, img.width, img.height];
