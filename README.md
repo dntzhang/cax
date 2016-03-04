@@ -1,13 +1,13 @@
-Alloy Game Engine
+AlloyGameEngine
 =================
 
 让游戏制作变得超级容易
 
-AlloyRenderingEngine
-=================
+###AlloyRenderingEngine
+
 超快的2d渲染引擎，支持webgl和canvas渲染
 
-### 基础例子
+##### 基础例子
 
 * [bitmap](http://alloyteam.github.io/AlloyGameEngine/example/bitmap.html) 
 * [transform](http://alloyteam.github.io/AlloyGameEngine/example/transform.html) 
@@ -25,7 +25,7 @@ AlloyRenderingEngine
 * [scalable](http://alloyteam.github.io/AlloyGameEngine/example/scalable.html)
 * [cursor](http://alloyteam.github.io/AlloyGameEngine/example/cursor.html)
 
-### 一分钟快速入门
+##### 一分钟快速入门
 要实现下面的效果：
 
 ![usage](https://raw.githubusercontent.com/AlloyTeam/AlloyGameEngine/master/AlloyRenderingEngine/example/asset/img/usage2.gif)
@@ -58,16 +58,16 @@ stage.onTick(function () {
 });
 ```
 
-教程
-=================
+###教程
+
 * [AlloyRenderingEngine入门](http://www.alloyteam.com/2015/04/6726/)
 * [AlloyRenderingEngine之Shape](http://www.alloyteam.com/2015/04/alloyrenderingengine-zhi-shape/)
 * [AlloyRenderingEngine继承](http://www.alloyteam.com/2015/04/alloyrenderingengine-ji-cheng/)
 * [AlloyRenderingEngine文本框组件](http://www.alloyteam.com/2015/05/alloyrenderingengine-wen-ben-kuang-zu-jian/)
 * [AlloyRenderingEngine燃烧的进度条](http://www.alloyteam.com/2015/05/alloyrenderingengine-ran-shao-di-jin-du-tiao/)
 
-工具推荐
-=================
+###工具推荐
+
 * [particle editor](http://alloyteam.github.io/AlloyGameEngine/pe/)
 * [combine images](http://kmdjs.github.io/combineimages/)
 * [image splitter](http://kmdjs.github.io/imagesplitter/)
