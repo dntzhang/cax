@@ -1,2 +1,0 @@
-﻿//Particle Editor
-var PE = {};
