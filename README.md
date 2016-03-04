@@ -33,8 +33,8 @@ AlloyRenderingEngine
 可以使用下面的代码:
 
 ```javascript
-var bmp, stage = new Stage("#ourCanvas");
-bmp = new Bitmap("img/atLogo.png");
+var stage = new Stage("#ourCanvas"),
+    bmp = new Bitmap("img/atLogo.png");
 //（0.5,0.5）==〉The center is the point of rotation
 bmp.originX = 0.5;
 bmp.originY = 0.5;
