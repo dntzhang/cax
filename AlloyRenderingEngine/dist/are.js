@@ -3051,34 +3051,6 @@ ARE.Bitmap = ARE.DisplayObject.extend({
 //end-------------------ARE.Bitmap---------------------end
 
 
-//begin-------------------ARE.CircleShape---------------------begin
-
-ARE.CircleShape = ARE.DisplayObject.extend({
-    "ctor": function(r, color, isHollow) {
-        this._super();
-        this.r = r || 1;
-        this.color = color || "black";
-        this.isHollow = isHollow;
-        this.width = this.height = 2 * r;
-        this.shapeCanvas = document.createElement("canvas");
-        this.shapeCanvas.width = this.width;
-        this.shapeCanvas.height = this.height;
-        this.shapeCtx = this.shapeCanvas.getContext("2d");
-        this.draw();
-        this.cacheID = ARE.UID.getCacheID();
-    },
-    "draw": function(ctx) {
-        var ctx = this.shapeCtx;
-        ctx.beginPath();
-        ctx.arc(this.r, this.r, this.r, 0, Math.PI * 2);
-        this.originX = this.originY = .5;
-        this.isHollow ? (ctx.strokeStyle = this.color, ctx.stroke()) : (ctx.fillStyle = this.color, ctx.fill());
-    }
-});
-
-//end-------------------ARE.CircleShape---------------------end
-
-
 //begin-------------------ARE.Container---------------------begin
 
 ARE.Container = ARE.DisplayObject.extend({
@@ -3598,94 +3570,6 @@ ARE.ParticleExplosion = ARE.Container.extend({
 
 
 //end-----------------ARE.ParticleExplosion-------------------end
-
-//begin-------------------ARE.RectAdjust---------------------begin
-
-ARE.RectAdjust = Class.extend({
-    "ctor": function(option) {
-        this.min = option.min;
-        this.max = option.max;
-        this.value = option.value;
-        this.change = option.change;
-        this.renderTo = option.renderTo;
-        this.fillStyle = option.fillStyle;
-        this.canvas = document.createElement("canvas");
-        this.canvas.width = 140;
-        this.canvas.height = 16;
-        this.canvas.style.cssText = "border:1px solid black;";
-        this.ctx = this.canvas.getContext("2d");
-        this.renderTo.appendChild(this.canvas);
-        this.render(160 * (this.value - this.min) / (this.max - this.min));
-        this.offset = this.canvas.getBoundingClientRect();
-        var self = this;
-        var isMouseDown = false;
-        this.canvas.addEventListener("mousedown", function(evt) {
-            isMouseDown = true;
-            var x = evt.pageX - self.offset.left;
-            var y = evt.pageY - self.offset.top;
-            self.value = self.min + (self.max - self.min) * x / 140;
-            if (self.value > self.max) self.value = self.max;
-            if (self.value < self.min) self.value = self.min;
-            self.change(self.value);
-            self.render(x);
-            evt.preventDefault();
-            evt.stopPropagation();
-        }, false);
-        this.canvas.addEventListener("mousemove", function(evt) {
-            if (isMouseDown) {
-                var x = evt.pageX - self.offset.left;
-                var y = evt.pageY - self.offset.top;
-                self.value = self.min + (self.max - self.min) * x / 140;
-                if (self.value > self.max) self.value = self.max;
-                if (self.value < self.min) self.value = self.min;
-                self.change(self.value);
-                self.render(x);
-                evt.preventDefault();
-                evt.stopPropagation();
-            }
-        }, false);
-        document.addEventListener("mouseup", function(evt) {
-            isMouseDown = false;
-        }, false);
-    },
-    "render": function(x) {
-        this.ctx.fillStyle = this.fillStyle;
-        this.ctx.clearRect(0, 0, 500, 500);
-        this.ctx.beginPath();
-        this.ctx.fillRect(0, 0, x, 60);
-    }
-});
-
-//end-------------------ARE.RectAdjust---------------------end
-
-
-//begin-------------------ARE.RectShape---------------------begin
-
-ARE.RectShape = ARE.DisplayObject.extend({
-    "ctor": function(width, height, color, isHollow) {
-        this._super();
-        this.color = color || "black";
-        this.isHollow = isHollow;
-        this.width = width;
-        this.height = height;
-        this.originX = this.originY = .5;
-        this.shapeCanvas = document.createElement("canvas");
-        this.shapeCanvas.width = this.width;
-        this.shapeCanvas.height = this.height;
-        this.shapeCtx = this.shapeCanvas.getContext("2d");
-        this.draw();
-        this.cacheID = ARE.UID.getCacheID();
-    },
-    "draw": function(ctx) {
-        var ctx = this.shapeCtx;
-        ctx.beginPath();
-        ctx.arc(this.r, this.r, this.r, 0, Math.PI * 2);
-        this.isHollow ? (ctx.strokeStyle = this.color, ctx.strokeRect(0, 0, this.width, this.height)) : (ctx.fillStyle = this.color, ctx.fillRect(0, 0, this.width, this.height));
-    }
-});
-
-//end-------------------ARE.RectShape---------------------end
-
 
 //begin-------------------ARE.Shape---------------------begin
 
