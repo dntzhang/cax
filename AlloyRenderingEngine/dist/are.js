@@ -1860,34 +1860,6 @@ ARE.To = Class.extend({
         this.cmds.push(["cycle", arguments]);
         return this;
     },
-    "shake": function() {
-        this.cmds = this.cmds.concat([["to", ["x", {
-            "0": 10,
-            "1": 50}]], ["to", ["x", {
-            "0": -10,
-            "1": 50}]], ["to", ["x", {
-            "0": 10,
-            "1": 50}]], ["to", ["x", {
-            "0": -10,
-            "1": 50}]], ["to", ["x", {
-            "0": 10,
-            "1": 50}]], ["to", ["x", {
-            "0": -10,
-            "1": 50}]], ["to", ["x", {
-            "0": 10,
-            "1": 50}]], ["to", ["x", {
-            "0": -10,
-            "1": 50}]], ["to", ["x", {
-            "0": 10,
-            "1": 50}]], ["to", ["x", {
-            "0": -10,
-            "1": 50}]], ["to", ["x", {
-            "0": 10,
-            "1": 50}]], ["to", ["x", {
-            "0": 0,
-            "1": 50}]]]);
-        return this;
-    },
     "rubber": function() {
         this.cmds = this.cmds.concat([["to", ["scaleX", {
             "0": 1.25,
@@ -2009,6 +1981,14 @@ ARE.To = Class.extend({
                 if (self.index == self.cmds.length && self.complete) self.complete();
             }, this.timeout);
         }
+    },
+    "stop": function () {
+        for (var i = 0, len = this.tweens.length; i < len; i++) {
+            this.tweens[i].pause();
+            ARE.TWEEN.remove(this.tweens[i]);
+        }
+        this.cmds.length = 0;
+
     },
     "exec": function(cmd, last) {
         var len = cmd.length,
