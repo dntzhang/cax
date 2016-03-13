@@ -1,54 +1,54 @@
 
-//begin-------------------ARE.To---------------------begin
+//begin-------------------AlloyPaper.To---------------------begin
 
-ARE.To = Class.extend({
+AlloyPaper.To = Class.extend({
     "statics": {
         "ctor": function () {
-            this.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
-            this.linear = ARE.TWEEN.Easing.Linear.None,
-            this.quadraticIn = ARE.TWEEN.Easing.Quadratic.In,
-            this.quadraticOut = ARE.TWEEN.Easing.Quadratic.Out,
-            this.quadraticInOut = ARE.TWEEN.Easing.Quadratic.InOut,
-            this.cubicIn = ARE.TWEEN.Easing.Cubic.In,
-            this.cubicOut = ARE.TWEEN.Easing.Cubic.Out,
-            this.cubicInOut = ARE.TWEEN.Easing.Cubic.InOut,
-            this.quarticIn = ARE.TWEEN.Easing.Quartic.In,
-            this.quarticOut = ARE.TWEEN.Easing.Quartic.Out,
-            this.quarticInOut = ARE.TWEEN.Easing.Quartic.InOut,
-            this.quinticIn = ARE.TWEEN.Easing.Quintic.In,
-            this.quinticOut = ARE.TWEEN.Easing.Quintic.Out,
-            this.quinticInOut = ARE.TWEEN.Easing.Quintic.InOut,
-            this.sinusoidalIn = ARE.TWEEN.Easing.Sinusoidal.In,
-            this.sinusoidalOut = ARE.TWEEN.Easing.Sinusoidal.Out,
-            this.sinusoidalInOut = ARE.TWEEN.Easing.Sinusoidal.InOut,
-            this.exponentialIn = ARE.TWEEN.Easing.Exponential.In,
-            this.exponentialOut = ARE.TWEEN.Easing.Exponential.Out,
-            this.exponentialInOut = ARE.TWEEN.Easing.Exponential.InOut,
-            this.circularIn = ARE.TWEEN.Easing.Circular.In,
-            this.circularOut = ARE.TWEEN.Easing.Circular.Out,
-            this.circularInOut = ARE.TWEEN.Easing.Circular.InOut,
-            this.elasticIn = ARE.TWEEN.Easing.Elastic.In,
-            this.elasticOut = ARE.TWEEN.Easing.Elastic.Out,
-            this.elasticInOut = ARE.TWEEN.Easing.Elastic.InOut,
-            this.backIn = ARE.TWEEN.Easing.Back.In,
-            this.backOut = ARE.TWEEN.Easing.Back.Out,
-            this.backInOut = ARE.TWEEN.Easing.Back.InOut,
-            this.bounceIn = ARE.TWEEN.Easing.Bounce.In,
-            this.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
-            this.bounceInOut = ARE.TWEEN.Easing.Bounce.InOut,
-            this.interpolationLinear = ARE.TWEEN.Interpolation.Linear,
-            this.interpolationBezier = ARE.TWEEN.Interpolation.Bezier,
-            this.interpolationCatmullRom = ARE.TWEEN.Interpolation.CatmullRom;
+            this.bounceOut = AlloyPaper.TWEEN.Easing.Bounce.Out,
+            this.linear = AlloyPaper.TWEEN.Easing.Linear.None,
+            this.quadraticIn = AlloyPaper.TWEEN.Easing.Quadratic.In,
+            this.quadraticOut = AlloyPaper.TWEEN.Easing.Quadratic.Out,
+            this.quadraticInOut = AlloyPaper.TWEEN.Easing.Quadratic.InOut,
+            this.cubicIn = AlloyPaper.TWEEN.Easing.Cubic.In,
+            this.cubicOut = AlloyPaper.TWEEN.Easing.Cubic.Out,
+            this.cubicInOut = AlloyPaper.TWEEN.Easing.Cubic.InOut,
+            this.quarticIn = AlloyPaper.TWEEN.Easing.Quartic.In,
+            this.quarticOut = AlloyPaper.TWEEN.Easing.Quartic.Out,
+            this.quarticInOut = AlloyPaper.TWEEN.Easing.Quartic.InOut,
+            this.quinticIn = AlloyPaper.TWEEN.Easing.Quintic.In,
+            this.quinticOut = AlloyPaper.TWEEN.Easing.Quintic.Out,
+            this.quinticInOut = AlloyPaper.TWEEN.Easing.Quintic.InOut,
+            this.sinusoidalIn = AlloyPaper.TWEEN.Easing.Sinusoidal.In,
+            this.sinusoidalOut = AlloyPaper.TWEEN.Easing.Sinusoidal.Out,
+            this.sinusoidalInOut = AlloyPaper.TWEEN.Easing.Sinusoidal.InOut,
+            this.exponentialIn = AlloyPaper.TWEEN.Easing.Exponential.In,
+            this.exponentialOut = AlloyPaper.TWEEN.Easing.Exponential.Out,
+            this.exponentialInOut = AlloyPaper.TWEEN.Easing.Exponential.InOut,
+            this.circularIn = AlloyPaper.TWEEN.Easing.Circular.In,
+            this.circularOut = AlloyPaper.TWEEN.Easing.Circular.Out,
+            this.circularInOut = AlloyPaper.TWEEN.Easing.Circular.InOut,
+            this.elasticIn = AlloyPaper.TWEEN.Easing.Elastic.In,
+            this.elasticOut = AlloyPaper.TWEEN.Easing.Elastic.Out,
+            this.elasticInOut = AlloyPaper.TWEEN.Easing.Elastic.InOut,
+            this.backIn = AlloyPaper.TWEEN.Easing.Back.In,
+            this.backOut = AlloyPaper.TWEEN.Easing.Back.Out,
+            this.backInOut = AlloyPaper.TWEEN.Easing.Back.InOut,
+            this.bounceIn = AlloyPaper.TWEEN.Easing.Bounce.In,
+            this.bounceOut = AlloyPaper.TWEEN.Easing.Bounce.Out,
+            this.bounceInOut = AlloyPaper.TWEEN.Easing.Bounce.InOut,
+            this.interpolationLinear = AlloyPaper.TWEEN.Interpolation.Linear,
+            this.interpolationBezier = AlloyPaper.TWEEN.Interpolation.Bezier,
+            this.interpolationCatmullRom = AlloyPaper.TWEEN.Interpolation.CatmullRom;
         },
         "get": function (element) {
             var to = new this(element);
-            var stage = this.getStage(element)
+            var stage = this.getStage(element);
             stage && stage.toList.push(to);
             return to;
         },
         "getStage": function (element) {
             if (!element.parent) return;
-            if (element.parent instanceof ARE.Stage) {
+            if (element.parent instanceof AlloyPaper.Stage) {
                 return element.parent;
             } else {
                 return this.getStage(element.parent);
@@ -62,7 +62,7 @@ ARE.To = Class.extend({
         this.tweens = [];
         this._pause = false;
         this.loop = setInterval(function() {
-            ARE.TWEEN.update();
+            AlloyPaper.TWEEN.update();
         }, 15);
         this.cycleCount = 0;
     },
@@ -267,7 +267,7 @@ ARE.To = Class.extend({
     "stop": function () {
         for (var i = 0, len = this.tweens.length; i < len; i++) {
             this.tweens[i].pause();
-            ARE.TWEEN.remove(this.tweens[i]);
+            AlloyPaper.TWEEN.remove(this.tweens[i]);
         }
         this.cmds.length = 0;
 
@@ -285,12 +285,12 @@ ARE.To = Class.extend({
                 var target = {};
                 var prop = task[0];
                 target[prop] = task[1][0];
-                var t = new ARE.TWEEN.Tween(this.element).to(target, task[1][1]).onStart(function() {
+                var t = new AlloyPaper.TWEEN.Tween(this.element).to(target, task[1][1]).onStart(function() {
                     if (cmd.start) cmd.start();
                 }).onUpdate(function() {
                     if (cmd.progress) cmd.progress.call(self.element);
                     self.element[prop] = this[prop];
-                }).easing(ease ? ease : ARE.To.linear).onComplete(function() {
+                }).easing(ease ? ease : AlloyPaper.To.linear).onComplete(function() {
                     self.stepCompleteCount++;
                     if (self.stepCompleteCount == len - 1) {
                         if (cmd.end) cmd.end.call(self.element);
@@ -338,4 +338,4 @@ ARE.To = Class.extend({
     }
 });
 
-//end-------------------ARE.To---------------------end
+//end-------------------AlloyPaper.To---------------------end

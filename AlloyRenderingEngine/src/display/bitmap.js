@@ -1,7 +1,4 @@
-
-//begin-------------------ARE.Bitmap---------------------begin
-
-ARE.Bitmap = ARE.DisplayObject.extend({
+AlloyPaper.Bitmap = AlloyPaper.DisplayObject.extend({
     "ctor": function(img) {
         this._super();
         Object.defineProperty(this, "rect", {
@@ -26,7 +23,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
         }
     },
     "_initWithSrc": function(img) {
-        var cacheImg = ARE.Cache[img];
+        var cacheImg = AlloyPaper.Cache[img];
         if (cacheImg) {
             this._init(cacheImg);
         } else {
@@ -36,7 +33,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
             this.img.crossOrigin = "Anonymous";
             this.img.onload = function () {
                 if (!self.rect) self.rect = [0, 0, self.img.width, self.img.height];
-                ARE.Cache[img] = self.img;
+                AlloyPaper.Cache[img] = self.img;
                 self.textureReady = true;
                 self.imageLoadHandle && self.imageLoadHandle();
                 if (self.filter) self.filter = self.filter;
@@ -65,12 +62,12 @@ ARE.Bitmap = ARE.DisplayObject.extend({
     },
     "clone": function () {
         if (this.textureReady) {
-            var o = new ARE.Bitmap(this.img);
+            var o = new AlloyPaper.Bitmap(this.img);
             o.rect = this.rect.slice(0);
             this.cloneProps(o);
             return o;
         } else {
-            var o = new ARE.Bitmap(this.imgSrc);
+            var o = new AlloyPaper.Bitmap(this.imgSrc);
             this.rect&&(o.rect = this.rect.slice(0));
             this.cloneProps(o);
             return o;
@@ -82,5 +79,3 @@ ARE.Bitmap = ARE.DisplayObject.extend({
     "flipX": function() {},
     "flipY": function() {}
 });
-
-//end-------------------ARE.Bitmap---------------------end

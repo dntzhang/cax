@@ -13,8 +13,8 @@
     <script src="../dist/are.js"></script>
 
     <script>
-        ; (function (ARE) {
-            var Stage = ARE.Stage, Bitmap = ARE.Bitmap, Loader = ARE.Loader, Container=ARE.Container;
+        ; (function (AlloyPaper) {
+            var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap, Loader = AlloyPaper.Loader, Container=AlloyPaper.Container;
 
             var ld = new Loader();
             var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
@@ -56,7 +56,7 @@
                 stage.add(bmp2);
             });
 
-        })(ARE)
+        })(AlloyPaper)
 
     </script>
 </body>

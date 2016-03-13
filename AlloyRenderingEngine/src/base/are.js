@@ -1,6 +1,6 @@
-//AlloyRenderingEngine
-var ARE={};
+//AlloyPaper
+var AlloyPaper={};
 
-ARE.DefaultCursor = "default";
+AlloyPaper.DefaultCursor = "default";
 
-ARE.Cache = {};
+AlloyPaper.Cache = {};

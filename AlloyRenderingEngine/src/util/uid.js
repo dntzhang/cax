@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.UID---------------------begin
+//begin-------------------AlloyPaper.UID---------------------begin
 
-ARE.UID = Class.extend({
+AlloyPaper.UID = Class.extend({
     "statics": {
         "_nextID": 0,
         "_nextCacheID": 1,
@@ -14,4 +14,4 @@ ARE.UID = Class.extend({
     }
 });
 
-//end-------------------ARE.UID---------------------end
+//end-------------------AlloyPaper.UID---------------------end

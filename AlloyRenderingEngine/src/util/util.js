@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Util---------------------begin
+//begin-------------------AlloyPaper.Util---------------------begin
 
-ARE.Util = Class.extend({
+AlloyPaper.Util = Class.extend({
     "statics": {
         "random": function(min, max) {
             return min + Math.floor(Math.random() * (max - min + 1));
@@ -9,4 +9,4 @@ ARE.Util = Class.extend({
     }
 });
 
-//end-------------------ARE.Util---------------------end
+//end-------------------AlloyPaper.Util---------------------end

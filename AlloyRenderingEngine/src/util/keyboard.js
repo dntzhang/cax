@@ -1,7 +1,4 @@
-
-//begin-------------------ARE.Keyboard---------------------begin
-
-ARE.Keyboard = Class.extend({
+AlloyPaper.Keyboard = Class.extend({
     "statics": {
         "ctor": function() {
             var KeyboardJS = {},
@@ -660,5 +657,3 @@ ARE.Keyboard = Class.extend({
         }
     }
 });
-
-//end-------------------ARE.Keyboard---------------------end

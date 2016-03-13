@@ -1,7 +1,4 @@
-
-//begin-------------------ARE.Stage---------------------begin
-
-ARE.Stage = ARE.Container.extend({
+AlloyPaper.Stage = AlloyPaper.Container.extend({
     "ctor": function(canvas, openWebGL) {
         this._super();
         this.canvas = typeof canvas == "string" ? document.querySelector(canvas) : canvas;
@@ -9,11 +6,11 @@ ARE.Stage = ARE.Container.extend({
         this.height = this.canvas.height;
         this.AABB = [0, 0, this.width, this.height];
         this.hitAABB = true;
-        this.hitRenderer = new ARE.CanvasRenderer();
+        this.hitRenderer = new AlloyPaper.CanvasRenderer();
         this.hitCanvas = document.createElement("canvas");
         this.hitCanvas.width = 1;
         this.hitCanvas.height = 1;
-        this.stageRenderer = new ARE.Renderer(this, openWebGL);
+        this.stageRenderer = new AlloyPaper.Renderer(this, openWebGL);
         this.hitCtx = this.hitCanvas.getContext("2d");
         this._scaleX = this._scaleY = null;
         this.offset = this._getXY(this.canvas);
@@ -37,11 +34,11 @@ ARE.Stage = ARE.Container.extend({
                 this._useRequestAnimFrame = value;
                 if (value) {
                     clearInterval(self.loop);
-                    self.loop = ARE.RAF.requestInterval(function() {
+                    self.loop = AlloyPaper.RAF.requestInterval(function() {
                         self._tick(self);
                     }, self.interval);
                 } else {
-                    ARE.RAF.clearRequestInterval(self.loop);
+                    AlloyPaper.RAF.clearRequestInterval(self.loop);
                     self.loop = setInterval(function() {
                         self._tick(self);
                     }, self.interval);
@@ -57,13 +54,13 @@ ARE.Stage = ARE.Container.extend({
             if (this.useRequestAnimFrame) {
                 clearInterval(this.loop);
                 try {
-                    ARE.RAF.clearRequestInterval(this.loop);
+                    AlloyPaper.RAF.clearRequestInterval(this.loop);
                 } catch (e) {}
-                this.loop = ARE.RAF.requestInterval(function() {
+                this.loop = AlloyPaper.RAF.requestInterval(function() {
                     self._tick(self);
                 }, this.interval);
             } else {
-                ARE.RAF.clearRequestInterval(this.loop);
+                AlloyPaper.RAF.clearRequestInterval(this.loop);
                 try {
                     clearInterval(this.loop);
                 } catch (e) {}
@@ -103,7 +100,7 @@ ARE.Stage = ARE.Container.extend({
         this.autoUpdate = true;
         this.scaleType = "normal";
 
-        this.setCursor(ARE.DefaultCursor);
+        this.setCursor(AlloyPaper.DefaultCursor);
     },
     "adjustLayout": function() {
         this.offset = this._getXY(this.canvas);
@@ -125,9 +122,9 @@ ARE.Stage = ARE.Container.extend({
     "_pauseSprite": function (obj) {
         for (var i = 0, len = obj.children.length; i < len; i++) {
             var child = obj.children[i];
-            if (child instanceof ARE.Container) {
+            if (child instanceof AlloyPaper.Container) {
                 this._pauseSprite(child);
-            } else if (child instanceof ARE.Sprite) {
+            } else if (child instanceof AlloyPaper.Sprite) {
                 child.pause();
             }
         }
@@ -140,9 +137,9 @@ ARE.Stage = ARE.Container.extend({
     "_playSprite": function (obj) {
         for (var i = 0, len = obj.children.length; i < len; i++) {
             var child = obj.children[i];
-            if (child instanceof ARE.Container) {
+            if (child instanceof AlloyPaper.Container) {
                 this._playSprite(child);
-            } else if (child instanceof ARE.Sprite) {
+            } else if (child instanceof AlloyPaper.Sprite) {
                 child.play();
             }
         }
@@ -313,14 +310,14 @@ ARE.Stage = ARE.Container.extend({
                     container._tickIntervalLast = new Date();
                     container._tickIntervalPrev = new Date();
                 }
-              
+
                 var itv = (container._tickIntervalCurrent - container._tickIntervalLast) +( container._tickIntervalCurrent - container._tickIntervalPrev);
                 if (itv > container._tickInterval) {
                     container.tick();
                     container._tickIntervalLast = container._tickIntervalCurrent;
                 }
                 container._tickIntervalPrev= new Date();
-                
+
             }
         }
         var children = container.children,
@@ -335,7 +332,7 @@ ARE.Stage = ARE.Container.extend({
                     } else {
                         child._tickIntervalCurrent = new Date();
                         if (!child._tickIntervalLast){
-                            child._tickIntervalLast = new Date();                        
+                            child._tickIntervalLast = new Date();
                             child._tickIntervalPrev = new Date();
                         }
                         var itv =( child._tickIntervalCurrent - child._tickIntervalLast)+(child._tickIntervalCurrent-child._tickIntervalPrev);
@@ -344,7 +341,7 @@ ARE.Stage = ARE.Container.extend({
                             child._tickIntervalLast = child._tickIntervalCurrent;
                         }
                         child._tickIntervalPrev= new Date();
-                       
+
                     }
                 }
                 if (child.baseInstanceof == "Container") {
@@ -367,14 +364,14 @@ ARE.Stage = ARE.Container.extend({
             }
             fn._ARE_CurrentDate = new Date();
             var interval = (fn._ARE_CurrentDate - fn._ARE_PrevDate) + (fn._ARE_CurrentDate - fn._ARE_LastDate);
-       
+
             if (interval > fn._ARE_Interval) {
                 fn();
                 fn._ARE_PrevDate = fn._ARE_CurrentDate;
             }
             fn._ARE_LastDate = fn._ARE_CurrentDate;
         }
-       
+
         if(this.autoUpdate)this.update();
         if (this.debug) {
             this.getFPS();
@@ -394,10 +391,10 @@ ARE.Stage = ARE.Container.extend({
         this.interval = Math.floor(1e3 / fps);
     },
     "onKeyboard": function(keyCombo, onDownCallback, onUpCallback) {
-        ARE.Keyboard.on(keyCombo, onDownCallback, onUpCallback);
+        AlloyPaper.Keyboard.on(keyCombo, onDownCallback, onUpCallback);
     },
     "getActiveKeys": function() {
-        return ARE.Keyboard.getActiveKeys();
+        return AlloyPaper.Keyboard.getActiveKeys();
     },
     "scaleToScreen": function (scaleX, scaleY) {
         this.scaleType = "screen";
@@ -462,7 +459,7 @@ ARE.Stage = ARE.Container.extend({
             if (child.baseInstanceof == "Container" || child.baseInstanceof == "Stage") {
                 for (var i = 0, len = child.children.length; i < len; i++) {
                     var subChild = child.children[i];
-                    if (subChild instanceof ARE.Container) {
+                    if (subChild instanceof AlloyPaper.Container) {
                         getCount(subChild);
                     } else {
                         count++;
@@ -476,13 +473,13 @@ ARE.Stage = ARE.Container.extend({
         return count;
     },
     "getRenderingMode": function() {
-        if (this.stageRenderer.renderingEngine instanceof ARE.CanvasRenderer) {
+        if (this.stageRenderer.renderingEngine instanceof AlloyPaper.CanvasRenderer) {
             return "Canvas";
         }
         return "WebGL";
     },
     "getFPS": function() {
-        var fps = ARE.FPS.get();
+        var fps = AlloyPaper.FPS.get();
         this.fpsValue = fps.value;
     },
     "addEvent": function(el, type, fn, capture) {
@@ -513,11 +510,9 @@ ARE.Stage = ARE.Container.extend({
         this._super();
         this.canvas.parentNode.removeChild(this.canvas);
         if (this.useRequestAnimFrame) {
-            ARE.RAF.clearRequestInterval(this.loop);
+            AlloyPaper.RAF.clearRequestInterval(this.loop);
         } else {
             clearInterval(this.loop);
         }
     }
 });
-
-//end-------------------ARE.Stage---------------------end

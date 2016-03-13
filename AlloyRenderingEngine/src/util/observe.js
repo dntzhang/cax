@@ -1,4 +1,4 @@
-; (function () {
+(function () {
     var observe = function (target, arr, callback) {
         var _observe = function (target, arr, callback) {
             if (!target.$observer) target.$observer = this;
@@ -27,7 +27,7 @@
             if (!$observer.propertyChangedHandler) $observer.propertyChangedHandler = [];
             var propChanged = callback ? callback : arr;
             $observer.propertyChangedHandler.push({ all: !callback, propChanged: propChanged, eventPropArr: eventPropArr });
-        }
+        };
         _observe.prototype = {
             "onPropertyChanged": function (prop, value, oldValue, target, path) {
                 if (value !== oldValue && this.propertyChangedHandler) {
@@ -94,26 +94,26 @@
                     }
                 }
             }
-        }
+        };
         return new _observe(target, arr, callback)
-    }
-    observe.methods = ["concat", "every", "filter", "forEach", "indexOf", "join", "lastIndexOf", "map", "pop", "push", "reduce", "reduceRight", "reverse", "shift", "slice", "some", "sort", "splice", "unshift", "toLocaleString", "toString", "size"]
-    observe.triggerStr = ["concat", "pop", "push", "reverse", "shift", "sort", "splice", "unshift", "size"].join(",")
+    };
+    observe.methods = ["concat", "every", "filter", "forEach", "indexOf", "join", "lastIndexOf", "map", "pop", "push", "reduce", "reduceRight", "reverse", "shift", "slice", "some", "sort", "splice", "unshift", "toLocaleString", "toString", "size"];
+    observe.triggerStr = ["concat", "pop", "push", "reverse", "shift", "sort", "splice", "unshift", "size"].join(",");
     observe.isArray = function (obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
-    }
+    };
     observe.isString = function (obj) {
         return typeof obj === "string";
-    }
+    };
     observe.isInArray = function (arr, item) {
         for (var i = arr.length; --i > -1;) {
             if (item === arr[i]) return true;
         }
         return false;
-    }
+    };
     observe.isFunction = function (obj) {
         return Object.prototype.toString.call(obj) == '[object Function]';
-    }
+    };
     observe.twoWay = function (objA, aProp, objB, bProp) {
         if (typeof objA[aProp] === "object" && typeof objB[bProp] === "object") {
             observe(objA, aProp, function (name, value) {
@@ -147,5 +147,5 @@
         this.length = length;
     }
 
-    ARE.Observe = observe;
+    AlloyPaper.Observe = observe;
 })();

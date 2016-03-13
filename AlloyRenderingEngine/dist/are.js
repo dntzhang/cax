@@ -9,7 +9,7 @@
     } else if (typeof exports === 'object') {
         module.exports = factory();
     } else {
-        root.ARE = factory();
+        root.AlloyPaper = factory();
     }
 }(this, function () {
 'use strict';
@@ -29,13 +29,13 @@ Class.extend = function (prop) {
             // Check if we're overwriting an existing function
             prototype[name] = typeof prop[name] == "function" &&
               typeof _super[name] == "function"  ?
-              (function (name, fn) {
+              (function (temp_name, fn) {
                   return function () {
                       var tmp = this._super;
 
                       // Add a new ._super() method that is the same method
                       // but on the super-class
-                      this._super = _super[name];
+                      this._super = _super[temp_name];
 
                       // The method only need to be bound temporarily, so we
                       // remove it when we're done executing
@@ -68,12 +68,12 @@ Class.extend = function (prop) {
     _Class.prototype._super = Object.create(_super);
     //静态属性和方法
     if (prop.statics) {
-        for (var name in prop.statics) {
-            if (prop.statics.hasOwnProperty(name)) {
-                _Class[name] = prop.statics[name];
-                if (name == "ctor") {
+        for (var key in prop.statics) {
+            if (prop.statics.hasOwnProperty(key)) {
+                _Class[key] = prop.statics[key];
+                if (key == "ctor") {
                     //提前执行静态构造函数
-                    _Class[name]();
+                    _Class[key]();
                 }
             }
 
@@ -90,16 +90,16 @@ Class.extend = function (prop) {
 };
 
 window.Class = Class;
-//AlloyRenderingEngine
-var ARE={};
+//AlloyPaper
+var AlloyPaper={};
 
-ARE.DefaultCursor = "default";
+AlloyPaper.DefaultCursor = "default";
 
-ARE.Cache = {};
+AlloyPaper.Cache = {};
 
-//begin-------------------ARE.TWEEN---------------------begin
+//begin-------------------AlloyPaper.TWEEN---------------------begin
 
-ARE.TWEEN = Class.extend({
+AlloyPaper.TWEEN = Class.extend({
     "statics": {
         "ctor": function() {
             if (Date.now === undefined) {
@@ -150,8 +150,8 @@ ARE.TWEEN = Class.extend({
             var _reversed = false;
             var _delayTime = 0;
             var _startTime = null;
-            var _easingFunction = ARE.TWEEN.Easing.Linear.None;
-            var _interpolationFunction = ARE.TWEEN.Interpolation.Linear;
+            var _easingFunction = AlloyPaper.TWEEN.Easing.Linear.None;
+            var _interpolationFunction = AlloyPaper.TWEEN.Interpolation.Linear;
             var _chainedTweens = [];
             var _onStartCallback = null;
             var _onStartCallbackFired = false;
@@ -169,7 +169,7 @@ ARE.TWEEN = Class.extend({
                 } else {
                     this.pause();
                 }
-            },
+            };
             this.pause = function() {
                 _paused = true;
                 var pauseTime = typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
@@ -188,7 +188,7 @@ ARE.TWEEN = Class.extend({
                 return this;
             };
             this.start = function(time) {
-                ARE.TWEEN.add(this);
+                AlloyPaper.TWEEN.add(this);
                 _isPlaying = true;
                 _onStartCallbackFired = false;
                 _startTime = time !== undefined ? time : typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
@@ -212,7 +212,7 @@ ARE.TWEEN = Class.extend({
                 if (!_isPlaying) {
                     return this;
                 }
-                ARE.TWEEN.remove(this);
+                AlloyPaper.TWEEN.remove(this);
                 _isPlaying = false;
                 if (_onStopCallback !== null) {
                     _onStopCallback.call(_object);
@@ -475,7 +475,7 @@ ARE.TWEEN = Class.extend({
             },
             "Bounce": {
                 "In": function(k) {
-                    return 1 - ARE.TWEEN.Easing.Bounce.Out(1 - k);
+                    return 1 - AlloyPaper.TWEEN.Easing.Bounce.Out(1 - k);
                 },
                 "Out": function(k) {
                     if (k < 1 / 2.75) {
@@ -489,8 +489,8 @@ ARE.TWEEN = Class.extend({
                     }
                 },
                 "InOut": function(k) {
-                    if (k < .5) return ARE.TWEEN.Easing.Bounce.In(k * 2) * .5;
-                    return ARE.TWEEN.Easing.Bounce.Out(k * 2 - 1) * .5 + .5;
+                    if (k < .5) return AlloyPaper.TWEEN.Easing.Bounce.In(k * 2) * .5;
+                    return AlloyPaper.TWEEN.Easing.Bounce.Out(k * 2 - 1) * .5 + .5;
                 }
             }
         },
@@ -499,7 +499,7 @@ ARE.TWEEN = Class.extend({
                 var m = v.length - 1,
                     f = m * k,
                     i = Math.floor(f),
-                    fn = ARE.TWEEN.Interpolation.Utils.Linear;
+                    fn = AlloyPaper.TWEEN.Interpolation.Utils.Linear;
                 if (k < 0) return fn(v[0], v[1], f);
                 if (k > 1) return fn(v[m], v[m - 1], m - f);
                 return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
@@ -508,7 +508,7 @@ ARE.TWEEN = Class.extend({
                 var b = 0,
                     n = v.length - 1,
                     pw = Math.pow,
-                    bn = ARE.TWEEN.Interpolation.Utils.Bernstein,
+                    bn = AlloyPaper.TWEEN.Interpolation.Utils.Bernstein,
                     i;
                 for (i = 0; i <= n; i++) {
                     b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
@@ -519,7 +519,7 @@ ARE.TWEEN = Class.extend({
                 var m = v.length - 1,
                     f = m * k,
                     i = Math.floor(f),
-                    fn = ARE.TWEEN.Interpolation.Utils.CatmullRom;
+                    fn = AlloyPaper.TWEEN.Interpolation.Utils.CatmullRom;
                 if (v[0] === v[m]) {
                     if (k < 0) i = Math.floor(f = m * (1 + k));
                     return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
@@ -534,7 +534,7 @@ ARE.TWEEN = Class.extend({
                     return (p1 - p0) * t + p0;
                 },
                 "Bernstein": function(n, i) {
-                    var fc = ARE.TWEEN.Interpolation.Utils.getFactorial();
+                    var fc = AlloyPaper.TWEEN.Interpolation.Utils.getFactorial();
                     return fc(n) / fc(i) / fc(n - i);
                 },
                 "getFactorial": function() {
@@ -561,12 +561,12 @@ ARE.TWEEN = Class.extend({
     }
 });
 
-//end-------------------ARE.TWEEN---------------------end
+//end-------------------AlloyPaper.TWEEN---------------------end
 
 
-//begin-------------------ARE.Dom---------------------begin
+//begin-------------------AlloyPaper.Dom---------------------begin
 
-ARE.Dom = Class.extend({
+AlloyPaper.Dom = Class.extend({
     "statics": {
         "get": function(selector) {
             this.element = document.querySelector(selector);
@@ -579,12 +579,12 @@ ARE.Dom = Class.extend({
     }
 });
 
-//end-------------------ARE.Dom---------------------end
+//end-------------------AlloyPaper.Dom---------------------end
 
 
-//begin-------------------ARE.FPS---------------------begin
+//begin-------------------AlloyPaper.FPS---------------------begin
 
-ARE.FPS = Class.extend({
+AlloyPaper.FPS = Class.extend({
     "statics": {
         "get": function() {
             if (!this.instance) this.instance = new this();
@@ -623,12 +623,12 @@ ARE.FPS = Class.extend({
     }
 });
 
-//end-------------------ARE.FPS---------------------end
+//end-------------------AlloyPaper.FPS---------------------end
 
 
-//begin-------------------ARE.Keyboard---------------------begin
+//begin-------------------AlloyPaper.Keyboard---------------------begin
 
-ARE.Keyboard = Class.extend({
+AlloyPaper.Keyboard = Class.extend({
     "statics": {
         "ctor": function() {
             var KeyboardJS = {},
@@ -1288,14 +1288,13 @@ ARE.Keyboard = Class.extend({
     }
 });
 
-//end-------------------ARE.Keyboard---------------------end
+//end-------------------AlloyPaper.Keyboard---------------------end
 
 
-//begin-------------------ARE.Loader---------------------begin
+//begin-------------------AlloyPaper.Loader---------------------begin
 
-ARE.Loader = Class.extend({
+AlloyPaper.Loader = Class.extend({
     "ctor": function() {
-        this.audios = {};
         this.res = {};
         this.loadedCount = 0;
         this.resCount = -1;
@@ -1304,7 +1303,6 @@ ARE.Loader = Class.extend({
         this.sounds = [];
         for (var i = 0; i < this.ns; i++) this.sounds.push([]);
         this.playing = [];
-        this.soundsCount = 0;
     },
     "get": function(id) {
         return this.res[id];
@@ -1365,7 +1363,7 @@ ARE.Loader = Class.extend({
         }
     },
     "loadScript": function (url) {
-        var script = document.createElement("script")
+        var script = document.createElement("script");
         script.type = "text/javascript";
         var self = this;
         if (script.readyState) {  //IE
@@ -1437,12 +1435,12 @@ ARE.Loader = Class.extend({
     }
 });
 
-//end-------------------ARE.Loader---------------------end
+//end-------------------AlloyPaper.Loader---------------------end
 
 
-//begin-------------------ARE.Matrix2D---------------------begin
+//begin-------------------AlloyPaper.Matrix2D---------------------begin
 
-ARE.Matrix2D = Class.extend({
+AlloyPaper.Matrix2D = Class.extend({
     "statics": {
         "DEG_TO_RAD": 0.017453292519943295
     },
@@ -1462,7 +1460,7 @@ ARE.Matrix2D = Class.extend({
     },
     "appendTransform": function(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
         if (rotation % 360) {
-            var r = rotation * ARE.Matrix2D.DEG_TO_RAD;
+            var r = rotation * AlloyPaper.Matrix2D.DEG_TO_RAD;
             var cos = Math.cos(r);
             var sin = Math.sin(r);
         } else {
@@ -1470,8 +1468,8 @@ ARE.Matrix2D = Class.extend({
             sin = 0;
         }
         if (skewX || skewY) {
-            skewX *= ARE.Matrix2D.DEG_TO_RAD;
-            skewY *= ARE.Matrix2D.DEG_TO_RAD;
+            skewX *= AlloyPaper.Matrix2D.DEG_TO_RAD;
+            skewY *= AlloyPaper.Matrix2D.DEG_TO_RAD;
             this.append(Math.cos(skewY), Math.sin(skewY), -Math.sin(skewX), Math.cos(skewX), x, y);
             this.append(cos * scaleX, sin * scaleX, -sin * scaleY, cos * scaleY, 0, 0);
         } else {
@@ -1519,9 +1517,9 @@ ARE.Matrix2D = Class.extend({
     }
 });
 
-//end-------------------ARE.Matrix2D---------------------end
+//end-------------------AlloyPaper.Matrix2D---------------------end
 
-; (function () {
+(function () {
     var observe = function (target, arr, callback) {
         var _observe = function (target, arr, callback) {
             if (!target.$observer) target.$observer = this;
@@ -1550,7 +1548,7 @@ ARE.Matrix2D = Class.extend({
             if (!$observer.propertyChangedHandler) $observer.propertyChangedHandler = [];
             var propChanged = callback ? callback : arr;
             $observer.propertyChangedHandler.push({ all: !callback, propChanged: propChanged, eventPropArr: eventPropArr });
-        }
+        };
         _observe.prototype = {
             "onPropertyChanged": function (prop, value, oldValue, target, path) {
                 if (value !== oldValue && this.propertyChangedHandler) {
@@ -1617,26 +1615,26 @@ ARE.Matrix2D = Class.extend({
                     }
                 }
             }
-        }
+        };
         return new _observe(target, arr, callback)
-    }
-    observe.methods = ["concat", "every", "filter", "forEach", "indexOf", "join", "lastIndexOf", "map", "pop", "push", "reduce", "reduceRight", "reverse", "shift", "slice", "some", "sort", "splice", "unshift", "toLocaleString", "toString", "size"]
-    observe.triggerStr = ["concat", "pop", "push", "reverse", "shift", "sort", "splice", "unshift", "size"].join(",")
+    };
+    observe.methods = ["concat", "every", "filter", "forEach", "indexOf", "join", "lastIndexOf", "map", "pop", "push", "reduce", "reduceRight", "reverse", "shift", "slice", "some", "sort", "splice", "unshift", "toLocaleString", "toString", "size"];
+    observe.triggerStr = ["concat", "pop", "push", "reverse", "shift", "sort", "splice", "unshift", "size"].join(",");
     observe.isArray = function (obj) {
         return Object.prototype.toString.call(obj) === '[object Array]';
-    }
+    };
     observe.isString = function (obj) {
         return typeof obj === "string";
-    }
+    };
     observe.isInArray = function (arr, item) {
         for (var i = arr.length; --i > -1;) {
             if (item === arr[i]) return true;
         }
         return false;
-    }
+    };
     observe.isFunction = function (obj) {
         return Object.prototype.toString.call(obj) == '[object Function]';
-    }
+    };
     observe.twoWay = function (objA, aProp, objB, bProp) {
         if (typeof objA[aProp] === "object" && typeof objB[bProp] === "object") {
             observe(objA, aProp, function (name, value) {
@@ -1670,12 +1668,12 @@ ARE.Matrix2D = Class.extend({
         this.length = length;
     }
 
-    ARE.Observe = observe;
+    AlloyPaper.Observe = observe;
 })();
 
-//begin-------------------ARE.RAF---------------------begin
+//begin-------------------AlloyPaper.RAF---------------------begin
 
-ARE.RAF = Class.extend({
+AlloyPaper.RAF = Class.extend({
     "statics": {
         "ctor": function() {
             var requestAnimFrame = function() {
@@ -1714,49 +1712,49 @@ ARE.RAF = Class.extend({
     }
 });
 
-//end-------------------ARE.RAF---------------------end
+//end-------------------AlloyPaper.RAF---------------------end
 
 
-//begin-------------------ARE.To---------------------begin
+//begin-------------------AlloyPaper.To---------------------begin
 
-ARE.To = Class.extend({
+AlloyPaper.To = Class.extend({
     "statics": {
         "ctor": function () {
-            this.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
-            this.linear = ARE.TWEEN.Easing.Linear.None,
-            this.quadraticIn = ARE.TWEEN.Easing.Quadratic.In,
-            this.quadraticOut = ARE.TWEEN.Easing.Quadratic.Out,
-            this.quadraticInOut = ARE.TWEEN.Easing.Quadratic.InOut,
-            this.cubicIn = ARE.TWEEN.Easing.Cubic.In,
-            this.cubicOut = ARE.TWEEN.Easing.Cubic.Out,
-            this.cubicInOut = ARE.TWEEN.Easing.Cubic.InOut,
-            this.quarticIn = ARE.TWEEN.Easing.Quartic.In,
-            this.quarticOut = ARE.TWEEN.Easing.Quartic.Out,
-            this.quarticInOut = ARE.TWEEN.Easing.Quartic.InOut,
-            this.quinticIn = ARE.TWEEN.Easing.Quintic.In,
-            this.quinticOut = ARE.TWEEN.Easing.Quintic.Out,
-            this.quinticInOut = ARE.TWEEN.Easing.Quintic.InOut,
-            this.sinusoidalIn = ARE.TWEEN.Easing.Sinusoidal.In,
-            this.sinusoidalOut = ARE.TWEEN.Easing.Sinusoidal.Out,
-            this.sinusoidalInOut = ARE.TWEEN.Easing.Sinusoidal.InOut,
-            this.exponentialIn = ARE.TWEEN.Easing.Exponential.In,
-            this.exponentialOut = ARE.TWEEN.Easing.Exponential.Out,
-            this.exponentialInOut = ARE.TWEEN.Easing.Exponential.InOut,
-            this.circularIn = ARE.TWEEN.Easing.Circular.In,
-            this.circularOut = ARE.TWEEN.Easing.Circular.Out,
-            this.circularInOut = ARE.TWEEN.Easing.Circular.InOut,
-            this.elasticIn = ARE.TWEEN.Easing.Elastic.In,
-            this.elasticOut = ARE.TWEEN.Easing.Elastic.Out,
-            this.elasticInOut = ARE.TWEEN.Easing.Elastic.InOut,
-            this.backIn = ARE.TWEEN.Easing.Back.In,
-            this.backOut = ARE.TWEEN.Easing.Back.Out,
-            this.backInOut = ARE.TWEEN.Easing.Back.InOut,
-            this.bounceIn = ARE.TWEEN.Easing.Bounce.In,
-            this.bounceOut = ARE.TWEEN.Easing.Bounce.Out,
-            this.bounceInOut = ARE.TWEEN.Easing.Bounce.InOut,
-            this.interpolationLinear = ARE.TWEEN.Interpolation.Linear,
-            this.interpolationBezier = ARE.TWEEN.Interpolation.Bezier,
-            this.interpolationCatmullRom = ARE.TWEEN.Interpolation.CatmullRom;
+            this.bounceOut = AlloyPaper.TWEEN.Easing.Bounce.Out,
+            this.linear = AlloyPaper.TWEEN.Easing.Linear.None,
+            this.quadraticIn = AlloyPaper.TWEEN.Easing.Quadratic.In,
+            this.quadraticOut = AlloyPaper.TWEEN.Easing.Quadratic.Out,
+            this.quadraticInOut = AlloyPaper.TWEEN.Easing.Quadratic.InOut,
+            this.cubicIn = AlloyPaper.TWEEN.Easing.Cubic.In,
+            this.cubicOut = AlloyPaper.TWEEN.Easing.Cubic.Out,
+            this.cubicInOut = AlloyPaper.TWEEN.Easing.Cubic.InOut,
+            this.quarticIn = AlloyPaper.TWEEN.Easing.Quartic.In,
+            this.quarticOut = AlloyPaper.TWEEN.Easing.Quartic.Out,
+            this.quarticInOut = AlloyPaper.TWEEN.Easing.Quartic.InOut,
+            this.quinticIn = AlloyPaper.TWEEN.Easing.Quintic.In,
+            this.quinticOut = AlloyPaper.TWEEN.Easing.Quintic.Out,
+            this.quinticInOut = AlloyPaper.TWEEN.Easing.Quintic.InOut,
+            this.sinusoidalIn = AlloyPaper.TWEEN.Easing.Sinusoidal.In,
+            this.sinusoidalOut = AlloyPaper.TWEEN.Easing.Sinusoidal.Out,
+            this.sinusoidalInOut = AlloyPaper.TWEEN.Easing.Sinusoidal.InOut,
+            this.exponentialIn = AlloyPaper.TWEEN.Easing.Exponential.In,
+            this.exponentialOut = AlloyPaper.TWEEN.Easing.Exponential.Out,
+            this.exponentialInOut = AlloyPaper.TWEEN.Easing.Exponential.InOut,
+            this.circularIn = AlloyPaper.TWEEN.Easing.Circular.In,
+            this.circularOut = AlloyPaper.TWEEN.Easing.Circular.Out,
+            this.circularInOut = AlloyPaper.TWEEN.Easing.Circular.InOut,
+            this.elasticIn = AlloyPaper.TWEEN.Easing.Elastic.In,
+            this.elasticOut = AlloyPaper.TWEEN.Easing.Elastic.Out,
+            this.elasticInOut = AlloyPaper.TWEEN.Easing.Elastic.InOut,
+            this.backIn = AlloyPaper.TWEEN.Easing.Back.In,
+            this.backOut = AlloyPaper.TWEEN.Easing.Back.Out,
+            this.backInOut = AlloyPaper.TWEEN.Easing.Back.InOut,
+            this.bounceIn = AlloyPaper.TWEEN.Easing.Bounce.In,
+            this.bounceOut = AlloyPaper.TWEEN.Easing.Bounce.Out,
+            this.bounceInOut = AlloyPaper.TWEEN.Easing.Bounce.InOut,
+            this.interpolationLinear = AlloyPaper.TWEEN.Interpolation.Linear,
+            this.interpolationBezier = AlloyPaper.TWEEN.Interpolation.Bezier,
+            this.interpolationCatmullRom = AlloyPaper.TWEEN.Interpolation.CatmullRom;
         },
         "get": function (element) {
             var to = new this(element);
@@ -1766,7 +1764,7 @@ ARE.To = Class.extend({
         },
         "getStage": function (element) {
             if (!element.parent) return;
-            if (element.parent instanceof ARE.Stage) {
+            if (element.parent instanceof AlloyPaper.Stage) {
                 return element.parent;
             } else {
                 return this.getStage(element.parent);
@@ -1780,7 +1778,7 @@ ARE.To = Class.extend({
         this.tweens = [];
         this._pause = false;
         this.loop = setInterval(function() {
-            ARE.TWEEN.update();
+            AlloyPaper.TWEEN.update();
         }, 15);
         this.cycleCount = 0;
     },
@@ -1985,7 +1983,7 @@ ARE.To = Class.extend({
     "stop": function () {
         for (var i = 0, len = this.tweens.length; i < len; i++) {
             this.tweens[i].pause();
-            ARE.TWEEN.remove(this.tweens[i]);
+            AlloyPaper.TWEEN.remove(this.tweens[i]);
         }
         this.cmds.length = 0;
 
@@ -2003,12 +2001,12 @@ ARE.To = Class.extend({
                 var target = {};
                 var prop = task[0];
                 target[prop] = task[1][0];
-                var t = new ARE.TWEEN.Tween(this.element).to(target, task[1][1]).onStart(function() {
+                var t = new AlloyPaper.TWEEN.Tween(this.element).to(target, task[1][1]).onStart(function() {
                     if (cmd.start) cmd.start();
                 }).onUpdate(function() {
                     if (cmd.progress) cmd.progress.call(self.element);
                     self.element[prop] = this[prop];
-                }).easing(ease ? ease : ARE.To.linear).onComplete(function() {
+                }).easing(ease ? ease : AlloyPaper.To.linear).onComplete(function() {
                     self.stepCompleteCount++;
                     if (self.stepCompleteCount == len - 1) {
                         if (cmd.end) cmd.end.call(self.element);
@@ -2056,12 +2054,12 @@ ARE.To = Class.extend({
     }
 });
 
-//end-------------------ARE.To---------------------end
+//end-------------------AlloyPaper.To---------------------end
 
 
-//begin-------------------ARE.UID---------------------begin
+//begin-------------------AlloyPaper.UID---------------------begin
 
-ARE.UID = Class.extend({
+AlloyPaper.UID = Class.extend({
     "statics": {
         "_nextID": 0,
         "_nextCacheID": 1,
@@ -2074,12 +2072,12 @@ ARE.UID = Class.extend({
     }
 });
 
-//end-------------------ARE.UID---------------------end
+//end-------------------AlloyPaper.UID---------------------end
 
 
-//begin-------------------ARE.Util---------------------begin
+//begin-------------------AlloyPaper.Util---------------------begin
 
-ARE.Util = Class.extend({
+AlloyPaper.Util = Class.extend({
     "statics": {
         "random": function(min, max) {
             return min + Math.floor(Math.random() * (max - min + 1));
@@ -2087,18 +2085,18 @@ ARE.Util = Class.extend({
     }
 });
 
-//end-------------------ARE.Util---------------------end
+//end-------------------AlloyPaper.Util---------------------end
 
 
-//begin-------------------ARE.Vector2---------------------begin
+//begin-------------------AlloyPaper.Vector2---------------------begin
 
-ARE.Vector2 = Class.extend({
+AlloyPaper.Vector2 = Class.extend({
     "ctor": function(x, y) {
         this.x = x;
         this.y = y;
     },
     "copy": function() {
-        return new ARE.Vector2(this.x, this.y);
+        return new AlloyPaper.Vector2(this.x, this.y);
     },
     "length": function() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
@@ -2108,36 +2106,36 @@ ARE.Vector2 = Class.extend({
     },
     "normalize": function() {
         var inv = 1 / this.length();
-        return new ARE.Vector2(this.x * inv, this.y * inv);
+        return new AlloyPaper.Vector2(this.x * inv, this.y * inv);
     },
     "negate": function() {
-        return new ARE.Vector2(-this.x, -this.y);
+        return new AlloyPaper.Vector2(-this.x, -this.y);
     },
     "add": function(v) {
         this.x += v.x,
         this.y += v.y;
     },
     "subtract": function(v) {
-        return new ARE.Vector2(this.x - v.x, this.y - v.y);
+        return new AlloyPaper.Vector2(this.x - v.x, this.y - v.y);
     },
     "multiply": function(f) {
-        return new ARE.Vector2(this.x * f, this.y * f);
+        return new AlloyPaper.Vector2(this.x * f, this.y * f);
     },
     "divide": function(f) {
         var invf = 1 / f;
-        return new ARE.Vector2(this.x * invf, this.y * invf);
+        return new AlloyPaper.Vector2(this.x * invf, this.y * invf);
     },
     "dot": function(v) {
         return this.x * v.x + this.y * v.y;
     }
 });
 
-//end-------------------ARE.Vector2---------------------end
+//end-------------------AlloyPaper.Vector2---------------------end
 
 
-//begin-------------------ARE.Renderer---------------------begin
+//begin-------------------AlloyPaper.Renderer---------------------begin
 
-ARE.Renderer = Class.extend({
+AlloyPaper.Renderer = Class.extend({
     "ctor": function (stage, openWebGL) {
         this.stage = stage;
         this.objs = [];
@@ -2154,10 +2152,10 @@ ARE.Renderer = Class.extend({
                 }
             }();
         if (webglSupport && openWebGL) {
-            this.renderingEngine = new ARE.WebGLRenderer(this.stage.canvas);
+            this.renderingEngine = new AlloyPaper.WebGLRenderer(this.stage.canvas);
         } else {
             if (canvasSupport) {
-                this.renderingEngine = new ARE.CanvasRenderer(this.stage.canvas);
+                this.renderingEngine = new AlloyPaper.CanvasRenderer(this.stage.canvas);
             } else {
                 throw "your browser does not support canvas and webgl ";
             }
@@ -2194,12 +2192,12 @@ ARE.Renderer = Class.extend({
         } else {
             o._matrix.initialize(1, 0, 0, 1, 0, 0);
         }
-        if (o instanceof ARE.Shape) {
+        if (o instanceof AlloyPaper.Shape) {
             o._matrix.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
         } else {
             o._matrix.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
         }
-        if (o instanceof ARE.Container) {
+        if (o instanceof AlloyPaper.Container) {
             var list = o.children,
                 len = list.length,
                 i = 0;
@@ -2207,7 +2205,7 @@ ARE.Renderer = Class.extend({
                 this._computeMatrix(list[i], o._matrix);
             }
         } else {
-            if (o instanceof ARE.Graphics || o instanceof ARE.Text) {
+            if (o instanceof AlloyPaper.Graphics || o instanceof AlloyPaper.Text) {
                 this.objs.push(o);
                 this.initComplex(o);
             } else {
@@ -2246,12 +2244,12 @@ ARE.Renderer = Class.extend({
     }
 });
 
-//end-------------------ARE.Renderer---------------------end
+//end-------------------AlloyPaper.Renderer---------------------end
 
 
-//begin-------------------ARE.CanvasRenderer---------------------begin
+//begin-------------------AlloyPaper.CanvasRenderer---------------------begin
 
-ARE.CanvasRenderer = Class.extend({
+AlloyPaper.CanvasRenderer = Class.extend({
     "ctor": function(canvas) {
         if (canvas) {
             this.canvas = canvas;
@@ -2274,7 +2272,7 @@ ARE.CanvasRenderer = Class.extend({
         if (!o.isVisible()) {
             return;
         }
-        if (o instanceof ARE.Container) {
+        if (o instanceof AlloyPaper.Container) {
             var list = o.children.slice(0),
                 l = list.length;
             for (var i = l - 1; i >= 0; i--) {
@@ -2315,7 +2313,7 @@ ARE.CanvasRenderer = Class.extend({
             o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
         }
         mtx = o._hitMatrix;
-        if (o instanceof ARE.Shape) {
+        if (o instanceof AlloyPaper.Shape) {
             mtx.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
         } else {
             mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
@@ -2326,7 +2324,7 @@ ARE.CanvasRenderer = Class.extend({
             ctx.globalCompositeOperation = o.complexCompositeOperation;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(mmyCanvas, 0, 0);
-        } else if (o instanceof ARE.Container) {
+        } else if (o instanceof AlloyPaper.Container) {
             var list = o.children.slice(0),
                 l = list.length;
             for (var i = l - 1; i >= 0; i--) {
@@ -2335,17 +2333,17 @@ ARE.CanvasRenderer = Class.extend({
                 if (target) return target;
                 ctx.restore();
             }
-        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+        } else if (o instanceof AlloyPaper.Bitmap || o instanceof AlloyPaper.Sprite) {
             ctx.globalAlpha = o.complexAlpha;
             ctx.globalCompositeOperation = o.complexCompositeOperation;
             var rect = o.rect;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-        } else if (o instanceof ARE.Graphics) {
+        } else if (o instanceof AlloyPaper.Graphics) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             o.draw(ctx);
         }
-        if (ctx.getImageData(0, 0, 1, 1).data[3] > 1 && !(o instanceof ARE.Container)) {
+        if (ctx.getImageData(0, 0, 1, 1).data[3] > 1 && !(o instanceof AlloyPaper.Container)) {
             this._bubbleEvent(o, type, evt);
             return o;
         }
@@ -2360,10 +2358,10 @@ ARE.CanvasRenderer = Class.extend({
     },
     "isbindingEvent": function(obj) {
         if (Object.keys(obj.events).length !== 0) return true;
-        if (obj instanceof ARE.Container) {
+        if (obj instanceof AlloyPaper.Container) {
             for (var i = 0, len = obj.children.length; i < len; i++) {
                 var child = obj.children[i];
-                if (child instanceof ARE.Container) {
+                if (child instanceof AlloyPaper.Container) {
                     return this.isbindingEvent(child);
                 } else {
                     if (Object.keys(child.events).length !== 0) return true;
@@ -2385,7 +2383,7 @@ ARE.CanvasRenderer = Class.extend({
         if (mmyCanvas) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(mmyCanvas, 0, 0);
-        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+        } else if (o instanceof AlloyPaper.Bitmap || o instanceof AlloyPaper.Sprite) {
             if (o._clipFn) {
                 ctx.beginPath();
                 o._clipFn.call(ctx);
@@ -2395,7 +2393,7 @@ ARE.CanvasRenderer = Class.extend({
             var rect = o.rect;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-        } else if (o instanceof ARE.Graphics || o instanceof ARE.Text) {
+        } else if (o instanceof AlloyPaper.Graphics || o instanceof AlloyPaper.Text) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             o.draw(ctx);
         }
@@ -2421,16 +2419,16 @@ ARE.CanvasRenderer = Class.extend({
     }
 });
 
-//end-------------------ARE.CanvasRenderer---------------------end
+//end-------------------AlloyPaper.CanvasRenderer---------------------end
 
 
-//begin-------------------ARE.WebGLRenderer---------------------begin
+//begin-------------------AlloyPaper.WebGLRenderer---------------------begin
 
-ARE.WebGLRenderer = Class.extend({
+AlloyPaper.WebGLRenderer = Class.extend({
     "ctor": function(canvas) {
         this.surface = canvas;
         this.snapToPixel = true;
-        this.canvasRenderer = new ARE.CanvasRenderer();
+        this.canvasRenderer = new AlloyPaper.CanvasRenderer();
         this.textureCache = {};
         this.textureCanvasCache = {};
         this.initSurface(this.surface);
@@ -2558,14 +2556,14 @@ ARE.WebGLRenderer = Class.extend({
         if (!o.isVisible()) {
             return;
         }
-        if (o instanceof ARE.Container || o instanceof ARE.Stage) {
+        if (o instanceof AlloyPaper.Container || o instanceof AlloyPaper.Stage) {
             var list = o.children.slice(0);
             for (var i = 0, l = list.length; i < l; i++) {
                 ctx.save();
                 this.canvasRenderer.render(ctx, list[i]);
                 ctx.restore();
             }
-        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+        } else if (o instanceof AlloyPaper.Bitmap || o instanceof AlloyPaper.Sprite) {
             var rect = o.rect;
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         } else if (o.txtCanvas) {
@@ -2598,7 +2596,7 @@ ARE.WebGLRenderer = Class.extend({
             this._initCache(o, mmyCanvas, ctx);
             rightSide = leftSide + mmyCanvas.width;
             bottomSide = topSide + mmyCanvas.height;
-        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+        } else if (o instanceof AlloyPaper.Bitmap || o instanceof AlloyPaper.Sprite) {
             var rect = o.rect;
             img = o.img;
             this._initTexture(img, ctx);
@@ -2633,21 +2631,21 @@ ARE.WebGLRenderer = Class.extend({
     }
 });
 
-//end-------------------ARE.WebGLRenderer---------------------end
+//end-------------------AlloyPaper.WebGLRenderer---------------------end
 
 
-//begin-------------------ARE.DisplayObject---------------------begin
+//begin-------------------AlloyPaper.DisplayObject---------------------begin
 
-ARE.DisplayObject = Class.extend({
+AlloyPaper.DisplayObject = Class.extend({
     "ctor": function() {
         this.alpha = this.scaleX = this.scaleY = this.scale = 1;
         this.x = this.y = this.rotation = this.originX = this.originY = this.skewX = this.skewY = this.width = this.height = this.regX = this.regY = 0;
         this.textureReady = true;
         this.visible = true;
-        this._matrix = new ARE.Matrix2D();
-        this._hitMatrix = new ARE.Matrix2D();
+        this._matrix = new AlloyPaper.Matrix2D();
+        this._hitMatrix = new AlloyPaper.Matrix2D();
         this.events = {};
-        this.id = ARE.UID.get();
+        this.id = AlloyPaper.UID.get();
         this.cacheID = 0;
         this.baseInstanceof = "DisplayObject";
         this.tickFPS = 60;
@@ -2676,7 +2674,7 @@ ARE.DisplayObject = Class.extend({
         this.onHover(function () {
             //this._setCursor(this, this.cursor);
         }, function () {
-            this._setCursor(this, ARE.DefaultCursor);
+            this._setCursor(this, AlloyPaper.DefaultCursor);
         });
     },
     "_watch": function(target, prop, onPropertyChanged) {
@@ -2731,7 +2729,7 @@ ARE.DisplayObject = Class.extend({
     },
     "_setCursor": function (obj, type) {
         if (obj) {
-            if (obj.parent instanceof ARE.Stage) {
+            if (obj.parent instanceof AlloyPaper.Stage) {
                 obj.parent.setCursor(type);
             } else {
                 this._setCursor(obj.parent, type);
@@ -2739,7 +2737,7 @@ ARE.DisplayObject = Class.extend({
         }
     },
     "clone": function() {
-        var o = new ARE.DisplayObject();
+        var o = new AlloyPaper.DisplayObject();
         this.cloneProps(o);
         return o;
     },
@@ -2766,7 +2764,7 @@ ARE.DisplayObject = Class.extend({
             this.cacheCanvas.height = bound.height;
             this.cacheCtx = this.cacheCanvas.getContext("2d");
         }
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = AlloyPaper.UID.getCacheID();
         this.updateCache(this.cacheCtx, this, bound.width, bound.width);
     },
     "uncache": function() {
@@ -2877,14 +2875,14 @@ ARE.DisplayObject = Class.extend({
         if (!o.isVisible()) {
             return;
         }
-        if (o instanceof ARE.Container || o instanceof ARE.Stage) {
+        if (o instanceof AlloyPaper.Container || o instanceof AlloyPaper.Stage) {
             var list = o.children.slice(0);
             for (var i = 0, l = list.length; i < l; i++) {
                 ctx.save();
                 this.render(ctx, list[i]);
                 ctx.restore();
             }
-        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+        } else if (o instanceof AlloyPaper.Bitmap || o instanceof AlloyPaper.Sprite) {
             var rect = o.rect;
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         } else if (o.txtCanvas) {
@@ -2941,12 +2939,12 @@ ARE.DisplayObject = Class.extend({
     }
 });
 
-//end-------------------ARE.DisplayObject---------------------end
+//end-------------------AlloyPaper.DisplayObject---------------------end
 
 
-//begin-------------------ARE.Bitmap---------------------begin
+//begin-------------------AlloyPaper.Bitmap---------------------begin
 
-ARE.Bitmap = ARE.DisplayObject.extend({
+AlloyPaper.Bitmap = AlloyPaper.DisplayObject.extend({
     "ctor": function(img) {
         this._super();
         Object.defineProperty(this, "rect", {
@@ -2971,7 +2969,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
         }
     },
     "_initWithSrc": function(img) {
-        var cacheImg = ARE.Cache[img];
+        var cacheImg = AlloyPaper.Cache[img];
         if (cacheImg) {
             this._init(cacheImg);
         } else {
@@ -2981,7 +2979,7 @@ ARE.Bitmap = ARE.DisplayObject.extend({
             this.img.crossOrigin = "Anonymous";
             this.img.onload = function () {
                 if (!self.rect) self.rect = [0, 0, self.img.width, self.img.height];
-                ARE.Cache[img] = self.img;
+                AlloyPaper.Cache[img] = self.img;
                 self.textureReady = true;
                 self.imageLoadHandle && self.imageLoadHandle();
                 if (self.filter) self.filter = self.filter;
@@ -3010,12 +3008,12 @@ ARE.Bitmap = ARE.DisplayObject.extend({
     },
     "clone": function () {
         if (this.textureReady) {
-            var o = new ARE.Bitmap(this.img);
+            var o = new AlloyPaper.Bitmap(this.img);
             o.rect = this.rect.slice(0);
             this.cloneProps(o);
             return o;
         } else {
-            var o = new ARE.Bitmap(this.imgSrc);
+            var o = new AlloyPaper.Bitmap(this.imgSrc);
             this.rect&&(o.rect = this.rect.slice(0));
             this.cloneProps(o);
             return o;
@@ -3028,12 +3026,12 @@ ARE.Bitmap = ARE.DisplayObject.extend({
     "flipY": function() {}
 });
 
-//end-------------------ARE.Bitmap---------------------end
+//end-------------------AlloyPaper.Bitmap---------------------end
 
 
-//begin-------------------ARE.Container---------------------begin
+//begin-------------------AlloyPaper.Container---------------------begin
 
-ARE.Container = ARE.DisplayObject.extend({
+AlloyPaper.Container = AlloyPaper.DisplayObject.extend({
     "ctor": function() {
         this._super();
         this.children = [];
@@ -3081,7 +3079,7 @@ ARE.Container = ARE.DisplayObject.extend({
         }
     },
     "clone": function() {
-        var o = new ARE.Container();
+        var o = new AlloyPaper.Container();
         this.cloneProps(o);
         var arr = o.children = [];
         for (var i = this.children.length - 1; i > -1; i--) {
@@ -3140,12 +3138,12 @@ ARE.Container = ARE.DisplayObject.extend({
     }
 });
 
-//end-------------------ARE.Container---------------------end
+//end-------------------AlloyPaper.Container---------------------end
 
 
-//begin-------------------ARE.Graphics---------------------begin
+//begin-------------------AlloyPaper.Graphics---------------------begin
 
-ARE.Graphics = ARE.DisplayObject.extend({
+AlloyPaper.Graphics = AlloyPaper.DisplayObject.extend({
     "ctor": function() {
         this._super();
         this.cmds = [];
@@ -3224,12 +3222,12 @@ ARE.Graphics = ARE.DisplayObject.extend({
     "clone": function() {}
 });
 
-//end-------------------ARE.Graphics---------------------end
+//end-------------------AlloyPaper.Graphics---------------------end
 
 
-//begin-------------------ARE.Label---------------------begin
+//begin-------------------AlloyPaper.Label---------------------begin
 
-ARE.Label = ARE.DisplayObject.extend({
+AlloyPaper.Label = AlloyPaper.DisplayObject.extend({
     "ctor": function(option) {
         this._super();
         this.value = option.value;
@@ -3261,7 +3259,7 @@ ARE.Label = ARE.DisplayObject.extend({
             fontWeight: this.fontWeight,
             shadow: this.shadow
         });
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = AlloyPaper.UID.getCacheID();
         this.width = drawOption.calculatedWidth;
         this.height = drawOption.calculatedHeight;
     },
@@ -3389,12 +3387,12 @@ ARE.Label = ARE.DisplayObject.extend({
     }
 });
 
-//end-------------------ARE.Label---------------------end
+//end-------------------AlloyPaper.Label---------------------end
 
 
-//begin-------------------ARE.Particle---------------------begin
+//begin-------------------AlloyPaper.Particle---------------------begin
 
-ARE.Particle = ARE.Bitmap.extend({
+AlloyPaper.Particle = AlloyPaper.Bitmap.extend({
     "ctor": function(option) {
         this._super(option.texture);
         this.originX = .5;
@@ -3404,7 +3402,7 @@ ARE.Particle = ARE.Bitmap.extend({
         this.y = this.position.y;
         this.rotation = option.rotation || 0;
         this.velocity = option.velocity;
-        this.acceleration = option.acceleration || new ARE.Vector2(0, 0);
+        this.acceleration = option.acceleration || new AlloyPaper.Vector2(0, 0);
         this.rotatingSpeed = option.rotatingSpeed || 0;
         this.rotatingAcceleration = option.rotatingAcceleration || 0;
         this.hideSpeed = option.hideSpeed || .01;
@@ -3425,12 +3423,12 @@ ARE.Particle = ARE.Bitmap.extend({
     }
 });
 
-//end-------------------ARE.Particle---------------------end
+//end-------------------AlloyPaper.Particle---------------------end
 
 
-//begin-------------------ARE.ParticleSystem---------------------begin
+//begin-------------------AlloyPaper.ParticleSystem---------------------begin
 
-ARE.ParticleSystem = ARE.Container.extend({
+AlloyPaper.ParticleSystem = AlloyPaper.Container.extend({
     "ctor": function(option) {
         this._super();
         this.speed = option.speed;
@@ -3449,11 +3447,11 @@ ARE.ParticleSystem = ARE.Container.extend({
         this.emitY = option.emitY;
         var self = this;
         if (typeof option.texture === "string") {
-            if (ARE.Cache[option.texture]) {
-                this.texture = ARE.Cache[option.texture];
+            if (AlloyPaper.Cache[option.texture]) {
+                this.texture = AlloyPaper.Cache[option.texture];
                 this.generateFilterTexture(this.texture);
             } else {
-                this.bitmap = new ARE.Bitmap();
+                this.bitmap = new AlloyPaper.Bitmap();
                 this.bitmap._parent = this;
                 this.bitmap.onImageLoad(function() {
                     this._parent.texture = this.img;
@@ -3472,22 +3470,22 @@ ARE.ParticleSystem = ARE.Container.extend({
         this.hideSpeed = option.hideSpeed || .01;
     },
     "generateFilterTexture": function(texture) {
-        var bitmap = new ARE.Bitmap(texture);
+        var bitmap = new AlloyPaper.Bitmap(texture);
         bitmap.filter = this.filter;
         this.filterTexture = bitmap.cacheCanvas;
     },
     "changeFilter": function (filter) {
-        var bitmap = new ARE.Bitmap(this.texture);
+        var bitmap = new AlloyPaper.Bitmap(this.texture);
         bitmap.filter = filter;
         this.filterTexture = bitmap.cacheCanvas;
     },
     "emit": function() {
-        var angle = (this.angle + ARE.Util.random(-this.angleRange / 2, this.angleRange / 2)) * Math.PI / 180;
+        var angle = (this.angle + AlloyPaper.Util.random(-this.angleRange / 2, this.angleRange / 2)) * Math.PI / 180;
         var halfX = this.emitArea[0] / 2,
             harfY = this.emitArea[1] / 2;
-        var particle = new ARE.Particle({
-    position: new ARE.Vector2(this.emitX + ARE.Util.random(-halfX, halfX), this.emitY + ARE.Util.random(-harfY, harfY)),
-    velocity: new ARE.Vector2(this.speed * Math.cos(angle), this.speed * Math.sin(angle)),
+        var particle = new AlloyPaper.Particle({
+    position: new AlloyPaper.Vector2(this.emitX + AlloyPaper.Util.random(-halfX, halfX), this.emitY + AlloyPaper.Util.random(-harfY, harfY)),
+    velocity: new AlloyPaper.Vector2(this.speed * Math.cos(angle), this.speed * Math.sin(angle)),
     texture: this.filterTexture,
     acceleration: this.gravity,
     hideSpeed: this.hideSpeed
@@ -3521,10 +3519,10 @@ ARE.ParticleSystem = ARE.Container.extend({
     }
 });
 
-//end-------------------ARE.ParticleSystem---------------------end
+//end-------------------AlloyPaper.ParticleSystem---------------------end
 
-//begin----------------- ARE.ParticleExplosion -------------------begin
-ARE.ParticleExplosion = ARE.Container.extend({
+//begin----------------- AlloyPaper.ParticleExplosion -------------------begin
+AlloyPaper.ParticleExplosion = AlloyPaper.Container.extend({
     ctor: function (ps, callback) {
         this._super();
         this.ps = ps;
@@ -3549,11 +3547,11 @@ ARE.ParticleExplosion = ARE.Container.extend({
 
 
 
-//end-----------------ARE.ParticleExplosion-------------------end
+//end-----------------AlloyPaper.ParticleExplosion-------------------end
 
-//begin-------------------ARE.Shape---------------------begin
+//begin-------------------AlloyPaper.Shape---------------------begin
 
-ARE.Shape = ARE.DisplayObject.extend({
+AlloyPaper.Shape = AlloyPaper.DisplayObject.extend({
     "ctor": function(width, height, debug) {
         this._super();
         this.cmds = [];
@@ -3591,7 +3589,7 @@ ARE.Shape = ARE.DisplayObject.extend({
     },
     "end": function() {
         this._preCacheId = this.cacheID;
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = AlloyPaper.UID.getCacheID();
         var ctx = this.shapeCtx;
         for (var i = 0, len = this.cmds.length; i < len; i++) {
             var cmd = this.cmds[i];
@@ -3603,11 +3601,11 @@ ARE.Shape = ARE.DisplayObject.extend({
         }
     },
     "clearRect": function(x, y, width, height) {
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = AlloyPaper.UID.getCacheID();
         this.shapeCtx.clearRect(x, y, width, height);
     },
     "clear": function() {
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = AlloyPaper.UID.getCacheID();
         this.cmds.length = 0;
         this.shapeCtx.clearRect(0, 0, this.width, this.height);
     },
@@ -3666,12 +3664,12 @@ ARE.Shape = ARE.DisplayObject.extend({
     "clone": function() {}
 });
 
-//end-------------------ARE.Shape---------------------end
+//end-------------------AlloyPaper.Shape---------------------end
 
 
-//begin-------------------ARE.Sprite---------------------begin
+//begin-------------------AlloyPaper.Sprite---------------------begin
 
-ARE.Sprite = ARE.DisplayObject.extend({
+AlloyPaper.Sprite = AlloyPaper.DisplayObject.extend({
     "ctor": function(option) {
         this._super();
         this.option = option;
@@ -3689,11 +3687,11 @@ ARE.Sprite = ARE.DisplayObject.extend({
         for (var i = 0; i < len; i++) {
             var urlOrImg = this.option.imgs[i];
             if (typeof urlOrImg === "string") {
-                if (ARE.Cache[urlOrImg]) {
-                    this.bitmaps.push(new ARE.Bitmap(ARE.Cache[urlOrImg]));
+                if (AlloyPaper.Cache[urlOrImg]) {
+                    this.bitmaps.push(new AlloyPaper.Bitmap(AlloyPaper.Cache[urlOrImg]));
                     this._loadedCount++;
                 } else {
-                    var bmp = new ARE.Bitmap();
+                    var bmp = new AlloyPaper.Bitmap();
                     bmp._sprite = this;
                     bmp.onImageLoad(function() {
                         bmp._sprite._loadedCount++;
@@ -3707,7 +3705,7 @@ ARE.Sprite = ARE.DisplayObject.extend({
                 }
             } else {
                 this._loadedCount++;
-                this.bitmaps.push(new ARE.Bitmap(urlOrImg));
+                this.bitmaps.push(new AlloyPaper.Bitmap(urlOrImg));
             }
         }
         if (this._loadedCount === len) {
@@ -3789,12 +3787,12 @@ ARE.Sprite = ARE.DisplayObject.extend({
     }
 });
 
-//end-------------------ARE.Sprite---------------------end
+//end-------------------AlloyPaper.Sprite---------------------end
 
 
-//begin-------------------ARE.Stage---------------------begin
+//begin-------------------AlloyPaper.Stage---------------------begin
 
-ARE.Stage = ARE.Container.extend({
+AlloyPaper.Stage = AlloyPaper.Container.extend({
     "ctor": function(canvas, openWebGL) {
         this._super();
         this.canvas = typeof canvas == "string" ? document.querySelector(canvas) : canvas;
@@ -3802,11 +3800,11 @@ ARE.Stage = ARE.Container.extend({
         this.height = this.canvas.height;
         this.AABB = [0, 0, this.width, this.height];
         this.hitAABB = true;
-        this.hitRenderer = new ARE.CanvasRenderer();
+        this.hitRenderer = new AlloyPaper.CanvasRenderer();
         this.hitCanvas = document.createElement("canvas");
         this.hitCanvas.width = 1;
         this.hitCanvas.height = 1;
-        this.stageRenderer = new ARE.Renderer(this, openWebGL);
+        this.stageRenderer = new AlloyPaper.Renderer(this, openWebGL);
         this.hitCtx = this.hitCanvas.getContext("2d");
         this._scaleX = this._scaleY = null;
         this.offset = this._getXY(this.canvas);
@@ -3830,11 +3828,11 @@ ARE.Stage = ARE.Container.extend({
                 this._useRequestAnimFrame = value;
                 if (value) {
                     clearInterval(self.loop);
-                    self.loop = ARE.RAF.requestInterval(function() {
+                    self.loop = AlloyPaper.RAF.requestInterval(function() {
                         self._tick(self);
                     }, self.interval);
                 } else {
-                    ARE.RAF.clearRequestInterval(self.loop);
+                    AlloyPaper.RAF.clearRequestInterval(self.loop);
                     self.loop = setInterval(function() {
                         self._tick(self);
                     }, self.interval);
@@ -3850,13 +3848,13 @@ ARE.Stage = ARE.Container.extend({
             if (this.useRequestAnimFrame) {
                 clearInterval(this.loop);
                 try {
-                    ARE.RAF.clearRequestInterval(this.loop);
+                    AlloyPaper.RAF.clearRequestInterval(this.loop);
                 } catch (e) {}
-                this.loop = ARE.RAF.requestInterval(function() {
+                this.loop = AlloyPaper.RAF.requestInterval(function() {
                     self._tick(self);
                 }, this.interval);
             } else {
-                ARE.RAF.clearRequestInterval(this.loop);
+                AlloyPaper.RAF.clearRequestInterval(this.loop);
                 try {
                     clearInterval(this.loop);
                 } catch (e) {}
@@ -3896,7 +3894,7 @@ ARE.Stage = ARE.Container.extend({
         this.autoUpdate = true;
         this.scaleType = "normal";
 
-        this.setCursor(ARE.DefaultCursor);
+        this.setCursor(AlloyPaper.DefaultCursor);
     },
     "adjustLayout": function() {
         this.offset = this._getXY(this.canvas);
@@ -3918,9 +3916,9 @@ ARE.Stage = ARE.Container.extend({
     "_pauseSprite": function (obj) {
         for (var i = 0, len = obj.children.length; i < len; i++) {
             var child = obj.children[i];
-            if (child instanceof ARE.Container) {
+            if (child instanceof AlloyPaper.Container) {
                 this._pauseSprite(child);
-            } else if (child instanceof ARE.Sprite) {
+            } else if (child instanceof AlloyPaper.Sprite) {
                 child.pause();
             }
         }
@@ -3933,9 +3931,9 @@ ARE.Stage = ARE.Container.extend({
     "_playSprite": function (obj) {
         for (var i = 0, len = obj.children.length; i < len; i++) {
             var child = obj.children[i];
-            if (child instanceof ARE.Container) {
+            if (child instanceof AlloyPaper.Container) {
                 this._playSprite(child);
-            } else if (child instanceof ARE.Sprite) {
+            } else if (child instanceof AlloyPaper.Sprite) {
                 child.play();
             }
         }
@@ -4187,10 +4185,10 @@ ARE.Stage = ARE.Container.extend({
         this.interval = Math.floor(1e3 / fps);
     },
     "onKeyboard": function(keyCombo, onDownCallback, onUpCallback) {
-        ARE.Keyboard.on(keyCombo, onDownCallback, onUpCallback);
+        AlloyPaper.Keyboard.on(keyCombo, onDownCallback, onUpCallback);
     },
     "getActiveKeys": function() {
-        return ARE.Keyboard.getActiveKeys();
+        return AlloyPaper.Keyboard.getActiveKeys();
     },
     "scaleToScreen": function (scaleX, scaleY) {
         this.scaleType = "screen";
@@ -4255,7 +4253,7 @@ ARE.Stage = ARE.Container.extend({
             if (child.baseInstanceof == "Container" || child.baseInstanceof == "Stage") {
                 for (var i = 0, len = child.children.length; i < len; i++) {
                     var subChild = child.children[i];
-                    if (subChild instanceof ARE.Container) {
+                    if (subChild instanceof AlloyPaper.Container) {
                         getCount(subChild);
                     } else {
                         count++;
@@ -4269,13 +4267,13 @@ ARE.Stage = ARE.Container.extend({
         return count;
     },
     "getRenderingMode": function() {
-        if (this.stageRenderer.renderingEngine instanceof ARE.CanvasRenderer) {
+        if (this.stageRenderer.renderingEngine instanceof AlloyPaper.CanvasRenderer) {
             return "Canvas";
         }
         return "WebGL";
     },
     "getFPS": function() {
-        var fps = ARE.FPS.get();
+        var fps = AlloyPaper.FPS.get();
         this.fpsValue = fps.value;
     },
     "addEvent": function(el, type, fn, capture) {
@@ -4306,19 +4304,19 @@ ARE.Stage = ARE.Container.extend({
         this._super();
         this.canvas.parentNode.removeChild(this.canvas);
         if (this.useRequestAnimFrame) {
-            ARE.RAF.clearRequestInterval(this.loop);
+            AlloyPaper.RAF.clearRequestInterval(this.loop);
         } else {
             clearInterval(this.loop);
         }
     }
 });
 
-//end-------------------ARE.Stage---------------------end
+//end-------------------AlloyPaper.Stage---------------------end
 
 
-//begin-------------------ARE.Text---------------------begin
+//begin-------------------AlloyPaper.Text---------------------begin
 
-ARE.Text = ARE.DisplayObject.extend({
+AlloyPaper.Text = AlloyPaper.DisplayObject.extend({
     "ctor": function(value, font, color) {
         this._super();
         this.value = value;
@@ -4335,7 +4333,7 @@ ARE.Text = ARE.DisplayObject.extend({
         ctx.fillText(this.value, 0, 0);
     },
     "clone": function() {
-        var t = new ARE.Text(this.text, this.font, this.color);
+        var t = new AlloyPaper.Text(this.text, this.font, this.color);
         this.cloneProps(t);
         return t;
     },
@@ -4348,8 +4346,8 @@ ARE.Text = ARE.DisplayObject.extend({
     }
 });
 
-//end-------------------ARE.Text---------------------end
+//end-------------------AlloyPaper.Text---------------------end
 
 
-return ARE;
+return AlloyPaper;
 }));

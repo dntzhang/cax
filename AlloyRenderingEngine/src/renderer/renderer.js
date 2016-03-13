@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Renderer---------------------begin
+//begin-------------------AlloyPaper.Renderer---------------------begin
 
-ARE.Renderer = Class.extend({
+AlloyPaper.Renderer = Class.extend({
     "ctor": function (stage, openWebGL) {
         this.stage = stage;
         this.objs = [];
@@ -18,10 +18,10 @@ ARE.Renderer = Class.extend({
                 }
             }();
         if (webglSupport && openWebGL) {
-            this.renderingEngine = new ARE.WebGLRenderer(this.stage.canvas);
+            this.renderingEngine = new AlloyPaper.WebGLRenderer(this.stage.canvas);
         } else {
             if (canvasSupport) {
-                this.renderingEngine = new ARE.CanvasRenderer(this.stage.canvas);
+                this.renderingEngine = new AlloyPaper.CanvasRenderer(this.stage.canvas);
             } else {
                 throw "your browser does not support canvas and webgl ";
             }
@@ -58,12 +58,12 @@ ARE.Renderer = Class.extend({
         } else {
             o._matrix.initialize(1, 0, 0, 1, 0, 0);
         }
-        if (o instanceof ARE.Shape) {
+        if (o instanceof AlloyPaper.Shape) {
             o._matrix.appendTransform(o.x, o.y, 1, 1, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
         } else {
             o._matrix.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
         }
-        if (o instanceof ARE.Container) {
+        if (o instanceof AlloyPaper.Container) {
             var list = o.children,
                 len = list.length,
                 i = 0;
@@ -71,7 +71,7 @@ ARE.Renderer = Class.extend({
                 this._computeMatrix(list[i], o._matrix);
             }
         } else {
-            if (o instanceof ARE.Graphics || o instanceof ARE.Text) {
+            if (o instanceof AlloyPaper.Graphics || o instanceof AlloyPaper.Text) {
                 this.objs.push(o);
                 this.initComplex(o);
             } else {
@@ -104,10 +104,10 @@ ARE.Renderer = Class.extend({
         if (minX > AABB2[0] + AABB2[2]) return false;
         var maxY = AABB1[1] + AABB1[3];
         if (maxY < AABB2[1]) return false;
-        var maxY = AABB1[1];
-        if (maxY > AABB2[1] + AABB2[3]) return false;
+        var minY = AABB1[1];
+        if (minY > AABB2[1] + AABB2[3]) return false;
         return true;
     }
 });
 
-//end-------------------ARE.Renderer---------------------end
+//end-------------------AlloyPaper.Renderer---------------------end

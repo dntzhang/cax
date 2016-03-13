@@ -9,7 +9,7 @@
     } else if (typeof exports === 'object') {
         module.exports = factory();
     } else {
-        root.ARE = factory();
+        root.AlloyPaper = factory();
     }
 }(this, function () {
 'use strict';

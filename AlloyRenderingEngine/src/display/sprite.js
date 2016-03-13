@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Sprite---------------------begin
+//begin-------------------AlloyPaper.Sprite---------------------begin
 
-ARE.Sprite = ARE.DisplayObject.extend({
+AlloyPaper.Sprite = AlloyPaper.DisplayObject.extend({
     "ctor": function(option) {
         this._super();
         this.option = option;
@@ -12,32 +12,33 @@ ARE.Sprite = ARE.DisplayObject.extend({
         this.currentAnimation = option.currentAnimation || null;
         this.rect = [0, 0, 10, 10];
         this.visible = false;
-        this.bitmaps = [],
+        this.bitmaps = [];
         this._loadedCount = 0;
-        var self = this,
-            len = this.option.imgs.length;
+        var len = this.option.imgs.length;
         for (var i = 0; i < len; i++) {
             var urlOrImg = this.option.imgs[i];
             if (typeof urlOrImg === "string") {
-                if (ARE.Cache[urlOrImg]) {
-                    this.bitmaps.push(new ARE.Bitmap(ARE.Cache[urlOrImg]));
+                if (AlloyPaper.Cache[urlOrImg]) {
+                    this.bitmaps.push(new AlloyPaper.Bitmap(AlloyPaper.Cache[urlOrImg]));
                     this._loadedCount++;
                 } else {
-                    var bmp = new ARE.Bitmap();
-                    bmp._sprite = this;
-                    bmp.onImageLoad(function() {
-                        bmp._sprite._loadedCount++;
-                        if (bmp._sprite._loadedCount === len) {
-                            bmp._sprite.visible = true;
-                            delete bmp._sprite;
-                        }
-                    });
-                    bmp.useImage(this.option.imgs[i]);
-                    this.bitmaps.push(bmp);
+                    (function(){
+                        var bmp = new AlloyPaper.Bitmap();
+                        bmp._sprite = this;
+                        bmp.onImageLoad(function() {
+                            bmp._sprite._loadedCount++;
+                            if (bmp._sprite._loadedCount === len) {
+                                bmp._sprite.visible = true;
+                                delete bmp._sprite;
+                            }
+                        });
+                        bmp.useImage(this.option.imgs[i]);
+                        this.bitmaps.push(bmp);
+                    })();
                 }
             } else {
                 this._loadedCount++;
-                this.bitmaps.push(new ARE.Bitmap(urlOrImg));
+                this.bitmaps.push(new AlloyPaper.Bitmap(urlOrImg));
             }
         }
         if (this._loadedCount === len) {
@@ -106,8 +107,7 @@ ARE.Sprite = ARE.DisplayObject.extend({
         var self = this;
         self.currentAnimation = animation;
         var opt = self.option;
-        var frames = opt.animations[self.currentAnimation].frames,
-            len = frames.length;
+        var frames = opt.animations[self.currentAnimation].frames;
         self.rect = opt.frames[frames[self.animationFrameIndex]];
         self.width = self.rect[2];
         self.height = self.rect[3];
@@ -119,4 +119,4 @@ ARE.Sprite = ARE.DisplayObject.extend({
     }
 });
 
-//end-------------------ARE.Sprite---------------------end
+//end-------------------AlloyPaper.Sprite---------------------end

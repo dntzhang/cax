@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Shape---------------------begin
+//begin-------------------AlloyPaper.Shape---------------------begin
 
-ARE.Shape = ARE.DisplayObject.extend({
+AlloyPaper.Shape = AlloyPaper.DisplayObject.extend({
     "ctor": function(width, height, debug) {
         this._super();
         this.cmds = [];
@@ -21,7 +21,6 @@ ARE.Shape = ARE.DisplayObject.extend({
         this._watch(this, "scaleX", function(prop, value) {
             this.width = this._width * value;
             this.height = this._height * this.scaleY;
-            this.originX = this.originX;
             this.shapeCanvas.width = this.width;
             this.shapeCanvas.height = this.height;
             this.shapeCtx.scale(value, this.scaleY);
@@ -30,7 +29,6 @@ ARE.Shape = ARE.DisplayObject.extend({
         this._watch(this, "scaleY", function(prop, value) {
             this.width = this._width * this.scaleX;
             this.height = this._height * value;
-            this.originY = this.originY;
             this.shapeCanvas.width = this.width;
             this.shapeCanvas.height = this.height;
             this.shapeCtx.scale(this.scaleX, value);
@@ -39,7 +37,7 @@ ARE.Shape = ARE.DisplayObject.extend({
     },
     "end": function() {
         this._preCacheId = this.cacheID;
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = AlloyPaper.UID.getCacheID();
         var ctx = this.shapeCtx;
         for (var i = 0, len = this.cmds.length; i < len; i++) {
             var cmd = this.cmds[i];
@@ -51,11 +49,11 @@ ARE.Shape = ARE.DisplayObject.extend({
         }
     },
     "clearRect": function(x, y, width, height) {
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = AlloyPaper.UID.getCacheID();
         this.shapeCtx.clearRect(x, y, width, height);
     },
     "clear": function() {
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = AlloyPaper.UID.getCacheID();
         this.cmds.length = 0;
         this.shapeCtx.clearRect(0, 0, this.width, this.height);
     },
@@ -114,4 +112,4 @@ ARE.Shape = ARE.DisplayObject.extend({
     "clone": function() {}
 });
 
-//end-------------------ARE.Shape---------------------end
+//end-------------------AlloyPaper.Shape---------------------end

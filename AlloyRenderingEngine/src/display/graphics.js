@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Graphics---------------------begin
+//begin-------------------AlloyPaper.Graphics---------------------begin
 
-ARE.Graphics = ARE.DisplayObject.extend({
+AlloyPaper.Graphics = AlloyPaper.DisplayObject.extend({
     "ctor": function() {
         this._super();
         this.cmds = [];
@@ -80,4 +80,4 @@ ARE.Graphics = ARE.DisplayObject.extend({
     "clone": function() {}
 });
 
-//end-------------------ARE.Graphics---------------------end
+//end-------------------AlloyPaper.Graphics---------------------end

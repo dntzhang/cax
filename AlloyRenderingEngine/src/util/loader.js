@@ -1,9 +1,8 @@
 
-//begin-------------------ARE.Loader---------------------begin
+//begin-------------------AlloyPaper.Loader---------------------begin
 
-ARE.Loader = Class.extend({
+AlloyPaper.Loader = Class.extend({
     "ctor": function() {
-        this.audios = {};
         this.res = {};
         this.loadedCount = 0;
         this.resCount = -1;
@@ -12,7 +11,6 @@ ARE.Loader = Class.extend({
         this.sounds = [];
         for (var i = 0; i < this.ns; i++) this.sounds.push([]);
         this.playing = [];
-        this.soundsCount = 0;
     },
     "get": function(id) {
         return this.res[id];
@@ -73,7 +71,7 @@ ARE.Loader = Class.extend({
         }
     },
     "loadScript": function (url) {
-        var script = document.createElement("script")
+        var script = document.createElement("script");
         script.type = "text/javascript";
         var self = this;
         if (script.readyState) {  //IE
@@ -145,4 +143,4 @@ ARE.Loader = Class.extend({
     }
 });
 
-//end-------------------ARE.Loader---------------------end
+//end-------------------AlloyPaper.Loader---------------------end

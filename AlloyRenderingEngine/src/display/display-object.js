@@ -1,16 +1,16 @@
 
-//begin-------------------ARE.DisplayObject---------------------begin
+//begin-------------------AlloyPaper.DisplayObject---------------------begin
 
-ARE.DisplayObject = Class.extend({
+AlloyPaper.DisplayObject = Class.extend({
     "ctor": function() {
         this.alpha = this.scaleX = this.scaleY = this.scale = 1;
         this.x = this.y = this.rotation = this.originX = this.originY = this.skewX = this.skewY = this.width = this.height = this.regX = this.regY = 0;
         this.textureReady = true;
         this.visible = true;
-        this._matrix = new ARE.Matrix2D();
-        this._hitMatrix = new ARE.Matrix2D();
+        this._matrix = new AlloyPaper.Matrix2D();
+        this._hitMatrix = new AlloyPaper.Matrix2D();
         this.events = {};
-        this.id = ARE.UID.get();
+        this.id = AlloyPaper.UID.get();
         this.cacheID = 0;
         this.baseInstanceof = "DisplayObject";
         this.tickFPS = 60;
@@ -39,13 +39,12 @@ ARE.DisplayObject = Class.extend({
         this.onHover(function () {
             //this._setCursor(this, this.cursor);
         }, function () {
-            this._setCursor(this, ARE.DefaultCursor);
+            this._setCursor(this, AlloyPaper.DefaultCursor);
         });
     },
     "_watch": function(target, prop, onPropertyChanged) {
-        var self = this;
         if (typeof prop === "string") {
-            var currentValue = target["__" + prop] = this[prop];
+            target["__" + prop] = this[prop];
             Object.defineProperty(target, prop, {
                 get: function() {
                     return this["__" + prop];
@@ -58,7 +57,7 @@ ARE.DisplayObject = Class.extend({
         } else {
             for (var i = 0, len = prop.length; i < len; i++) {
                 var propName = prop[i];
-                var currentValue = target["__" + propName] = this[propName];
+                target["__" + propName] = this[propName];
                 (function(propName) {
                     Object.defineProperty(target, propName, {
                         get: function() {
@@ -94,7 +93,7 @@ ARE.DisplayObject = Class.extend({
     },
     "_setCursor": function (obj, type) {
         if (obj) {
-            if (obj.parent instanceof ARE.Stage) {
+            if (obj.parent instanceof AlloyPaper.Stage) {
                 obj.parent.setCursor(type);
             } else {
                 this._setCursor(obj.parent, type);
@@ -102,7 +101,7 @@ ARE.DisplayObject = Class.extend({
         }
     },
     "clone": function() {
-        var o = new ARE.DisplayObject();
+        var o = new AlloyPaper.DisplayObject();
         this.cloneProps(o);
         return o;
     },
@@ -129,7 +128,7 @@ ARE.DisplayObject = Class.extend({
             this.cacheCanvas.height = bound.height;
             this.cacheCtx = this.cacheCanvas.getContext("2d");
         }
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = AlloyPaper.UID.getCacheID();
         this.updateCache(this.cacheCtx, this, bound.width, bound.width);
     },
     "uncache": function() {
@@ -176,8 +175,8 @@ ARE.DisplayObject = Class.extend({
         }
     },
     "initAABB": function() {
-        var x = 0,
-            y = 0,
+        var x,
+            y,
             width = this.width,
             height = this.height,
             mtx = this._matrix;
@@ -240,14 +239,14 @@ ARE.DisplayObject = Class.extend({
         if (!o.isVisible()) {
             return;
         }
-        if (o instanceof ARE.Container || o instanceof ARE.Stage) {
+        if (o instanceof AlloyPaper.Container || o instanceof AlloyPaper.Stage) {
             var list = o.children.slice(0);
             for (var i = 0, l = list.length; i < l; i++) {
                 ctx.save();
                 this.render(ctx, list[i]);
                 ctx.restore();
             }
-        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+        } else if (o instanceof AlloyPaper.Bitmap || o instanceof AlloyPaper.Sprite) {
             var rect = o.rect;
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         } else if (o.txtCanvas) {
@@ -304,4 +303,4 @@ ARE.DisplayObject = Class.extend({
     }
 });
 
-//end-------------------ARE.DisplayObject---------------------end
+//end-------------------AlloyPaper.DisplayObject---------------------end

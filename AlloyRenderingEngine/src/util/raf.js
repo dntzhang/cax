@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.RAF---------------------begin
+//begin-------------------AlloyPaper.RAF---------------------begin
 
-ARE.RAF = Class.extend({
+AlloyPaper.RAF = Class.extend({
     "statics": {
         "ctor": function() {
             var requestAnimFrame = function() {
@@ -13,7 +13,7 @@ ARE.RAF = Class.extend({
             var requestInterval = function(fn, delay) {
                 if (!window.requestAnimationFrame && !window.webkitRequestAnimationFrame && !(window.mozRequestAnimationFrame && window.mozCancelRequestAnimationFrame) && !window.oRequestAnimationFrame && !window.msRequestAnimationFrame) return window.setInterval(fn, delay);
                 var start = new Date().getTime(),
-                    handle = new Object();
+                    handle = {};
 
                 function loop() {
                     var current = new Date().getTime(),
@@ -40,4 +40,4 @@ ARE.RAF = Class.extend({
     }
 });
 
-//end-------------------ARE.RAF---------------------end
+//end-------------------AlloyPaper.RAF---------------------end

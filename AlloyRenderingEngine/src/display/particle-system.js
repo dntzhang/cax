@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.ParticleSystem---------------------begin
+//begin-------------------AlloyPaper.ParticleSystem---------------------begin
 
-ARE.ParticleSystem = ARE.Container.extend({
+AlloyPaper.ParticleSystem = AlloyPaper.Container.extend({
     "ctor": function(option) {
         this._super();
         this.speed = option.speed;
@@ -18,13 +18,12 @@ ARE.ParticleSystem = ARE.Container.extend({
         this.maxCount = option.maxCount || 1e3;
         this.emitX = option.emitX;
         this.emitY = option.emitY;
-        var self = this;
         if (typeof option.texture === "string") {
-            if (ARE.Cache[option.texture]) {
-                this.texture = ARE.Cache[option.texture];
+            if (AlloyPaper.Cache[option.texture]) {
+                this.texture = AlloyPaper.Cache[option.texture];
                 this.generateFilterTexture(this.texture);
             } else {
-                this.bitmap = new ARE.Bitmap();
+                this.bitmap = new AlloyPaper.Bitmap();
                 this.bitmap._parent = this;
                 this.bitmap.onImageLoad(function() {
                     this._parent.texture = this.img;
@@ -43,22 +42,22 @@ ARE.ParticleSystem = ARE.Container.extend({
         this.hideSpeed = option.hideSpeed || .01;
     },
     "generateFilterTexture": function(texture) {
-        var bitmap = new ARE.Bitmap(texture);
+        var bitmap = new AlloyPaper.Bitmap(texture);
         bitmap.filter = this.filter;
         this.filterTexture = bitmap.cacheCanvas;
     },
     "changeFilter": function (filter) {
-        var bitmap = new ARE.Bitmap(this.texture);
+        var bitmap = new AlloyPaper.Bitmap(this.texture);
         bitmap.filter = filter;
         this.filterTexture = bitmap.cacheCanvas;
     },
     "emit": function() {
-        var angle = (this.angle + ARE.Util.random(-this.angleRange / 2, this.angleRange / 2)) * Math.PI / 180;
+        var angle = (this.angle + AlloyPaper.Util.random(-this.angleRange / 2, this.angleRange / 2)) * Math.PI / 180;
         var halfX = this.emitArea[0] / 2,
             harfY = this.emitArea[1] / 2;
-        var particle = new ARE.Particle({
-    position: new ARE.Vector2(this.emitX + ARE.Util.random(-halfX, halfX), this.emitY + ARE.Util.random(-harfY, harfY)),
-    velocity: new ARE.Vector2(this.speed * Math.cos(angle), this.speed * Math.sin(angle)),
+        var particle = new AlloyPaper.Particle({
+    position: new AlloyPaper.Vector2(this.emitX + AlloyPaper.Util.random(-halfX, halfX), this.emitY + AlloyPaper.Util.random(-harfY, harfY)),
+    velocity: new AlloyPaper.Vector2(this.speed * Math.cos(angle), this.speed * Math.sin(angle)),
     texture: this.filterTexture,
     acceleration: this.gravity,
     hideSpeed: this.hideSpeed
@@ -92,4 +91,4 @@ ARE.ParticleSystem = ARE.Container.extend({
     }
 });
 
-//end-------------------ARE.ParticleSystem---------------------end
+//end-------------------AlloyPaper.ParticleSystem---------------------end

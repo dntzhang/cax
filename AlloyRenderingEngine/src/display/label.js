@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Label---------------------begin
+//begin-------------------AlloyPaper.Label---------------------begin
 
-ARE.Label = ARE.DisplayObject.extend({
+AlloyPaper.Label = AlloyPaper.DisplayObject.extend({
     "ctor": function(option) {
         this._super();
         this.value = option.value;
@@ -17,7 +17,7 @@ ARE.Label = ARE.DisplayObject.extend({
         this.txtCtx = this.txtCanvas.getContext("2d");
         this.setDrawOption();
         this.shadow = option.shadow;
-        this._watch(this, ["value", "fontSize", "color", "fontFamily"], function(a, b) {
+        this._watch(this, ["value", "fontSize", "color", "fontFamily"], function() {
             this.setDrawOption();
         });
     },
@@ -33,7 +33,7 @@ ARE.Label = ARE.DisplayObject.extend({
             fontWeight: this.fontWeight,
             shadow: this.shadow
         });
-        this.cacheID = ARE.UID.getCacheID();
+        this.cacheID = AlloyPaper.UID.getCacheID();
         this.width = drawOption.calculatedWidth;
         this.height = drawOption.calculatedHeight;
     },
@@ -51,7 +51,6 @@ ARE.Label = ARE.DisplayObject.extend({
         var textColour = option.color;
         var fontFamily = option.fontFamily;
         var fontWeight = option.fontWeight;
-        var backgroundColour = option.backgroundColour;
         ctx.font = textHeight + "px " + fontFamily;
         if (maxWidth && this.measureText(ctx, textToWrite) > maxWidth) {
             maxWidth = this.createMultilineText(ctx, textToWrite, maxWidth, text);
@@ -106,11 +105,11 @@ ARE.Label = ARE.DisplayObject.extend({
         return option;
     },
     "getPowerOfTwo": function(value, pow) {
-        var pow = pow || 1;
-        while (pow < value) {
-            pow *= 2;
+        var temp_pow = pow || 1;
+        while (temp_pow < value) {
+            temp_pow *= 2;
         }
-        return pow;
+        return temp_pow;
     },
     "measureText": function(ctx, textToMeasure) {
         return ctx.measureText(textToMeasure).width;
@@ -120,13 +119,12 @@ ARE.Label = ARE.DisplayObject.extend({
         var currentText = textToWrite;
         var futureText;
         var subWidth = 0;
-        var maxLineWidth = 0;
+        var maxLineWidth;
         var wordArray = textToWrite.split(" ");
         var wordsInCurrent, wordArrayLength;
         wordsInCurrent = wordArrayLength = wordArray.length;
         while (this.measureText(ctx, currentText) > maxWidth && wordsInCurrent > 1) {
             wordsInCurrent--;
-            var linebreak = false;
             currentText = futureText = "";
             for (var i = 0; i < wordArrayLength; i++) {
                 if (i < wordsInCurrent) {
@@ -161,4 +159,4 @@ ARE.Label = ARE.DisplayObject.extend({
     }
 });
 
-//end-------------------ARE.Label---------------------end
+//end-------------------AlloyPaper.Label---------------------end

@@ -1,7 +1,4 @@
-
-//begin-------------------ARE.TWEEN---------------------begin
-
-ARE.TWEEN = Class.extend({
+AlloyPaper.TWEEN = Class.extend({
     "statics": {
         "ctor": function() {
             if (Date.now === undefined) {
@@ -52,8 +49,8 @@ ARE.TWEEN = Class.extend({
             var _reversed = false;
             var _delayTime = 0;
             var _startTime = null;
-            var _easingFunction = ARE.TWEEN.Easing.Linear.None;
-            var _interpolationFunction = ARE.TWEEN.Interpolation.Linear;
+            var _easingFunction = AlloyPaper.TWEEN.Easing.Linear.None;
+            var _interpolationFunction = AlloyPaper.TWEEN.Interpolation.Linear;
             var _chainedTweens = [];
             var _onStartCallback = null;
             var _onStartCallbackFired = false;
@@ -71,7 +68,7 @@ ARE.TWEEN = Class.extend({
                 } else {
                     this.pause();
                 }
-            },
+            };
             this.pause = function() {
                 _paused = true;
                 var pauseTime = typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
@@ -90,7 +87,7 @@ ARE.TWEEN = Class.extend({
                 return this;
             };
             this.start = function(time) {
-                ARE.TWEEN.add(this);
+                AlloyPaper.TWEEN.add(this);
                 _isPlaying = true;
                 _onStartCallbackFired = false;
                 _startTime = time !== undefined ? time : typeof window !== "undefined" && window.performance !== undefined && window.performance.now !== undefined ? window.performance.now() : Date.now();
@@ -114,7 +111,7 @@ ARE.TWEEN = Class.extend({
                 if (!_isPlaying) {
                     return this;
                 }
-                ARE.TWEEN.remove(this);
+                AlloyPaper.TWEEN.remove(this);
                 _isPlaying = false;
                 if (_onStopCallback !== null) {
                     _onStopCallback.call(_object);
@@ -377,7 +374,7 @@ ARE.TWEEN = Class.extend({
             },
             "Bounce": {
                 "In": function(k) {
-                    return 1 - ARE.TWEEN.Easing.Bounce.Out(1 - k);
+                    return 1 - AlloyPaper.TWEEN.Easing.Bounce.Out(1 - k);
                 },
                 "Out": function(k) {
                     if (k < 1 / 2.75) {
@@ -391,8 +388,8 @@ ARE.TWEEN = Class.extend({
                     }
                 },
                 "InOut": function(k) {
-                    if (k < .5) return ARE.TWEEN.Easing.Bounce.In(k * 2) * .5;
-                    return ARE.TWEEN.Easing.Bounce.Out(k * 2 - 1) * .5 + .5;
+                    if (k < .5) return AlloyPaper.TWEEN.Easing.Bounce.In(k * 2) * .5;
+                    return AlloyPaper.TWEEN.Easing.Bounce.Out(k * 2 - 1) * .5 + .5;
                 }
             }
         },
@@ -401,7 +398,7 @@ ARE.TWEEN = Class.extend({
                 var m = v.length - 1,
                     f = m * k,
                     i = Math.floor(f),
-                    fn = ARE.TWEEN.Interpolation.Utils.Linear;
+                    fn = AlloyPaper.TWEEN.Interpolation.Utils.Linear;
                 if (k < 0) return fn(v[0], v[1], f);
                 if (k > 1) return fn(v[m], v[m - 1], m - f);
                 return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
@@ -410,7 +407,7 @@ ARE.TWEEN = Class.extend({
                 var b = 0,
                     n = v.length - 1,
                     pw = Math.pow,
-                    bn = ARE.TWEEN.Interpolation.Utils.Bernstein,
+                    bn = AlloyPaper.TWEEN.Interpolation.Utils.Bernstein,
                     i;
                 for (i = 0; i <= n; i++) {
                     b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
@@ -421,7 +418,7 @@ ARE.TWEEN = Class.extend({
                 var m = v.length - 1,
                     f = m * k,
                     i = Math.floor(f),
-                    fn = ARE.TWEEN.Interpolation.Utils.CatmullRom;
+                    fn = AlloyPaper.TWEEN.Interpolation.Utils.CatmullRom;
                 if (v[0] === v[m]) {
                     if (k < 0) i = Math.floor(f = m * (1 + k));
                     return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
@@ -436,7 +433,7 @@ ARE.TWEEN = Class.extend({
                     return (p1 - p0) * t + p0;
                 },
                 "Bernstein": function(n, i) {
-                    var fc = ARE.TWEEN.Interpolation.Utils.getFactorial();
+                    var fc = AlloyPaper.TWEEN.Interpolation.Utils.getFactorial();
                     return fc(n) / fc(i) / fc(n - i);
                 },
                 "getFactorial": function() {
@@ -462,5 +459,3 @@ ARE.TWEEN = Class.extend({
         }
     }
 });
-
-//end-------------------ARE.TWEEN---------------------end

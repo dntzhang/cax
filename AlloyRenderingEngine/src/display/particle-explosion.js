@@ -1,5 +1,5 @@
-﻿//begin----------------- ARE.ParticleExplosion -------------------begin
-ARE.ParticleExplosion = ARE.Container.extend({
+﻿//begin----------------- AlloyPaper.ParticleExplosion -------------------begin
+AlloyPaper.ParticleExplosion = AlloyPaper.Container.extend({
     ctor: function (ps, callback) {
         this._super();
         this.ps = ps;
@@ -24,4 +24,4 @@ ARE.ParticleExplosion = ARE.Container.extend({
 
 
 
-//end-----------------ARE.ParticleExplosion-------------------end
+//end-----------------AlloyPaper.ParticleExplosion-------------------end

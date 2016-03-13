@@ -138,9 +138,9 @@
 
 
     img.onload = function () {
-        var stage = new ARE.Stage("#ourCanvas");
+        var stage = new AlloyPaper.Stage("#ourCanvas");
  
-        ps = new ARE.ParticleSystem({
+        ps = new AlloyPaper.ParticleSystem({
             emitX: 200,
             emitY: 200,
             speed: 10,

@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Container---------------------begin
+//begin-------------------AlloyPaper.Container---------------------begin
 
-ARE.Container = ARE.DisplayObject.extend({
+AlloyPaper.Container = AlloyPaper.DisplayObject.extend({
     "ctor": function() {
         this._super();
         this.children = [];
@@ -49,7 +49,7 @@ ARE.Container = ARE.DisplayObject.extend({
         }
     },
     "clone": function() {
-        var o = new ARE.Container();
+        var o = new AlloyPaper.Container();
         this.cloneProps(o);
         var arr = o.children = [];
         for (var i = this.children.length - 1; i > -1; i--) {
@@ -108,4 +108,4 @@ ARE.Container = ARE.DisplayObject.extend({
     }
 });
 
-//end-------------------ARE.Container---------------------end
+//end-------------------AlloyPaper.Container---------------------end

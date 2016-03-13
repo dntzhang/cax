@@ -13,9 +13,9 @@
     <script src="../dist/are.js"></script>
 
     <script>
-        ; (function (ARE) {
-            var Stage = ARE.Stage, Bitmap = ARE.Bitmap;
-            ARE.DefaultCursor = "url(asset/img/default_cursor.png) 12 12, auto";
+        ; (function (AlloyPaper) {
+            var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap;
+            AlloyPaper.DefaultCursor = "url(asset/img/default_cursor.png) 12 12, auto";
 
             var stage = new Stage("#ourCanvas");
             stage.hitAABB = false;
@@ -30,7 +30,7 @@
             })
             stage.add(bmp);
 
-        })(ARE)
+        })(AlloyPaper)
 
     </script>
 </body>

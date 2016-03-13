@@ -1,11 +1,8 @@
-
-//begin-------------------ARE.WebGLRenderer---------------------begin
-
-ARE.WebGLRenderer = Class.extend({
+AlloyPaper.WebGLRenderer = Class.extend({
     "ctor": function(canvas) {
         this.surface = canvas;
         this.snapToPixel = true;
-        this.canvasRenderer = new ARE.CanvasRenderer();
+        this.canvasRenderer = new AlloyPaper.CanvasRenderer();
         this.textureCache = {};
         this.textureCanvasCache = {};
         this.initSurface(this.surface);
@@ -133,14 +130,14 @@ ARE.WebGLRenderer = Class.extend({
         if (!o.isVisible()) {
             return;
         }
-        if (o instanceof ARE.Container || o instanceof ARE.Stage) {
+        if (o instanceof AlloyPaper.Container || o instanceof AlloyPaper.Stage) {
             var list = o.children.slice(0);
             for (var i = 0, l = list.length; i < l; i++) {
                 ctx.save();
                 this.canvasRenderer.render(ctx, list[i]);
                 ctx.restore();
             }
-        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+        } else if (o instanceof AlloyPaper.Bitmap || o instanceof AlloyPaper.Sprite) {
             var rect = o.rect;
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         } else if (o.txtCanvas) {
@@ -173,7 +170,7 @@ ARE.WebGLRenderer = Class.extend({
             this._initCache(o, mmyCanvas, ctx);
             rightSide = leftSide + mmyCanvas.width;
             bottomSide = topSide + mmyCanvas.height;
-        } else if (o instanceof ARE.Bitmap || o instanceof ARE.Sprite) {
+        } else if (o instanceof AlloyPaper.Bitmap || o instanceof AlloyPaper.Sprite) {
             var rect = o.rect;
             img = o.img;
             this._initTexture(img, ctx);
@@ -207,5 +204,3 @@ ARE.WebGLRenderer = Class.extend({
         this.textureCanvasCache[1] = null;
     }
 });
-
-//end-------------------ARE.WebGLRenderer---------------------end

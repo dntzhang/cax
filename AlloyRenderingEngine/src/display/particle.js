@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Particle---------------------begin
+//begin-------------------AlloyPaper.Particle---------------------begin
 
-ARE.Particle = ARE.Bitmap.extend({
+AlloyPaper.Particle = AlloyPaper.Bitmap.extend({
     "ctor": function(option) {
         this._super(option.texture);
         this.originX = .5;
@@ -11,7 +11,7 @@ ARE.Particle = ARE.Bitmap.extend({
         this.y = this.position.y;
         this.rotation = option.rotation || 0;
         this.velocity = option.velocity;
-        this.acceleration = option.acceleration || new ARE.Vector2(0, 0);
+        this.acceleration = option.acceleration || new AlloyPaper.Vector2(0, 0);
         this.rotatingSpeed = option.rotatingSpeed || 0;
         this.rotatingAcceleration = option.rotatingAcceleration || 0;
         this.hideSpeed = option.hideSpeed || .01;
@@ -28,8 +28,7 @@ ARE.Particle = ARE.Bitmap.extend({
         this.alpha -= this.hideSpeed;
         this.x = this.position.x;
         this.y = this.position.y;
-        this.alpha = this.alpha;
     }
 });
 
-//end-------------------ARE.Particle---------------------end
+//end-------------------AlloyPaper.Particle---------------------end

@@ -14,8 +14,8 @@
 <script src="../dist/are.js"></script>
 
     <script>
-        (function (ARE) {
-            var Stage = ARE.Stage, Text = ARE.Text;
+        (function (AlloyPaper) {
+            var Stage = AlloyPaper.Stage, Text = AlloyPaper.Text;
             //webgl不支持渲染Text，你可以使用ARE.Label
             var stage = new Stage("#ourCanvas");
             stage.debug = true;
@@ -24,7 +24,7 @@
             text.y = 140;
             stage.add(text);
 
-        })(ARE);
+        })(AlloyPaper);
     </script>
 </body>
 </html>

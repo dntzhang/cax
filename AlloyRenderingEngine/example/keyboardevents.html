@@ -19,8 +19,8 @@
 
     <script src="src/tank.js"></script>
     <script>
-        ; (function (ARE) {
-            var Stage = ARE.Stage, Bitmap = ARE.Bitmap, Loader = ARE.Loader;
+        ; (function (AlloyPaper) {
+            var Stage = AlloyPaper.Stage, Loader = AlloyPaper.Loader;
             var ld = new Loader(), stage = new Stage("#ourCanvas");
             ld.loadRes([
                 { id: "tanks", src: "asset/img/tanks.png" }
@@ -92,7 +92,7 @@
                 }
 
             });
-        })(ARE)
+        })(AlloyPaper)
 
     </script>
 </body>

@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.Text---------------------begin
+//begin-------------------AlloyPaper.Text---------------------begin
 
-ARE.Text = ARE.DisplayObject.extend({
+AlloyPaper.Text = AlloyPaper.DisplayObject.extend({
     "ctor": function(value, font, color) {
         this._super();
         this.value = value;
@@ -18,7 +18,7 @@ ARE.Text = ARE.DisplayObject.extend({
         ctx.fillText(this.value, 0, 0);
     },
     "clone": function() {
-        var t = new ARE.Text(this.text, this.font, this.color);
+        var t = new AlloyPaper.Text(this.text, this.font, this.color);
         this.cloneProps(t);
         return t;
     },
@@ -31,4 +31,4 @@ ARE.Text = ARE.DisplayObject.extend({
     }
 });
 
-//end-------------------ARE.Text---------------------end
+//end-------------------AlloyPaper.Text---------------------end

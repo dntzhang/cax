@@ -1,7 +1,7 @@
 
-//begin-------------------ARE.FPS---------------------begin
+//begin-------------------AlloyPaper.FPS---------------------begin
 
-ARE.FPS = Class.extend({
+AlloyPaper.FPS = Class.extend({
     "statics": {
         "get": function() {
             if (!this.instance) this.instance = new this();
@@ -40,4 +40,4 @@ ARE.FPS = Class.extend({
     }
 });
 
-//end-------------------ARE.FPS---------------------end
+//end-------------------AlloyPaper.FPS---------------------end
