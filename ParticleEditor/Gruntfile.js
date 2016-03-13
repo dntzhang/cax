@@ -9,7 +9,7 @@ module.exports = function(grunt){
             },
             dist: {
 
-                src: ['lib/are.js','lib/blob.js' ,'src/PE.js', 'src/Util.js', 'src/Vector2.js', 'src/CircleAdjust.js', 'src/RectAdjust.js','src/Particle.js', 'src/ParticleSystem.js', 'src/Main.js', ],
+                src: ['lib/alloy_paper.js','lib/blob.js' ,'src/PE.js', 'src/Util.js', 'src/Vector2.js', 'src/CircleAdjust.js', 'src/RectAdjust.js','src/Particle.js', 'src/ParticleSystem.js', 'src/Main.js', ],
                 dest: 'dist/<%= pkg.name %>.js'
             }
         },

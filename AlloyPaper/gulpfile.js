@@ -15,7 +15,7 @@ gulp.task('concat', function () {
 
         'src/intro.js',
         'src/base/class.js',
-        'src/base/are.js',
+        'src/base/alloy_paper.js',
 
         'src/util/tween.js',
         'src/util/dom.js',
@@ -50,10 +50,10 @@ gulp.task('concat', function () {
         'src/outro.js'
 
     ])
-        .pipe(concat('are.js'))
+        .pipe(concat('alloy_paper.js'))
         .pipe(gulp.dest('dist'))
         .pipe(uglify())
-        .pipe(rename('are.min.js'))
+        .pipe(rename('alloy_paper.min.js'))
         .pipe(header(headerComment))
         .pipe(gulp.dest('dist'));
 });
