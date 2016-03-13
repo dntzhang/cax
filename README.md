@@ -21,7 +21,6 @@ AlloyGameEngine
 * [particle system](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/particlesystem.html) 
 * [box2d](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/box2d.html) 
 * [keyboard event](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/keyboardevents.html) 
-* [collision](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/collision.html) 
 * [scalable](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/scalable.html)
 * [cursor](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/cursor.html)
 
