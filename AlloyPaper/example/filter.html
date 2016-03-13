@@ -23,10 +23,10 @@
 <img src="asset/img/github.png" alt="" />
  </a>
     <script src="../dist/alloy_paper.js"></script>
-
+    <script src="src/RectAdjust.js"></script>
     <script>
         ; (function (AlloyPaper) {
-            var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap, Loader = AlloyPaper.Loader, RectAdjust = AlloyPaper.RectAdjust;
+            var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap, Loader = AlloyPaper.Loader;
 
             var ld = new Loader(), bmp;
             var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
