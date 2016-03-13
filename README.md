@@ -9,21 +9,21 @@ AlloyGameEngine
 
 ##### 基础例子
 
-* [bitmap](http://alloyteam.github.io/AlloyGameEngine/example/bitmap.html) 
-* [transform](http://alloyteam.github.io/AlloyGameEngine/example/transform.html) 
-* [event](http://alloyteam.github.io/AlloyGameEngine/example/event.html) 
-* [tween](http://alloyteam.github.io/AlloyGameEngine/example/tween.html) 
-* [clip](http://alloyteam.github.io/AlloyGameEngine/example/clip.html) 
-* [filter](http://alloyteam.github.io/AlloyGameEngine/example/filter.html) 
-* [shape](http://alloyteam.github.io/AlloyGameEngine/example/shape.html) 
-* [sprite](http://alloyteam.github.io/AlloyGameEngine/example/sprite.html) 
-* [text](http://alloyteam.github.io/AlloyGameEngine/example/text.html) 
-* [particle system](http://alloyteam.github.io/AlloyGameEngine/example/particlesystem.html) 
-* [box2d](http://alloyteam.github.io/AlloyGameEngine/example/box2d.html) 
-* [keyboard event](http://alloyteam.github.io/AlloyGameEngine/example/keyboardevents.html) 
-* [collision](http://alloyteam.github.io/AlloyGameEngine/example/collision.html) 
-* [scalable](http://alloyteam.github.io/AlloyGameEngine/example/scalable.html)
-* [cursor](http://alloyteam.github.io/AlloyGameEngine/example/cursor.html)
+* [bitmap](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/bitmap.html) 
+* [transform](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/transform.html) 
+* [event](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/event.html) 
+* [tween](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/tween.html) 
+* [clip](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/clip.html) 
+* [filter](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/filter.html) 
+* [shape](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/shape.html) 
+* [sprite](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/sprite.html) 
+* [text](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/text.html) 
+* [particle system](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/particlesystem.html) 
+* [box2d](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/box2d.html) 
+* [keyboard event](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/keyboardevents.html) 
+* [collision](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/collision.html) 
+* [scalable](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/scalable.html)
+* [cursor](http://alloyteam.github.io/AlloyGameEngine/AlloyPaper/example/cursor.html)
 
 ##### 一分钟快速入门
 要实现下面的效果：
@@ -68,7 +68,7 @@ stage.onTick(function () {
 
 ###工具推荐
 
-* [particle editor](http://alloyteam.github.io/AlloyGameEngine/pe/)
+* [particle editor](http://alloyteam.github.io/AlloyGameEngine/ParticleEditor/)
 * [combine images](http://kmdjs.github.io/combineimages/)
 * [image splitter](http://kmdjs.github.io/imagesplitter/)
 * [thumbnail generator](http://kmdjs.github.io/thumbnailgenerator/)
