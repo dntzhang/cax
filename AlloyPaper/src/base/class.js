@@ -1,4 +1,3 @@
-
 // The base Class implementation (does nothing)
 var Class = function () { };
 
@@ -12,24 +11,24 @@ Class.extend = function (prop) {
         if (name != "statics") {
             // Check if we're overwriting an existing function
             prototype[name] = typeof prop[name] == "function" &&
-              typeof _super[name] == "function"  ?
-              (function (name, fn) {
-                  return function () {
-                      var tmp = this._super;
+            typeof _super[name] == "function"  ?
+                (function (temp_name, fn) {
+                    return function () {
+                        var tmp = this._super;
 
-                      // Add a new ._super() method that is the same method
-                      // but on the super-class
-                      this._super = _super[name];
+                        // Add a new ._super() method that is the same method
+                        // but on the super-class
+                        this._super = _super[temp_name];
 
-                      // The method only need to be bound temporarily, so we
-                      // remove it when we're done executing
-                      var ret = fn.apply(this, arguments);
-                      this._super = tmp;
+                        // The method only need to be bound temporarily, so we
+                        // remove it when we're done executing
+                        var ret = fn.apply(this, arguments);
+                        this._super = tmp;
 
-                      return ret;
-                  };
-              })(name, prop[name]) :
-              prop[name];
+                        return ret;
+                    };
+                })(name, prop[name]) :
+                prop[name];
         }
     }
 
@@ -37,7 +36,7 @@ Class.extend = function (prop) {
     function _Class() {
         // All construction is actually done in the init method
 
-            this.ctor.apply(this, arguments);
+        this.ctor.apply(this, arguments);
     }
 
     //继承父类的静态属性
@@ -52,12 +51,12 @@ Class.extend = function (prop) {
     _Class.prototype._super = Object.create(_super);
     //静态属性和方法
     if (prop.statics) {
-        for (var name in prop.statics) {
-            if (prop.statics.hasOwnProperty(name)) {
-                _Class[name] = prop.statics[name];
-                if (name == "ctor") {
+        for (var key in prop.statics) {
+            if (prop.statics.hasOwnProperty(key)) {
+                _Class[key] = prop.statics[key];
+                if (key == "ctor") {
                     //提前执行静态构造函数
-                    _Class[name]();
+                    _Class[key]();
                 }
             }
 

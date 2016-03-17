@@ -104,6 +104,7 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
     },
     "adjustLayout": function() {
         this.offset = this._getXY(this.canvas);
+        this.style=this._getStyle();
         if (this._scaleX) {
             this.scaleToScreen(this._scaleX, this._scaleY);
         }
@@ -193,22 +194,22 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         this.stageRenderer.update();
     },
     "_correctionEvent": function (evt, type) {
-        this.adjustLayout();
+        //this.adjustLayout();
         if (evt.touches) {
             var firstTouch = evt.touches[0];
             if (firstTouch) {
-                evt.stageX = firstTouch.pageX - this.offset[0];
-                evt.stageY = firstTouch.pageY - this.offset[1];
+                evt.stageX = firstTouch.pageX;
+                evt.stageY = firstTouch.pageY;
             }
         } else {
-            evt.stageX = evt.pageX - this.offset[0];
-            evt.stageY = evt.pageY - this.offset[1];
+            evt.stageX = evt.pageX;
+            evt.stageY = evt.pageY;
         }
-        if (this.scaleType !== "normal") {
-            var p = this.correctingXY(evt.stageX, evt.stageY);
+        //if (this.scaleType !== "normal") {
+            var p = this._correction(evt.stageX, evt.stageY);
             evt.stageX = Math.round(p.x);
             evt.stageY = Math.round(p.y);
-        }
+        //}
         var callbacks = this.events[type];
         if (callbacks) {
             for (var i = 0, len = callbacks.length; i < len; i++) {
@@ -422,6 +423,7 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         canvas.style.top = 100 * (1 - scaleY) / 2 + "%";
         canvas.style.border = "0px solid #ccc";
         this.offset = this._getXY(this.canvas);
+        this.style=this._getStyle();
     },
     "scaleToBox": function (w, h) {
         this.scaleType = "box";
@@ -437,6 +439,7 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         canvas.style.top = (window.innerHeight - h) / 2 + "px";
         canvas.style.border = "0px solid #ccc";
         this.offset = this._getXY(this.canvas);
+        this.style=this._getStyle();
     },
     "correctingXY": function (x, y) {
         if (this.scaleType === "box") {
@@ -514,5 +517,26 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         } else {
             clearInterval(this.loop);
         }
+    },
+    "_getStyle":function() {
+        var style = window.getComputedStyle(this.canvas, null);
+        return {
+            boxSizing: style.boxSizing,
+            borderTopWidth: parseInt(style.borderTopWidth),
+            borderLeftWidth: parseInt(style.borderLeftWidth),
+            width:parseInt(style.width),
+            height:parseInt(style.height)
+        };
+    },
+    "_correction":function(pageX,pageY){
+        var x=pageX-this.offset[0]-this.style.borderLeftWidth,
+            y=pageY-this.offset[1]-this.style.borderTopWidth,
+            canvasWidth=this.style.width,
+            canvasHeight=this.style.height;
+        if(this.style.boxSizing==="border-box"){
+            canvasWidth-=this.style.borderLeftWidth;
+            canvasHeight-=this.style.borderTopWidth;
+        }
+        return {x: this.width*x/canvasWidth,y:this.height*y/canvasHeight};
     }
 });

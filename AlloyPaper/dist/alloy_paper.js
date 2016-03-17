@@ -14,7 +14,6 @@
 }(this, function () {
 'use strict';
 
-
 // The base Class implementation (does nothing)
 var Class = function () { };
 
@@ -28,24 +27,24 @@ Class.extend = function (prop) {
         if (name != "statics") {
             // Check if we're overwriting an existing function
             prototype[name] = typeof prop[name] == "function" &&
-              typeof _super[name] == "function"  ?
-              (function (temp_name, fn) {
-                  return function () {
-                      var tmp = this._super;
+            typeof _super[name] == "function"  ?
+                (function (temp_name, fn) {
+                    return function () {
+                        var tmp = this._super;
 
-                      // Add a new ._super() method that is the same method
-                      // but on the super-class
-                      this._super = _super[temp_name];
+                        // Add a new ._super() method that is the same method
+                        // but on the super-class
+                        this._super = _super[temp_name];
 
-                      // The method only need to be bound temporarily, so we
-                      // remove it when we're done executing
-                      var ret = fn.apply(this, arguments);
-                      this._super = tmp;
+                        // The method only need to be bound temporarily, so we
+                        // remove it when we're done executing
+                        var ret = fn.apply(this, arguments);
+                        this._super = tmp;
 
-                      return ret;
-                  };
-              })(name, prop[name]) :
-              prop[name];
+                        return ret;
+                    };
+                })(name, prop[name]) :
+                prop[name];
         }
     }
 
@@ -53,7 +52,7 @@ Class.extend = function (prop) {
     function _Class() {
         // All construction is actually done in the init method
 
-            this.ctor.apply(this, arguments);
+        this.ctor.apply(this, arguments);
     }
 
     //继承父类的静态属性
@@ -96,9 +95,6 @@ var AlloyPaper={};
 AlloyPaper.DefaultCursor = "default";
 
 AlloyPaper.Cache = {};
-
-//begin-------------------AlloyPaper.TWEEN---------------------begin
-
 AlloyPaper.TWEEN = Class.extend({
     "statics": {
         "ctor": function() {
@@ -561,8 +557,6 @@ AlloyPaper.TWEEN = Class.extend({
     }
 });
 
-//end-------------------AlloyPaper.TWEEN---------------------end
-
 
 //begin-------------------AlloyPaper.Dom---------------------begin
 
@@ -624,9 +618,6 @@ AlloyPaper.FPS = Class.extend({
 });
 
 //end-------------------AlloyPaper.FPS---------------------end
-
-
-//begin-------------------AlloyPaper.Keyboard---------------------begin
 
 AlloyPaper.Keyboard = Class.extend({
     "statics": {
@@ -1288,9 +1279,6 @@ AlloyPaper.Keyboard = Class.extend({
     }
 });
 
-//end-------------------AlloyPaper.Keyboard---------------------end
-
-
 //begin-------------------AlloyPaper.Loader---------------------begin
 
 AlloyPaper.Loader = Class.extend({
@@ -1685,7 +1673,7 @@ AlloyPaper.RAF = Class.extend({
             var requestInterval = function(fn, delay) {
                 if (!window.requestAnimationFrame && !window.webkitRequestAnimationFrame && !(window.mozRequestAnimationFrame && window.mozCancelRequestAnimationFrame) && !window.oRequestAnimationFrame && !window.msRequestAnimationFrame) return window.setInterval(fn, delay);
                 var start = new Date().getTime(),
-                    handle = new Object();
+                    handle = {};
 
                 function loop() {
                     var current = new Date().getTime(),
@@ -1758,7 +1746,7 @@ AlloyPaper.To = Class.extend({
         },
         "get": function (element) {
             var to = new this(element);
-            var stage = this.getStage(element)
+            var stage = this.getStage(element);
             stage && stage.toList.push(to);
             return to;
         },
@@ -2112,7 +2100,7 @@ AlloyPaper.Vector2 = Class.extend({
         return new AlloyPaper.Vector2(-this.x, -this.y);
     },
     "add": function(v) {
-        this.x += v.x,
+        this.x += v.x;
         this.y += v.y;
     },
     "subtract": function(v) {
@@ -2238,8 +2226,8 @@ AlloyPaper.Renderer = Class.extend({
         if (minX > AABB2[0] + AABB2[2]) return false;
         var maxY = AABB1[1] + AABB1[3];
         if (maxY < AABB2[1]) return false;
-        var maxY = AABB1[1];
-        if (maxY > AABB2[1] + AABB2[3]) return false;
+        var minY = AABB1[1];
+        if (minY > AABB2[1] + AABB2[3]) return false;
         return true;
     }
 });
@@ -2254,8 +2242,8 @@ AlloyPaper.CanvasRenderer = Class.extend({
         if (canvas) {
             this.canvas = canvas;
             this.ctx = this.canvas.getContext("2d");
-            this.height = this.canvas.width;
-            this.width = this.canvas.height;
+            this.height = this.canvas.height;
+            this.width = this.canvas.width;
         }
     },
     "hitAABB": function(ctx, o, evt, type) {
@@ -2420,9 +2408,6 @@ AlloyPaper.CanvasRenderer = Class.extend({
 });
 
 //end-------------------AlloyPaper.CanvasRenderer---------------------end
-
-
-//begin-------------------AlloyPaper.WebGLRenderer---------------------begin
 
 AlloyPaper.WebGLRenderer = Class.extend({
     "ctor": function(canvas) {
@@ -2631,9 +2616,6 @@ AlloyPaper.WebGLRenderer = Class.extend({
     }
 });
 
-//end-------------------AlloyPaper.WebGLRenderer---------------------end
-
-
 //begin-------------------AlloyPaper.DisplayObject---------------------begin
 
 AlloyPaper.DisplayObject = Class.extend({
@@ -2678,9 +2660,8 @@ AlloyPaper.DisplayObject = Class.extend({
         });
     },
     "_watch": function(target, prop, onPropertyChanged) {
-        var self = this;
         if (typeof prop === "string") {
-            var currentValue = target["__" + prop] = this[prop];
+            target["__" + prop] = this[prop];
             Object.defineProperty(target, prop, {
                 get: function() {
                     return this["__" + prop];
@@ -2693,7 +2674,7 @@ AlloyPaper.DisplayObject = Class.extend({
         } else {
             for (var i = 0, len = prop.length; i < len; i++) {
                 var propName = prop[i];
-                var currentValue = target["__" + propName] = this[propName];
+                target["__" + propName] = this[propName];
                 (function(propName) {
                     Object.defineProperty(target, propName, {
                         get: function() {
@@ -2811,8 +2792,8 @@ AlloyPaper.DisplayObject = Class.extend({
         }
     },
     "initAABB": function() {
-        var x = 0,
-            y = 0,
+        var x,
+            y,
             width = this.width,
             height = this.height,
             mtx = this._matrix;
@@ -2941,9 +2922,6 @@ AlloyPaper.DisplayObject = Class.extend({
 
 //end-------------------AlloyPaper.DisplayObject---------------------end
 
-
-//begin-------------------AlloyPaper.Bitmap---------------------begin
-
 AlloyPaper.Bitmap = AlloyPaper.DisplayObject.extend({
     "ctor": function(img) {
         this._super();
@@ -3025,9 +3003,6 @@ AlloyPaper.Bitmap = AlloyPaper.DisplayObject.extend({
     "flipX": function() {},
     "flipY": function() {}
 });
-
-//end-------------------AlloyPaper.Bitmap---------------------end
-
 
 //begin-------------------AlloyPaper.Container---------------------begin
 
@@ -3243,7 +3218,7 @@ AlloyPaper.Label = AlloyPaper.DisplayObject.extend({
         this.txtCtx = this.txtCanvas.getContext("2d");
         this.setDrawOption();
         this.shadow = option.shadow;
-        this._watch(this, ["value", "fontSize", "color", "fontFamily"], function(a, b) {
+        this._watch(this, ["value", "fontSize", "color", "fontFamily"], function() {
             this.setDrawOption();
         });
     },
@@ -3277,7 +3252,6 @@ AlloyPaper.Label = AlloyPaper.DisplayObject.extend({
         var textColour = option.color;
         var fontFamily = option.fontFamily;
         var fontWeight = option.fontWeight;
-        var backgroundColour = option.backgroundColour;
         ctx.font = textHeight + "px " + fontFamily;
         if (maxWidth && this.measureText(ctx, textToWrite) > maxWidth) {
             maxWidth = this.createMultilineText(ctx, textToWrite, maxWidth, text);
@@ -3332,11 +3306,11 @@ AlloyPaper.Label = AlloyPaper.DisplayObject.extend({
         return option;
     },
     "getPowerOfTwo": function(value, pow) {
-        var pow = pow || 1;
-        while (pow < value) {
-            pow *= 2;
+        var temp_pow = pow || 1;
+        while (temp_pow < value) {
+            temp_pow *= 2;
         }
-        return pow;
+        return temp_pow;
     },
     "measureText": function(ctx, textToMeasure) {
         return ctx.measureText(textToMeasure).width;
@@ -3346,13 +3320,12 @@ AlloyPaper.Label = AlloyPaper.DisplayObject.extend({
         var currentText = textToWrite;
         var futureText;
         var subWidth = 0;
-        var maxLineWidth = 0;
+        var maxLineWidth;
         var wordArray = textToWrite.split(" ");
         var wordsInCurrent, wordArrayLength;
         wordsInCurrent = wordArrayLength = wordArray.length;
         while (this.measureText(ctx, currentText) > maxWidth && wordsInCurrent > 1) {
             wordsInCurrent--;
-            var linebreak = false;
             currentText = futureText = "";
             for (var i = 0; i < wordArrayLength; i++) {
                 if (i < wordsInCurrent) {
@@ -3419,7 +3392,6 @@ AlloyPaper.Particle = AlloyPaper.Bitmap.extend({
         this.alpha -= this.hideSpeed;
         this.x = this.position.x;
         this.y = this.position.y;
-        this.alpha = this.alpha;
     }
 });
 
@@ -3445,7 +3417,6 @@ AlloyPaper.ParticleSystem = AlloyPaper.Container.extend({
         this.maxCount = option.maxCount || 1e3;
         this.emitX = option.emitX;
         this.emitY = option.emitY;
-        var self = this;
         if (typeof option.texture === "string") {
             if (AlloyPaper.Cache[option.texture]) {
                 this.texture = AlloyPaper.Cache[option.texture];
@@ -3571,7 +3542,6 @@ AlloyPaper.Shape = AlloyPaper.DisplayObject.extend({
         this._watch(this, "scaleX", function(prop, value) {
             this.width = this._width * value;
             this.height = this._height * this.scaleY;
-            this.originX = this.originX;
             this.shapeCanvas.width = this.width;
             this.shapeCanvas.height = this.height;
             this.shapeCtx.scale(value, this.scaleY);
@@ -3580,7 +3550,6 @@ AlloyPaper.Shape = AlloyPaper.DisplayObject.extend({
         this._watch(this, "scaleY", function(prop, value) {
             this.width = this._width * this.scaleX;
             this.height = this._height * value;
-            this.originY = this.originY;
             this.shapeCanvas.width = this.width;
             this.shapeCanvas.height = this.height;
             this.shapeCtx.scale(this.scaleX, value);
@@ -3680,10 +3649,9 @@ AlloyPaper.Sprite = AlloyPaper.DisplayObject.extend({
         this.currentAnimation = option.currentAnimation || null;
         this.rect = [0, 0, 10, 10];
         this.visible = false;
-        this.bitmaps = [],
+        this.bitmaps = [];
         this._loadedCount = 0;
-        var self = this,
-            len = this.option.imgs.length;
+        var len = this.option.imgs.length;
         for (var i = 0; i < len; i++) {
             var urlOrImg = this.option.imgs[i];
             if (typeof urlOrImg === "string") {
@@ -3691,17 +3659,19 @@ AlloyPaper.Sprite = AlloyPaper.DisplayObject.extend({
                     this.bitmaps.push(new AlloyPaper.Bitmap(AlloyPaper.Cache[urlOrImg]));
                     this._loadedCount++;
                 } else {
-                    var bmp = new AlloyPaper.Bitmap();
-                    bmp._sprite = this;
-                    bmp.onImageLoad(function() {
-                        bmp._sprite._loadedCount++;
-                        if (bmp._sprite._loadedCount === len) {
-                            bmp._sprite.visible = true;
-                            delete bmp._sprite;
-                        }
-                    });
-                    bmp.useImage(this.option.imgs[i]);
-                    this.bitmaps.push(bmp);
+                    (function(){
+                        var bmp = new AlloyPaper.Bitmap();
+                        bmp._sprite = this;
+                        bmp.onImageLoad(function() {
+                            bmp._sprite._loadedCount++;
+                            if (bmp._sprite._loadedCount === len) {
+                                bmp._sprite.visible = true;
+                                delete bmp._sprite;
+                            }
+                        });
+                        bmp.useImage(this.option.imgs[i]);
+                        this.bitmaps.push(bmp);
+                    })();
                 }
             } else {
                 this._loadedCount++;
@@ -3774,8 +3744,7 @@ AlloyPaper.Sprite = AlloyPaper.DisplayObject.extend({
         var self = this;
         self.currentAnimation = animation;
         var opt = self.option;
-        var frames = opt.animations[self.currentAnimation].frames,
-            len = frames.length;
+        var frames = opt.animations[self.currentAnimation].frames;
         self.rect = opt.frames[frames[self.animationFrameIndex]];
         self.width = self.rect[2];
         self.height = self.rect[3];
@@ -3788,9 +3757,6 @@ AlloyPaper.Sprite = AlloyPaper.DisplayObject.extend({
 });
 
 //end-------------------AlloyPaper.Sprite---------------------end
-
-
-//begin-------------------AlloyPaper.Stage---------------------begin
 
 AlloyPaper.Stage = AlloyPaper.Container.extend({
     "ctor": function(canvas, openWebGL) {
@@ -3898,6 +3864,7 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
     },
     "adjustLayout": function() {
         this.offset = this._getXY(this.canvas);
+        this.style=this._getStyle();
         if (this._scaleX) {
             this.scaleToScreen(this._scaleX, this._scaleY);
         }
@@ -3987,22 +3954,22 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         this.stageRenderer.update();
     },
     "_correctionEvent": function (evt, type) {
-        this.adjustLayout();
+        //this.adjustLayout();
         if (evt.touches) {
             var firstTouch = evt.touches[0];
             if (firstTouch) {
-                evt.stageX = firstTouch.pageX - this.offset[0];
-                evt.stageY = firstTouch.pageY - this.offset[1];
+                evt.stageX = firstTouch.pageX;
+                evt.stageY = firstTouch.pageY;
             }
         } else {
-            evt.stageX = evt.pageX - this.offset[0];
-            evt.stageY = evt.pageY - this.offset[1];
+            evt.stageX = evt.pageX;
+            evt.stageY = evt.pageY;
         }
-        if (this.scaleType !== "normal") {
-            var p = this.correctingXY(evt.stageX, evt.stageY);
+        //if (this.scaleType !== "normal") {
+            var p = this._correction(evt.stageX, evt.stageY);
             evt.stageX = Math.round(p.x);
             evt.stageY = Math.round(p.y);
-        }
+        //}
         var callbacks = this.events[type];
         if (callbacks) {
             for (var i = 0, len = callbacks.length; i < len; i++) {
@@ -4104,14 +4071,14 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
                     container._tickIntervalLast = new Date();
                     container._tickIntervalPrev = new Date();
                 }
-              
+
                 var itv = (container._tickIntervalCurrent - container._tickIntervalLast) +( container._tickIntervalCurrent - container._tickIntervalPrev);
                 if (itv > container._tickInterval) {
                     container.tick();
                     container._tickIntervalLast = container._tickIntervalCurrent;
                 }
                 container._tickIntervalPrev= new Date();
-                
+
             }
         }
         var children = container.children,
@@ -4126,7 +4093,7 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
                     } else {
                         child._tickIntervalCurrent = new Date();
                         if (!child._tickIntervalLast){
-                            child._tickIntervalLast = new Date();                        
+                            child._tickIntervalLast = new Date();
                             child._tickIntervalPrev = new Date();
                         }
                         var itv =( child._tickIntervalCurrent - child._tickIntervalLast)+(child._tickIntervalCurrent-child._tickIntervalPrev);
@@ -4135,7 +4102,7 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
                             child._tickIntervalLast = child._tickIntervalCurrent;
                         }
                         child._tickIntervalPrev= new Date();
-                       
+
                     }
                 }
                 if (child.baseInstanceof == "Container") {
@@ -4158,14 +4125,14 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
             }
             fn._ARE_CurrentDate = new Date();
             var interval = (fn._ARE_CurrentDate - fn._ARE_PrevDate) + (fn._ARE_CurrentDate - fn._ARE_LastDate);
-       
+
             if (interval > fn._ARE_Interval) {
                 fn();
                 fn._ARE_PrevDate = fn._ARE_CurrentDate;
             }
             fn._ARE_LastDate = fn._ARE_CurrentDate;
         }
-       
+
         if(this.autoUpdate)this.update();
         if (this.debug) {
             this.getFPS();
@@ -4216,6 +4183,7 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         canvas.style.top = 100 * (1 - scaleY) / 2 + "%";
         canvas.style.border = "0px solid #ccc";
         this.offset = this._getXY(this.canvas);
+        this.style=this._getStyle();
     },
     "scaleToBox": function (w, h) {
         this.scaleType = "box";
@@ -4231,6 +4199,7 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         canvas.style.top = (window.innerHeight - h) / 2 + "px";
         canvas.style.border = "0px solid #ccc";
         this.offset = this._getXY(this.canvas);
+        this.style=this._getStyle();
     },
     "correctingXY": function (x, y) {
         if (this.scaleType === "box") {
@@ -4308,10 +4277,29 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         } else {
             clearInterval(this.loop);
         }
+    },
+    "_getStyle":function() {
+        var style = window.getComputedStyle(this.canvas, null);
+        return {
+            boxSizing: style.boxSizing,
+            borderTopWidth: parseInt(style.borderTopWidth),
+            borderLeftWidth: parseInt(style.borderLeftWidth),
+            width:parseInt(style.width),
+            height:parseInt(style.height)
+        };
+    },
+    "_correction":function(pageX,pageY){
+        var x=pageX-this.offset[0]-this.style.borderLeftWidth,
+            y=pageY-this.offset[1]-this.style.borderTopWidth,
+            canvasWidth=this.style.width,
+            canvasHeight=this.style.height;
+        if(this.style.boxSizing==="border-box"){
+            canvasWidth-=this.style.borderLeftWidth;
+            canvasHeight-=this.style.borderTopWidth;
+        }
+        return {x: this.width*x/canvasWidth,y:this.height*y/canvasHeight};
     }
 });
-
-//end-------------------AlloyPaper.Stage---------------------end
 
 
 //begin-------------------AlloyPaper.Text---------------------begin
