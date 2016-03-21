@@ -309,6 +309,7 @@ AlloyPaper.To = Class.extend({
                 if (self._pause) return;
                 self.index++;
                 self.start();
+                if (cmd.end) cmd.end.call(self.element);
                 if (last && self.complete) self.complete();
             }, cmd[1][0]);
             break;
