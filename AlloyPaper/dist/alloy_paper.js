@@ -2360,7 +2360,7 @@ AlloyPaper.CanvasRenderer = Class.extend({
         return false;
     },
     "clear": function() {
-        this.ctx.clearRect(0, 0, this.height, this.width);
+        this.ctx.clearRect(0, 0, this.width, this.height);
     },
     "renderObj": function(ctx, o) {
         var mtx = o._matrix;
