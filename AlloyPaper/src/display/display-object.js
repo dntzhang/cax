@@ -79,6 +79,19 @@ AlloyPaper.DisplayObject = Class.extend({
         this.events[type] || (this.events[type] = []);
         this.events[type].push(fn);
     },
+    "off": function (type, fn) {
+        var fns=this.events[type];
+        if (fns) {
+            var i = 0, len = fns.length;
+            for (; i < len; i++) {
+                if (fns[i] === fn) {
+                    fns.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
+    },
     "execEvent": function (type, event) {
         if (this.events) {
             var fns = this.events[type],
@@ -300,6 +313,12 @@ AlloyPaper.DisplayObject = Class.extend({
     },
     "onDbClick": function(fn) {
         this.on("dblclick", fn);
+    },
+    "addEventListener": function (type, handler) {
+        this.on(type, handler);
+    },
+    "removeEventListener": function (type, handler) {
+        this.off(type, handler);
     }
 });
 
