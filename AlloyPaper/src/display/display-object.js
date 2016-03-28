@@ -311,14 +311,22 @@ AlloyPaper.DisplayObject = Class.extend({
     "onTouchEnd": function(fn) {
         this.on("pressup", fn);
     },
+    "onTouchCancel": function () {
+        this.on("touchcancel", fn);
+    },
     "onDbClick": function(fn) {
         this.on("dblclick", fn);
     },
     "addEventListener": function (type, handler) {
-        this.on(type, handler);
+        this.on(this._normalizeEventType(type), handler);
     },
     "removeEventListener": function (type, handler) {
-        this.off(type, handler);
+        this.off(this._normalizeEventType(type), handler);
+    },
+    "_normalizeEventType": function (type) {
+        var newType = { "touchstart": "pressdown", "touchmove": "pressmove", "touchend": "pressup" }[type];
+        if (newType) return newType;
+        return type;
     }
 });
 

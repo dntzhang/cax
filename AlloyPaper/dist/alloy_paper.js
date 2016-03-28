@@ -2929,14 +2929,22 @@ AlloyPaper.DisplayObject = Class.extend({
     "onTouchEnd": function(fn) {
         this.on("pressup", fn);
     },
+    "onTouchCancel": function () {
+        this.on("touchcancel", fn);
+    },
     "onDbClick": function(fn) {
         this.on("dblclick", fn);
     },
     "addEventListener": function (type, handler) {
-        this.on(type, handler);
+        this.on(this._normalizeEventType(type), handler);
     },
     "removeEventListener": function (type, handler) {
-        this.off(type, handler);
+        this.off(this._normalizeEventType(type), handler);
+    },
+    "_normalizeEventType": function (type) {
+        var newType = { "touchstart": "pressdown", "touchmove": "pressmove", "touchend": "pressup" }[type];
+        if (newType) return newType;
+        return type;
     }
 });
 
@@ -3874,6 +3882,7 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         this.canvas.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
         this.canvas.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
         this.canvas.addEventListener("touchend", this._handleMouseUp.bind(this), false);
+        this.canvas.addEventListener("touchcancel", this._handleTouchCancel.bind(this), false);
         document.addEventListener("DOMContentLoaded", this.adjustLayout.bind(this), false);
         window.addEventListener("load", this.adjustLayout.bind(this), false);
         window.addEventListener("resize", this.adjustLayout.bind(this), false);
@@ -4051,6 +4060,11 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         this._pressmoveObjs = null;
         this._correctionEvent(evt, "pressup");
         this._getObjectUnderPoint(evt, "pressup");
+    },
+    "_handleTouchCancel": function (evt) {
+        this._pressmoveObjs = null;
+        this._correctionEvent(evt, "touchcancel");
+        this._getObjectUnderPoint(evt, "touchcancel");
     },
     "_handleDblClick": function(evt) {
         this._correctionEvent(evt, evt.type);
