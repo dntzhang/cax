@@ -3984,8 +3984,8 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
     },
     "_correctionEvent": function (evt, type) {
         //this.adjustLayout();
-        if (evt.touches) {
-            var firstTouch = evt.touches[0];
+        if (evt.touches||evt.changedTouches) {
+            var firstTouch = evt.touches[0] || evt.changedTouches[0];
             if (firstTouch) {
                 evt.stageX = firstTouch.pageX;
                 evt.stageY = firstTouch.pageY;
