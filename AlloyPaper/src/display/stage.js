@@ -488,8 +488,8 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         return "WebGL";
     },
     "getFPS": function() {
-        var fps = AlloyPaper.FPS.get();
-        this.fpsValue = fps.value;
+       // var fps = AlloyPaper.FPS.get();
+       // this.fpsValue = fps.value;
     },
     "addEvent": function(el, type, fn, capture) {
         if (type === "mousewheel" && document.mozHidden !== undefined) {

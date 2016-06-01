@@ -1,5 +1,5 @@
 //AlloyPaper
-var AlloyPaper={};
+var AlloyPaper = {};
 
 AlloyPaper.DefaultCursor = "default";
 
