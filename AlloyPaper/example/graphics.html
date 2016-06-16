@@ -20,7 +20,7 @@
             //webgl不支持渲染Graphics，你可以使用ARE.Shape
             var stage = new Stage("#ourCanvas");
 
-            var graphics = new Graphics(73, 76);
+            var graphics = new Graphics();
             graphics.beginPath().arc(377 / 4 - 58, 391 / 4 - 58, 140 / 4, 0, Math.PI * 2).closePath()
                 .fillStyle('#f4862c').fill()
                 .strokeStyle("#046ab4").lineWidth(8 / 4).stroke()

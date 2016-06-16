@@ -6,14 +6,25 @@ AlloyPaper.Graphics = AlloyPaper.DisplayObject.extend({
         this._super();
         this.cmds = [];
         this.assMethod = ["fillStyle", "strokeStyle", "lineWidth"];
+
+        this.currentGradient = null;
     },
     "draw": function(ctx) {
         for (var i = 0, len = this.cmds.length; i < len; i++) {
-            var cmd = this.cmds[i];
-            if (this.assMethod.join("-").match(new RegExp("\\b" + cmd[0] + "\\b", "g"))) {
-                ctx[cmd[0]] = cmd[1][0];
-            } else {
-                ctx[cmd[0]].apply(ctx, Array.prototype.slice.call(cmd[1]));
+            var cmd = this.cmds[i], methodName = cmd[0];
+            if (this.assMethod.join("-").match(new RegExp("\\b" + methodName + "\\b", "g"))) {
+                console.log(methodName,cmd)
+                ctx[methodName] = cmd[1][0];
+            } else if (methodName === "addColorStop") {
+                this.currentGradient && this.currentGradient.addColorStop(cmd[1][0], cmd[1][1]);
+            } else if(methodName ==="fillGradient"){
+                ctx.fillStyle = this.currentGradient;
+            }else {
+                var result = ctx[methodName].apply(ctx, Array.prototype.slice.call(cmd[1]));
+                if (methodName === "createRadialGradient" || methodName === "createLinearGradient") {
+                    this.currentGradient = result;
+                }
+                
             }
         }
     },
@@ -77,7 +88,25 @@ AlloyPaper.Graphics = AlloyPaper.DisplayObject.extend({
         this.cmds.push(["bezierCurveTo", arguments]);
         return this;
     },
-    "clone": function() {}
+    "createRadialGradient": function () {
+        this.cmds.push(["createRadialGradient", arguments]);
+        return this;
+    },
+    "createLinearGradient": function () {
+        this.cmds.push(["createLinearGradient", arguments]);
+        return this;
+    },
+    "addColorStop": function () {
+        this.cmds.push(["addColorStop", arguments]);
+        return this;
+    },
+    "fillGradient": function () {
+        this.cmds.push(["fillGradient"]);
+        return this;
+    },
+    "clone": function () {
+
+    }
 });
 
 //end-------------------AlloyPaper.Graphics---------------------end
