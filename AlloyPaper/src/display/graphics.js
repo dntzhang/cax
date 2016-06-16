@@ -13,7 +13,6 @@ AlloyPaper.Graphics = AlloyPaper.DisplayObject.extend({
         for (var i = 0, len = this.cmds.length; i < len; i++) {
             var cmd = this.cmds[i], methodName = cmd[0];
             if (this.assMethod.join("-").match(new RegExp("\\b" + methodName + "\\b", "g"))) {
-                console.log(methodName,cmd)
                 ctx[methodName] = cmd[1][0];
             } else if (methodName === "addColorStop") {
                 this.currentGradient && this.currentGradient.addColorStop(cmd[1][0], cmd[1][1]);
