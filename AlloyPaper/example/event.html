@@ -3,9 +3,9 @@
 <head>
     <title>Alloy Render Engine</title>
 </head>
-<body>   
-    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="width: 50%; border:100px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas>
-  
+<body>
+    <div style="text-align:center;" id="stage">
+
     </div>
     <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
         <img src="asset/img/github.png" alt="" />
@@ -18,7 +18,7 @@
             var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap, Loader = AlloyPaper.Loader, Container=AlloyPaper.Container;
 
             var ld = new Loader();
-            var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
+            var stage = new Stage(480,480,"#stage");
          
             ld.loadRes([
                 { id: "hero", src: "asset/img/atLogo.png" }]

@@ -4,7 +4,7 @@
     <title>Alloy Render Engine</title>
 </head>
 <body>   
-    <div style="text-align:center;"><canvas width="640" id="ourCanvas" height="400" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> 
+    <div style="text-align:center;" id="stage">
   
     </div>
     <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
@@ -15,7 +15,7 @@
     <script>
         ;(function (AlloyPaper) {
             var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap;
-            var stage = new Stage("#ourCanvas");
+            var stage = new Stage(640,400,"#stage");
             var bmp = new Bitmap("asset/img/clip.jpg");
             stage.add(bmp);
             var x = 100,y=100,speedX=1,r=100,speedY=1;

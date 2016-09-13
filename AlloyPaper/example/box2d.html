@@ -5,7 +5,9 @@
 </head>
 <body>   
   
-    <div style="text-align:center;"><canvas width="640" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"> </canvas>  <canvas id="canvas" width="640" height="480"  style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas>
+    <div style="text-align:center;">
+        <div id="stage"></div>
+        <canvas id="canvas" width="640" height="480"  style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas>
 	 <div style="text-align:center;">
      please click the left canvas!
 
@@ -35,7 +37,7 @@
             var worldScale = 30;
             var world = new b2World(new b2Vec2(0, 30), true), bodies = [];
 
-            var stage = new Stage("#ourCanvas");
+            var stage = new Stage(640,480,'#stage');
 
 
             stage.onTick(function () {

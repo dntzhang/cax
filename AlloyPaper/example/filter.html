@@ -5,7 +5,8 @@
 </head>
 <body>   
     
-    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> 
+    <div style="text-align:center;">
+        <div id="stage"></div>
          <div style="text-align:center;">
               <div >
                 <div id="rCtrl"></div>
@@ -31,7 +32,7 @@
             var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap, Loader = AlloyPaper.Loader;
 
             var ld = new Loader(), bmp;
-            var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
+            var stage = new Stage(480,480,"#stage");
             ld.loadRes([
                 { id: "atLogo", src: "asset/img/atLogo.png" }
             ]);

@@ -3,12 +3,9 @@
 <head>
     <title>Alloy Render Engine</title>
 </head>
-<body>   
- 
-    <div style="text-align:center;">
-        <canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> 
-    </div>
+<body>
 
+    <div style="text-align:center;" id="stage"></div>
     <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
         <img src="asset/img/github.png" alt="" />
     </a>
@@ -18,7 +15,7 @@
         (function (AlloyPaper) {
             var Stage = AlloyPaper.Stage, Shape = AlloyPaper.Shape;
 
-            var stage = new Stage("#ourCanvas");
+            var stage = new Stage(480,480,"#stage");
 
             var shape = new Shape(73, 76);
             shape.beginPath().arc(377 / 4 - 58, 391 / 4 - 58, 140 / 4, 0, Math.PI * 2).closePath()

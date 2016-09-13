@@ -1,9 +1,13 @@
 AlloyPaper.Stage = AlloyPaper.Container.extend({
-    "ctor": function(canvas, openWebGL) {
+    "ctor": function(width, height, renderTo, openWebGL) {
         this._super();
-        this.canvas = typeof canvas == "string" ? document.querySelector(canvas) : canvas;
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
+        this.renderTo = typeof renderTo == "string" ? document.querySelector(renderTo) : renderTo;
+        this.canvas = document.createElement("canvas");
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.renderTo.appendChild(this.canvas);
+        this.width = width;
+        this.height = height;
         this.AABB = [0, 0, this.width, this.height];
         this.hitAABB = true;
         this.hitRenderer = new AlloyPaper.CanvasRenderer();

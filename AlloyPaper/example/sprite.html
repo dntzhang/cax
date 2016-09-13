@@ -3,9 +3,9 @@
 <head>
     <title>Alloy Render Engine</title>
 </head>
-<body>   
-     
-    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> </div>
+<body>
+
+<div style="text-align:center;" id="stage"></div>
  <div  style="text-align:center;">
      <input type="button" id="pBtn" value="play" /><input type="button" id="sBtn"  value="pause" />
   <input type="button" id="gapBtn"  value="gotoAndPlay" /><input type="button" id="pasBtn" value="gotoAndStop" />   <input type="button" id="gapoBtn"  value="gotoAndPlayOnce" />
@@ -16,14 +16,15 @@
     </a>
     <script src="../dist/alloy_paper.js"></script>
     <script src="asset/loader.js"></script>
+    <script src="asset/dom.js"></script>
     <script>
         (function (AlloyPaper) {
             var Stage = AlloyPaper.Stage, Sprite = AlloyPaper.Sprite, Loader = AlloyPaper.Loader, Dom=AlloyPaper.Dom;
 
             	
 	
-            var ld = new Loader(), pgBmp;
-            var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
+            var ld = new Loader();
+            var stage = new Stage(480,480,"#stage");
             ld.loadRes([
                 { id: "kmd", src: "asset/img/kmd.png" },
                 { id: "pig", src: "asset/img/pig.png" },

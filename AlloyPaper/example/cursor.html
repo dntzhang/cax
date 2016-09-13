@@ -4,7 +4,7 @@
     <title>Alloy Render Engine</title>
 </head>
 <body>   
-    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> 
+    <div style="text-align:center;" id="stage"></canvas>
   
     </div>
   <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
@@ -17,7 +17,7 @@
             var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap;
             AlloyPaper.DefaultCursor = "url(asset/img/default_cursor.png) 12 12, auto";
 
-            var stage = new Stage("#ourCanvas");
+            var stage = new Stage(480,480,"#stage");
             stage.hitAABB = false;
             var bmp = new Bitmap("asset/img/atLogo.png");
             bmp.originX = 0.5;

@@ -3,10 +3,10 @@
 <head>
     <title>Alloy Render Engine</title>
 </head>
-<body>   
+<body>
 
-    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);background-color:black;"></canvas> 
-          
+    <div style="text-align:center;" id="stage">
+
     </div>
 
     <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
@@ -47,9 +47,9 @@
 
 
 
-            var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap, ParticleSystem = AlloyPaper.ParticleSystem, Vector2 = AlloyPaper.Vector2, FPS = AlloyPaper.FPS;
+            var Stage = AlloyPaper.Stage,  ParticleSystem = AlloyPaper.ParticleSystem, Vector2 = AlloyPaper.Vector2;
 
-            var pgBmp, stage = new Stage("#ourCanvas", localStorage.webgl == "1");
+            var stage = new Stage(480,480,"#stage");
             stage.debug = true;
 
             var ps = new ParticleSystem({

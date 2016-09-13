@@ -3,10 +3,10 @@
 <head>
     <title>Alloy Render Engine</title>
 </head>
-<body>   
+<body>
 
-    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> 
-      
+    <div style="text-align:center;" id="stage">
+
     </div>
     <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
         <img src="asset/img/github.png" alt="" />
@@ -19,7 +19,7 @@
 
 
 
-            var stage = new Stage("#ourCanvas", localStorage.webgl == "1");
+            var stage = new Stage(480,480,"#stage");
             var label = new Label({
                 value: "Alloy Game Engine",
                 fontSize: 35,

@@ -4,7 +4,8 @@
     <title>Alloy Render Engine</title>
 </head>
 <body>   
-    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);background-color:black;"></canvas> 
+    <div style="text-align:center;">
+        <div id="stage"></div>
            <div style="text-align:center;">移动鼠标改变发射点位置</div>
         
     </div>
@@ -25,7 +26,7 @@
             
             var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap, ParticleSystem = AlloyPaper.ParticleSystem, Shape = AlloyPaper.Shape, Loader = AlloyPaper.Loader, Label = AlloyPaper.Label, Vector2 = AlloyPaper.Vector2, FPS = AlloyPaper.FPS, Sprite = AlloyPaper.Sprite;
 
-            var stage = new Stage("#ourCanvas");
+            var stage = new Stage(480,480,'#stage');
 
             var ps = new ParticleSystem({
                 emitX: 200,

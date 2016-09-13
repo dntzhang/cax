@@ -5,7 +5,8 @@
 </head>
 <body>   
   
-    <div style="text-align:center;"><canvas width="640" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"> </canvas>  
+    <div style="text-align:center;" >
+        <div id="stage"></div>
 	 <div style="text-align:center;">
    try to press【left】【right】【up】【down】【left+right】【up+right】【up+down】【left+down】
 
@@ -23,7 +24,7 @@
     <script>
         ; (function (AlloyPaper) {
             var Stage = AlloyPaper.Stage, Loader = AlloyPaper.Loader;
-            var ld = new Loader(), stage = new Stage("#ourCanvas");
+            var ld = new Loader(), stage = new Stage(640,480,"#stage");
             ld.loadRes([
                 { id: "tanks", src: "asset/img/tanks.png" }
             ]);

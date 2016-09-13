@@ -9,8 +9,9 @@
         <input id="range1" type="range" name="range" min="0" max="1" step="0.1" value="0.5" />
          <input id="range2" type="range" name="range" min="0" max="1" step="0.1" value="0.5" />
     </div>
-    
-    <canvas  width="500" id="ourCanvas" height="500" style="background-color:#ccc;"></canvas>
+
+
+
 
     <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
         <img src="asset/img/github.png" alt="" />
@@ -20,15 +21,15 @@
     <script src="asset/loader.js"></script>
     <script>
         (function (AlloyPaper) {
-            var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap, Loader = AlloyPaper.Loader, Vector2 = AlloyPaper.Vector2, FPS = AlloyPaper.FPS;
+            var Stage = AlloyPaper.Stage, Bitmap = AlloyPaper.Bitmap, Loader = AlloyPaper.Loader;
 
-            var ld = new Loader(), tank, stage = new Stage("#ourCanvas");
+            var ld = new Loader(),  stage = new Stage(500,500,"body");;
             ld.loadRes([{ id: "atLogo", src: "asset/img/atLogo.png" }]);
             var range1 = document.querySelector("#range1");
             var range2 = document.querySelector("#range2");
 
             stage.scaleToScreen(range1.value, range2.value);
-            var self = this;
+
             ld.complete(function () {
 
 

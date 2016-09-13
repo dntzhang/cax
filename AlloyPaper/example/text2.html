@@ -3,11 +3,9 @@
 <head>
     <title>Alloy Render Engine</title>
 </head>
-<body>   
+<body>
+<div style="text-align:center;" id="stage"></div>
 
-    <div style="text-align:center;"><canvas width="480" id="ourCanvas" height="480" style="border:1px solid #ccc;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></canvas> 
-      
-    </div>
     <a href="https://github.com/AlloyTeam/AlloyGameEngine" target="_blank" style="position:absolute;right:0;top:0;">
         <img src="asset/img/github.png" alt="" />
     </a>
@@ -17,7 +15,7 @@
         (function (AlloyPaper) {
             var Stage = AlloyPaper.Stage, Text = AlloyPaper.Text;
             //webgl不支持渲染Text，你可以使用ARE.Label
-            var stage = new Stage("#ourCanvas");
+            var stage = new Stage(480,480,"#stage");
       
             var text = new Text("Alloy Game Engine", "35px arial", "red");
             text.x = 100;
