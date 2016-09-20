@@ -1526,7 +1526,7 @@ AlloyPaper.Sprite = AlloyPaper.DisplayObject.extend({
 //end-------------------AlloyPaper.Sprite---------------------end
 
 AlloyPaper.Stage = AlloyPaper.Container.extend({
-    "ctor": function(width,height,renderTo, openWebGL) {
+    "ctor": function(width, height, renderTo, openWebGL) {
         this._super();
         this.renderTo = typeof renderTo == "string" ? document.querySelector(renderTo) : renderTo;
         this.canvas = document.createElement("canvas");
@@ -1754,7 +1754,11 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         this._correctionEvent(evt, evt.type);
         this._getObjectUnderPoint(evt, evt.type);
     },
+    "stopMoveEvent":function(){
+        this._stopMoveEventMonitor = true;
+    },
     "_handleMouseMove": function(evt) {
+        if(this._stopMoveEventMonitor)return;
         this._currentMoveTime = new Date();
         if (this._currentMoveTime - this._preMoveTime > this._moveInterval / 2) {
             this._correctionEvent(evt, evt.type);

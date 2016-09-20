@@ -227,7 +227,11 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         this._correctionEvent(evt, evt.type);
         this._getObjectUnderPoint(evt, evt.type);
     },
+    "stopMoveEvent":function(){
+        this._stopMoveEventMonitor = true;
+    },
     "_handleMouseMove": function(evt) {
+        if(this._stopMoveEventMonitor)return;
         this._currentMoveTime = new Date();
         if (this._currentMoveTime - this._preMoveTime > this._moveInterval / 2) {
             this._correctionEvent(evt, evt.type);
