@@ -1633,6 +1633,7 @@ AlloyPaper.Stage = AlloyPaper.Container.extend({
         this.scaleType = "normal";
 
         this.setCursor(AlloyPaper.DefaultCursor);
+        this.style = this._getStyle();
     },
     "adjustLayout": function() {
         this.offset = this._getXY(this.canvas);
