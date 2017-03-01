@@ -6,14 +6,26 @@ class CanvasRender extends  Render {
     constructor(canvas){
         super()
         this.ctx = canvas.getContext('2d')
+        this.canvas = canvas
+        this.width = this.canvas.width
+        this.height = this.canvas.height
     }
 
     render(obj){
+        this.ctx.save()
+        obj._computeMatrix();
+        this.ctx.transform(obj._matrix.a,obj._matrix.b,obj._matrix.c,obj._matrix.d,obj._matrix.tx,obj._matrix.ty)
         if(obj instanceof Graphics){
-            this.renderGraphics(obj);
+            this.renderGraphics(obj)
         }else if (obj instanceof  Container){
         }
+        this.ctx.restore()
     }
+
+    clear(){
+        this.ctx.clearRect(0,0,this.width,this.height)
+    }
+
 
     renderGraphics(obj){
 
@@ -22,13 +34,13 @@ class CanvasRender extends  Render {
             if (obj.assMethod.join("-").match(new RegExp("\\b" + methodName + "\\b", "g"))) {
                 this.ctx[methodName] = cmd[1][0];
             } else if (methodName === "addColorStop") {
-                obj.currentGradient && obj.currentGradient.addColorStop(cmd[1][0], cmd[1][1]);
+                obj.currentGradient && obj.currentGradient.addColorStop(cmd[1][0], cmd[1][1])
             } else if (methodName === "fillGradient") {
-                this.ctx.fillStyle = obj.currentGradient;
+                this.ctx.fillStyle = obj.currentGradient
             } else {
-                let result = this.ctx[methodName].apply(this.ctx, Array.prototype.slice.call(cmd[1]));
+                let result = this.ctx[methodName].apply(this.ctx, Array.prototype.slice.call(cmd[1]))
                 if (methodName === "createRadialGradient" || methodName === "createLinearGradient") {
-                    obj.currentGradient = result;
+                    obj.currentGradient = result
                 }
             }
         })

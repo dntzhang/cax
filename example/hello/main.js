@@ -35,5 +35,9 @@ graphics.beginPath()
     .stroke();
 
 graphics.x = graphics.y = 200;
+
 stage.add(graphics);
-stage.update();
+setInterval(()=>{
+    graphics.rotation++
+    stage.update();
+},16)

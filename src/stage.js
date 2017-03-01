@@ -13,6 +13,7 @@ class Stage extends Container  {
     }
 
     update(){
+        this.renderer.clear()
         this.children.forEach( child => {
             this.renderer.render(child)
         })

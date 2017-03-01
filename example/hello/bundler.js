@@ -53,8 +53,12 @@
 	graphics.beginPath().arc(377 / 4 - 58, 391 / 4 - 58, 140 / 4, 0, Math.PI * 2).closePath().fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(8 / 4).stroke().beginPath().moveTo(298 / 4 - 58, 506 / 4 - 58).bezierCurveTo(236 / 4 - 58, 396 / 4 - 58, 302 / 4 - 58, 272 / 4 - 58, 407 / 4 - 58, 254 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(328 / 4 - 58, 258 / 4 - 58).bezierCurveTo(360 / 4 - 58, 294 / 4 - 58, 451 / 4 - 58, 272 / 4 - 58, 503 / 4 - 58, 332 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(282 / 4 - 58, 288 / 4 - 58).bezierCurveTo(391 / 4 - 58, 292 / 4 - 58, 481 / 4 - 58, 400 / 4 - 58, 488 / 4 - 58, 474 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(242 / 4 - 58, 352 / 4 - 58).bezierCurveTo(352 / 4 - 58, 244 / 4 - 58, 319 / 4 - 58, 423 / 4 - 58, 409 / 4 - 58, 527 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke();
 
 	graphics.x = graphics.y = 200;
+
 	stage.add(graphics);
-	stage.update();
+	setInterval(function () {
+	    graphics.rotation++;
+	    stage.update();
+	}, 16);
 
 /***/ },
 /* 1 */
@@ -217,7 +221,7 @@
 
 /***/ },
 /* 4 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
@@ -225,15 +229,35 @@
 	    value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _matrix2d = __webpack_require__(3);
+
+	var _matrix2d2 = _interopRequireDefault(_matrix2d);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var DisplayObject = function DisplayObject() {
-	    _classCallCheck(this, DisplayObject);
+	var DisplayObject = function () {
+	    function DisplayObject() {
+	        _classCallCheck(this, DisplayObject);
 
-	    this.alpha = this.scaleX = this.scaleY = 1;
-	    this.x = this.y = this.rotation = this.originX = this.originY = this.skewX = this.skewY = this.regX = this.regY = 0;
-	    this.cursor = "default";
-	};
+	        this.alpha = this.scaleX = this.scaleY = 1;
+	        this.x = this.y = this.rotation = this.skewX = this.skewY = this.regX = this.regY = 0;
+	        this.cursor = "default";
+	        this._matrix = new _matrix2d2["default"]();
+	    }
+
+	    _createClass(DisplayObject, [{
+	        key: "_computeMatrix",
+	        value: function _computeMatrix() {
+	            this._matrix.identity().appendTransform(this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.skewX, this.skewY, this.regX, this.regY);
+	        }
+	    }]);
+
+	    return DisplayObject;
+	}();
 
 	exports["default"] = DisplayObject;
 
@@ -666,6 +690,7 @@
 	        value: function update() {
 	            var _this2 = this;
 
+	            this.renderer.clear();
 	            this.children.forEach(function (child) {
 	                _this2.renderer.render(child);
 	            });
@@ -718,15 +743,27 @@
 	        var _this = _possibleConstructorReturn(this, (CanvasRender.__proto__ || Object.getPrototypeOf(CanvasRender)).call(this));
 
 	        _this.ctx = canvas.getContext('2d');
+	        _this.canvas = canvas;
+	        _this.width = _this.canvas.width;
+	        _this.height = _this.canvas.height;
 	        return _this;
 	    }
 
 	    _createClass(CanvasRender, [{
 	        key: 'render',
 	        value: function render(obj) {
+	            this.ctx.save();
+	            obj._computeMatrix();
+	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
 	            if (obj instanceof _graphics2['default']) {
 	                this.renderGraphics(obj);
 	            } else if (obj instanceof _container2['default']) {}
+	            this.ctx.restore();
+	        }
+	    }, {
+	        key: 'clear',
+	        value: function clear() {
+	            this.ctx.clearRect(0, 0, this.width, this.height);
 	        }
 	    }, {
 	        key: 'renderGraphics',
@@ -940,6 +977,9 @@
 	    }, {
 	        key: "renderGraphics",
 	        value: function renderGraphics() {}
+	    }, {
+	        key: "clear",
+	        value: function clear() {}
 	    }]);
 
 	    return Render;

@@ -10,6 +10,11 @@ class Render  {
     renderGraphics(){
 
     }
+
+    clear(){
+
+
+    }
 }
 
 export default Render;
