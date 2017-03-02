@@ -20,11 +20,7 @@ var config  = {
                 loader: 'babel-loader',
                 test: /\.js$/,
                 query: {
-                    presets: 'es2015',
-                    plugins : [
-                        "transform-es3-property-literals",
-                        "transform-es3-member-expression-literals"
-                    ]
+                    presets: 'es2015'
                 }
             }
         ]
