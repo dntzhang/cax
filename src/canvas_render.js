@@ -26,6 +26,13 @@ class CanvasRender extends  Render {
         this.ctx.clearRect(0,0,this.width,this.height)
     }
 
+    hitAABB(){
+
+    }
+
+    hitPixel(){
+
+    }
 
     renderGraphics(obj){
 

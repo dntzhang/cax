@@ -36,8 +36,16 @@ graphics.beginPath()
 
 graphics.x = graphics.y = 200;
 
+graphics.addEventListener('click',function(){
+
+    alert(1)
+},true)
+
 stage.add(graphics);
-setInterval(()=>{
-    graphics.rotation++
-    stage.update();
-},16)
+stage.update();
+
+console.log(graphics)
+//setInterval(()=>{
+//    graphics.rotation++
+//    stage.update();
+//},16)
