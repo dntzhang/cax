@@ -34,8 +34,45 @@ class EventDispatcher{
         })
     }
 
-    dispatchEvent (eventObj, bubbles, cancelable) {
+    dispatchEvent (evt) {
 
+
+        if (!this.parent) {
+
+            this._dispatchEvent(evt);
+        } else {
+
+            var top=this, list=[top];
+            while (top.parent) { list.push(top = top.parent); }
+            var i, l=list.length;
+
+            // capture & atTarget
+            for (i=l-1; i>=0 && !evt.propagationStopped; i--) {
+
+                list[i]._dispatchEvent(evt,0);
+            }
+            // bubbling
+            for (i=0; i<l && !evt.propagationStopped; i++) {
+                list[i]._dispatchEvent(evt,1);
+            }
+        }
+    }
+
+    _dispatchEvent(evt ,type){
+
+        if(this._captureListeners && type===0 ) {
+            let cls = this._captureListeners[evt.type];
+            cls && cls.forEach(fn=> {
+                fn.call(this, evt);
+            })
+        }
+
+        if( this._listeners && type === 1) {
+            let ls = this._listeners[evt.type];
+            ls && ls.forEach(fn=> {
+                fn.call(this, evt);
+            })
+        }
     }
 
 }

@@ -35,10 +35,15 @@ graphics.beginPath()
     .stroke();
 
 graphics.x = graphics.y = 200;
-
 graphics.addEventListener('click',function(){
+    //didn't exeu alert(2) because  evt.stopPropagation();
+    alert(2)
+},false);
 
+graphics.addEventListener('click',function(evt){
     alert(1)
+
+    evt.stopPropagation();
 },true)
 
 stage.add(graphics);

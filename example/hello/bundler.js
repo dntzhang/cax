@@ -53,10 +53,15 @@
 	graphics.beginPath().arc(377 / 4 - 58, 391 / 4 - 58, 140 / 4, 0, Math.PI * 2).closePath().fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(8 / 4).stroke().beginPath().moveTo(298 / 4 - 58, 506 / 4 - 58).bezierCurveTo(236 / 4 - 58, 396 / 4 - 58, 302 / 4 - 58, 272 / 4 - 58, 407 / 4 - 58, 254 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(328 / 4 - 58, 258 / 4 - 58).bezierCurveTo(360 / 4 - 58, 294 / 4 - 58, 451 / 4 - 58, 272 / 4 - 58, 503 / 4 - 58, 332 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(282 / 4 - 58, 288 / 4 - 58).bezierCurveTo(391 / 4 - 58, 292 / 4 - 58, 481 / 4 - 58, 400 / 4 - 58, 488 / 4 - 58, 474 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(242 / 4 - 58, 352 / 4 - 58).bezierCurveTo(352 / 4 - 58, 244 / 4 - 58, 319 / 4 - 58, 423 / 4 - 58, 409 / 4 - 58, 527 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke();
 
 	graphics.x = graphics.y = 200;
-
 	graphics.addEventListener('click', function () {
+	    //didn't exeu because  evt.stopPropagation();
+	    alert(2);
+	}, false);
 
+	graphics.addEventListener('click', function (evt) {
 	    alert(1);
+
+	    evt.stopPropagation();
 	}, true);
 
 	stage.add(graphics);
@@ -86,15 +91,15 @@
 
 	var _display_object2 = _interopRequireDefault(_display_object);
 
-	var _container = __webpack_require__(5);
+	var _container = __webpack_require__(6);
 
 	var _container2 = _interopRequireDefault(_container);
 
-	var _stage = __webpack_require__(6);
+	var _stage = __webpack_require__(7);
 
 	var _stage2 = _interopRequireDefault(_stage);
 
-	var _graphics = __webpack_require__(8);
+	var _graphics = __webpack_require__(9);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -243,7 +248,7 @@
 
 	var _matrix2d2 = _interopRequireDefault(_matrix2d);
 
-	var _event_dispatcher = __webpack_require__(10);
+	var _event_dispatcher = __webpack_require__(5);
 
 	var _event_dispatcher2 = _interopRequireDefault(_event_dispatcher);
 
@@ -285,6 +290,122 @@
 
 /***/ },
 /* 5 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var EventDispatcher = function () {
+	    function EventDispatcher() {
+	        _classCallCheck(this, EventDispatcher);
+
+	        this._listeners = null;
+	        this._captureListeners = null;
+	    }
+
+	    _createClass(EventDispatcher, [{
+	        key: "addEventListener",
+	        value: function addEventListener(type, listener, useCapture) {
+	            var listeners;
+	            if (useCapture) {
+	                listeners = this._captureListeners = this._captureListeners || {};
+	            } else {
+	                listeners = this._listeners = this._listeners || {};
+	            }
+	            var arr = listeners[type];
+	            if (arr) {
+	                this.removeEventListener(type, listener, useCapture);
+	            }
+	            arr = listeners[type]; // remove may have deleted the array
+	            if (!arr) {
+	                listeners[type] = [listener];
+	            } else {
+	                arr.push(listener);
+	            }
+	            return listener;
+	        }
+	    }, {
+	        key: "removeEventListener",
+	        value: function removeEventListener(type, listener, useCapture) {
+	            var listeners = useCapture ? this._captureListeners : this._listeners;
+	            if (!listeners) {
+	                return;
+	            }
+	            var arr = listeners[type];
+	            if (!arr) {
+	                return;
+	            }
+
+	            arr.every(function (item, index) {
+	                if (item == listener) {
+	                    arr.splice(index, 1);
+	                    return false;
+	                }
+	            });
+	        }
+	    }, {
+	        key: "dispatchEvent",
+	        value: function dispatchEvent(evt) {
+
+	            if (!this.parent) {
+
+	                this._dispatchEvent(evt);
+	            } else {
+
+	                var top = this,
+	                    list = [top];
+	                while (top.parent) {
+	                    list.push(top = top.parent);
+	                }
+	                var i,
+	                    l = list.length;
+
+	                // capture & atTarget
+	                for (i = l - 1; i >= 0 && !evt.propagationStopped; i--) {
+
+	                    list[i]._dispatchEvent(evt, 0);
+	                }
+	                // bubbling
+	                for (i = 0; i < l && !evt.propagationStopped; i++) {
+	                    list[i]._dispatchEvent(evt, 1);
+	                }
+	            }
+	        }
+	    }, {
+	        key: "_dispatchEvent",
+	        value: function _dispatchEvent(evt, type) {
+	            var _this = this;
+
+	            if (this._captureListeners && type === 0) {
+	                var cls = this._captureListeners[evt.type];
+	                cls && cls.forEach(function (fn) {
+	                    fn.call(_this, evt);
+	                });
+	            }
+
+	            if (this._listeners && type === 1) {
+	                var ls = this._listeners[evt.type];
+	                ls && ls.forEach(function (fn) {
+	                    fn.call(_this, evt);
+	                });
+	            }
+	        }
+	    }]);
+
+	    return EventDispatcher;
+	}();
+
+	exports.default = EventDispatcher;
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -334,7 +455,7 @@
 	exports.default = Container;
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -345,11 +466,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _container = __webpack_require__(5);
+	var _container = __webpack_require__(6);
 
 	var _container2 = _interopRequireDefault(_container);
 
-	var _canvas_render = __webpack_require__(7);
+	var _canvas_render = __webpack_require__(8);
 
 	var _canvas_render2 = _interopRequireDefault(_canvas_render);
 
@@ -427,7 +548,7 @@
 	exports.default = Stage;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -438,15 +559,15 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _container = __webpack_require__(5);
+	var _container = __webpack_require__(6);
 
 	var _container2 = _interopRequireDefault(_container);
 
-	var _graphics = __webpack_require__(8);
+	var _graphics = __webpack_require__(9);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _render = __webpack_require__(9);
+	var _render = __webpack_require__(10);
 
 	var _render2 = _interopRequireDefault(_render);
 
@@ -524,7 +645,7 @@
 	exports.default = CanvasRender;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -683,7 +804,7 @@
 	exports.default = Graphics;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -718,78 +839,6 @@
 	exports.default = Render;
 
 /***/ },
-/* 10 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	var EventDispatcher = function () {
-	    function EventDispatcher() {
-	        _classCallCheck(this, EventDispatcher);
-
-	        this._listeners = null;
-	        this._captureListeners = null;
-	    }
-
-	    _createClass(EventDispatcher, [{
-	        key: "addEventListener",
-	        value: function addEventListener(type, listener, useCapture) {
-	            var listeners;
-	            if (useCapture) {
-	                listeners = this._captureListeners = this._captureListeners || {};
-	            } else {
-	                listeners = this._listeners = this._listeners || {};
-	            }
-	            var arr = listeners[type];
-	            if (arr) {
-	                this.removeEventListener(type, listener, useCapture);
-	            }
-	            arr = listeners[type]; // remove may have deleted the array
-	            if (!arr) {
-	                listeners[type] = [listener];
-	            } else {
-	                arr.push(listener);
-	            }
-	            return listener;
-	        }
-	    }, {
-	        key: "removeEventListener",
-	        value: function removeEventListener(type, listener, useCapture) {
-	            var listeners = useCapture ? this._captureListeners : this._listeners;
-	            if (!listeners) {
-	                return;
-	            }
-	            var arr = listeners[type];
-	            if (!arr) {
-	                return;
-	            }
-
-	            arr.every(function (item, index) {
-	                if (item == listener) {
-	                    arr.splice(index, 1);
-	                    return false;
-	                }
-	            });
-	        }
-	    }, {
-	        key: "dispatchEvent",
-	        value: function dispatchEvent(eventObj, bubbles, cancelable) {}
-	    }]);
-
-	    return EventDispatcher;
-	}();
-
-	exports.default = EventDispatcher;
-
-/***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -801,17 +850,21 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _container = __webpack_require__(5);
+	var _container = __webpack_require__(6);
 
 	var _container2 = _interopRequireDefault(_container);
 
-	var _graphics = __webpack_require__(8);
+	var _graphics = __webpack_require__(9);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _render = __webpack_require__(9);
+	var _render = __webpack_require__(10);
 
 	var _render2 = _interopRequireDefault(_render);
+
+	var _event = __webpack_require__(12);
+
+	var _event2 = _interopRequireDefault(_event);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -833,6 +886,8 @@
 	        _this.canvas.width = 1;
 	        _this.canvas.height = 1;
 	        _this.ctx = _this.canvas.getContext('2d');
+
+	        //document.body.appendChild(this.canvas)
 	        return _this;
 	    }
 
@@ -857,7 +912,7 @@
 	        value: function hitAABB(root, evt) {}
 	    }, {
 	        key: 'hitPixel',
-	        value: function hitPixel(o, evt, type) {
+	        value: function hitPixel(o, evt) {
 	            var ctx = this.ctx;
 	            var mtx = o._hitMatrix;
 	            var list = o.children.slice(0),
@@ -868,7 +923,7 @@
 	                mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
 	                if (!this.checkBoundEvent(child)) continue;
 	                ctx.save();
-	                var target = this._hitPixel(child, mtx, evt, type);
+	                var target = this._hitPixel(child, evt, mtx);
 	                ctx.restore();
 	                if (target) return target;
 	            }
@@ -889,11 +944,48 @@
 	                o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
 	            }
 	            mtx = o._hitMatrix;
-
+	            mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
 	            if (o instanceof _graphics2.default) {
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-	                o.draw(ctx);
+	                this.renderGraphics(o);
 	            }
+
+	            if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
+	                this._dispatchEvent(o, evt);
+
+	                return o;
+	            }
+	        }
+	    }, {
+	        key: '_dispatchEvent',
+	        value: function _dispatchEvent(obj, evt) {
+	            var mockEvt = new _event2.default();
+	            mockEvt.stageX = evt.StageX;
+	            mockEvt.stageY = evt.stageY;
+	            mockEvt.pureEvent = evt;
+	            mockEvt.type = evt.type;
+	            obj.dispatchEvent(mockEvt);
+	        }
+	    }, {
+	        key: 'renderGraphics',
+	        value: function renderGraphics(obj) {
+	            var _this2 = this;
+
+	            obj.cmds.forEach(function (cmd) {
+	                var methodName = cmd[0];
+	                if (obj.assMethod.join("-").match(new RegExp("\\b" + methodName + "\\b", "g"))) {
+	                    _this2.ctx[methodName] = cmd[1][0];
+	                } else if (methodName === "addColorStop") {
+	                    obj.currentGradient && obj.currentGradient.addColorStop(cmd[1][0], cmd[1][1]);
+	                } else if (methodName === "fillGradient") {
+	                    _this2.ctx.fillStyle = obj.currentGradient;
+	                } else {
+	                    var result = _this2.ctx[methodName].apply(_this2.ctx, Array.prototype.slice.call(cmd[1]));
+	                    if (methodName === "createRadialGradient" || methodName === "createLinearGradient") {
+	                        obj.currentGradient = result;
+	                    }
+	                }
+	            });
 	        }
 	    }]);
 
@@ -901,6 +993,42 @@
 	}(_render2.default);
 
 	exports.default = HitRender;
+
+/***/ },
+/* 12 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Event = function () {
+	    function Event() {
+	        _classCallCheck(this, Event);
+
+	        this.propagationStopped = false;
+	        this.stageX = null;
+	        this.stageY = null;
+	        this.pureEvent = null;
+	    }
+
+	    _createClass(Event, [{
+	        key: "stopPropagation",
+	        value: function stopPropagation() {
+	            this.propagationStopped = true;
+	        }
+	    }]);
+
+	    return Event;
+	}();
+
+	exports.default = Event;
 
 /***/ }
 /******/ ]);
