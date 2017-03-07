@@ -35,21 +35,68 @@ graphics.beginPath()
     .stroke();
 
 graphics.x = graphics.y = 200;
+graphics.cursor = 'move'
+graphics.originX = 40
+graphics.originY = 40
+
+stage.add(graphics);
+stage.update();
+
 graphics.addEventListener('click',function(){
     //didn't exeu alert(2) because  evt.stopPropagation();
     alert(2)
 },false);
 
 graphics.addEventListener('click',function(evt){
-    alert(1)
-
+    //alert(1)
     evt.stopPropagation();
 },true)
 
-stage.add(graphics);
-stage.update();
+graphics.addEventListener('mouseover',function(evt){
+    //evt.stopPropagation();
+    graphics.scaleX = graphics.scaleY = 2
+    stage.update()
+})
 
-console.log(graphics)
+graphics.addEventListener('mouseout',function(evt){
+    graphics.scaleX = graphics.scaleY = 1
+    stage.update()
+})
+
+
+
+let isMouseDown = false
+let preX = null
+let preY = null
+
+graphics.addEventListener('mousedown',function(evt){
+    isMouseDown = true
+    preX = evt.stageX
+    preY = evt.stageY
+
+    console.log(preX)
+    stage.update()
+})
+
+graphics.addEventListener('mousemove',function(evt){
+    if(isMouseDown) {
+        graphics.x += evt.stageX - preX
+        graphics.y += evt.stageY - preY
+        console.log( evt.stageX)
+        stage.update();
+
+        preX = evt.stageX
+        preY = evt.stageY
+    }
+})
+
+graphics.addEventListener('mouseup',function(evt){
+
+    stage.update();
+})
+
+
+
 //setInterval(()=>{
 //    graphics.rotation++
 //    stage.update();

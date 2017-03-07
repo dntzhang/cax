@@ -11,7 +11,7 @@ class HitRender extends  Render {
         this.canvas.width = 1
         this.canvas.height = 1
         this.ctx = this.canvas.getContext('2d')
-
+        //debug event
         //document.body.appendChild(this.canvas)
     }
 
@@ -41,7 +41,7 @@ class HitRender extends  Render {
         for (let i = l - 1; i >= 0; i--) {
             let child = list[i];
             mtx.initialize(1, 0, 0, 1, 0, 0);
-            mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+            mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY,  o.originX, o.originY);
             if (!this.checkBoundEvent(child)) continue;
             ctx.save();
             var target = this._hitPixel( child, evt, mtx );
@@ -63,26 +63,25 @@ class HitRender extends  Render {
             o._hitMatrix.initialize(1, 0, 0, 1, 0, 0)
         }
         mtx = o._hitMatrix;
-        mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+        mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
         if (o instanceof Graphics) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             this.renderGraphics(o);
         }
 
         if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
-            this._dispatchEvent(o, evt);
-
-            return o;
+            this._dispatchEvent(o, evt)
+            return o
         }
     }
 
     _dispatchEvent(obj,evt){
-        let mockEvt  = new Event();
-        mockEvt.stageX = evt.StageX;
-        mockEvt.stageY = evt.stageY;
-        mockEvt.pureEvent = evt;
-        mockEvt.type = evt.type;
-        obj.dispatchEvent(mockEvt);
+        let mockEvt  = new Event()
+        mockEvt.stageX = evt.stageX
+        mockEvt.stageY = evt.stageY
+        mockEvt.pureEvent = evt
+        mockEvt.type = evt.type
+        obj.dispatchEvent(mockEvt)
     }
 
     renderGraphics(obj){

@@ -18,7 +18,7 @@ class Matrix2D {
         return this
     }
 
-    appendTransform (x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
+    appendTransform (x, y, scaleX, scaleY, rotation, skewX, skewY, originX, originY) {
         if (rotation % 360) {
             var r = rotation * DEG_TO_RAD
             var cos = Math.cos(r)
@@ -35,9 +35,9 @@ class Matrix2D {
         } else {
             this.append(cos * scaleX, sin * scaleX, -sin * scaleY, cos * scaleY, x, y)
         }
-        if (regX || regY) {
-            this.tx -= regX * this.a + regY * this.c
-            this.ty -= regX * this.b + regY * this.d
+        if (originX || originY) {
+            this.tx -= originX * this.a + originY * this.c
+            this.ty -= originX * this.b + originY * this.d
         }
         return this
     }

@@ -53,21 +53,64 @@
 	graphics.beginPath().arc(377 / 4 - 58, 391 / 4 - 58, 140 / 4, 0, Math.PI * 2).closePath().fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(8 / 4).stroke().beginPath().moveTo(298 / 4 - 58, 506 / 4 - 58).bezierCurveTo(236 / 4 - 58, 396 / 4 - 58, 302 / 4 - 58, 272 / 4 - 58, 407 / 4 - 58, 254 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(328 / 4 - 58, 258 / 4 - 58).bezierCurveTo(360 / 4 - 58, 294 / 4 - 58, 451 / 4 - 58, 272 / 4 - 58, 503 / 4 - 58, 332 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(282 / 4 - 58, 288 / 4 - 58).bezierCurveTo(391 / 4 - 58, 292 / 4 - 58, 481 / 4 - 58, 400 / 4 - 58, 488 / 4 - 58, 474 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(242 / 4 - 58, 352 / 4 - 58).bezierCurveTo(352 / 4 - 58, 244 / 4 - 58, 319 / 4 - 58, 423 / 4 - 58, 409 / 4 - 58, 527 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke();
 
 	graphics.x = graphics.y = 200;
-	graphics.addEventListener('click', function () {
-	    //didn't exeu because  evt.stopPropagation();
-	    alert(2);
-	}, false);
-
-	graphics.addEventListener('click', function (evt) {
-	    alert(1);
-
-	    evt.stopPropagation();
-	}, true);
+	graphics.cursor = 'move';
+	graphics.originX = 40;
+	graphics.originY = 40;
 
 	stage.add(graphics);
 	stage.update();
 
-	console.log(graphics);
+	graphics.addEventListener('click', function () {
+	    //didn't exeu alert(2) because  evt.stopPropagation();
+	    alert(2);
+	}, false);
+
+	graphics.addEventListener('click', function (evt) {
+	    //alert(1)
+	    evt.stopPropagation();
+	}, true);
+
+	graphics.addEventListener('mouseover', function (evt) {
+	    //evt.stopPropagation();
+	    graphics.scaleX = graphics.scaleY = 2;
+	    stage.update();
+	});
+
+	graphics.addEventListener('mouseout', function (evt) {
+	    graphics.scaleX = graphics.scaleY = 1;
+	    stage.update();
+	});
+
+	var isMouseDown = false;
+	var preX = null;
+	var preY = null;
+
+	graphics.addEventListener('mousedown', function (evt) {
+	    isMouseDown = true;
+	    preX = evt.stageX;
+	    preY = evt.stageY;
+
+	    console.log(preX);
+	    stage.update();
+	});
+
+	graphics.addEventListener('mousemove', function (evt) {
+	    if (isMouseDown) {
+	        graphics.x += evt.stageX - preX;
+	        graphics.y += evt.stageY - preY;
+	        console.log(evt.stageX);
+	        stage.update();
+
+	        preX = evt.stageX;
+	        preY = evt.stageY;
+	    }
+	});
+
+	graphics.addEventListener('mouseup', function (evt) {
+
+	    stage.update();
+	});
+
 	//setInterval(()=>{
 	//    graphics.rotation++
 	//    stage.update();
@@ -91,15 +134,15 @@
 
 	var _display_object2 = _interopRequireDefault(_display_object);
 
-	var _container = __webpack_require__(6);
+	var _container = __webpack_require__(7);
 
 	var _container2 = _interopRequireDefault(_container);
 
-	var _stage = __webpack_require__(7);
+	var _stage = __webpack_require__(8);
 
 	var _stage2 = _interopRequireDefault(_stage);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -160,7 +203,7 @@
 	        }
 	    }, {
 	        key: "appendTransform",
-	        value: function appendTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
+	        value: function appendTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, originX, originY) {
 	            if (rotation % 360) {
 	                var r = rotation * DEG_TO_RAD;
 	                var cos = Math.cos(r);
@@ -177,9 +220,9 @@
 	            } else {
 	                this.append(cos * scaleX, sin * scaleX, -sin * scaleY, cos * scaleY, x, y);
 	            }
-	            if (regX || regY) {
-	                this.tx -= regX * this.a + regY * this.c;
-	                this.ty -= regX * this.b + regY * this.d;
+	            if (originX || originY) {
+	                this.tx -= originX * this.a + originY * this.c;
+	                this.ty -= originX * this.b + originY * this.d;
 	            }
 	            return this;
 	        }
@@ -252,6 +295,10 @@
 
 	var _event_dispatcher2 = _interopRequireDefault(_event_dispatcher);
 
+	var _uid = __webpack_require__(6);
+
+	var _uid2 = _interopRequireDefault(_uid);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -269,17 +316,18 @@
 	        var _this = _possibleConstructorReturn(this, (DisplayObject.__proto__ || Object.getPrototypeOf(DisplayObject)).call(this));
 
 	        _this.alpha = _this.scaleX = _this.scaleY = 1;
-	        _this.x = _this.y = _this.rotation = _this.skewX = _this.skewY = _this.regX = _this.regY = 0;
+	        _this.x = _this.y = _this.rotation = _this.skewX = _this.skewY = _this.originX = _this.originY = 0;
 	        _this.cursor = "default";
 	        _this._matrix = new _matrix2d2.default();
 	        _this._hitMatrix = new _matrix2d2.default();
+	        _this.id = _uid2.default.get();
 	        return _this;
 	    }
 
 	    _createClass(DisplayObject, [{
 	        key: '_computeMatrix',
 	        value: function _computeMatrix() {
-	            this._matrix.identity().appendTransform(this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.skewX, this.skewY, this.regX, this.regY);
+	            this._matrix.identity().appendTransform(this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.skewX, this.skewY, this.originX, this.originY);
 	        }
 	    }]);
 
@@ -406,6 +454,25 @@
 
 /***/ },
 /* 6 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var UID = {};
+
+	UID._nextID = 0;
+
+	UID.get = function () {
+	    return UID._nextID++;
+	};
+
+	exports.default = UID;
+
+/***/ },
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -455,7 +522,7 @@
 	exports.default = Container;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -466,19 +533,25 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _container = __webpack_require__(6);
+	var _container = __webpack_require__(7);
 
 	var _container2 = _interopRequireDefault(_container);
 
-	var _canvas_render = __webpack_require__(8);
+	var _canvas_render = __webpack_require__(9);
 
 	var _canvas_render2 = _interopRequireDefault(_canvas_render);
 
-	var _hit_render = __webpack_require__(11);
+	var _hit_render = __webpack_require__(12);
 
 	var _hit_render2 = _interopRequireDefault(_hit_render);
 
+	var _event = __webpack_require__(13);
+
+	var _event2 = _interopRequireDefault(_event);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -505,25 +578,103 @@
 	            _this._handleClick(evt);
 	        });
 
+	        _this.canvas.addEventListener("mousemove", function (evt) {
+	            _this._handleMouseMove(evt);
+	        });
+
+	        _this.canvas.addEventListener("mousedown", function (evt) {
+	            _this._handleMouseDown(evt);
+	        });
+	        _this.canvas.addEventListener("mouseup", function (evt) {
+	            _this._handleMouseUp(evt);
+	        });
+	        //this.canvas.addEventListener("click", this._handleClick.bind(this), false);
+
+	        //this.canvas.addEventListener("dblclick", this._handleDblClick.bind(this), false);
+	        //this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+	        //this.canvas.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
+	        //this.canvas.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
+	        //this.canvas.addEventListener("touchend", this._handleMouseUp.bind(this), false);
+	        //this.canvas.addEventListener("touchcancel", this._handleTouchCancel.bind(this), false);
+
 	        _this.borderTopWidth = 0;
 	        _this.borderLeftWidth = 0;
 
 	        _this.hitAABB = false;
 	        _this._hitRender = new _hit_render2.default();
+	        //get rect again when trigger onscroll onresize event!?
+	        _this._boundingClientRect = _this.canvas.getBoundingClientRect();
+	        _this._overObject = null;
 	        return _this;
 	    }
 
 	    _createClass(Stage, [{
 	        key: '_handleClick',
 	        value: function _handleClick(evt) {
-	            var rect = this.canvas.getBoundingClientRect();
-	            evt.stageX = evt.clientX - rect.left - this.borderLeftWidth;
-	            evt.stageY = evt.clientY - rect.top - this.borderTopWidth;
-	            this._getObjectUnderPoint(evt);
+	            var obj = this._getObjectUnderPoint(evt);
+	        }
+	    }, {
+	        key: '_handleMouseDown',
+	        value: function _handleMouseDown(evt) {
+	            var obj = this._getObjectUnderPoint(evt);
+	        }
+	    }, {
+	        key: '_handleMouseUp',
+	        value: function _handleMouseUp(evt) {
+	            var obj = this._getObjectUnderPoint(evt);
+	        }
+	    }, {
+	        key: '_handleMouseMove',
+	        value: function _handleMouseMove(evt) {
+
+	            var obj = this._getObjectUnderPoint(evt);
+	            var mockEvt = new _event2.default();
+	            mockEvt.stageX = evt.stageX;
+	            mockEvt.stageY = evt.stageY;
+	            mockEvt.pureEvent = evt;
+
+	            if (obj) {
+	                if (this._overObject === null) {
+	                    mockEvt.type = 'mouseover';
+	                    obj.dispatchEvent(mockEvt);
+	                    this._overObject = obj;
+	                    this._setCursor(obj.cursor);
+	                } else {
+	                    if (obj.id !== this._overObject.id) {
+	                        mockEvt.type = 'mouseover';
+	                        obj.dispatchEvent(mockEvt);
+	                        this._setCursor(obj.cursor);
+	                        this._overObject.dispatchEvent(_defineProperty({
+	                            pureEvent: evt,
+	                            type: 'mouseout',
+	                            stageX: evt.stageX,
+	                            stageY: evt.stageY
+	                        }, 'pureEvent', evt));
+	                        this._overObject = obj;
+	                    } else {
+	                        mockEvt.type = 'mousemove';
+	                        obj.dispatchEvent(mockEvt);
+	                    }
+	                }
+	            } else if (this._overObject) {
+
+	                mockEvt.type = 'mouseout';
+	                this._overObject.dispatchEvent(mockEvt);
+	                this._overObject = null;
+	                this._setCursor(this.cursor);
+	            }
+	        }
+	    }, {
+	        key: '_setCursor',
+	        value: function _setCursor(cursor) {
+	            this.canvas.style.cursor = cursor;
 	        }
 	    }, {
 	        key: '_getObjectUnderPoint',
 	        value: function _getObjectUnderPoint(evt) {
+	            this._boundingClientRect = this.canvas.getBoundingClientRect();
+	            evt.stageX = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth;
+	            evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth;
 	            if (this.hitAABB) {
 	                return this._hitRender.hitAABB(this, evt);
 	            } else {
@@ -548,7 +699,7 @@
 	exports.default = Stage;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -559,15 +710,15 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _container = __webpack_require__(6);
+	var _container = __webpack_require__(7);
 
 	var _container2 = _interopRequireDefault(_container);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _render = __webpack_require__(10);
+	var _render = __webpack_require__(11);
 
 	var _render2 = _interopRequireDefault(_render);
 
@@ -645,7 +796,7 @@
 	exports.default = CanvasRender;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -804,7 +955,7 @@
 	exports.default = Graphics;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -839,7 +990,7 @@
 	exports.default = Render;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -850,19 +1001,19 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _container = __webpack_require__(6);
+	var _container = __webpack_require__(7);
 
 	var _container2 = _interopRequireDefault(_container);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _render = __webpack_require__(10);
+	var _render = __webpack_require__(11);
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _event = __webpack_require__(12);
+	var _event = __webpack_require__(13);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -886,7 +1037,7 @@
 	        _this.canvas.width = 1;
 	        _this.canvas.height = 1;
 	        _this.ctx = _this.canvas.getContext('2d');
-
+	        //debug event
 	        //document.body.appendChild(this.canvas)
 	        return _this;
 	    }
@@ -920,7 +1071,7 @@
 	            for (var i = l - 1; i >= 0; i--) {
 	                var child = list[i];
 	                mtx.initialize(1, 0, 0, 1, 0, 0);
-	                mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+	                mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
 	                if (!this.checkBoundEvent(child)) continue;
 	                ctx.save();
 	                var target = this._hitPixel(child, evt, mtx);
@@ -944,7 +1095,7 @@
 	                o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
 	            }
 	            mtx = o._hitMatrix;
-	            mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.regX, o.regY);
+	            mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
 	            if (o instanceof _graphics2.default) {
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                this.renderGraphics(o);
@@ -952,7 +1103,6 @@
 
 	            if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
 	                this._dispatchEvent(o, evt);
-
 	                return o;
 	            }
 	        }
@@ -960,7 +1110,7 @@
 	        key: '_dispatchEvent',
 	        value: function _dispatchEvent(obj, evt) {
 	            var mockEvt = new _event2.default();
-	            mockEvt.stageX = evt.StageX;
+	            mockEvt.stageX = evt.stageX;
 	            mockEvt.stageY = evt.stageY;
 	            mockEvt.pureEvent = evt;
 	            mockEvt.type = evt.type;
@@ -995,7 +1145,7 @@
 	exports.default = HitRender;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	"use strict";
