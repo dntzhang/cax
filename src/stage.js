@@ -42,6 +42,7 @@ class Stage extends Container  {
     }
 
     _handleClick(evt){
+        //this._computeStageXY(evt)
         let obj = this._getObjectUnderPoint(evt)
 
     }
@@ -55,9 +56,7 @@ class Stage extends Container  {
     }
 
     _handleMouseOut(evt) {
-        this._boundingClientRect = this.canvas.getBoundingClientRect()
-        evt.stageX  = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth
-        evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth
+        this._computeStageXY(evt)
         this.dispatchEvent({
             pureEvent: evt,
             type: 'mouseout',
@@ -122,14 +121,18 @@ class Stage extends Container  {
     }
 
     _getObjectUnderPoint (evt) {
-        this._boundingClientRect = this.canvas.getBoundingClientRect()
-        evt.stageX  = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth
-        evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth
+        this._computeStageXY(evt)
         if (this.hitAABB) {
             return this._hitRender.hitAABB(this, evt)
         } else {
             return this._hitRender.hitPixel(this, evt)
         }
+    }
+
+    _computeStageXY(evt){
+        this._boundingClientRect = this.canvas.getBoundingClientRect()
+        evt.stageX  = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth
+        evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth
     }
 
     update(){

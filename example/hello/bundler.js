@@ -119,7 +119,6 @@
 
 	stage.addEventListener('mouseout', function (evt) {
 	    isMouseDown = false;
-	    console.log('out2');
 	    graphics.scaleX = graphics.scaleY = 1;
 	});
 
@@ -630,6 +629,7 @@
 	    _createClass(Stage, [{
 	        key: '_handleClick',
 	        value: function _handleClick(evt) {
+	            //this._computeStageXY(evt)
 	            var obj = this._getObjectUnderPoint(evt);
 	        }
 	    }, {
@@ -645,9 +645,7 @@
 	    }, {
 	        key: '_handleMouseOut',
 	        value: function _handleMouseOut(evt) {
-	            this._boundingClientRect = this.canvas.getBoundingClientRect();
-	            evt.stageX = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth;
-	            evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth;
+	            this._computeStageXY(evt);
 	            this.dispatchEvent(_defineProperty({
 	                pureEvent: evt,
 	                type: 'mouseout',
@@ -712,14 +710,19 @@
 	    }, {
 	        key: '_getObjectUnderPoint',
 	        value: function _getObjectUnderPoint(evt) {
-	            this._boundingClientRect = this.canvas.getBoundingClientRect();
-	            evt.stageX = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth;
-	            evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth;
+	            this._computeStageXY(evt);
 	            if (this.hitAABB) {
 	                return this._hitRender.hitAABB(this, evt);
 	            } else {
 	                return this._hitRender.hitPixel(this, evt);
 	            }
+	        }
+	    }, {
+	        key: '_computeStageXY',
+	        value: function _computeStageXY(evt) {
+	            this._boundingClientRect = this.canvas.getBoundingClientRect();
+	            evt.stageX = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth;
+	            evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth;
 	        }
 	    }, {
 	        key: 'update',
