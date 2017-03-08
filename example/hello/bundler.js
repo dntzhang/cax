@@ -66,13 +66,13 @@
 	}, false);
 
 	graphics.addEventListener('click', function (evt) {
-	    //alert(1)
+	    console.log('click');
 	    evt.stopPropagation();
 	}, true);
 
 	graphics.addEventListener('mouseover', function (evt) {
 	    //evt.stopPropagation();
-	    graphics.scaleX = graphics.scaleY = 2;
+	    graphics.scaleX = graphics.scaleY = 1.1;
 	    stage.update();
 	});
 
@@ -86,19 +86,20 @@
 	var preY = null;
 
 	graphics.addEventListener('mousedown', function (evt) {
+	    graphics.scaleX = graphics.scaleY = 1.2;
 	    isMouseDown = true;
 	    preX = evt.stageX;
 	    preY = evt.stageY;
 
-	    console.log(preX);
 	    stage.update();
 	});
 
-	graphics.addEventListener('mousemove', function (evt) {
-	    if (isMouseDown) {
+	document.addEventListener('mousemove', function (evt) {
+
+	    if (isMouseDown && evt.stageX !== undefined) {
+
 	        graphics.x += evt.stageX - preX;
 	        graphics.y += evt.stageY - preY;
-	        console.log(evt.stageX);
 	        stage.update();
 
 	        preX = evt.stageX;
@@ -106,9 +107,20 @@
 	    }
 	});
 
-	graphics.addEventListener('mouseup', function (evt) {
-
+	document.addEventListener('mouseup', function (evt) {
+	    if (isMouseDown) {
+	        graphics.scaleX = graphics.scaleY = 1.1;
+	    } else {
+	        graphics.scaleX = graphics.scaleY = 1;
+	    }
+	    isMouseDown = false;
 	    stage.update();
+	});
+
+	stage.addEventListener('mouseout', function (evt) {
+	    isMouseDown = false;
+	    console.log('out2');
+	    graphics.scaleX = graphics.scaleY = 1;
 	});
 
 	//setInterval(()=>{
@@ -340,7 +352,7 @@
 /* 5 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -349,6 +361,8 @@
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var MOUSEOUT = 'mouseout';
 
 	var EventDispatcher = function () {
 	    function EventDispatcher() {
@@ -359,7 +373,7 @@
 	    }
 
 	    _createClass(EventDispatcher, [{
-	        key: "addEventListener",
+	        key: 'addEventListener',
 	        value: function addEventListener(type, listener, useCapture) {
 	            var listeners;
 	            if (useCapture) {
@@ -380,7 +394,7 @@
 	            return listener;
 	        }
 	    }, {
-	        key: "removeEventListener",
+	        key: 'removeEventListener',
 	        value: function removeEventListener(type, listener, useCapture) {
 	            var listeners = useCapture ? this._captureListeners : this._listeners;
 	            if (!listeners) {
@@ -399,12 +413,12 @@
 	            });
 	        }
 	    }, {
-	        key: "dispatchEvent",
+	        key: 'dispatchEvent',
 	        value: function dispatchEvent(evt) {
 
-	            if (!this.parent) {
-
-	                this._dispatchEvent(evt);
+	            if (evt.type === MOUSEOUT || !this.parent) {
+	                this._dispatchEvent(evt, 0);
+	                this._dispatchEvent(evt, 1);
 	            } else {
 
 	                var top = this,
@@ -427,7 +441,7 @@
 	            }
 	        }
 	    }, {
-	        key: "_dispatchEvent",
+	        key: '_dispatchEvent',
 	        value: function _dispatchEvent(evt, type) {
 	            var _this = this;
 
@@ -575,18 +589,23 @@
 	        _this.renderer = new _canvas_render2.default(_this.canvas);
 
 	        _this.canvas.addEventListener('click', function (evt) {
-	            _this._handleClick(evt);
+	            return _this._handleClick(evt);
 	        });
 
 	        _this.canvas.addEventListener("mousemove", function (evt) {
-	            _this._handleMouseMove(evt);
+	            return _this._handleMouseMove(evt);
 	        });
 
 	        _this.canvas.addEventListener("mousedown", function (evt) {
-	            _this._handleMouseDown(evt);
+	            return _this._handleMouseDown(evt);
 	        });
+
 	        _this.canvas.addEventListener("mouseup", function (evt) {
-	            _this._handleMouseUp(evt);
+	            return _this._handleMouseUp(evt);
+	        });
+
+	        _this.canvas.addEventListener("mouseout", function (evt) {
+	            return _this._handleMouseOut(evt);
 	        });
 	        //this.canvas.addEventListener("click", this._handleClick.bind(this), false);
 
@@ -622,6 +641,27 @@
 	        key: '_handleMouseUp',
 	        value: function _handleMouseUp(evt) {
 	            var obj = this._getObjectUnderPoint(evt);
+	        }
+	    }, {
+	        key: '_handleMouseOut',
+	        value: function _handleMouseOut(evt) {
+	            this._boundingClientRect = this.canvas.getBoundingClientRect();
+	            evt.stageX = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth;
+	            evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth;
+	            this.dispatchEvent(_defineProperty({
+	                pureEvent: evt,
+	                type: 'mouseout',
+	                stageX: evt.stageX,
+	                stageY: evt.stageY
+	            }, 'pureEvent', evt));
+
+	            //this._overObject&& this._overObject.dispatchEvent({
+	            //    pureEvent: evt,
+	            //        type: 'mouseout',
+	            //        stageX: evt.stageX,
+	            //        stageY: evt.stageY,
+	            //        pureEvent: evt
+	            //})
 	        }
 	    }, {
 	        key: '_handleMouseMove',

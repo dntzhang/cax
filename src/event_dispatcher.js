@@ -1,3 +1,4 @@
+const  MOUSEOUT = 'mouseout'
 
 class EventDispatcher{
     constructor(){
@@ -36,10 +37,9 @@ class EventDispatcher{
 
     dispatchEvent (evt) {
 
-
-        if (!this.parent) {
-
-            this._dispatchEvent(evt);
+        if (evt.type=== MOUSEOUT||!this.parent) {
+            this._dispatchEvent(evt,0)
+            this._dispatchEvent(evt,1)
         } else {
 
             var top=this, list=[top];

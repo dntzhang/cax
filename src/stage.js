@@ -13,20 +13,15 @@ class Stage extends Container  {
         this.renderTo.appendChild(this.canvas)
         this.renderer = new CanvasRender(this.canvas)
 
-        this.canvas.addEventListener('click', (evt)=>{
-            this._handleClick(evt)
-        })
+        this.canvas.addEventListener('click', evt => this._handleClick(evt))
 
-        this.canvas.addEventListener("mousemove",(evt)=>{
-            this._handleMouseMove(evt)
-        })
+        this.canvas.addEventListener("mousemove",evt => this._handleMouseMove(evt))
 
-        this.canvas.addEventListener("mousedown",(evt)=>{
-            this._handleMouseDown(evt)
-        });
-        this.canvas.addEventListener("mouseup", (evt)=> {
-            this._handleMouseUp(evt)
-        });
+        this.canvas.addEventListener("mousedown", evt => this._handleMouseDown(evt))
+
+        this.canvas.addEventListener("mouseup", evt => this._handleMouseUp(evt))
+
+        this.canvas.addEventListener("mouseout", evt => this._handleMouseOut(evt))
         //this.canvas.addEventListener("click", this._handleClick.bind(this), false);
 
         //this.canvas.addEventListener("dblclick", this._handleDblClick.bind(this), false);
@@ -57,6 +52,28 @@ class Stage extends Container  {
 
     _handleMouseUp(evt){
         let obj = this._getObjectUnderPoint(evt)
+    }
+
+    _handleMouseOut(evt) {
+        this._boundingClientRect = this.canvas.getBoundingClientRect()
+        evt.stageX  = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth
+        evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth
+        this.dispatchEvent({
+            pureEvent: evt,
+            type: 'mouseout',
+            stageX: evt.stageX,
+            stageY: evt.stageY,
+            pureEvent: evt
+        })
+
+        //this._overObject&& this._overObject.dispatchEvent({
+        //    pureEvent: evt,
+        //        type: 'mouseout',
+        //        stageX: evt.stageX,
+        //        stageY: evt.stageY,
+        //        pureEvent: evt
+        //})
+
     }
 
     _handleMouseMove(evt) {

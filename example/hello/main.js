@@ -42,23 +42,23 @@ graphics.originY = 40
 stage.add(graphics);
 stage.update();
 
-graphics.addEventListener('click',function(){
+graphics.addEventListener('click',()=>{
     //didn't exeu alert(2) because  evt.stopPropagation();
     alert(2)
 },false);
 
-graphics.addEventListener('click',function(evt){
-    //alert(1)
+graphics.addEventListener('click',evt=>{
+    console.log('click')
     evt.stopPropagation();
 },true)
 
-graphics.addEventListener('mouseover',function(evt){
+graphics.addEventListener('mouseover',evt=>{
     //evt.stopPropagation();
-    graphics.scaleX = graphics.scaleY = 2
+    graphics.scaleX = graphics.scaleY = 1.1
     stage.update()
 })
 
-graphics.addEventListener('mouseout',function(evt){
+graphics.addEventListener('mouseout', evt => {
     graphics.scaleX = graphics.scaleY = 1
     stage.update()
 })
@@ -69,20 +69,21 @@ let isMouseDown = false
 let preX = null
 let preY = null
 
-graphics.addEventListener('mousedown',function(evt){
+graphics.addEventListener('mousedown',evt=>{
+    graphics.scaleX = graphics.scaleY = 1.2
     isMouseDown = true
     preX = evt.stageX
     preY = evt.stageY
 
-    console.log(preX)
     stage.update()
 })
 
-graphics.addEventListener('mousemove',function(evt){
-    if(isMouseDown) {
+document.addEventListener('mousemove',evt => {
+
+    if(isMouseDown&& evt.stageX!== undefined) {
+
         graphics.x += evt.stageX - preX
         graphics.y += evt.stageY - preY
-        console.log( evt.stageX)
         stage.update();
 
         preX = evt.stageX
@@ -90,12 +91,20 @@ graphics.addEventListener('mousemove',function(evt){
     }
 })
 
-graphics.addEventListener('mouseup',function(evt){
-
-    stage.update();
+document.addEventListener('mouseup',evt=> {
+    if(isMouseDown){
+        graphics.scaleX = graphics.scaleY = 1.1
+    }else{
+        graphics.scaleX = graphics.scaleY = 1
+    }
+    isMouseDown = false
+    stage.update()
 })
 
-
+stage.addEventListener('mouseout',evt =>{
+    isMouseDown = false
+    graphics.scaleX = graphics.scaleY = 1
+})
 
 //setInterval(()=>{
 //    graphics.rotation++
