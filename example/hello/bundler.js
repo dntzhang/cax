@@ -665,7 +665,6 @@
 	        key: '_handleClick',
 	        value: function _handleClick(evt) {
 	            //this._computeStageXY(evt)
-	            console.log(11);
 	            var obj = this._getObjectUnderPoint(evt);
 	        }
 	    }, {
@@ -1124,7 +1123,7 @@
 	                if (cmds[j] == "M") {
 	                    pArr[0] = parseFloat(pArr[0]);
 	                    pArr[1] = parseFloat(pArr[1]);
-	                    ctx.moveTo(pArr[0], pArr[1]);
+	                    ctx.moveTo.apply(ctx, pArr);
 	                } else if (cmds[j] == "C") {
 	                    pArr[0] = parseFloat(pArr[0]);
 	                    pArr[2] = parseFloat(pArr[2]);
@@ -1254,9 +1253,9 @@
 	        _this.canvas.height = 1;
 	        _this.ctx = _this.canvas.getContext('2d');
 	        //debug event
-	        _this.canvas.width = 441;
-	        _this.canvas.height = 441;
-	        document.body.appendChild(_this.canvas);
+	        //this.canvas.width = 441
+	        //this.canvas.height = 441
+	        //document.body.appendChild(this.canvas)
 	        return _this;
 	    }
 
@@ -1295,8 +1294,7 @@
 	        key: '_hitPixel',
 	        value: function _hitPixel(o, evt, mtx) {
 	            var ctx = this.ctx;
-	            console.log(1);
-	            ctx.clearRect(0, 0, 442, 442);
+	            ctx.clearRect(0, 0, 2, 2);
 	            if (mtx) {
 	                o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	            } else {
