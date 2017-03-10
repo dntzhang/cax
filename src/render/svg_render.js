@@ -17,19 +17,11 @@ class SVGRender extends  Render {
     }
 
     clear(){
-    }
-
-    hitAABB(){
 
     }
 
-    hitPixel(){
-
-    }
 
     renderPath(obj) {
-
-
         //M = moveto
         //L = lineto
         //H = horizontal lineto
