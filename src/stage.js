@@ -1,9 +1,9 @@
-import Container from './container.js'
+import Group from './group.js'
 import CanvasRender from './canvas_render.js'
 import HitRender from './hit_render.js'
 import Event from './event.js'
 
-class Stage extends Container  {
+class Stage extends Group  {
     constructor(width,height,renderTo){
         super();
         this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo

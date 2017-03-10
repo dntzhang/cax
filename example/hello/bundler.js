@@ -145,9 +145,9 @@
 
 	var _display_object2 = _interopRequireDefault(_display_object);
 
-	var _container = __webpack_require__(7);
+	var _group = __webpack_require__(7);
 
-	var _container2 = _interopRequireDefault(_container);
+	var _group2 = _interopRequireDefault(_group);
 
 	var _stage = __webpack_require__(8);
 
@@ -162,7 +162,7 @@
 	_alloy_render2.default.Matrix2D = _matrix2d2.default;
 	_alloy_render2.default.Stage = _stage2.default;
 	_alloy_render2.default.DisplayObject = _display_object2.default;
-	_alloy_render2.default.Container = _container2.default;
+	_alloy_render2.default.Group = _group2.default;
 	_alloy_render2.default.Graphics = _graphics2.default;
 
 	window.AlloyRender = _alloy_render2.default;
@@ -508,19 +508,19 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Container = function (_DisplayObject) {
-	    _inherits(Container, _DisplayObject);
+	var Group = function (_DisplayObject) {
+	    _inherits(Group, _DisplayObject);
 
-	    function Container(data) {
-	        _classCallCheck(this, Container);
+	    function Group(data) {
+	        _classCallCheck(this, Group);
 
-	        var _this = _possibleConstructorReturn(this, (Container.__proto__ || Object.getPrototypeOf(Container)).call(this, data));
+	        var _this = _possibleConstructorReturn(this, (Group.__proto__ || Object.getPrototypeOf(Group)).call(this, data));
 
 	        _this.children = [];
 	        return _this;
 	    }
 
-	    _createClass(Container, [{
+	    _createClass(Group, [{
 	        key: 'add',
 	        value: function add(child) {
 
@@ -529,10 +529,10 @@
 	        }
 	    }]);
 
-	    return Container;
+	    return Group;
 	}(_display_object2.default);
 
-	exports.default = Container;
+	exports.default = Group;
 
 /***/ },
 /* 8 */
@@ -546,9 +546,9 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _container = __webpack_require__(7);
+	var _group = __webpack_require__(7);
 
-	var _container2 = _interopRequireDefault(_container);
+	var _group2 = _interopRequireDefault(_group);
 
 	var _canvas_render = __webpack_require__(9);
 
@@ -572,8 +572,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Stage = function (_Container) {
-	    _inherits(Stage, _Container);
+	var Stage = function (_Group) {
+	    _inherits(Stage, _Group);
 
 	    function Stage(width, height, renderTo) {
 	        _classCallCheck(this, Stage);
@@ -737,7 +737,7 @@
 	    }]);
 
 	    return Stage;
-	}(_container2.default);
+	}(_group2.default);
 
 	exports.default = Stage;
 
@@ -753,9 +753,9 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _container = __webpack_require__(7);
+	var _group = __webpack_require__(7);
 
-	var _container2 = _interopRequireDefault(_container);
+	var _group2 = _interopRequireDefault(_group);
 
 	var _graphics = __webpack_require__(10);
 
@@ -796,7 +796,7 @@
 	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
 	            if (obj instanceof _graphics2.default) {
 	                this.renderGraphics(obj);
-	            } else if (obj instanceof _container2.default) {}
+	            } else if (obj instanceof _group2.default) {}
 	            this.ctx.restore();
 	        }
 	    }, {
@@ -1044,9 +1044,9 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _container = __webpack_require__(7);
+	var _group = __webpack_require__(7);
 
-	var _container2 = _interopRequireDefault(_container);
+	var _group2 = _interopRequireDefault(_group);
 
 	var _graphics = __webpack_require__(10);
 
@@ -1093,7 +1093,7 @@
 	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
 	            if (obj instanceof _graphics2.default) {
 	                this.renderGraphics(obj);
-	            } else if (obj instanceof _container2.default) {}
+	            } else if (obj instanceof _group2.default) {}
 	            this.ctx.restore();
 	        }
 	    }, {

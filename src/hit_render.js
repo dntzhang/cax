@@ -1,4 +1,4 @@
-import Container from './container.js'
+import Group from './group.js'
 import Graphics from './graphics.js'
 import Render from './render.js'
 import Event from './event.js'
@@ -21,7 +21,7 @@ class HitRender extends  Render {
         this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty)
         if (obj instanceof Graphics) {
             this.renderGraphics(obj)
-        } else if (obj instanceof  Container) {
+        } else if (obj instanceof  Group) {
         }
         this.ctx.restore()
     }
