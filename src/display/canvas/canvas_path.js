@@ -7,10 +7,11 @@ class CanvasPath extends Path{
 
     draw(ctx) {
         ctx.save()
+
         ctx.lineWidth = this.strokeWidth
         ctx.strokeStyle = this.stroke
         ctx.fillStyle = this.fill
-
+        ctx.beginPath()
         const points = this.d.split(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
         const cmds = this.d.match(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
 

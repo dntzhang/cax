@@ -21,10 +21,13 @@ C211 300 186 274 156 274
 path.fill = 'white'
 path.stroke = 'red'
 path.strokeWidth = 2
-
+path.cursor = 'pointer'
 path.addEventListener('click',()=>{
 
-    alert(1)
+})
+
+path.addEventListener('mouseout',()=>{
+
 })
 stage.add(path)
 stage.update()

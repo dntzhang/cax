@@ -54,11 +54,10 @@
 	path.fill = 'white';
 	path.stroke = 'red';
 	path.strokeWidth = 2;
+	path.cursor = 'pointer';
+	path.addEventListener('click', function () {});
 
-	path.addEventListener('click', function () {
-
-	    alert(1);
-	});
+	path.addEventListener('mouseout', function () {});
 	stage.add(path);
 	stage.update();
 	//setInterval(()=>{
@@ -604,7 +603,6 @@
 	        key: '_handleClick',
 	        value: function _handleClick(evt) {
 	            //this._computeStageXY(evt)
-	            console.log(11);
 	            var obj = this._getObjectUnderPoint(evt);
 	        }
 	    }, {
@@ -1050,10 +1048,11 @@
 	        key: "draw",
 	        value: function draw(ctx) {
 	            ctx.save();
+
 	            ctx.lineWidth = this.strokeWidth;
 	            ctx.strokeStyle = this.stroke;
 	            ctx.fillStyle = this.fill;
-
+	            ctx.beginPath();
 	            var points = this.d.split(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
 	            var cmds = this.d.match(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
 
@@ -1192,6 +1191,8 @@
 	        _this.canvas.height = 1;
 	        _this.ctx = _this.canvas.getContext('2d');
 	        //debug event
+	        //this.canvas.width = 441
+	        //this.canvas.height = 441
 	        //document.body.appendChild(this.canvas)
 	        return _this;
 	    }

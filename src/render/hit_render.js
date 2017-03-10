@@ -13,6 +13,8 @@ class HitRender extends  Render {
         this.canvas.height = 1
         this.ctx = this.canvas.getContext('2d')
         //debug event
+        //this.canvas.width = 441
+        //this.canvas.height = 441
         //document.body.appendChild(this.canvas)
     }
 

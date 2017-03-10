@@ -665,6 +665,7 @@
 	        key: '_handleClick',
 	        value: function _handleClick(evt) {
 	            //this._computeStageXY(evt)
+	            console.log(11);
 	            var obj = this._getObjectUnderPoint(evt);
 	        }
 	    }, {
@@ -1110,21 +1111,20 @@
 	        key: "draw",
 	        value: function draw(ctx) {
 	            ctx.save();
+
 	            ctx.lineWidth = this.strokeWidth;
 	            ctx.strokeStyle = this.stroke;
 	            ctx.fillStyle = this.fill;
-
+	            ctx.beginPath();
 	            var points = this.d.split(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
 	            var cmds = this.d.match(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
-
-	            ctx.beginPath();
 
 	            for (var j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
 	                var pArr = points[j].split(" ");
 	                if (cmds[j] == "M") {
 	                    pArr[0] = parseFloat(pArr[0]);
 	                    pArr[1] = parseFloat(pArr[1]);
-	                    ctx.moveTo.apply(ctx, pArr);
+	                    ctx.moveTo(pArr[0], pArr[1]);
 	                } else if (cmds[j] == "C") {
 	                    pArr[0] = parseFloat(pArr[0]);
 	                    pArr[2] = parseFloat(pArr[2]);
@@ -1139,9 +1139,9 @@
 	                    ctx.lineTo.apply(ctx, pArr);
 	                }
 	            }
-	            ctx.closePath();
-	            ctx.stroke();
+
 	            ctx.fill();
+	            ctx.stroke();
 
 	            ctx.restore();
 	        }
@@ -1229,6 +1229,10 @@
 
 	var _event2 = _interopRequireDefault(_event);
 
+	var _canvas_path = __webpack_require__(11);
+
+	var _canvas_path2 = _interopRequireDefault(_canvas_path);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1250,22 +1254,13 @@
 	        _this.canvas.height = 1;
 	        _this.ctx = _this.canvas.getContext('2d');
 	        //debug event
-	        //document.body.appendChild(this.canvas)
+	        _this.canvas.width = 441;
+	        _this.canvas.height = 441;
+	        document.body.appendChild(_this.canvas);
 	        return _this;
 	    }
 
 	    _createClass(HitRender, [{
-	        key: 'render',
-	        value: function render(obj) {
-	            this.ctx.save();
-	            obj._computeMatrix();
-	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
-	            if (obj instanceof _graphics2.default) {
-	                this.renderGraphics(obj);
-	            } else if (obj instanceof _group2.default) {}
-	            this.ctx.restore();
-	        }
-	    }, {
 	        key: 'clear',
 	        value: function clear() {
 	            this.ctx.clearRect(0, 0, this.width, this.height);
@@ -1300,7 +1295,8 @@
 	        key: '_hitPixel',
 	        value: function _hitPixel(o, evt, mtx) {
 	            var ctx = this.ctx;
-	            ctx.clearRect(0, 0, 2, 2);
+	            console.log(1);
+	            ctx.clearRect(0, 0, 442, 442);
 	            if (mtx) {
 	                o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	            } else {
@@ -1311,6 +1307,9 @@
 	            if (o instanceof _graphics2.default) {
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                this.renderGraphics(o);
+	            } else if (o instanceof _canvas_path2.default) {
+	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+	                o.draw(ctx);
 	            }
 
 	            if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
