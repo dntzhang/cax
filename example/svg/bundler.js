@@ -54,6 +54,9 @@
 	//path.x = path.y = 50
 	stage.add(path);
 
+	path.addEventListener('click', function () {
+	    alert(1);
+	});
 	stage.update();
 
 	setTimeout(function () {
@@ -1289,9 +1292,9 @@
 	    value: true
 	});
 
-	var _display_object = __webpack_require__(3);
+	var _svg_object = __webpack_require__(15);
 
-	var _display_object2 = _interopRequireDefault(_display_object);
+	var _svg_object2 = _interopRequireDefault(_svg_object);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1301,28 +1304,84 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var Path = function (_DisplayObject) {
-	    _inherits(Path, _DisplayObject);
+	var Path = function (_SVGObject) {
+	    _inherits(Path, _SVGObject);
 
 	    function Path(d) {
 	        _classCallCheck(this, Path);
 
-	        var _this = _possibleConstructorReturn(this, (Path.__proto__ || Object.getPrototypeOf(Path)).call(this));
+	        var _this = _possibleConstructorReturn(this, (Path.__proto__ || Object.getPrototypeOf(Path)).call(this, 'path'));
 
 	        _this.d = d;
-	        _this.style = null;
-	        _this.element = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
 	        _this.element.setAttribute('d', d);
-
-	        //this.element.style.visibility = 'hidden'
-
 	        return _this;
 	    }
 
 	    return Path;
-	}(_display_object2.default);
+	}(_svg_object2.default);
 
 	exports.default = Path;
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _matrix2d = __webpack_require__(2);
+
+	var _matrix2d2 = _interopRequireDefault(_matrix2d);
+
+	var _uid = __webpack_require__(5);
+
+	var _uid2 = _interopRequireDefault(_uid);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var SVGObject = function () {
+	    function SVGObject(type) {
+	        _classCallCheck(this, SVGObject);
+
+	        this.alpha = this.scaleX = this.scaleY = 1;
+	        this.x = this.y = this.rotation = this.skewX = this.skewY = this.originX = this.originY = 0;
+	        this.cursor = "default";
+	        this._matrix = new _matrix2d2.default();
+	        this._hitMatrix = new _matrix2d2.default();
+	        this.id = _uid2.default.get();
+	        this.element = document.createElementNS('http://www.w3.org/2000/svg', type);
+	        this.style = null;
+	    }
+
+	    _createClass(SVGObject, [{
+	        key: '_computeMatrix',
+	        value: function _computeMatrix() {
+	            this._matrix.identity().appendTransform(this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.skewX, this.skewY, this.originX, this.originY);
+	        }
+	    }, {
+	        key: 'addEventListener',
+	        value: function addEventListener(type, listener, useCapture) {
+	            this.element.addEventListener(type, listener, useCapture);
+	        }
+	    }, {
+	        key: 'removeEventListener',
+	        value: function removeEventListener(type, listener, useCapture) {
+	            this.element.removeEventListener(type, listener, useCapture);
+	        }
+	    }]);
+
+	    return SVGObject;
+	}();
+
+	exports.default = SVGObject;
 
 /***/ }
 /******/ ]);

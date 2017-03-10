@@ -6,6 +6,9 @@ console.log(path)
 //path.x = path.y = 50
 stage.add(path)
 
+path.addEventListener('click',()=>{
+    alert(1)
+})
 stage.update()
 
 setTimeout(()=>{
