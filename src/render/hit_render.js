@@ -1,7 +1,7 @@
-import Group from './group.js'
-import Graphics from './graphics.js'
+import Group from '../display/group.js'
+import Graphics from '../display/graphics.js'
 import Render from './render.js'
-import Event from './event.js'
+import Event from '../base/event.js'
 
 class HitRender extends  Render {
     constructor(canvas) {

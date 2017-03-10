@@ -1,5 +1,5 @@
-import Group from './group.js'
-import Graphics from './graphics.js'
+import Group from '../display/group.js'
+import Graphics from '../display/graphics.js'
 import Render from './render.js'
 
 class CanvasRender extends  Render {
