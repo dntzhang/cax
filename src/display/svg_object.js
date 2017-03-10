@@ -17,13 +17,7 @@ class SVGObject {
         this._matrix.identity().appendTransform(this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.skewX, this.skewY, this.originX, this.originY)
     }
 
-    addEventListener(type, listener, useCapture){
-        this.element.addEventListener(type, listener, useCapture)
-    }
 
-    removeEventListener(type, listener, useCapture) {
-        this.element.removeEventListener(type, listener, useCapture)
-    }
 }
 
 export default SVGObject;

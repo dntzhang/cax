@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack -w",
     "svg": "webpack -w",
+    "canvas": "webpack -w",
     "hello": "webpack -w",
     "test": "karma start test/karma.conf.js"
   },

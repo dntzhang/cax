@@ -1,7 +1,8 @@
 import Group from '../display/group.js'
-import Graphics from '../display/graphics.js'
+import Graphics from '../display/canvas/graphics.js'
 import Render from './render.js'
 import Event from '../base/event.js'
+import CanvasPath from '../display/canvas/canvas_path.js'
 
 class HitRender extends  Render {
     constructor(canvas) {
@@ -13,17 +14,6 @@ class HitRender extends  Render {
         this.ctx = this.canvas.getContext('2d')
         //debug event
         //document.body.appendChild(this.canvas)
-    }
-
-    render(obj) {
-        this.ctx.save()
-        obj._computeMatrix()
-        this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty)
-        if (obj instanceof Graphics) {
-            this.renderGraphics(obj)
-        } else if (obj instanceof  Group) {
-        }
-        this.ctx.restore()
     }
 
     clear() {
@@ -66,7 +56,10 @@ class HitRender extends  Render {
         mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
         if (o instanceof Graphics) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-            this.renderGraphics(o);
+            this.renderGraphics(o)
+        }else if(o instanceof  CanvasPath){
+            ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            o.draw(ctx)
         }
 
         if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {

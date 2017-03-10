@@ -64,6 +64,7 @@ class Stage extends Group  {
 
     _handleClick(evt){
         //this._computeStageXY(evt)
+        console.log(11)
         let obj = this._getObjectUnderPoint(evt)
 
     }

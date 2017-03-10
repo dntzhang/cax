@@ -1,6 +1,7 @@
 import Group from '../display/group.js'
-import Graphics from '../display/graphics.js'
+import Graphics from '../display/canvas/graphics.js'
 import Render from './render.js'
+import CanvasPath from '../display/canvas/canvas_path.js'
 
 class CanvasRender extends  Render {
     constructor(canvas){
@@ -17,6 +18,8 @@ class CanvasRender extends  Render {
         this.ctx.transform(obj._matrix.a,obj._matrix.b,obj._matrix.c,obj._matrix.d,obj._matrix.tx,obj._matrix.ty)
         if(obj instanceof Graphics){
             this.renderGraphics(obj)
+        }else if (obj instanceof  CanvasPath){
+            obj.draw(this.ctx)
         }else if (obj instanceof  Group){
         }
         this.ctx.restore()

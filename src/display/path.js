@@ -1,12 +1,22 @@
-import SVGObject from './svg_object.js'
+import DisplayObject from './display_object.js'
 
-class Path extends SVGObject{
-    constructor(d){
-        super('path')
+class Path extends DisplayObject{
+    constructor(d , option){
+        super()
+        this.type = 'path'
         this.d = d
+        this.fill = 'black';
+        this.stroke = 'black';
+        this.strokeWidth = 1
 
-        this.element.setAttribute('d', d)
+        option&&Object.keys(option).forEach((key)=>{
+            this[key] = option[key]
+        })
+
+       // this.element.setAttribute('d', d)
     }
+
+
 
 }
 

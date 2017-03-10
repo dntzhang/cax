@@ -1,7 +1,7 @@
-import { RenderMode, Stage, Graphics, Path } from '../../src/index.js'
+import { RenderMode, Stage, Graphics, SVGPath } from '../../src/index.js'
 
 var stage = new Stage(480,480,"body",RenderMode.SVG)
-var path = new Path('M250 150 L150 350 L350 350 Z')
+var path = new SVGPath('M250 150 L150 350 L350 350 Z')
 console.log(path)
 //path.x = path.y = 50
 stage.add(path)
@@ -34,10 +34,10 @@ C186 384 211 361 211 334
 C211 300 186 274 156 274
     `
 
-    path.style = `
-    fill: white;
-    stroke: red;
-    stroke-width: 2;`
+    path.fill = 'white'
+    path.stroke = 'red'
+    path.strokeWidth = 2
+
     stage.update()
 
 
