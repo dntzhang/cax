@@ -50,12 +50,12 @@
 
 	var stage = new _index.Stage(480, 480, "body");
 	var graphics = new _index.Graphics();
-	graphics.beginPath().arc(377 / 4 - 58, 391 / 4 - 58, 140 / 4, 0, Math.PI * 2).closePath().fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(8 / 4).stroke().beginPath().moveTo(298 / 4 - 58, 506 / 4 - 58).bezierCurveTo(236 / 4 - 58, 396 / 4 - 58, 302 / 4 - 58, 272 / 4 - 58, 407 / 4 - 58, 254 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(328 / 4 - 58, 258 / 4 - 58).bezierCurveTo(360 / 4 - 58, 294 / 4 - 58, 451 / 4 - 58, 272 / 4 - 58, 503 / 4 - 58, 332 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(282 / 4 - 58, 288 / 4 - 58).bezierCurveTo(391 / 4 - 58, 292 / 4 - 58, 481 / 4 - 58, 400 / 4 - 58, 488 / 4 - 58, 474 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke().beginPath().moveTo(242 / 4 - 58, 352 / 4 - 58).bezierCurveTo(352 / 4 - 58, 244 / 4 - 58, 319 / 4 - 58, 423 / 4 - 58, 409 / 4 - 58, 527 / 4 - 58).strokeStyle("#046ab4").lineWidth(6 / 4).stroke();
+	graphics.beginPath().arc(377, 391, 140, 0, Math.PI * 2).closePath().fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(8).stroke().beginPath().moveTo(298, 506).bezierCurveTo(236, 396, 302, 272, 407, 254).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(328, 258).bezierCurveTo(360, 294, 451, 272, 503, 332).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(282, 288).bezierCurveTo(391, 292, 481, 400, 488, 474).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(242, 352).bezierCurveTo(352, 244, 319, 423, 409, 527).strokeStyle("#046ab4").lineWidth(6).stroke();
 
-	graphics.x = graphics.y = 200;
+	graphics.x = graphics.y = 20;
 	graphics.cursor = 'move';
-	graphics.originX = 40;
-	graphics.originY = 40;
+	graphics.originX = 240;
+	graphics.originY = 240;
 
 	stage.add(graphics);
 	stage.update();
@@ -153,27 +153,13 @@
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _path = __webpack_require__(12);
+	var _path = __webpack_require__(11);
 
 	var _path2 = _interopRequireDefault(_path);
-
-	var _svg_path = __webpack_require__(16);
-
-	var _svg_path2 = _interopRequireDefault(_svg_path);
-
-	var _canvas_path = __webpack_require__(11);
-
-	var _canvas_path2 = _interopRequireDefault(_canvas_path);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var AlloyRender = {};
-
-	AlloyRender.RenderMode = {};
-
-	AlloyRender.RenderMode.Canvas = 'Canvas';
-
-	AlloyRender.RenderMode.SVG = 'SVG';
 
 	AlloyRender.Matrix2D = _matrix2d2.default;
 	AlloyRender.Stage = _stage2.default;
@@ -181,8 +167,6 @@
 	AlloyRender.Group = _group2.default;
 	AlloyRender.Graphics = _graphics2.default;
 	AlloyRender.Path = _path2.default;
-	AlloyRender.SVGPath = _svg_path2.default;
-	AlloyRender.CanvasPath = _canvas_path2.default;
 
 	window.AlloyRender = AlloyRender;
 	module.exports = AlloyRender;
@@ -565,17 +549,13 @@
 
 	var _canvas_render2 = _interopRequireDefault(_canvas_render);
 
-	var _hit_render = __webpack_require__(13);
+	var _hit_render = __webpack_require__(12);
 
 	var _hit_render2 = _interopRequireDefault(_hit_render);
 
-	var _event = __webpack_require__(14);
+	var _event = __webpack_require__(13);
 
 	var _event2 = _interopRequireDefault(_event);
-
-	var _svg_render = __webpack_require__(15);
-
-	var _svg_render2 = _interopRequireDefault(_svg_render);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -590,78 +570,60 @@
 	var Stage = function (_Group) {
 	    _inherits(Stage, _Group);
 
-	    function Stage(width, height, renderTo, mode) {
+	    function Stage(width, height, renderTo) {
 	        _classCallCheck(this, Stage);
 
 	        var _this = _possibleConstructorReturn(this, (Stage.__proto__ || Object.getPrototypeOf(Stage)).call(this));
 
 	        _this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo;
-	        mode = mode ? mode : AlloyRender.RenderMode.Canvas;
 
-	        if (mode === AlloyRender.RenderMode.Canvas) {
-	            _this.canvas = document.createElement('canvas');
-	            _this.canvas.width = width;
-	            _this.canvas.height = height;
-	            _this.renderTo.appendChild(_this.canvas);
-	            _this.renderer = new _canvas_render2.default(_this.canvas);
+	        _this.canvas = document.createElement('canvas');
+	        _this.canvas.width = width;
+	        _this.canvas.height = height;
+	        _this.renderTo.appendChild(_this.canvas);
+	        _this.renderer = new _canvas_render2.default(_this.canvas);
 
-	            _this.canvas.addEventListener('click', function (evt) {
-	                return _this._handleClick(evt);
-	            });
+	        _this.canvas.addEventListener('click', function (evt) {
+	            return _this._handleClick(evt);
+	        });
 
-	            _this.canvas.addEventListener("mousemove", function (evt) {
-	                return _this._handleMouseMove(evt);
-	            });
+	        _this.canvas.addEventListener("mousemove", function (evt) {
+	            return _this._handleMouseMove(evt);
+	        });
 
-	            _this.canvas.addEventListener("mousedown", function (evt) {
-	                return _this._handleMouseDown(evt);
-	            });
+	        _this.canvas.addEventListener("mousedown", function (evt) {
+	            return _this._handleMouseDown(evt);
+	        });
 
-	            _this.canvas.addEventListener("mouseup", function (evt) {
-	                return _this._handleMouseUp(evt);
-	            });
+	        _this.canvas.addEventListener("mouseup", function (evt) {
+	            return _this._handleMouseUp(evt);
+	        });
 
-	            _this.canvas.addEventListener("mouseout", function (evt) {
-	                return _this._handleMouseOut(evt);
-	            });
-	            //this.canvas.addEventListener("click", this._handleClick.bind(this), false);
+	        _this.canvas.addEventListener("mouseout", function (evt) {
+	            return _this._handleMouseOut(evt);
+	        });
+	        //this.canvas.addEventListener("click", this._handleClick.bind(this), false);
 
-	            //this.canvas.addEventListener("dblclick", this._handleDblClick.bind(this), false);
-	            //this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
-	            //this.canvas.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
-	            //this.canvas.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
-	            //this.canvas.addEventListener("touchend", this._handleMouseUp.bind(this), false);
-	            //this.canvas.addEventListener("touchcancel", this._handleTouchCancel.bind(this), false);
+	        //this.canvas.addEventListener("dblclick", this._handleDblClick.bind(this), false);
+	        //this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+	        //this.canvas.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
+	        //this.canvas.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
+	        //this.canvas.addEventListener("touchend", this._handleMouseUp.bind(this), false);
+	        //this.canvas.addEventListener("touchcancel", this._handleTouchCancel.bind(this), false);
 
-	            _this.borderTopWidth = 0;
-	            _this.borderLeftWidth = 0;
+	        _this.borderTopWidth = 0;
+	        _this.borderLeftWidth = 0;
 
-	            _this.hitAABB = false;
-	            _this._hitRender = new _hit_render2.default();
-	            //get rect again when trigger onscroll onresize event!?
-	            _this._boundingClientRect = _this.canvas.getBoundingClientRect();
-	            _this._overObject = null;
-	        } else if (mode === AlloyRender.RenderMode.SVG) {
-	            _this._initSVGMode(width, height);
-	        }
+	        _this.hitAABB = false;
+	        _this._hitRender = new _hit_render2.default();
+	        //get rect again when trigger onscroll onresize event!?
+	        _this._boundingClientRect = _this.canvas.getBoundingClientRect();
+	        _this._overObject = null;
+
 	        return _this;
 	    }
 
 	    _createClass(Stage, [{
-	        key: '_initSVGMode',
-	        value: function _initSVGMode(width, height) {
-
-	            this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-	            //debug  'style', 'border: 1px solid black;
-	            this.svg.setAttribute('style', 'border: 1px solid black;overflow: hidden;');
-
-	            this.svg.setAttribute('width', width);
-	            this.svg.setAttribute('height', height);
-	            this.svg.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
-	            this.renderTo.appendChild(this.svg);
-	            this.renderer = new _svg_render2.default(this.svg);
-	        }
-	    }, {
 	        key: '_handleClick',
 	        value: function _handleClick(evt) {
 	            //this._computeStageXY(evt)
@@ -800,9 +762,9 @@
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _canvas_path = __webpack_require__(11);
+	var _path = __webpack_require__(11);
 
-	var _canvas_path2 = _interopRequireDefault(_canvas_path);
+	var _path2 = _interopRequireDefault(_path);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -835,7 +797,7 @@
 	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
 	            if (obj instanceof _graphics2.default) {
 	                this.renderGraphics(obj);
-	            } else if (obj instanceof _canvas_path2.default) {
+	            } else if (obj instanceof _path2.default) {
 	                obj.draw(this.ctx);
 	            } else if (obj instanceof _group2.default) {}
 	            this.ctx.restore();
@@ -1077,7 +1039,7 @@
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -1085,9 +1047,9 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _path = __webpack_require__(12);
+	var _display_object = __webpack_require__(3);
 
-	var _path2 = _interopRequireDefault(_path);
+	var _display_object2 = _interopRequireDefault(_display_object);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1097,17 +1059,30 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var CanvasPath = function (_Path) {
-	    _inherits(CanvasPath, _Path);
+	var Path = function (_DisplayObject) {
+	    _inherits(Path, _DisplayObject);
 
-	    function CanvasPath(d, option) {
-	        _classCallCheck(this, CanvasPath);
+	    function Path(d, option) {
+	        _classCallCheck(this, Path);
 
-	        return _possibleConstructorReturn(this, (CanvasPath.__proto__ || Object.getPrototypeOf(CanvasPath)).call(this, d, option));
+	        var _this = _possibleConstructorReturn(this, (Path.__proto__ || Object.getPrototypeOf(Path)).call(this));
+
+	        _this.type = 'path';
+	        _this.d = d;
+	        _this.fill = 'black';
+	        _this.stroke = 'black';
+	        _this.strokeWidth = 1;
+
+	        option && Object.keys(option).forEach(function (key) {
+	            _this[key] = option[key];
+	        });
+
+	        // this.element.setAttribute('d', d)
+	        return _this;
 	    }
 
-	    _createClass(CanvasPath, [{
-	        key: "draw",
+	    _createClass(Path, [{
+	        key: 'draw',
 	        value: function draw(ctx) {
 	            ctx.save();
 
@@ -1146,62 +1121,13 @@
 	        }
 	    }]);
 
-	    return CanvasPath;
-	}(_path2.default);
-
-	exports.default = CanvasPath;
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _display_object = __webpack_require__(3);
-
-	var _display_object2 = _interopRequireDefault(_display_object);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Path = function (_DisplayObject) {
-	    _inherits(Path, _DisplayObject);
-
-	    function Path(d, option) {
-	        _classCallCheck(this, Path);
-
-	        var _this = _possibleConstructorReturn(this, (Path.__proto__ || Object.getPrototypeOf(Path)).call(this));
-
-	        _this.type = 'path';
-	        _this.d = d;
-	        _this.fill = 'black';
-	        _this.stroke = 'black';
-	        _this.strokeWidth = 1;
-
-	        option && Object.keys(option).forEach(function (key) {
-	            _this[key] = option[key];
-	        });
-
-	        // this.element.setAttribute('d', d)
-	        return _this;
-	    }
-
 	    return Path;
 	}(_display_object2.default);
 
 	exports.default = Path;
 
 /***/ },
-/* 13 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1224,13 +1150,13 @@
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _event = __webpack_require__(14);
+	var _event = __webpack_require__(13);
 
 	var _event2 = _interopRequireDefault(_event);
 
-	var _canvas_path = __webpack_require__(11);
+	var _path = __webpack_require__(11);
 
-	var _canvas_path2 = _interopRequireDefault(_canvas_path);
+	var _path2 = _interopRequireDefault(_path);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1305,7 +1231,7 @@
 	            if (o instanceof _graphics2.default) {
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                this.renderGraphics(o);
-	            } else if (o instanceof _canvas_path2.default) {
+	            } else if (o instanceof _path2.default) {
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                o.draw(ctx);
 	            }
@@ -1354,7 +1280,7 @@
 	exports.default = HitRender;
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1388,150 +1314,6 @@
 	}();
 
 	exports.default = Event;
-
-/***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _group = __webpack_require__(6);
-
-	var _group2 = _interopRequireDefault(_group);
-
-	var _svg_path = __webpack_require__(16);
-
-	var _svg_path2 = _interopRequireDefault(_svg_path);
-
-	var _render = __webpack_require__(10);
-
-	var _render2 = _interopRequireDefault(_render);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var SVGRender = function (_Render) {
-	    _inherits(SVGRender, _Render);
-
-	    function SVGRender(svg) {
-	        _classCallCheck(this, SVGRender);
-
-	        var _this = _possibleConstructorReturn(this, (SVGRender.__proto__ || Object.getPrototypeOf(SVGRender)).call(this));
-
-	        _this.svg = svg;
-	        return _this;
-	    }
-
-	    _createClass(SVGRender, [{
-	        key: 'render',
-	        value: function render(obj) {
-	            if (obj instanceof _svg_path2.default) {
-	                this.renderPath(obj);
-	            } else if (obj instanceof _group2.default) {}
-	        }
-	    }, {
-	        key: 'clear',
-	        value: function clear() {}
-	    }, {
-	        key: 'renderPath',
-	        value: function renderPath(obj) {
-	            //M = moveto
-	            //L = lineto
-	            //H = horizontal lineto
-	            //V = vertical lineto
-	            //C = curveto
-	            //S = smooth curveto
-	            //Q = quadratic Belzier curve
-	            //T = smooth quadratic Belzier curveto
-	            //A = elliptical Arc
-	            //Z = closepath
-	            //<path d="M250 150 L150 350 L350 350 Z" />
-
-	            obj._computeMatrix();
-	            obj.element.setAttribute('d', obj.d);
-	            obj.element.style = obj._toStyleString();
-	            obj.element.setAttribute('transform', 'matrix(' + obj._matrix.a + ',' + obj._matrix.b + ',' + obj._matrix.c + ',' + obj._matrix.d + ',' + obj._matrix.tx + ',' + obj._matrix.ty + ')');
-
-	            if (!document.body.contains(obj.element)) {
-	                this.svg.appendChild(obj.element);
-	            }
-	        }
-	    }]);
-
-	    return SVGRender;
-	}(_render2.default);
-
-	exports.default = SVGRender;
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _path = __webpack_require__(12);
-
-	var _path2 = _interopRequireDefault(_path);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var SVGPath = function (_Path) {
-	    _inherits(SVGPath, _Path);
-
-	    function SVGPath(d, option) {
-	        _classCallCheck(this, SVGPath);
-
-	        // this.element.setAttribute('d', d)
-	        var _this = _possibleConstructorReturn(this, (SVGPath.__proto__ || Object.getPrototypeOf(SVGPath)).call(this, d, option));
-
-	        _this.element = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-	        return _this;
-	    }
-
-	    _createClass(SVGPath, [{
-	        key: '_toStyleString',
-	        value: function _toStyleString() {
-	            return 'fill:' + this.fill + ';stroke:' + this.stroke + ';stroke-width:' + this.strokeWidth;
-	        }
-	    }, {
-	        key: 'addEventListener',
-	        value: function addEventListener(type, listener, useCapture) {
-	            this.element.addEventListener(type, listener, useCapture);
-	        }
-	    }, {
-	        key: 'removeEventListener',
-	        value: function removeEventListener(type, listener, useCapture) {
-	            this.element.removeEventListener(type, listener, useCapture);
-	        }
-	    }]);
-
-	    return SVGPath;
-	}(_path2.default);
-
-	exports.default = SVGPath;
 
 /***/ }
 /******/ ]);
