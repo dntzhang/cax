@@ -1,6 +1,7 @@
 import { Stage, Graphics } from '../../src/index.js'
 
-var stage = new Stage(480,480,"body");
+var stage = new Stage(480,480,"body")
+
 var graphics = new Graphics();
 graphics.beginPath()
     .arc(377 , 391 , 140 , 0, Math.PI * 2)
@@ -18,7 +19,8 @@ graphics.beginPath()
     .stroke()
     .beginPath()
     .moveTo(328 , 258 )
-    .bezierCurveTo(360 , 294 , 451 , 272 , 503 , 332 ).strokeStyle("#046ab4")
+    .bezierCurveTo(360 , 294 , 451 , 272 , 503 , 332 )
+    .strokeStyle("#046ab4")
     .lineWidth(6)
     .stroke()
     .beginPath()
@@ -32,28 +34,28 @@ graphics.beginPath()
     .bezierCurveTo(352 , 244 , 319 , 423 , 409 , 527 )
     .strokeStyle("#046ab4")
     .lineWidth(6 )
-    .stroke();
+    .stroke()
 
-graphics.x = graphics.y = 20;
+graphics.x = graphics.y = 20
 graphics.cursor = 'move'
 graphics.originX = 240
 graphics.originY = 240
 
-stage.add(graphics);
-stage.update();
+stage.add(graphics)
+stage.update()
 
 graphics.addEventListener('click',()=>{
     //didn't exeu alert(2) because  evt.stopPropagation();
     alert(2)
-},false);
+},false)
 
 graphics.addEventListener('click',evt=>{
     console.log('click')
-    evt.stopPropagation();
+    evt.stopPropagation()
 },true)
 
 graphics.addEventListener('mouseover',evt=>{
-    //evt.stopPropagation();
+    //evt.stopPropagation()
     graphics.scaleX = graphics.scaleY = 1.1
     stage.update()
 })
@@ -84,7 +86,7 @@ document.addEventListener('mousemove',evt => {
 
         graphics.x += evt.stageX - preX
         graphics.y += evt.stageY - preY
-        stage.update();
+        stage.update()
 
         preX = evt.stageX
         preY = evt.stageY
