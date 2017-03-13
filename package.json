@@ -5,8 +5,7 @@
   "main": "dist/alloy_render.js",
   "scripts": {
     "build": "webpack -w",
-    "svg": "webpack -w",
-    "canvas": "webpack -w",
+    "path": "webpack -w",
     "hello": "webpack -w",
     "test": "karma start test/karma.conf.js"
   },

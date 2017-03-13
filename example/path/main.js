@@ -1,7 +1,7 @@
-import { Stage, CanvasPath } from '../../src/index.js'
+import { Stage, Path } from '../../src/index.js'
 
 var stage = new Stage(480,480,"body");
-var path = new CanvasPath( `
+var path = new Path( `
     M153 334
 C153 334 151 334 151 334
 C151 339 153 344 156 344

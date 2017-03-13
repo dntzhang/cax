@@ -1,8 +1,8 @@
 import Group from '../display/group.js'
-import Graphics from '../display/canvas/graphics.js'
+import Graphics from '../display/graphics.js'
 import Render from './render.js'
 import Event from '../base/event.js'
-import CanvasPath from '../display/canvas/canvas_path.js'
+import Path from '../display/path.js'
 
 class HitRender extends  Render {
     constructor(canvas) {
@@ -59,7 +59,7 @@ class HitRender extends  Render {
         if (o instanceof Graphics) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             this.renderGraphics(o)
-        }else if(o instanceof  CanvasPath){
+        }else if(o instanceof  Path){
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             o.draw(ctx)
         }

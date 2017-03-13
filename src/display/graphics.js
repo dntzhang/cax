@@ -1,4 +1,4 @@
-import DisplayObject from '../display_object.js'
+import DisplayObject from './display_object.js'
 
 class Graphics extends DisplayObject {
     constructor(data) {
