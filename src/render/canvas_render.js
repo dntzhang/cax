@@ -14,13 +14,11 @@ class CanvasRender extends  Render {
 
     render(obj){
         this.ctx.save()
-        obj._computeMatrix();
         this.ctx.transform(obj._matrix.a,obj._matrix.b,obj._matrix.c,obj._matrix.d,obj._matrix.tx,obj._matrix.ty)
         if(obj instanceof Graphics){
             this.renderGraphics(obj)
         }else if (obj instanceof  Path){
             obj.draw(this.ctx)
-        }else if (obj instanceof  Group){
         }
         this.ctx.restore()
     }

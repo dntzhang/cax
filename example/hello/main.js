@@ -1,4 +1,4 @@
-import { Stage, Graphics } from '../../src/index.js'
+import { Stage, Graphics, Group } from '../../src/index.js'
 
 var stage = new Stage(480,480,"body")
 
@@ -41,7 +41,10 @@ graphics.cursor = 'move'
 graphics.originX = 240
 graphics.originY = 240
 
-stage.add(graphics)
+let group = new Group()
+group.add(graphics)
+group.scaleX=0.5
+stage.add(group)
 stage.update()
 
 graphics.addEventListener('click',()=>{

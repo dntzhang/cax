@@ -13,9 +13,6 @@ class DisplayObject extends EventDispatcher{
         this.id = UID.get()
     }
 
-    _computeMatrix(){
-        this._matrix.identity().appendTransform(this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.skewX, this.skewY, this.originX, this.originY)
-    }
 }
 
 export default DisplayObject;

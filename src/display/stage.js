@@ -1,5 +1,5 @@
 import Group from './group.js'
-import CanvasRender from '../render/canvas_render.js'
+import Renderer from '../render/renderer.js'
 import HitRender from '../render/hit_render.js'
 import Event from '../base/event.js'
 
@@ -13,7 +13,7 @@ class Stage extends Group  {
         this.canvas.width = width
         this.canvas.height = height
         this.renderTo.appendChild(this.canvas)
-        this.renderer = new CanvasRender(this.canvas)
+        this.renderer = new Renderer(this.canvas)
 
         this.canvas.addEventListener('click', evt => this._handleClick(evt))
 
@@ -141,10 +141,11 @@ class Stage extends Group  {
     }
 
     update(){
-        this.renderer.clear()
-        this.children.forEach( child => {
-            this.renderer.render(child)
-        })
+        this.renderer.update(this)
+        //this.renderer.clear()
+        //this.children.forEach( child => {
+        //    this.renderer.render(child)
+        //})
     }
 }
 

@@ -49,6 +49,7 @@
 	var _index = __webpack_require__(1);
 
 	var stage = new _index.Stage(480, 480, "body");
+
 	var graphics = new _index.Graphics();
 	graphics.beginPath().arc(377, 391, 140, 0, Math.PI * 2).closePath().fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(8).stroke().beginPath().moveTo(298, 506).bezierCurveTo(236, 396, 302, 272, 407, 254).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(328, 258).bezierCurveTo(360, 294, 451, 272, 503, 332).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(282, 288).bezierCurveTo(391, 292, 481, 400, 488, 474).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(242, 352).bezierCurveTo(352, 244, 319, 423, 409, 527).strokeStyle("#046ab4").lineWidth(6).stroke();
 
@@ -57,7 +58,10 @@
 	graphics.originX = 240;
 	graphics.originY = 240;
 
-	stage.add(graphics);
+	var group = new _index.Group();
+	group.add(graphics);
+	group.scaleX = 0.5;
+	stage.add(group);
 	stage.update();
 
 	graphics.addEventListener('click', function () {
@@ -71,7 +75,7 @@
 	}, true);
 
 	graphics.addEventListener('mouseover', function (evt) {
-	    //evt.stopPropagation();
+	    //evt.stopPropagation()
 	    graphics.scaleX = graphics.scaleY = 1.1;
 	    stage.update();
 	});
@@ -149,11 +153,11 @@
 
 	var _stage2 = _interopRequireDefault(_stage);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _path = __webpack_require__(11);
+	var _path = __webpack_require__(12);
 
 	var _path2 = _interopRequireDefault(_path);
 
@@ -291,8 +295,6 @@
 	    value: true
 	});
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _matrix2d = __webpack_require__(2);
 
 	var _matrix2d2 = _interopRequireDefault(_matrix2d);
@@ -329,13 +331,6 @@
 	        _this.id = _uid2.default.get();
 	        return _this;
 	    }
-
-	    _createClass(DisplayObject, [{
-	        key: '_computeMatrix',
-	        value: function _computeMatrix() {
-	            this._matrix.identity().appendTransform(this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.skewX, this.skewY, this.originX, this.originY);
-	        }
-	    }]);
 
 	    return DisplayObject;
 	}(_event_dispatcher2.default);
@@ -545,15 +540,15 @@
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _canvas_render = __webpack_require__(8);
+	var _renderer = __webpack_require__(8);
 
-	var _canvas_render2 = _interopRequireDefault(_canvas_render);
+	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _hit_render = __webpack_require__(12);
+	var _hit_render = __webpack_require__(13);
 
 	var _hit_render2 = _interopRequireDefault(_hit_render);
 
-	var _event = __webpack_require__(13);
+	var _event = __webpack_require__(14);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -581,7 +576,7 @@
 	        _this.canvas.width = width;
 	        _this.canvas.height = height;
 	        _this.renderTo.appendChild(_this.canvas);
-	        _this.renderer = new _canvas_render2.default(_this.canvas);
+	        _this.renderer = new _renderer2.default(_this.canvas);
 
 	        _this.canvas.addEventListener('click', function (evt) {
 	            return _this._handleClick(evt);
@@ -724,12 +719,11 @@
 	    }, {
 	        key: 'update',
 	        value: function update() {
-	            var _this2 = this;
-
-	            this.renderer.clear();
-	            this.children.forEach(function (child) {
-	                _this2.renderer.render(child);
-	            });
+	            this.renderer.update(this);
+	            //this.renderer.clear()
+	            //this.children.forEach( child => {
+	            //    this.renderer.render(child)
+	            //})
 	        }
 	    }]);
 
@@ -750,19 +744,155 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _canvas_render = __webpack_require__(9);
+
+	var _canvas_render2 = _interopRequireDefault(_canvas_render);
+
 	var _group = __webpack_require__(6);
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _render = __webpack_require__(10);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Renderer = function () {
+	    function Renderer(canvas) {
+	        _classCallCheck(this, Renderer);
+
+	        this.renderer = new _canvas_render2.default(canvas);
+	        this.renderList = [];
+	        this.mainCtx = this.renderer.ctx;
+	    }
+
+	    _createClass(Renderer, [{
+	        key: 'update',
+	        value: function update(stage) {
+	            var objs = this.renderList,
+	                engine = this.renderer;
+	            objs.length = 0;
+	            this.computeMatrix(stage);
+	            engine.clear();
+	            objs.forEach(function (obj) {
+	                engine.render(obj);
+	            });
+	        }
+	    }, {
+	        key: 'computeMatrix',
+	        value: function computeMatrix(stage) {
+	            for (var i = 0, len = stage.children.length; i < len; i++) {
+	                this._computeMatrix(stage.children[i]);
+	            }
+	        }
+	    }, {
+	        key: 'initComplex',
+	        value: function initComplex(o) {
+	            o.complexCompositeOperation = this._getCompositeOperation(o);
+	            o.complexAlpha = this._getAlpha(o, 1);
+	        }
+	    }, {
+	        key: '_computeMatrix',
+	        value: function _computeMatrix(o, mtx) {
+	            //if (!o.isVisible()) {
+	            //    return;
+	            //}
+	            if (mtx) {
+	                o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+	            } else {
+	                o._matrix.initialize(1, 0, 0, 1, 0, 0);
+	            }
+
+	            o._matrix.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
+
+	            if (o instanceof _group2.default) {
+	                var list = o.children,
+	                    len = list.length,
+	                    i = 0;
+	                for (; i < len; i++) {
+	                    this._computeMatrix(list[i], o._matrix);
+	                }
+	            } else {
+	                if (o instanceof _graphics2.default) {
+	                    this.renderList.push(o);
+	                    this.initComplex(o);
+	                } else {
+	                    // o.initAABB();
+	                    //if (this.isInStage(o)) {
+	                    this.renderList.push(o);
+	                    this.initComplex(o);
+	                    //}
+	                }
+	            }
+	        }
+	    }, {
+	        key: '_getCompositeOperation',
+	        value: function _getCompositeOperation(o) {
+	            if (o.compositeOperation) return o.compositeOperation;
+	            if (o.parent) return this._getCompositeOperation(o.parent);
+	        }
+	    }, {
+	        key: '_getAlpha',
+	        value: function _getAlpha(o, alpha) {
+	            var result = o.alpha * alpha;
+	            if (o.parent) {
+	                return this._getAlpha(o.parent, result);
+	            }
+	            return result;
+	        }
+	    }, {
+	        key: 'isInStage',
+	        value: function isInStage(o) {
+	            return this.collisionBetweenAABB(o.AABB, this.stage.AABB);
+	        }
+	    }, {
+	        key: 'collisionBetweenAABB',
+	        value: function collisionBetweenAABB(AABB1, AABB2) {
+	            var maxX = AABB1[0] + AABB1[2];
+	            if (maxX < AABB2[0]) return false;
+	            var minX = AABB1[0];
+	            if (minX > AABB2[0] + AABB2[2]) return false;
+	            var maxY = AABB1[1] + AABB1[3];
+	            if (maxY < AABB2[1]) return false;
+	            var minY = AABB1[1];
+	            if (minY > AABB2[1] + AABB2[3]) return false;
+	            return true;
+	        }
+	    }]);
+
+	    return Renderer;
+	}();
+
+	exports.default = Renderer;
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _group = __webpack_require__(6);
+
+	var _group2 = _interopRequireDefault(_group);
+
+	var _graphics = __webpack_require__(10);
+
+	var _graphics2 = _interopRequireDefault(_graphics);
+
+	var _render = __webpack_require__(11);
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _path = __webpack_require__(11);
+	var _path = __webpack_require__(12);
 
 	var _path2 = _interopRequireDefault(_path);
 
@@ -793,13 +923,12 @@
 	        key: 'render',
 	        value: function render(obj) {
 	            this.ctx.save();
-	            obj._computeMatrix();
 	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
 	            if (obj instanceof _graphics2.default) {
 	                this.renderGraphics(obj);
 	            } else if (obj instanceof _path2.default) {
 	                obj.draw(this.ctx);
-	            } else if (obj instanceof _group2.default) {}
+	            }
 	            this.ctx.restore();
 	        }
 	    }, {
@@ -842,7 +971,7 @@
 	exports.default = CanvasRender;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1001,7 +1130,7 @@
 	exports.default = Graphics;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1036,7 +1165,7 @@
 	exports.default = Render;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1127,7 +1256,7 @@
 	exports.default = Path;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1142,19 +1271,19 @@
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _render = __webpack_require__(10);
+	var _render = __webpack_require__(11);
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _event = __webpack_require__(13);
+	var _event = __webpack_require__(14);
 
 	var _event2 = _interopRequireDefault(_event);
 
-	var _path = __webpack_require__(11);
+	var _path = __webpack_require__(12);
 
 	var _path2 = _interopRequireDefault(_path);
 
@@ -1280,7 +1409,7 @@
 	exports.default = HitRender;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	"use strict";
