@@ -2,7 +2,7 @@
   "name": "alloyrender",
   "version": "0.0.0",
   "description": "AlloyRender is AlloyRender.",
-  "main": "dist/alloy_render.js",
+  "main": "dist/alloy-render.js",
   "scripts": {
     "build": "webpack -w",
     "path": "webpack -w",

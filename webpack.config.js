@@ -1,6 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
-
+var packageJSON = require('./package.json');
 /**
  * Env
  * Get npm lifecycle event to identify the environment
@@ -40,7 +40,7 @@ var config  = {
 if(ENV === 'build'||ENV === 'build_min'){
     config = {
         entry: {
-            omi: './src/index.js'
+            'alloy-render': './src/index.js'
         },
         output: {
             // path: __dirname,
@@ -67,7 +67,7 @@ if(ENV === 'build'||ENV === 'build_min'){
         },
         plugins: [
             // Avoid publishing files when compilation fails
-            new webpack.BannerPlugin(" Omi v0.4.2 By dntzhang \r\n Github: https://github.com/AlloyTeam/omi\r\n MIT Licensed."),
+            new webpack.BannerPlugin(" AlloyRender v"+packageJSON.version+" By dntzhang \r\n Github: https://github.com/AlloyTeam/AlloyRender\r\n MIT Licensed."),
             new webpack.NoErrorsPlugin()
         ],
         stats: {
@@ -81,7 +81,7 @@ if(ENV === 'build'||ENV === 'build_min'){
      if(ENV === 'build_min'){
         config.plugins.push(new webpack.optimize.UglifyJsPlugin());
         config.entry = {
-            'omi.min': './src/index.js'
+            'alloy-render.min': './src/index.js'
         };
     }
 }else if(ENV === 'website') {
