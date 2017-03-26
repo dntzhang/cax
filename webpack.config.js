@@ -40,8 +40,7 @@ var config  = {
 if(ENV === 'build'||ENV === 'build_min'){
     config = {
         entry: {
-            omi: './src/index.js',
-            'omi.lite': './src/index.lite.js'
+            omi: './src/index.js'
         },
         output: {
             // path: __dirname,
@@ -82,8 +81,7 @@ if(ENV === 'build'||ENV === 'build_min'){
      if(ENV === 'build_min'){
         config.plugins.push(new webpack.optimize.UglifyJsPlugin());
         config.entry = {
-            'omi.min': './src/index.js',
-            'omi.lite.min': './src/index.lite.js'
+            'omi.min': './src/index.js'
         };
     }
 }else if(ENV === 'website') {
