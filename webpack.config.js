@@ -45,7 +45,7 @@ if(ENV === 'build'||ENV === 'build_min'){
         output: {
             // path: __dirname,
             path: 'dist/',
-            library:'Omi',
+            library:'AlloyRender',
             libraryTarget: 'umd',
             filename:  '[name].js'
             //umdNamedDefine: true
