@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack -w",
     "path": "webpack -w",
-    "hello": "webpack -w",
+    "simple": "webpack -w",
     "test": "karma start test/karma.conf.js"
   },
   "devDependencies": {

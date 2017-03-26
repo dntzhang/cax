@@ -59,9 +59,18 @@ class HitRender extends  Render {
         if (o instanceof Graphics) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             this.renderGraphics(o)
-        }else if(o instanceof  Path){
+        } else if (o instanceof  Path) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             o.draw(ctx)
+        } else if (o instanceof Group) {
+            var list = o.children.slice(0),
+                l = list.length;
+            for (var i = l - 1; i >= 0; i--) {
+                ctx.save();
+                var target = this._hitPixel(list[i],evt, mtx);
+                if (target) return target;
+                ctx.restore();
+            }
         }
 
         if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {

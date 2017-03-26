@@ -1,19 +1,4 @@
-/*!
- *  AlloyRender v0.0.0 By dntzhang 
- *  Github: https://github.com/AlloyTeam/AlloyRender
- *  MIT Licensed.
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["AlloyRender"] = factory();
-	else
-		root["AlloyRender"] = factory();
-})(this, function() {
-return /******/ (function(modules) { // webpackBootstrap
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -61,46 +46,137 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _matrix2d = __webpack_require__(1);
+	var _index = __webpack_require__(1);
+
+	var stage = new _index.Stage(480, 480, "body");
+
+	var graphics = new _index.Graphics();
+	graphics.beginPath().arc(377, 391, 140, 0, Math.PI * 2).closePath().fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(8).stroke().beginPath().moveTo(298, 506).bezierCurveTo(236, 396, 302, 272, 407, 254).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(328, 258).bezierCurveTo(360, 294, 451, 272, 503, 332).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(282, 288).bezierCurveTo(391, 292, 481, 400, 488, 474).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(242, 352).bezierCurveTo(352, 244, 319, 423, 409, 527).strokeStyle("#046ab4").lineWidth(6).stroke();
+
+	graphics.x = graphics.y = 20;
+	graphics.cursor = 'move';
+	graphics.originX = 240;
+	graphics.originY = 240;
+
+	var group = new _index.Group();
+	group.add(graphics);
+	group.scaleX = 0.5;
+	stage.add(group);
+	stage.update();
+
+	graphics.addEventListener('click', function () {
+	    //didn't exeu alert(2) because  evt.stopPropagation();
+	    alert(2);
+	}, false);
+
+	graphics.addEventListener('click', function (evt) {
+	    console.log('click');
+	    evt.stopPropagation();
+	}, true);
+
+	graphics.addEventListener('mouseover', function (evt) {
+	    //evt.stopPropagation()
+	    graphics.scaleX = graphics.scaleY = 1.1;
+	    stage.update();
+	});
+
+	graphics.addEventListener('mouseout', function (evt) {
+	    graphics.scaleX = graphics.scaleY = 1;
+	    stage.update();
+	});
+
+	var isMouseDown = false;
+	var preX = null;
+	var preY = null;
+
+	graphics.addEventListener('mousedown', function (evt) {
+	    graphics.scaleX = graphics.scaleY = 1.2;
+	    isMouseDown = true;
+	    preX = evt.stageX;
+	    preY = evt.stageY;
+
+	    stage.update();
+	});
+
+	document.addEventListener('mousemove', function (evt) {
+
+	    if (isMouseDown && evt.stageX !== undefined) {
+
+	        graphics.x += evt.stageX - preX;
+	        graphics.y += evt.stageY - preY;
+	        stage.update();
+
+	        preX = evt.stageX;
+	        preY = evt.stageY;
+	    }
+	});
+
+	document.addEventListener('mouseup', function (evt) {
+	    if (isMouseDown) {
+	        graphics.scaleX = graphics.scaleY = 1.1;
+	    } else {
+	        graphics.scaleX = graphics.scaleY = 1;
+	    }
+	    isMouseDown = false;
+	    stage.update();
+	});
+
+	stage.addEventListener('mouseout', function (evt) {
+	    isMouseDown = false;
+	    graphics.scaleX = graphics.scaleY = 1;
+	});
+
+	//setInterval(()=>{
+	//    graphics.rotation++
+	//    stage.update();
+	//},16)
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _matrix2d = __webpack_require__(2);
 
 	var _matrix2d2 = _interopRequireDefault(_matrix2d);
 
-	var _display_object = __webpack_require__(2);
+	var _display_object = __webpack_require__(3);
 
 	var _display_object2 = _interopRequireDefault(_display_object);
 
-	var _group = __webpack_require__(5);
+	var _group = __webpack_require__(6);
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _stage = __webpack_require__(6);
+	var _stage = __webpack_require__(7);
 
 	var _stage2 = _interopRequireDefault(_stage);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _path = __webpack_require__(11);
+	var _path = __webpack_require__(12);
 
 	var _path2 = _interopRequireDefault(_path);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var AlloyRender = {};
 
-	AlloyRender.Matrix2D = _matrix2d2['default'];
-	AlloyRender.Stage = _stage2['default'];
-	AlloyRender.DisplayObject = _display_object2['default'];
-	AlloyRender.Group = _group2['default'];
-	AlloyRender.Graphics = _graphics2['default'];
-	AlloyRender.Path = _path2['default'];
+	AlloyRender.Matrix2D = _matrix2d2.default;
+	AlloyRender.Stage = _stage2.default;
+	AlloyRender.DisplayObject = _display_object2.default;
+	AlloyRender.Group = _group2.default;
+	AlloyRender.Graphics = _graphics2.default;
+	AlloyRender.Path = _path2.default;
 
 	window.AlloyRender = AlloyRender;
 	module.exports = AlloyRender;
 
 /***/ },
-/* 1 */
+/* 2 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -207,10 +283,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Matrix2D;
 	}();
 
-	exports["default"] = Matrix2D;
+	exports.default = Matrix2D;
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -219,19 +295,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	var _matrix2d = __webpack_require__(1);
+	var _matrix2d = __webpack_require__(2);
 
 	var _matrix2d2 = _interopRequireDefault(_matrix2d);
 
-	var _event_dispatcher = __webpack_require__(3);
+	var _event_dispatcher = __webpack_require__(4);
 
 	var _event_dispatcher2 = _interopRequireDefault(_event_dispatcher);
 
-	var _uid = __webpack_require__(4);
+	var _uid = __webpack_require__(5);
 
 	var _uid2 = _interopRequireDefault(_uid);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -250,19 +326,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this.alpha = _this.scaleX = _this.scaleY = 1;
 	        _this.x = _this.y = _this.rotation = _this.skewX = _this.skewY = _this.originX = _this.originY = 0;
 	        _this.cursor = "default";
-	        _this._matrix = new _matrix2d2['default']();
-	        _this._hitMatrix = new _matrix2d2['default']();
-	        _this.id = _uid2['default'].get();
+	        _this._matrix = new _matrix2d2.default();
+	        _this._hitMatrix = new _matrix2d2.default();
+	        _this.id = _uid2.default.get();
 	        return _this;
 	    }
 
 	    return DisplayObject;
-	}(_event_dispatcher2['default']);
+	}(_event_dispatcher2.default);
 
-	exports['default'] = DisplayObject;
+	exports.default = DisplayObject;
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -377,10 +453,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return EventDispatcher;
 	}();
 
-	exports['default'] = EventDispatcher;
+	exports.default = EventDispatcher;
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -396,10 +472,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return UID._nextID++;
 	};
 
-	exports["default"] = UID;
+	exports.default = UID;
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -410,11 +486,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _display_object = __webpack_require__(2);
+	var _display_object = __webpack_require__(3);
 
 	var _display_object2 = _interopRequireDefault(_display_object);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -444,12 +520,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }]);
 
 	    return Group;
-	}(_display_object2['default']);
+	}(_display_object2.default);
 
-	exports['default'] = Group;
+	exports.default = Group;
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -460,23 +536,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _group = __webpack_require__(5);
+	var _group = __webpack_require__(6);
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _renderer = __webpack_require__(7);
+	var _renderer = __webpack_require__(8);
 
 	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _hit_render = __webpack_require__(12);
+	var _hit_render = __webpack_require__(13);
 
 	var _hit_render2 = _interopRequireDefault(_hit_render);
 
-	var _event = __webpack_require__(13);
+	var _event = __webpack_require__(14);
 
 	var _event2 = _interopRequireDefault(_event);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -500,7 +576,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this.canvas.width = width;
 	        _this.canvas.height = height;
 	        _this.renderTo.appendChild(_this.canvas);
-	        _this.renderer = new _renderer2['default'](_this.canvas);
+	        _this.renderer = new _renderer2.default(_this.canvas);
 
 	        _this.canvas.addEventListener('click', function (evt) {
 	            return _this._handleClick(evt);
@@ -534,7 +610,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this.borderLeftWidth = 0;
 
 	        _this.hitAABB = false;
-	        _this._hitRender = new _hit_render2['default']();
+	        _this._hitRender = new _hit_render2.default();
 	        //get rect again when trigger onscroll onresize event!?
 	        _this._boundingClientRect = _this.canvas.getBoundingClientRect();
 	        _this._overObject = null;
@@ -582,7 +658,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function _handleMouseMove(evt) {
 
 	            var obj = this._getObjectUnderPoint(evt);
-	            var mockEvt = new _event2['default']();
+	            var mockEvt = new _event2.default();
 	            mockEvt.stageX = evt.stageX;
 	            mockEvt.stageY = evt.stageY;
 	            mockEvt.pureEvent = evt;
@@ -652,12 +728,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }]);
 
 	    return Stage;
-	}(_group2['default']);
+	}(_group2.default);
 
-	exports['default'] = Stage;
+	exports.default = Stage;
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -668,19 +744,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _canvas_render = __webpack_require__(8);
+	var _canvas_render = __webpack_require__(9);
 
 	var _canvas_render2 = _interopRequireDefault(_canvas_render);
 
-	var _group = __webpack_require__(5);
+	var _group = __webpack_require__(6);
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -688,7 +764,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    function Renderer(canvas) {
 	        _classCallCheck(this, Renderer);
 
-	        this.renderer = new _canvas_render2['default'](canvas);
+	        this.renderer = new _canvas_render2.default(canvas);
 	        this.renderList = [];
 	        this.mainCtx = this.renderer.ctx;
 	    }
@@ -732,7 +808,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            o._matrix.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
 
-	            if (o instanceof _group2['default']) {
+	            if (o instanceof _group2.default) {
 	                var list = o.children,
 	                    len = list.length,
 	                    i = 0;
@@ -740,7 +816,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    this._computeMatrix(list[i], o._matrix);
 	                }
 	            } else {
-	                if (o instanceof _graphics2['default']) {
+	                if (o instanceof _graphics2.default) {
 	                    this.renderList.push(o);
 	                    this.initComplex(o);
 	                } else {
@@ -790,10 +866,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Renderer;
 	}();
 
-	exports['default'] = Renderer;
+	exports.default = Renderer;
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -804,23 +880,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _group = __webpack_require__(5);
+	var _group = __webpack_require__(6);
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _render = __webpack_require__(10);
+	var _render = __webpack_require__(11);
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _path = __webpack_require__(11);
+	var _path = __webpack_require__(12);
 
 	var _path2 = _interopRequireDefault(_path);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -848,9 +924,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function render(obj) {
 	            this.ctx.save();
 	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
-	            if (obj instanceof _graphics2['default']) {
+	            if (obj instanceof _graphics2.default) {
 	                this.renderGraphics(obj);
-	            } else if (obj instanceof _path2['default']) {
+	            } else if (obj instanceof _path2.default) {
 	                obj.draw(this.ctx);
 	            }
 	            this.ctx.restore();
@@ -890,12 +966,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }]);
 
 	    return CanvasRender;
-	}(_render2['default']);
+	}(_render2.default);
 
-	exports['default'] = CanvasRender;
+	exports.default = CanvasRender;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -906,11 +982,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _display_object = __webpack_require__(2);
+	var _display_object = __webpack_require__(3);
 
 	var _display_object2 = _interopRequireDefault(_display_object);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1049,12 +1125,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }]);
 
 	    return Graphics;
-	}(_display_object2["default"]);
+	}(_display_object2.default);
 
-	exports["default"] = Graphics;
+	exports.default = Graphics;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1086,10 +1162,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Render;
 	}();
 
-	exports["default"] = Render;
+	exports.default = Render;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1100,11 +1176,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _display_object = __webpack_require__(2);
+	var _display_object = __webpack_require__(3);
 
 	var _display_object2 = _interopRequireDefault(_display_object);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1175,12 +1251,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }]);
 
 	    return Path;
-	}(_display_object2['default']);
+	}(_display_object2.default);
 
-	exports['default'] = Path;
+	exports.default = Path;
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1191,27 +1267,27 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _group = __webpack_require__(5);
+	var _group = __webpack_require__(6);
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _render = __webpack_require__(10);
+	var _render = __webpack_require__(11);
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _event = __webpack_require__(13);
+	var _event = __webpack_require__(14);
 
 	var _event2 = _interopRequireDefault(_event);
 
-	var _path = __webpack_require__(11);
+	var _path = __webpack_require__(12);
 
 	var _path2 = _interopRequireDefault(_path);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1281,13 +1357,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            mtx = o._hitMatrix;
 	            mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
-	            if (o instanceof _graphics2['default']) {
+	            if (o instanceof _graphics2.default) {
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                this.renderGraphics(o);
-	            } else if (o instanceof _path2['default']) {
+	            } else if (o instanceof _path2.default) {
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                o.draw(ctx);
-	            } else if (o instanceof _group2['default']) {
+	            } else if (o instanceof _group2.default) {
 	                var list = o.children.slice(0),
 	                    l = list.length;
 	                for (var i = l - 1; i >= 0; i--) {
@@ -1306,7 +1382,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: '_dispatchEvent',
 	        value: function _dispatchEvent(obj, evt) {
-	            var mockEvt = new _event2['default']();
+	            var mockEvt = new _event2.default();
 	            mockEvt.stageX = evt.stageX;
 	            mockEvt.stageY = evt.stageY;
 	            mockEvt.pureEvent = evt;
@@ -1337,12 +1413,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }]);
 
 	    return HitRender;
-	}(_render2['default']);
+	}(_render2.default);
 
-	exports['default'] = HitRender;
+	exports.default = HitRender;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1375,9 +1451,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return Event;
 	}();
 
-	exports["default"] = Event;
+	exports.default = Event;
 
 /***/ }
-/******/ ])
-});
-;
+/******/ ]);
