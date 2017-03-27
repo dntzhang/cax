@@ -544,11 +544,11 @@
 
 	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _hit_render = __webpack_require__(13);
+	var _hit_render = __webpack_require__(14);
 
 	var _hit_render2 = _interopRequireDefault(_hit_render);
 
-	var _event = __webpack_require__(14);
+	var _event = __webpack_require__(15);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -1180,6 +1180,10 @@
 
 	var _display_object2 = _interopRequireDefault(_display_object);
 
+	var _pathParser = __webpack_require__(13);
+
+	var _pathParser2 = _interopRequireDefault(_pathParser);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1213,6 +1217,9 @@
 	    _createClass(Path, [{
 	        key: 'draw',
 	        value: function draw(ctx) {
+	            //todo support M-2.282-6.074l0.001,3.926l-3.318,2.101C-5.7-0.66-6.141-1.885-6.775-1.891 format
+
+	            console.log((0, _pathParser2.default)(this.d));
 	            ctx.save();
 
 	            ctx.lineWidth = this.strokeWidth;
@@ -1257,6 +1264,73 @@
 
 /***/ },
 /* 13 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	//https://github.com/jkroso/parse-svg-path/blob/master/index.js
+	/**
+	 * expected argument lengths
+	 * @type {Object}
+	 */
+
+	var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0 };
+
+	/**
+	 * segment pattern
+	 * @type {RegExp}
+	 */
+
+	var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
+
+	/**
+	 * parse an svg path data string. Generates an Array
+	 * of commands where each command is an Array of the
+	 * form `[command, arg1, arg2, ...]`
+	 *
+	 * @param {String} path
+	 * @return {Array}
+	 */
+
+	function parse(path) {
+	    var data = [];
+	    path.replace(segment, function (_, command, args) {
+	        var type = command.toLowerCase();
+	        args = parseValues(args);
+
+	        // overloaded moveTo
+	        if (type == 'm' && args.length > 2) {
+	            data.push([command].concat(args.splice(0, 2)));
+	            type = 'l';
+	            command = command == 'm' ? 'l' : 'L';
+	        }
+
+	        while (true) {
+	            if (args.length == length[type]) {
+	                args.unshift(command);
+	                return data.push(args);
+	            }
+	            if (args.length < length[type]) throw new Error('malformed path data');
+	            data.push([command].concat(args.splice(0, length[type])));
+	        }
+	    });
+	    return data;
+	}
+
+	var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
+
+	function parseValues(args) {
+	    var numbers = args.match(number);
+	    return numbers ? numbers.map(Number) : [];
+	}
+
+	exports.default = parse;
+
+/***/ },
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1279,7 +1353,7 @@
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _event = __webpack_require__(14);
+	var _event = __webpack_require__(15);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -1418,7 +1492,7 @@
 	exports.default = HitRender;
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	"use strict";

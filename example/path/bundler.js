@@ -49,6 +49,7 @@
 	var _index = __webpack_require__(1);
 
 	var stage = new _index.Stage(480, 480, "body");
+
 	var path = new _index.Path('\n    M153 334\nC153 334 151 334 151 334\nC151 339 153 344 156 344\nC164 344 171 339 171 334\nC171 322 164 314 156 314\nC142 314 131 322 131 334\nC131 350 142 364 156 364\nC175 364 191 350 191 334\nC191 311 175 294 156 294\nC131 294 111 311 111 334\nC111 361 131 384 156 384\nC186 384 211 361 211 334\nC211 300 186 274 156 274\n    ');
 
 	path.fill = 'white';
@@ -60,10 +61,6 @@
 	path.addEventListener('mouseout', function () {});
 	stage.add(path);
 	stage.update();
-	//setInterval(()=>{
-	//    graphics.rotation++
-	//
-	//},16)
 
 /***/ },
 /* 1 */
@@ -87,11 +84,11 @@
 
 	var _stage2 = _interopRequireDefault(_stage);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _path = __webpack_require__(11);
+	var _path = __webpack_require__(12);
 
 	var _path2 = _interopRequireDefault(_path);
 
@@ -229,8 +226,6 @@
 	    value: true
 	});
 
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 	var _matrix2d = __webpack_require__(2);
 
 	var _matrix2d2 = _interopRequireDefault(_matrix2d);
@@ -267,13 +262,6 @@
 	        _this.id = _uid2.default.get();
 	        return _this;
 	    }
-
-	    _createClass(DisplayObject, [{
-	        key: '_computeMatrix',
-	        value: function _computeMatrix() {
-	            this._matrix.identity().appendTransform(this.x, this.y, this.scaleX, this.scaleY, this.rotation, this.skewX, this.skewY, this.originX, this.originY);
-	        }
-	    }]);
 
 	    return DisplayObject;
 	}(_event_dispatcher2.default);
@@ -483,15 +471,15 @@
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _canvas_render = __webpack_require__(8);
+	var _renderer = __webpack_require__(8);
 
-	var _canvas_render2 = _interopRequireDefault(_canvas_render);
+	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _hit_render = __webpack_require__(12);
+	var _hit_render = __webpack_require__(14);
 
 	var _hit_render2 = _interopRequireDefault(_hit_render);
 
-	var _event = __webpack_require__(13);
+	var _event = __webpack_require__(15);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -519,7 +507,7 @@
 	        _this.canvas.width = width;
 	        _this.canvas.height = height;
 	        _this.renderTo.appendChild(_this.canvas);
-	        _this.renderer = new _canvas_render2.default(_this.canvas);
+	        _this.renderer = new _renderer2.default(_this.canvas);
 
 	        _this.canvas.addEventListener('click', function (evt) {
 	            return _this._handleClick(evt);
@@ -662,12 +650,11 @@
 	    }, {
 	        key: 'update',
 	        value: function update() {
-	            var _this2 = this;
-
-	            this.renderer.clear();
-	            this.children.forEach(function (child) {
-	                _this2.renderer.render(child);
-	            });
+	            this.renderer.update(this);
+	            //this.renderer.clear()
+	            //this.children.forEach( child => {
+	            //    this.renderer.render(child)
+	            //})
 	        }
 	    }]);
 
@@ -688,19 +675,155 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _canvas_render = __webpack_require__(9);
+
+	var _canvas_render2 = _interopRequireDefault(_canvas_render);
+
 	var _group = __webpack_require__(6);
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _render = __webpack_require__(10);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Renderer = function () {
+	    function Renderer(canvas) {
+	        _classCallCheck(this, Renderer);
+
+	        this.renderer = new _canvas_render2.default(canvas);
+	        this.renderList = [];
+	        this.mainCtx = this.renderer.ctx;
+	    }
+
+	    _createClass(Renderer, [{
+	        key: 'update',
+	        value: function update(stage) {
+	            var objs = this.renderList,
+	                engine = this.renderer;
+	            objs.length = 0;
+	            this.computeMatrix(stage);
+	            engine.clear();
+	            objs.forEach(function (obj) {
+	                engine.render(obj);
+	            });
+	        }
+	    }, {
+	        key: 'computeMatrix',
+	        value: function computeMatrix(stage) {
+	            for (var i = 0, len = stage.children.length; i < len; i++) {
+	                this._computeMatrix(stage.children[i]);
+	            }
+	        }
+	    }, {
+	        key: 'initComplex',
+	        value: function initComplex(o) {
+	            o.complexCompositeOperation = this._getCompositeOperation(o);
+	            o.complexAlpha = this._getAlpha(o, 1);
+	        }
+	    }, {
+	        key: '_computeMatrix',
+	        value: function _computeMatrix(o, mtx) {
+	            //if (!o.isVisible()) {
+	            //    return;
+	            //}
+	            if (mtx) {
+	                o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+	            } else {
+	                o._matrix.initialize(1, 0, 0, 1, 0, 0);
+	            }
+
+	            o._matrix.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
+
+	            if (o instanceof _group2.default) {
+	                var list = o.children,
+	                    len = list.length,
+	                    i = 0;
+	                for (; i < len; i++) {
+	                    this._computeMatrix(list[i], o._matrix);
+	                }
+	            } else {
+	                if (o instanceof _graphics2.default) {
+	                    this.renderList.push(o);
+	                    this.initComplex(o);
+	                } else {
+	                    // o.initAABB();
+	                    //if (this.isInStage(o)) {
+	                    this.renderList.push(o);
+	                    this.initComplex(o);
+	                    //}
+	                }
+	            }
+	        }
+	    }, {
+	        key: '_getCompositeOperation',
+	        value: function _getCompositeOperation(o) {
+	            if (o.compositeOperation) return o.compositeOperation;
+	            if (o.parent) return this._getCompositeOperation(o.parent);
+	        }
+	    }, {
+	        key: '_getAlpha',
+	        value: function _getAlpha(o, alpha) {
+	            var result = o.alpha * alpha;
+	            if (o.parent) {
+	                return this._getAlpha(o.parent, result);
+	            }
+	            return result;
+	        }
+	    }, {
+	        key: 'isInStage',
+	        value: function isInStage(o) {
+	            return this.collisionBetweenAABB(o.AABB, this.stage.AABB);
+	        }
+	    }, {
+	        key: 'collisionBetweenAABB',
+	        value: function collisionBetweenAABB(AABB1, AABB2) {
+	            var maxX = AABB1[0] + AABB1[2];
+	            if (maxX < AABB2[0]) return false;
+	            var minX = AABB1[0];
+	            if (minX > AABB2[0] + AABB2[2]) return false;
+	            var maxY = AABB1[1] + AABB1[3];
+	            if (maxY < AABB2[1]) return false;
+	            var minY = AABB1[1];
+	            if (minY > AABB2[1] + AABB2[3]) return false;
+	            return true;
+	        }
+	    }]);
+
+	    return Renderer;
+	}();
+
+	exports.default = Renderer;
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _group = __webpack_require__(6);
+
+	var _group2 = _interopRequireDefault(_group);
+
+	var _graphics = __webpack_require__(10);
+
+	var _graphics2 = _interopRequireDefault(_graphics);
+
+	var _render = __webpack_require__(11);
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _path = __webpack_require__(11);
+	var _path = __webpack_require__(12);
 
 	var _path2 = _interopRequireDefault(_path);
 
@@ -731,13 +854,12 @@
 	        key: 'render',
 	        value: function render(obj) {
 	            this.ctx.save();
-	            obj._computeMatrix();
 	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
 	            if (obj instanceof _graphics2.default) {
 	                this.renderGraphics(obj);
 	            } else if (obj instanceof _path2.default) {
 	                obj.draw(this.ctx);
-	            } else if (obj instanceof _group2.default) {}
+	            }
 	            this.ctx.restore();
 	        }
 	    }, {
@@ -780,7 +902,7 @@
 	exports.default = CanvasRender;
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -939,7 +1061,7 @@
 	exports.default = Graphics;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -974,7 +1096,7 @@
 	exports.default = Render;
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -988,6 +1110,10 @@
 	var _display_object = __webpack_require__(3);
 
 	var _display_object2 = _interopRequireDefault(_display_object);
+
+	var _pathParser = __webpack_require__(13);
+
+	var _pathParser2 = _interopRequireDefault(_pathParser);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1022,33 +1148,24 @@
 	    _createClass(Path, [{
 	        key: 'draw',
 	        value: function draw(ctx) {
+
+	            var cmds = (0, _pathParser2.default)(this.d);
 	            ctx.save();
 
 	            ctx.lineWidth = this.strokeWidth;
 	            ctx.strokeStyle = this.stroke;
 	            ctx.fillStyle = this.fill;
 	            ctx.beginPath();
-	            var points = this.d.split(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
-	            var cmds = this.d.match(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
 
 	            for (var j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
-	                var pArr = points[j].split(" ");
-	                if (cmds[j] == "M") {
-	                    pArr[0] = parseFloat(pArr[0]);
-	                    pArr[1] = parseFloat(pArr[1]);
-	                    ctx.moveTo.apply(ctx, pArr);
-	                } else if (cmds[j] == "C") {
-	                    pArr[0] = parseFloat(pArr[0]);
-	                    pArr[2] = parseFloat(pArr[2]);
-	                    pArr[4] = parseFloat(pArr[4]);
-	                    pArr[1] = parseFloat(pArr[1]);
-	                    pArr[3] = parseFloat(pArr[3]);
-	                    pArr[5] = parseFloat(pArr[5]);
-	                    ctx.bezierCurveTo.apply(ctx, pArr);
-	                } else if (cmds[j] == "L") {
-	                    pArr[0] = parseFloat(pArr[0]);
-	                    pArr[1] = parseFloat(pArr[1]);
-	                    ctx.lineTo.apply(ctx, pArr);
+	                var item = cmds[j];
+	                var action = item[0].toUpperCase();
+	                if (action == "M") {
+	                    ctx.moveTo.call(ctx, item[1], item[2]);
+	                } else if (action == "C") {
+	                    ctx.bezierCurveTo.call(ctx, item[1], item[2], item[3], item[4], item[5], item[6]);
+	                } else if (action == "L") {
+	                    ctx.lineTo.call(ctx, item[1], item[2]);
 	                }
 	            }
 
@@ -1065,7 +1182,74 @@
 	exports.default = Path;
 
 /***/ },
-/* 12 */
+/* 13 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	//https://github.com/jkroso/parse-svg-path/blob/master/index.js
+	/**
+	 * expected argument lengths
+	 * @type {Object}
+	 */
+
+	var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0 };
+
+	/**
+	 * segment pattern
+	 * @type {RegExp}
+	 */
+
+	var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
+
+	/**
+	 * parse an svg path data string. Generates an Array
+	 * of commands where each command is an Array of the
+	 * form `[command, arg1, arg2, ...]`
+	 *
+	 * @param {String} path
+	 * @return {Array}
+	 */
+
+	function parse(path) {
+	    var data = [];
+	    path.replace(segment, function (_, command, args) {
+	        var type = command.toLowerCase();
+	        args = parseValues(args);
+
+	        // overloaded moveTo
+	        if (type == 'm' && args.length > 2) {
+	            data.push([command].concat(args.splice(0, 2)));
+	            type = 'l';
+	            command = command == 'm' ? 'l' : 'L';
+	        }
+
+	        while (true) {
+	            if (args.length == length[type]) {
+	                args.unshift(command);
+	                return data.push(args);
+	            }
+	            if (args.length < length[type]) throw new Error('malformed path data');
+	            data.push([command].concat(args.splice(0, length[type])));
+	        }
+	    });
+	    return data;
+	}
+
+	var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
+
+	function parseValues(args) {
+	    var numbers = args.match(number);
+	    return numbers ? numbers.map(Number) : [];
+	}
+
+	exports.default = parse;
+
+/***/ },
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1080,19 +1264,19 @@
 
 	var _group2 = _interopRequireDefault(_group);
 
-	var _graphics = __webpack_require__(9);
+	var _graphics = __webpack_require__(10);
 
 	var _graphics2 = _interopRequireDefault(_graphics);
 
-	var _render = __webpack_require__(10);
+	var _render = __webpack_require__(11);
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _event = __webpack_require__(13);
+	var _event = __webpack_require__(15);
 
 	var _event2 = _interopRequireDefault(_event);
 
-	var _path = __webpack_require__(11);
+	var _path = __webpack_require__(12);
 
 	var _path2 = _interopRequireDefault(_path);
 
@@ -1172,6 +1356,15 @@
 	            } else if (o instanceof _path2.default) {
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                o.draw(ctx);
+	            } else if (o instanceof _group2.default) {
+	                var list = o.children.slice(0),
+	                    l = list.length;
+	                for (var i = l - 1; i >= 0; i--) {
+	                    ctx.save();
+	                    var target = this._hitPixel(list[i], evt, mtx);
+	                    if (target) return target;
+	                    ctx.restore();
+	                }
 	            }
 
 	            if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
@@ -1218,7 +1411,7 @@
 	exports.default = HitRender;
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports) {
 
 	"use strict";
