@@ -1217,36 +1217,49 @@
 	    _createClass(Path, [{
 	        key: 'draw',
 	        value: function draw(ctx) {
-	            //todo support M-2.282-6.074l0.001,3.926l-3.318,2.101C-5.7-0.66-6.141-1.885-6.775-1.891 format
 
-	            console.log((0, _pathParser2.default)(this.d));
+	            var cmds = (0, _pathParser2.default)(this.d);
 	            ctx.save();
 
 	            ctx.lineWidth = this.strokeWidth;
 	            ctx.strokeStyle = this.stroke;
 	            ctx.fillStyle = this.fill;
 	            ctx.beginPath();
-	            var points = this.d.split(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
-	            var cmds = this.d.match(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
-
+	            //https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
+	            //M = moveto
+	            //L = lineto
+	            //H = horizontal lineto
+	            //V = vertical lineto
+	            //C = curveto
+	            //S = smooth curveto
+	            //Q = quadratic Belzier curve
+	            //T = smooth quadratic Belzier curveto
+	            //A = elliptical Arc  ��ʱδʵ�֣��ñ�����������Բ
+	            //Z = closepath
+	            //������������������Сд��ĸ����д��ʾ���Զ�λ��Сд��ʾ���Զ�λ��
 	            for (var j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
-	                var pArr = points[j].split(" ");
-	                if (cmds[j] == "M") {
-	                    pArr[0] = parseFloat(pArr[0]);
-	                    pArr[1] = parseFloat(pArr[1]);
-	                    ctx.moveTo.apply(ctx, pArr);
-	                } else if (cmds[j] == "C") {
-	                    pArr[0] = parseFloat(pArr[0]);
-	                    pArr[2] = parseFloat(pArr[2]);
-	                    pArr[4] = parseFloat(pArr[4]);
-	                    pArr[1] = parseFloat(pArr[1]);
-	                    pArr[3] = parseFloat(pArr[3]);
-	                    pArr[5] = parseFloat(pArr[5]);
-	                    ctx.bezierCurveTo.apply(ctx, pArr);
-	                } else if (cmds[j] == "L") {
-	                    pArr[0] = parseFloat(pArr[0]);
-	                    pArr[1] = parseFloat(pArr[1]);
-	                    ctx.lineTo.apply(ctx, pArr);
+	                var item = cmds[j];
+	                var action = item[0].toUpperCase();
+	                var pre = cmds[j - 1];
+	                switch (action) {
+	                    case 'M':
+	                        ctx.moveTo(item[1], item[2]);
+	                    case 'C':
+	                        ctx.bezierCurveTo(item[1], item[2], item[3], item[4], item[5], item[6]);
+	                    case 'L':
+	                        ctx.lineTo(item[1], item[2]);
+	                    case 'H':
+	                        ctx.lineTo(pre[1], item[2]);
+	                    case 'V':
+	                        ctx.lineTo(item[1], pre[2]);
+	                    case 'S':
+	                        ctx.bezierCurveTo(pre[5] + pre[5] - pre[3], pre[6] + pre[6] - pre[4], item[1], item[2], item[3], item[4]);
+	                    case 'Q':
+	                        ctx.quadraticCurveTo(item[1], item[2], item[3], item[4]);
+	                    case 'T':
+	                        ctx.quadraticCurveTo(pre[3] + pre[3] - pre[1], pre[4] + pre[4] - pre[2], item[1], item[2]);
+	                    case 'Z':
+	                        ctx.closePath();
 	                }
 	            }
 
