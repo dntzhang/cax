@@ -15,6 +15,7 @@ class Graphics extends DisplayObject {
 
     clear() {
         this.cmds.length = 0;
+        this.beginPath();
         return this;
     }
 

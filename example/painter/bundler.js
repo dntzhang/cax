@@ -50,86 +50,41 @@
 
 	var stage = new _index.Stage(480, 480, "body");
 
-	var graphics = new _index.Graphics();
-	graphics.beginPath().arc(377, 391, 140, 0, Math.PI * 2).closePath().fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(8).stroke().beginPath().moveTo(298, 506).bezierCurveTo(236, 396, 302, 272, 407, 254).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(328, 258).bezierCurveTo(360, 294, 451, 272, 503, 332).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(282, 288).bezierCurveTo(391, 292, 481, 400, 488, 474).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(242, 352).bezierCurveTo(352, 244, 319, 423, 409, 527).strokeStyle("#046ab4").lineWidth(6).stroke();
+	//������stage.addEventListener,��Ϊstage.addEventListener��Ҫ��̨�ж������ܴ���ð�ݻ��߲���
 
-	graphics.x = graphics.y = 20;
-	graphics.cursor = 'move';
-	graphics.originX = 240;
-	graphics.originY = 240;
 
-	var group = new _index.Group();
-	group.add(graphics);
-	group.scaleX = 0.5;
-	stage.add(group);
-	stage.update();
+	var _boundingClientRect = void 0,
+	    startX = void 0,
+	    startY = void 0,
+	    isMouseDown = false,
+	    currentGraphics = null;
 
-	graphics.addEventListener('click', function () {
-	    //didn't exeu alert(2) because  evt.stopPropagation();
-	    alert(2);
-	}, false);
+	stage.canvas.addEventListener('mousedown', function (evt) {
 
-	graphics.addEventListener('click', function (evt) {
-	    console.log('click');
-	    evt.stopPropagation();
-	}, true);
+	    currentGraphics = new _index.Graphics();
+	    stage.add(currentGraphics);
+	    currentGraphics.beginPath();
+	    _boundingClientRect = stage.canvas.getBoundingClientRect();
+	    startX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
+	    startY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 
-	graphics.addEventListener('mouseover', function (evt) {
-	    //evt.stopPropagation()
-	    graphics.scaleX = graphics.scaleY = 1.1;
-	    stage.update();
-	});
-
-	graphics.addEventListener('mouseout', function (evt) {
-	    graphics.scaleX = graphics.scaleY = 1;
-	    stage.update();
-	});
-
-	var isMouseDown = false;
-	var preX = null;
-	var preY = null;
-
-	graphics.addEventListener('mousedown', function (evt) {
-	    graphics.scaleX = graphics.scaleY = 1.2;
 	    isMouseDown = true;
-	    preX = evt.stageX;
-	    preY = evt.stageY;
-
-	    stage.update();
 	});
 
-	document.addEventListener('mousemove', function (evt) {
-
-	    if (isMouseDown && evt.stageX !== undefined) {
-
-	        graphics.x += evt.stageX - preX;
-	        graphics.y += evt.stageY - preY;
-	        stage.update();
-
-	        preX = evt.stageX;
-	        preY = evt.stageY;
-	    }
-	});
-
-	document.addEventListener('mouseup', function (evt) {
+	stage.canvas.addEventListener('mousemove', function (evt) {
 	    if (isMouseDown) {
-	        graphics.scaleX = graphics.scaleY = 1.1;
-	    } else {
-	        graphics.scaleX = graphics.scaleY = 1;
+	        var currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
+	        var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
+
+	        currentGraphics.clear().moveTo(startX, startY).lineTo(currentX, currentY).stroke();
+
+	        stage.update();
 	    }
-	    isMouseDown = false;
-	    stage.update();
 	});
 
-	stage.addEventListener('mouseout', function (evt) {
+	document.addEventListener('mouseup', function () {
 	    isMouseDown = false;
-	    graphics.scaleX = graphics.scaleY = 1;
 	});
-
-	//setInterval(()=>{
-	//    graphics.rotation++
-	//    stage.update();
-	//},16)
 
 /***/ },
 /* 1 */
@@ -544,11 +499,11 @@
 
 	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _hit_render = __webpack_require__(13);
+	var _hit_render = __webpack_require__(14);
 
 	var _hit_render2 = _interopRequireDefault(_hit_render);
 
-	var _event = __webpack_require__(14);
+	var _event = __webpack_require__(15);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -1018,6 +973,7 @@
 	        key: "clear",
 	        value: function clear() {
 	            this.cmds.length = 0;
+	            this.beginPath();
 	            return this;
 	        }
 	    }, {
@@ -1180,6 +1136,10 @@
 
 	var _display_object2 = _interopRequireDefault(_display_object);
 
+	var _pathParser = __webpack_require__(13);
+
+	var _pathParser2 = _interopRequireDefault(_pathParser);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1213,39 +1173,123 @@
 	    _createClass(Path, [{
 	        key: 'draw',
 	        value: function draw(ctx) {
+
+	            var cmds = (0, _pathParser2.default)(this.d);
 	            ctx.save();
 
 	            ctx.lineWidth = this.strokeWidth;
 	            ctx.strokeStyle = this.stroke;
 	            ctx.fillStyle = this.fill;
 	            ctx.beginPath();
-	            var points = this.d.split(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
-	            var cmds = this.d.match(/[M,L,H,V,C,S,Q,T,A,Z,m,l,h,v,c,s,q,t,a,z]/g);
+	            //https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
+	            //M = moveto
+	            //L = lineto
+	            //H = horizontal lineto
+	            //V = vertical lineto
+	            //C = curveto
+	            //S = smooth curveto
+	            //Q = quadratic Belzier curve
+	            //T = smooth quadratic Belzier curveto
+	            //A = elliptical Arc  暂时未实现，用贝塞尔拟合椭圆
+	            //Z = closepath
+	            //以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
+	            var preX = void 0,
+	                preY = void 0;
 
 	            for (var j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
-	                var pArr = points[j].split(" ");
-	                if (cmds[j] == "M") {
-	                    pArr[0] = parseFloat(pArr[0]);
-	                    pArr[1] = parseFloat(pArr[1]);
-	                    ctx.moveTo.apply(ctx, pArr);
-	                } else if (cmds[j] == "C") {
-	                    pArr[0] = parseFloat(pArr[0]);
-	                    pArr[2] = parseFloat(pArr[2]);
-	                    pArr[4] = parseFloat(pArr[4]);
-	                    pArr[1] = parseFloat(pArr[1]);
-	                    pArr[3] = parseFloat(pArr[3]);
-	                    pArr[5] = parseFloat(pArr[5]);
-	                    ctx.bezierCurveTo.apply(ctx, pArr);
-	                } else if (cmds[j] == "L") {
-	                    pArr[0] = parseFloat(pArr[0]);
-	                    pArr[1] = parseFloat(pArr[1]);
-	                    ctx.lineTo.apply(ctx, pArr);
+	                var item = cmds[j];
+	                var action = item[0];
+	                var preItem = cmds[j - 1];
+
+	                switch (action) {
+	                    case 'M':
+	                        preX = item[1];
+	                        preY = item[2];
+	                        ctx.moveTo(preX, preY);
+	                        break;
+	                    case 'L':
+	                        preX = item[1];
+	                        preY = item[2];
+	                        ctx.lineTo(preX, preY);
+	                        break;
+	                    case 'H':
+	                        preY = item[1];
+	                        ctx.lineTo(preX, item[1]);
+	                        break;
+	                    case 'V':
+	                        preX = item[1];
+	                        ctx.lineTo(item[1], preY);
+	                        break;
+	                    case 'C':
+	                        preX = item[5];
+	                        preY = item[6];
+	                        ctx.bezierCurveTo(item[1], item[2], item[3], item[4], preX, preY);
+	                        break;
+	                    case 'S':
+	                        ctx.bezierCurveTo(preX + preX - preItem[3], preY + preY - preItem[4], item[1], item[2], item[3], item[4]);
+	                        preX = item[3];
+	                        preY = item[4];
+	                        break;
+	                    case 'Q':
+	                        preX = item[3];
+	                        preY = item[4];
+	                        ctx.quadraticCurveTo(item[1], item[2], preX, preY);
+	                        break;
+	                    case 'T':
+	                        ctx.quadraticCurveTo(preX + preX - preItem[1], preY + preY - preItem[2], item[1], item[2]);
+	                        preX = item[1];
+	                        preY = item[2];
+	                        break;
+
+	                    case 'm':
+	                        preX += item[1];
+	                        preY += item[2];
+	                        ctx.moveTo(preX, preY);
+	                        break;
+	                    case 'l':
+	                        preX += item[1];
+	                        preY += item[2];
+	                        ctx.lineTo(item[1], item[2]);
+	                        break;
+	                    case 'h':
+	                        preY += item[1];
+	                        ctx.lineTo(preX, preY);
+	                        break;
+	                    case 'v':
+	                        preX += item[1];
+	                        ctx.lineTo(item[1], preY);
+	                        break;
+	                    case 'c':
+	                        ctx.bezierCurveTo(preX + item[1], preY + item[2], preX + item[3], preY + item[4], preX + item[5], preY + item[6]);
+	                        preX = preX + item[5];
+	                        preY = preY + item[6];
+	                        break;
+	                    case 's':
+	                        ctx.bezierCurveTo(preX + preX + preX - preItem[3], preY + preY + preY - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+	                        preX += item[3];
+	                        preY += item[4];
+	                        break;
+	                    case 'q':
+
+	                        ctx.quadraticCurveTo(preX + item[1], preY + item[2], item[3] + preX, item[4] + preY);
+	                        preX += item[3];
+	                        preY += item[4];
+	                        break;
+	                    case 't':
+
+	                        ctx.quadraticCurveTo(preX + preX + preX - preItem[1], preY + preY + preY - preItem[2], preX + item[1], preY + item[2]);
+	                        preX += item[1];
+	                        preY += item[2];
+	                        break;
+
+	                    case 'Z':
+	                        ctx.closePath();
+	                        break;
 	                }
 	            }
 
 	            ctx.fill();
 	            ctx.stroke();
-
 	            ctx.restore();
 	        }
 	    }]);
@@ -1257,6 +1301,73 @@
 
 /***/ },
 /* 13 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	//https://github.com/jkroso/parse-svg-path/blob/master/index.js
+	/**
+	 * expected argument lengths
+	 * @type {Object}
+	 */
+
+	var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0 };
+
+	/**
+	 * segment pattern
+	 * @type {RegExp}
+	 */
+
+	var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
+
+	/**
+	 * parse an svg path data string. Generates an Array
+	 * of commands where each command is an Array of the
+	 * form `[command, arg1, arg2, ...]`
+	 *
+	 * @param {String} path
+	 * @return {Array}
+	 */
+
+	function parse(path) {
+	    var data = [];
+	    path.replace(segment, function (_, command, args) {
+	        var type = command.toLowerCase();
+	        args = parseValues(args);
+
+	        // overloaded moveTo
+	        if (type == 'm' && args.length > 2) {
+	            data.push([command].concat(args.splice(0, 2)));
+	            type = 'l';
+	            command = command == 'm' ? 'l' : 'L';
+	        }
+
+	        while (true) {
+	            if (args.length == length[type]) {
+	                args.unshift(command);
+	                return data.push(args);
+	            }
+	            if (args.length < length[type]) throw new Error('malformed path data');
+	            data.push([command].concat(args.splice(0, length[type])));
+	        }
+	    });
+	    return data;
+	}
+
+	var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
+
+	function parseValues(args) {
+	    var numbers = args.match(number);
+	    return numbers ? numbers.map(Number) : [];
+	}
+
+	exports.default = parse;
+
+/***/ },
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1279,7 +1390,7 @@
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _event = __webpack_require__(14);
+	var _event = __webpack_require__(15);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -1368,7 +1479,7 @@
 	                    l = list.length;
 	                for (var i = l - 1; i >= 0; i--) {
 	                    ctx.save();
-	                    var target = this._hitPixel(list[i], mtx);
+	                    var target = this._hitPixel(list[i], evt, mtx);
 	                    if (target) return target;
 	                    ctx.restore();
 	                }
@@ -1418,7 +1529,7 @@
 	exports.default = HitRender;
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	"use strict";
