@@ -2,6 +2,7 @@ import Group from '../display/group.js'
 import Graphics from '../display/graphics.js'
 import Render from './render.js'
 import Path from '../display/path.js'
+import Circle from '../display/circle.js'
 
 class CanvasRender extends  Render {
     constructor(canvas){
@@ -17,7 +18,7 @@ class CanvasRender extends  Render {
         this.ctx.transform(obj._matrix.a,obj._matrix.b,obj._matrix.c,obj._matrix.d,obj._matrix.tx,obj._matrix.ty)
         if(obj instanceof Graphics){
             this.renderGraphics(obj)
-        }else if (obj instanceof  Path){
+        }else if (obj instanceof  Path|| obj instanceof Circle){
             obj.draw(this.ctx)
         }
         this.ctx.restore()

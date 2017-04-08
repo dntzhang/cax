@@ -1,4 +1,4 @@
-import { Stage, Graphics, Group } from '../../src/index.js'
+import { Stage, Graphics, Group, Circle } from '../../src/index.js'
 
 var stage = new Stage(480,480,"body")
 
@@ -10,14 +10,26 @@ let _boundingClientRect,
     isMouseDown = false,
     currentGraphics = null
 
-stage.canvas.addEventListener('mousedown',(evt)=>
+let group = new Group()
+stage.add(group)
+
+stage.canvas.addEventListener('mousedown',(evt)=>{
     currentGraphics = new Graphics()
-    stage.add(currentGraphics)
+    var c = new Circle(5)
+
+    group.add(currentGraphics)
+
     currentGraphics.beginPath()
     _boundingClientRect = stage.canvas.getBoundingClientRect()
     startX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth
     startY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth
+
+    c.x = startX
+    c.y = startY
+    group.add(c)
     isMouseDown = true
+
+    stage.update()
 })
 
 

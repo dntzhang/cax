@@ -52,32 +52,39 @@
 
 	//������stage.addEventListener,��Ϊstage.addEventListener��Ҫ��̨�ж������ܴ���ð�ݻ��߲���
 
-
 	var _boundingClientRect = void 0,
 	    startX = void 0,
 	    startY = void 0,
 	    isMouseDown = false,
 	    currentGraphics = null;
 
-	stage.canvas.addEventListener('mousedown', function (evt) {
+	var group = new _index.Group();
+	stage.add(group);
 
+	stage.canvas.addEventListener('mousedown', function (evt) {
 	    currentGraphics = new _index.Graphics();
-	    stage.add(currentGraphics);
+	    var c = new _index.Circle(5);
+
+	    group.add(currentGraphics);
+
 	    currentGraphics.beginPath();
 	    _boundingClientRect = stage.canvas.getBoundingClientRect();
 	    startX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	    startY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 
+	    c.x = startX;
+	    c.y = startY;
+	    group.add(c);
 	    isMouseDown = true;
+
+	    stage.update();
 	});
 
 	stage.canvas.addEventListener('mousemove', function (evt) {
 	    if (isMouseDown) {
 	        var currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	        var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
-
 	        currentGraphics.clear().moveTo(startX, startY).lineTo(currentX, currentY).stroke();
-
 	        stage.update();
 	    }
 	});
@@ -116,6 +123,10 @@
 
 	var _path2 = _interopRequireDefault(_path);
 
+	var _circle = __webpack_require__(14);
+
+	var _circle2 = _interopRequireDefault(_circle);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var AlloyRender = {};
@@ -126,6 +137,7 @@
 	AlloyRender.Group = _group2.default;
 	AlloyRender.Graphics = _graphics2.default;
 	AlloyRender.Path = _path2.default;
+	AlloyRender.Circle = _circle2.default;
 
 	window.AlloyRender = AlloyRender;
 	module.exports = AlloyRender;
@@ -499,11 +511,11 @@
 
 	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _hit_render = __webpack_require__(14);
+	var _hit_render = __webpack_require__(15);
 
 	var _hit_render2 = _interopRequireDefault(_hit_render);
 
-	var _event = __webpack_require__(15);
+	var _event = __webpack_require__(16);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -851,6 +863,10 @@
 
 	var _path2 = _interopRequireDefault(_path);
 
+	var _circle = __webpack_require__(14);
+
+	var _circle2 = _interopRequireDefault(_circle);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -881,7 +897,7 @@
 	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
 	            if (obj instanceof _graphics2.default) {
 	                this.renderGraphics(obj);
-	            } else if (obj instanceof _path2.default) {
+	            } else if (obj instanceof _path2.default || obj instanceof _circle2.default) {
 	                obj.draw(this.ctx);
 	            }
 	            this.ctx.restore();
@@ -1378,6 +1394,66 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _display_object = __webpack_require__(3);
+
+	var _display_object2 = _interopRequireDefault(_display_object);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Circle = function (_DisplayObject) {
+	    _inherits(Circle, _DisplayObject);
+
+	    function Circle(r) {
+	        _classCallCheck(this, Circle);
+
+	        var _this = _possibleConstructorReturn(this, (Circle.__proto__ || Object.getPrototypeOf(Circle)).call(this));
+
+	        _this.r = r;
+	        // this.element.setAttribute('d', d)
+	        _this._dp = Math.PI * 2;
+	        return _this;
+	    }
+
+	    _createClass(Circle, [{
+	        key: 'draw',
+	        value: function draw(ctx) {
+
+	            ctx.beginPath();
+	            ctx.arc(0, 0, this.r, 0, this._dp, false);
+
+	            ctx.stroke();
+
+	            ctx.beginPath();
+	            ctx.fillStyle = 'white';
+	            ctx.arc(0, 0, this.r - 1, 0, this._dp, false);
+
+	            ctx.fill();
+	        }
+	    }]);
+
+	    return Circle;
+	}(_display_object2.default);
+
+	exports.default = Circle;
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _group = __webpack_require__(6);
 
 	var _group2 = _interopRequireDefault(_group);
@@ -1390,7 +1466,7 @@
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _event = __webpack_require__(15);
+	var _event = __webpack_require__(16);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -1529,7 +1605,7 @@
 	exports.default = HitRender;
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";

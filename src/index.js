@@ -4,6 +4,7 @@ import Group from './display/group.js'
 import Stage from './display/stage.js'
 import Graphics from './display/graphics.js'
 import Path from './display/path.js'
+import Circle from './display/circle.js'
 
 let AlloyRender = { }
 
@@ -13,6 +14,7 @@ AlloyRender.DisplayObject = DisplayObject
 AlloyRender.Group = Group
 AlloyRender.Graphics = Graphics
 AlloyRender.Path = Path
+AlloyRender.Circle = Circle
 
 window.AlloyRender = AlloyRender
 module.exports = AlloyRender
