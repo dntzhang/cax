@@ -52,7 +52,7 @@
 
 	//������stage.addEventListener,��Ϊstage.addEventListener��Ҫ��̨�ж������ܴ���ð�ݻ��߲���
 
-	var _boundingClientRect = void 0,
+	var _boundingClientRect = stage.canvas.getBoundingClientRect(),
 	    startX = void 0,
 	    startY = void 0,
 	    isMouseDown = false,
@@ -61,55 +61,80 @@
 
 	var group = new _index.Group();
 	stage.add(group);
-
+	group.add(curve);
 	var points = [];
+	var controlPoints = [];
 
+	var controlPointsIndex = 0;
+	var pos = document.getElementById('pos');
 	stage.canvas.addEventListener('mousedown', function (evt) {
-	    currentGraphics = new _index.Graphics();
-	    var c = new _index.Circle(5);
-	    //c.cursor = 'move'
-
-	    group.add(currentGraphics);
-
-	    currentGraphics.beginPath();
 	    _boundingClientRect = stage.canvas.getBoundingClientRect();
 	    startX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	    startY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
-	    points.push(startX, startY);
 
-	    c.x = startX;
-	    c.y = startY;
-	    group.add(c);
-	    isMouseDown = true;
-	    if (points.length === 6) {
-	        group.add(curve);
+	    if (points.length > 0 && (startX - points[0]) * (startX - points[0]) + (startY - points[1]) * (startY - points[1]) < 100) {
+	        //�պ��Լ�
+	        points.push(points[0], points[1]);
+
+	        controlPointsIndex = controlPoints.length;
+	        controlPoints[controlPointsIndex] = controlPoints[0];
+	        controlPoints[controlPointsIndex + 1] = controlPoints[1];
+
+	        renderCurve(curve, points, controlPoints);
+	    } else {
+	        currentGraphics = new _index.Graphics();
+	        var c = new _index.Circle(5);
+	        //c.cursor = 'move'
+
+	        group.add(currentGraphics);
+
+	        points.push(startX, startY);
+
+	        c.x = startX;
+	        c.y = startY;
+	        group.add(c);
+	        isMouseDown = true;
+
+	        controlPointsIndex = controlPoints.length;
 	    }
+
 	    stage.update();
 	});
 
 	stage.canvas.addEventListener('mousemove', function (evt) {
+	    var currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
+	    var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 	    if (isMouseDown) {
-	        var currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
-	        var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
-	        currentGraphics.clear().moveTo(startX, startY).lineTo(currentX, currentY).stroke();
 
-	        if (points.length === 6) {
+	        currentGraphics.clear().moveTo(startX + startX - currentX, startY + startY - currentY).lineTo(currentX, currentY).stroke();
 
-	            curve.clear().moveTo(points[0], points[1]).bezierCurveTo(points[2], points[3], currentX, currentY, points[4], points[5]).stroke();
-	        }
+	        controlPoints[controlPointsIndex] = startX + startX - currentX;
+	        controlPoints[controlPointsIndex + 1] = startY + startY - currentY;
+	        controlPoints[controlPointsIndex + 2] = currentX;
+	        controlPoints[controlPointsIndex + 3] = currentY;
+
+	        renderCurve(curve, points, controlPoints);
 
 	        stage.update();
 	    }
+
+	    evt.preventDefault();
+	    pos.innerHTML = currentX + '_' + currentY;
 	});
 
 	document.addEventListener('mouseup', function (evt) {
-
-	    var currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
-	    var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
-
-	    points.push(currentX, currentY);
 	    isMouseDown = false;
 	});
+
+	var renderCurve = function renderCurve(curve, points, controlPoints) {
+	    curve.clear();
+	    curve.moveTo(points[0], points[1]);
+	    for (var i = 0, len = points.length; i < len; i += 2) {
+	        var index = i * 2;
+	        curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[index + 4], controlPoints[index + 5], points[i + 2], points[i + 3]);
+	    }
+	    curve.stroke();
+	};
 
 /***/ },
 /* 1 */
