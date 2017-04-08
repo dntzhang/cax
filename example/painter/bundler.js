@@ -56,14 +56,18 @@
 	    startX = void 0,
 	    startY = void 0,
 	    isMouseDown = false,
-	    currentGraphics = null;
+	    currentGraphics = null,
+	    curve = new _index.Graphics();
 
 	var group = new _index.Group();
 	stage.add(group);
 
+	var points = [];
+
 	stage.canvas.addEventListener('mousedown', function (evt) {
 	    currentGraphics = new _index.Graphics();
 	    var c = new _index.Circle(5);
+	    //c.cursor = 'move'
 
 	    group.add(currentGraphics);
 
@@ -71,12 +75,15 @@
 	    _boundingClientRect = stage.canvas.getBoundingClientRect();
 	    startX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	    startY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
+	    points.push(startX, startY);
 
 	    c.x = startX;
 	    c.y = startY;
 	    group.add(c);
 	    isMouseDown = true;
-
+	    if (points.length === 6) {
+	        group.add(curve);
+	    }
 	    stage.update();
 	});
 
@@ -85,11 +92,22 @@
 	        var currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	        var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 	        currentGraphics.clear().moveTo(startX, startY).lineTo(currentX, currentY).stroke();
+
+	        if (points.length === 6) {
+
+	            curve.clear().moveTo(points[0], points[1]).bezierCurveTo(points[2], points[3], currentX, currentY, points[4], points[5]).stroke();
+	        }
+
 	        stage.update();
 	    }
 	});
 
-	document.addEventListener('mouseup', function () {
+	document.addEventListener('mouseup', function (evt) {
+
+	    var currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
+	    var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
+
+	    points.push(currentX, currentY);
 	    isMouseDown = false;
 	});
 
@@ -1474,6 +1492,10 @@
 
 	var _path2 = _interopRequireDefault(_path);
 
+	var _circle = __webpack_require__(14);
+
+	var _circle2 = _interopRequireDefault(_circle);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1547,7 +1569,7 @@
 	            if (o instanceof _graphics2.default) {
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                this.renderGraphics(o);
-	            } else if (o instanceof _path2.default) {
+	            } else if (o instanceof _path2.default || o instanceof _circle2.default) {
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                o.draw(ctx);
 	            } else if (o instanceof _group2.default) {

@@ -3,6 +3,7 @@ import Graphics from '../display/graphics.js'
 import Render from './render.js'
 import Event from '../base/event.js'
 import Path from '../display/path.js'
+import Circle from '../display/circle.js'
 
 class HitRender extends  Render {
     constructor(canvas) {
@@ -59,7 +60,7 @@ class HitRender extends  Render {
         if (o instanceof Graphics) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             this.renderGraphics(o)
-        } else if (o instanceof  Path) {
+        } else if (o instanceof  Path|| o instanceof Circle) {
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             o.draw(ctx)
         } else if (o instanceof Group) {
