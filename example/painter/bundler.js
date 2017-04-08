@@ -48,53 +48,34 @@
 
 	var _index = __webpack_require__(1);
 
-	var stage = new _index.Stage(480, 480, "body");
+	var _bezierCurveShape = __webpack_require__(17);
 
-	//������stage.addEventListener,��Ϊstage.addEventListener��Ҫ��̨�ж������ܴ���ð�ݻ��߲���
+	var _bezierCurveShape2 = _interopRequireDefault(_bezierCurveShape);
 
-	var _boundingClientRect = stage.canvas.getBoundingClientRect(),
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var stage = new _index.Stage(480, 480, "body"),
+	    _boundingClientRect = stage.canvas.getBoundingClientRect(),
 	    startX = void 0,
 	    startY = void 0,
 	    isMouseDown = false,
-	    currentGraphics = new _index.Graphics(),
-	    curve = new _index.Graphics();
+	    posDiv = document.getElementById('pos'),
+	    shape = new _bezierCurveShape2.default();
 
-	var group = new _index.Group();
-	stage.add(group);
-	group.add(curve, currentGraphics);
+	stage.add(shape);
 
-	var points = [];
-	var controlPoints = [];
+	//������stage.addEventListener,��Ϊstage.addEventListener��Ҫ��̨�ж������ܴ���ð�ݻ��߲���
 
-	var controlPointsIndex = 0;
-	var pos = document.getElementById('pos');
 	stage.canvas.addEventListener('mousedown', function (evt) {
 	    _boundingClientRect = stage.canvas.getBoundingClientRect();
 	    startX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	    startY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 
-	    if (points.length > 0 && (startX - points[0]) * (startX - points[0]) + (startY - points[1]) * (startY - points[1]) < 100) {
-	        //�պ��Լ�
-	        points.push(points[0], points[1]);
-	        currentGraphics.visible = false;
-	        controlPointsIndex = controlPoints.length;
-	        controlPoints[controlPointsIndex] = controlPoints[0];
-	        controlPoints[controlPointsIndex + 1] = controlPoints[1];
-
-	        renderCurve(curve, points, controlPoints);
+	    if (shape.points.length > 0 && (startX - shape.points[0]) * (startX - shape.points[0]) + (startY - shape.points[1]) * (startY - shape.points[1]) < 100) {
+	        shape.closePath();
 	    } else {
-
-	        var c = new _index.Circle(5);
-	        //c.cursor = 'move'
-
-	        points.push(startX, startY);
-
-	        c.x = startX;
-	        c.y = startY;
-	        group.add(c);
+	        shape.addCircle(startX, startY);
 	        isMouseDown = true;
-
-	        controlPointsIndex = controlPoints.length;
 	    }
 
 	    stage.update();
@@ -104,49 +85,16 @@
 	    var currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	    var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 	    if (isMouseDown) {
-
-	        //currentGraphics.clear().moveTo(startX + startX - currentX, startY + startY - currentY).lineTo(currentX, currentY).stroke()
-
-
-	        controlPoints[controlPointsIndex] = startX + startX - currentX;
-	        controlPoints[controlPointsIndex + 1] = startY + startY - currentY;
-	        controlPoints[controlPointsIndex + 2] = currentX;
-	        controlPoints[controlPointsIndex + 3] = currentY;
-
-	        renderCtrls(currentGraphics, controlPoints);
-	        renderCurve(curve, points, controlPoints);
-
+	        shape.updateControlPoints(startX, startY, currentX, currentY);
 	        stage.update();
 	    }
-
 	    evt.preventDefault();
-	    pos.innerHTML = currentX + '_' + currentY;
+	    posDiv.innerHTML = currentX + '_' + currentY;
 	});
 
 	document.addEventListener('mouseup', function (evt) {
 	    isMouseDown = false;
 	});
-
-	var renderCurve = function renderCurve(curve, points, controlPoints) {
-	    curve.clear();
-	    curve.moveTo(points[0], points[1]);
-	    for (var i = 0, len = points.length; i < len; i += 2) {
-	        var index = i * 2;
-	        curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[index + 4], controlPoints[index + 5], points[i + 2], points[i + 3]);
-	    }
-	    curve.stroke();
-	};
-
-	var renderCtrls = function renderCtrls(graphics, cps) {
-	    graphics.clear();
-	    for (var i = 0, len = cps.length; i < len; i += 4) {
-	        graphics.beginPath();
-	        graphics.moveTo(cps[i], cps[i + 1]);
-	        graphics.lineTo(cps[i + 2], cps[i + 3]);
-
-	        graphics.stroke();
-	    }
-	};
 
 /***/ },
 /* 1 */
@@ -1714,6 +1662,120 @@
 	}();
 
 	exports.default = Event;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _index = __webpack_require__(1);
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var BezierCurveShape = function (_Group) {
+	    _inherits(BezierCurveShape, _Group);
+
+	    function BezierCurveShape() {
+	        _classCallCheck(this, BezierCurveShape);
+
+	        var _this = _possibleConstructorReturn(this, (BezierCurveShape.__proto__ || Object.getPrototypeOf(BezierCurveShape)).call(this));
+
+	        _this.points = [];
+	        _this.controlPoints = [];
+
+	        _this.controlLines = new _index.Graphics();
+	        _this.curve = new _index.Graphics();
+
+	        _this.index = 0;
+	        _this.circleGroup = new _index.Group();
+	        _this.add(_this.controlLines, _this.curve, _this.circleGroup);
+	        return _this;
+	    }
+
+	    _createClass(BezierCurveShape, [{
+	        key: 'updateControlPoints',
+	        value: function updateControlPoints(startX, startY, currentX, currentY) {
+	            this.controlPoints[this.index] = startX + startX - currentX;
+	            this.controlPoints[this.index + 1] = startY + startY - currentY;
+	            this.controlPoints[this.index + 2] = currentX;
+	            this.controlPoints[this.index + 3] = currentY;
+	            this.draw();
+	        }
+	    }, {
+	        key: 'addCircle',
+	        value: function addCircle(x, y) {
+	            var c = new _index.Circle(5);
+	            //c.cursor = 'move'
+
+	            this.points.push(x, y);
+	            this.index = this.controlPoints.length;
+	            c.x = x;
+	            c.y = y;
+	            this.circleGroup.add(c);
+	        }
+	    }, {
+	        key: 'closePath',
+	        value: function closePath() {
+	            this.points.push(this.points[0], this.points[1]);
+	            this.controlLines.visible = false;
+	            var index = this.controlPoints.length;
+	            this.controlPoints[index] = this.controlPoints[0];
+	            this.controlPoints[index + 1] = this.controlPoints[1];
+
+	            this.draw();
+	        }
+	    }, {
+	        key: 'draw',
+	        value: function draw() {
+	            this.renderCtrls();
+	            this.renderCurve();
+	        }
+	    }, {
+	        key: 'renderCtrls',
+	        value: function renderCtrls() {
+	            var graphics = this.controlLines,
+	                cps = this.controlPoints;
+
+	            graphics.clear();
+	            for (var i = 0, len = cps.length; i < len; i += 4) {
+	                graphics.beginPath();
+	                graphics.moveTo(cps[i], cps[i + 1]);
+	                graphics.lineTo(cps[i + 2], cps[i + 3]);
+
+	                graphics.stroke();
+	            }
+	        }
+	    }, {
+	        key: 'renderCurve',
+	        value: function renderCurve() {
+	            var curve = this.curve,
+	                points = this.points,
+	                controlPoints = this.controlPoints;
+	            curve.clear();
+	            curve.moveTo(points[0], points[1]);
+	            for (var i = 0, len = points.length; i < len; i += 2) {
+	                var index = i * 2;
+	                curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[index + 4], controlPoints[index + 5], points[i + 2], points[i + 3]);
+	            }
+	            curve.stroke();
+	        }
+	    }]);
+
+	    return BezierCurveShape;
+	}(_index.Group);
+
+	exports.default = BezierCurveShape;
 
 /***/ }
 /******/ ]);

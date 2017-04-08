@@ -5,7 +5,7 @@ import Event from '../base/event.js'
 
 class Stage extends Group  {
     constructor(width,height,renderTo) {
-        super();
+        super()
         this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo
 
 
