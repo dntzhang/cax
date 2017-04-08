@@ -6,11 +6,17 @@ class Group extends DisplayObject {
         this.children = [];
     }
 
-    add (child){
+    add(child) {
 
-        this.children.push(child);
-        child.parent = this;
+        const len = arguments.length
+
+        for (let i = 0;i<len;i++){
+
+            this.children.push(arguments[i]);
+            arguments[i].parent = this;
+        }
     }
+
 
 
 }

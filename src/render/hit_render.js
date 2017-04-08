@@ -48,6 +48,7 @@ class HitRender extends  Render {
     }
 
     _hitPixel(o, evt,mtx ) {
+        if(!o.isVisible()) return
         let ctx = this.ctx
         ctx.clearRect(0, 0, 2, 2)
         if (mtx) {

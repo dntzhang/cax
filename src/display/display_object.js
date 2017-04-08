@@ -8,11 +8,15 @@ class DisplayObject extends EventDispatcher{
         this.alpha = this.scaleX = this.scaleY = 1
         this.x = this.y = this.rotation = this.skewX = this.skewY = this.originX = this.originY = 0
         this.cursor = "default"
+        this.visible = true
         this._matrix = new Matrix2D()
         this._hitMatrix = new Matrix2D()
         this.id = UID.get()
     }
 
+    isVisible () {
+        return this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0
+    }
 }
 
 export default DisplayObject;

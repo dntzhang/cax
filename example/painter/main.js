@@ -8,12 +8,14 @@ let _boundingClientRect= stage.canvas.getBoundingClientRect(),
     startX,
     startY,
     isMouseDown = false,
-    currentGraphics = null,
+    currentGraphics =  new Graphics(),
     curve =  new Graphics()
 
 let group = new Group()
 stage.add(group)
-group.add(curve)
+group.add(curve,currentGraphics)
+
+
 let points = []
 let controlPoints = []
 
@@ -27,7 +29,7 @@ stage.canvas.addEventListener('mousedown',(evt)=> {
     if (points.length > 0&&(startX - points[0]) * (startX - points[0]) + (startY - points[1]) * (startY - points[1]) < 100) {
         //±ÕºÏ×Ô¼º
         points.push(points[0], points[1])
-
+        currentGraphics.visible = false
         controlPointsIndex = controlPoints.length
         controlPoints[controlPointsIndex] = controlPoints[0]
         controlPoints[controlPointsIndex + 1] = controlPoints[1]
@@ -35,12 +37,9 @@ stage.canvas.addEventListener('mousedown',(evt)=> {
         renderCurve(curve, points, controlPoints)
 
     }else {
-        currentGraphics = new Graphics()
+
         var c = new Circle(5)
         //c.cursor = 'move'
-
-        group.add(currentGraphics)
-
 
         points.push(startX, startY)
 
@@ -63,7 +62,7 @@ stage.canvas.addEventListener('mousemove',(evt)=> {
     if (isMouseDown) {
 
 
-        currentGraphics.clear().moveTo(startX + startX - currentX, startY + startY - currentY).lineTo(currentX, currentY).stroke()
+        //currentGraphics.clear().moveTo(startX + startX - currentX, startY + startY - currentY).lineTo(currentX, currentY).stroke()
 
 
         controlPoints[controlPointsIndex] = startX + startX - currentX
@@ -71,7 +70,7 @@ stage.canvas.addEventListener('mousemove',(evt)=> {
         controlPoints[controlPointsIndex + 2] = currentX
         controlPoints[controlPointsIndex + 3] = currentY
 
-
+        renderCtrls(currentGraphics, controlPoints)
         renderCurve(curve, points, controlPoints)
 
 
@@ -97,4 +96,16 @@ const renderCurve = (curve, points, controlPoints) => {
 
     }
     curve.stroke()
+}
+
+const renderCtrls = (graphics, cps)=> {
+    graphics.clear()
+    for (let i = 0, len = cps.length; i < len; i += 4) {
+        graphics.beginPath()
+        graphics.moveTo(cps[i], cps[i + 1])
+        graphics.lineTo(cps[i + 2], cps[i + 3])
+
+        graphics.stroke()
+    }
+
 }

@@ -33,9 +33,9 @@ class Renderer {
     }
 
     _computeMatrix(o, mtx) {
-        //if (!o.isVisible()) {
-        //    return;
-        //}
+        if (!o.isVisible()) {
+            return;
+        }
         if (mtx) {
             o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
         } else {

@@ -56,12 +56,13 @@
 	    startX = void 0,
 	    startY = void 0,
 	    isMouseDown = false,
-	    currentGraphics = null,
+	    currentGraphics = new _index.Graphics(),
 	    curve = new _index.Graphics();
 
 	var group = new _index.Group();
 	stage.add(group);
-	group.add(curve);
+	group.add(curve, currentGraphics);
+
 	var points = [];
 	var controlPoints = [];
 
@@ -75,18 +76,16 @@
 	    if (points.length > 0 && (startX - points[0]) * (startX - points[0]) + (startY - points[1]) * (startY - points[1]) < 100) {
 	        //�պ��Լ�
 	        points.push(points[0], points[1]);
-
+	        currentGraphics.visible = false;
 	        controlPointsIndex = controlPoints.length;
 	        controlPoints[controlPointsIndex] = controlPoints[0];
 	        controlPoints[controlPointsIndex + 1] = controlPoints[1];
 
 	        renderCurve(curve, points, controlPoints);
 	    } else {
-	        currentGraphics = new _index.Graphics();
+
 	        var c = new _index.Circle(5);
 	        //c.cursor = 'move'
-
-	        group.add(currentGraphics);
 
 	        points.push(startX, startY);
 
@@ -106,13 +105,15 @@
 	    var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 	    if (isMouseDown) {
 
-	        currentGraphics.clear().moveTo(startX + startX - currentX, startY + startY - currentY).lineTo(currentX, currentY).stroke();
+	        //currentGraphics.clear().moveTo(startX + startX - currentX, startY + startY - currentY).lineTo(currentX, currentY).stroke()
+
 
 	        controlPoints[controlPointsIndex] = startX + startX - currentX;
 	        controlPoints[controlPointsIndex + 1] = startY + startY - currentY;
 	        controlPoints[controlPointsIndex + 2] = currentX;
 	        controlPoints[controlPointsIndex + 3] = currentY;
 
+	        renderCtrls(currentGraphics, controlPoints);
 	        renderCurve(curve, points, controlPoints);
 
 	        stage.update();
@@ -134,6 +135,17 @@
 	        curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[index + 4], controlPoints[index + 5], points[i + 2], points[i + 3]);
 	    }
 	    curve.stroke();
+	};
+
+	var renderCtrls = function renderCtrls(graphics, cps) {
+	    graphics.clear();
+	    for (var i = 0, len = cps.length; i < len; i += 4) {
+	        graphics.beginPath();
+	        graphics.moveTo(cps[i], cps[i + 1]);
+	        graphics.lineTo(cps[i + 2], cps[i + 3]);
+
+	        graphics.stroke();
+	    }
 	};
 
 /***/ },
@@ -305,6 +317,8 @@
 	    value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _matrix2d = __webpack_require__(2);
 
 	var _matrix2d2 = _interopRequireDefault(_matrix2d);
@@ -336,11 +350,19 @@
 	        _this.alpha = _this.scaleX = _this.scaleY = 1;
 	        _this.x = _this.y = _this.rotation = _this.skewX = _this.skewY = _this.originX = _this.originY = 0;
 	        _this.cursor = "default";
+	        _this.visible = true;
 	        _this._matrix = new _matrix2d2.default();
 	        _this._hitMatrix = new _matrix2d2.default();
 	        _this.id = _uid2.default.get();
 	        return _this;
 	    }
+
+	    _createClass(DisplayObject, [{
+	        key: 'isVisible',
+	        value: function isVisible() {
+	            return this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0;
+	        }
+	    }]);
 
 	    return DisplayObject;
 	}(_event_dispatcher2.default);
@@ -524,8 +546,13 @@
 	        key: 'add',
 	        value: function add(child) {
 
-	            this.children.push(child);
-	            child.parent = this;
+	            var len = arguments.length;
+
+	            for (var i = 0; i < len; i++) {
+
+	                this.children.push(arguments[i]);
+	                arguments[i].parent = this;
+	            }
 	        }
 	    }]);
 
@@ -807,9 +834,9 @@
 	    }, {
 	        key: '_computeMatrix',
 	        value: function _computeMatrix(o, mtx) {
-	            //if (!o.isVisible()) {
-	            //    return;
-	            //}
+	            if (!o.isVisible()) {
+	                return;
+	            }
 	            if (mtx) {
 	                o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	            } else {
@@ -1582,6 +1609,7 @@
 	    }, {
 	        key: '_hitPixel',
 	        value: function _hitPixel(o, evt, mtx) {
+	            if (!o.isVisible()) return;
 	            var ctx = this.ctx;
 	            ctx.clearRect(0, 0, 2, 2);
 	            if (mtx) {
