@@ -11,6 +11,8 @@ let stage = new Stage(480,480,"body"),
 
 stage.add(shape)
 
+
+window.xx = shape
 //不能用stage.addEventListener,因为stage.addEventListener需要舞台有东西才能触发冒泡或者捕获
 
 stage.canvas.addEventListener('mousedown',(evt)=> {
@@ -36,7 +38,7 @@ stage.canvas.addEventListener('mousemove',(evt)=> {
     if (isMouseDown) {
         shape.virtualCurve.visible = false
         shape.updateControlPoints(startX, startY, currentX, currentY)
-    } else {
+    } else if(!shape.closed){
         shape.virtualCurve.visible = true
         shape.renderVirtualCurve(currentX, currentY)
     }

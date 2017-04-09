@@ -64,6 +64,7 @@
 
 	stage.add(shape);
 
+	window.xx = shape;
 	//������stage.addEventListener,��Ϊstage.addEventListener��Ҫ��̨�ж������ܴ���ð�ݻ��߲���
 
 	stage.canvas.addEventListener('mousedown', function (evt) {
@@ -87,7 +88,7 @@
 	    if (isMouseDown) {
 	        shape.virtualCurve.visible = false;
 	        shape.updateControlPoints(startX, startY, currentX, currentY);
-	    } else {
+	    } else if (!shape.closed) {
 	        shape.virtualCurve.visible = true;
 	        shape.renderVirtualCurve(currentX, currentY);
 	    }
@@ -504,6 +505,25 @@
 
 	                this.children.push(arguments[i]);
 	                arguments[i].parent = this;
+	            }
+	        }
+	    }, {
+	        key: 'remove',
+	        value: function remove(child) {
+	            var len = arguments.length;
+	            var cLen = this.children.length;
+
+	            for (var i = 0; i < len; i++) {
+
+	                for (var j = 0; j < cLen; j++) {
+
+	                    if (child.id == this.children[j].id) {
+	                        child.parent = null;
+	                        this.children.splice(j, 1);
+	                        j--;
+	                        cLen--;
+	                    }
+	                }
 	            }
 	        }
 	    }]);
@@ -1706,6 +1726,7 @@
 	        _this.virtualCurve = new _index.Graphics();
 	        _this.virtualCurve.alpha = 0.5;
 
+	        _this.closed = false;
 	        _this.index = 0;
 	        _this.circleGroup = new _index.Group();
 	        _this.add(_this.controlLines, _this.curve, _this.circleGroup, _this.virtualCurve);
@@ -1715,6 +1736,7 @@
 	    _createClass(BezierCurveShape, [{
 	        key: 'updateControlPoints',
 	        value: function updateControlPoints(startX, startY, currentX, currentY) {
+	            if (this.closed) return;
 	            this.controlPoints[this.index] = startX + startX - currentX;
 	            this.controlPoints[this.index + 1] = startY + startY - currentY;
 	            this.controlPoints[this.index + 2] = currentX;
@@ -1724,6 +1746,7 @@
 	    }, {
 	        key: 'addCircle',
 	        value: function addCircle(x, y) {
+	            if (this.closed) return;
 	            var c = new _index.Circle(5);
 	            //c.cursor = 'move'
 
@@ -1736,12 +1759,15 @@
 	    }, {
 	        key: 'closePath',
 	        value: function closePath() {
+	            if (this.closed) return;
 	            this.points.push(this.points[0], this.points[1]);
 	            this.controlLines.visible = false;
 	            var index = this.controlPoints.length;
 	            this.controlPoints[index] = this.controlPoints[0];
 	            this.controlPoints[index + 1] = this.controlPoints[1];
+	            this.closed = true;
 
+	            this.virtualCurve.visible = false;
 	            this.draw();
 	        }
 	    }, {

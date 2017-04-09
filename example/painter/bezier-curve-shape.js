@@ -13,12 +13,14 @@ class BezierCurveShape extends Group {
         this.virtualCurve = new Graphics()
         this.virtualCurve.alpha = 0.5
 
+        this.closed = false
         this.index = 0
         this.circleGroup = new Group()
         this.add(this.controlLines, this.curve, this.circleGroup, this.virtualCurve)
     }
 
     updateControlPoints(startX, startY, currentX, currentY) {
+        if(this.closed)return
         this.controlPoints[this.index] = startX + startX - currentX
         this.controlPoints[this.index + 1] = startY + startY - currentY
         this.controlPoints[this.index + 2] = currentX
@@ -27,6 +29,7 @@ class BezierCurveShape extends Group {
     }
 
     addCircle(x, y) {
+        if(this.closed)return
         var c = new Circle(5)
         //c.cursor = 'move'
 
@@ -38,12 +41,15 @@ class BezierCurveShape extends Group {
     }
 
     closePath() {
+        if(this.closed)return
         this.points.push(this.points[0], this.points[1])
         this.controlLines.visible = false
         const index = this.controlPoints.length
         this.controlPoints[index] = this.controlPoints[0]
         this.controlPoints[index + 1] = this.controlPoints[1]
+        this.closed = true
 
+        this.virtualCurve.visible = false
         this.draw()
 
     }
