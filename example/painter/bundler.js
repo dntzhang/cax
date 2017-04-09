@@ -72,7 +72,8 @@
 	    startX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	    startY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 
-	    if (shape.points.length > 0 && (startX - shape.points[0]) * (startX - shape.points[0]) + (startY - shape.points[1]) * (startY - shape.points[1]) < 100) {
+	    if (shape.points.length > 2 && (startX - shape.points[0]) * (startX - shape.points[0]) + (startY - shape.points[1]) * (startY - shape.points[1]) < 100) {
+
 	        shape.closePath();
 	    } else {
 	        shape.addCircle(startX, startY);
@@ -86,8 +87,10 @@
 	    var currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	    var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 	    if (isMouseDown) {
-	        shape.virtualCurve.visible = false;
-	        shape.updateControlPoints(startX, startY, currentX, currentY);
+	        if (!shape.willAdjust) {
+	            shape.virtualCurve.visible = false;
+	            shape.updateControlPoints(startX, startY, currentX, currentY);
+	        }
 	    } else if (!shape.closed) {
 	        shape.virtualCurve.visible = true;
 	        shape.renderVirtualCurve(currentX, currentY);
@@ -99,6 +102,7 @@
 
 	document.addEventListener('mouseup', function (evt) {
 	    isMouseDown = false;
+	    shape.bindCircleEvent();
 	});
 
 /***/ },
@@ -1704,6 +1708,12 @@
 
 	var _index = __webpack_require__(1);
 
+	var _arDrag = __webpack_require__(18);
+
+	var _arDrag2 = _interopRequireDefault(_arDrag);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -1729,7 +1739,10 @@
 	        _this.closed = false;
 	        _this.index = 0;
 	        _this.circleGroup = new _index.Group();
-	        _this.add(_this.controlLines, _this.curve, _this.circleGroup, _this.virtualCurve);
+	        _this.ctrlCircleGroup = new _index.Group();
+	        _this.add(_this.controlLines, _this.curve, _this.virtualCurve, _this.ctrlCircleGroup, _this.circleGroup);
+
+	        _this.willAdjust = false;
 	        return _this;
 	    }
 
@@ -1746,15 +1759,65 @@
 	    }, {
 	        key: 'addCircle',
 	        value: function addCircle(x, y) {
-	            if (this.closed) return;
+	            if (this.closed || this.willAdjust) return;
 	            var c = new _index.Circle(5);
-	            //c.cursor = 'move'
-
+	            c.cursor = 'move';
+	            var cc1 = new _index.Circle(4);
+	            var cc2 = new _index.Circle(4);
 	            this.points.push(x, y);
 	            this.index = this.controlPoints.length;
 	            c.x = x;
 	            c.y = y;
+	            cc1.x = x;
+	            cc1.y = y;
+	            cc2.x = x;
+	            cc2.y = y;
+	            cc1.cursor = 'move';
+	            cc2.cursor = 'move';
 	            this.circleGroup.add(c);
+	            this.ctrlCircleGroup.add(cc1, cc2);
+	        }
+	    }, {
+	        key: 'bindCircleEvent',
+	        value: function bindCircleEvent() {
+	            var _this2 = this;
+
+	            var c = this.circleGroup.children[this.circleGroup.children.length - 1];
+	            var cc1 = this.ctrlCircleGroup.children[this.ctrlCircleGroup.children.length - 2];
+	            var cc2 = this.ctrlCircleGroup.children[this.ctrlCircleGroup.children.length - 1];
+	            (0, _arDrag2.default)(c, {
+	                move: function move(evt) {
+	                    c.x += evt.dx;
+	                    c.y += evt.dy;
+	                },
+	                down: function down() {
+	                    _this2.willAdjust = true;
+	                },
+	                up: function up() {
+	                    _this2.willAdjust = false;
+	                }
+
+	            });
+
+	            (0, _arDrag2.default)(cc1, {
+	                move: function move() {},
+	                down: function down() {
+	                    _this2.willAdjust = true;
+	                },
+	                up: function up() {
+	                    _this2.willAdjust = false;
+	                }
+	            });
+
+	            (0, _arDrag2.default)(cc2, {
+	                move: function move() {},
+	                over: function over() {
+	                    _this2.willAdjust = true;
+	                },
+	                up: function up() {
+	                    _this2.willAdjust = false;
+	                }
+	            });
 	        }
 	    }, {
 	        key: 'closePath',
@@ -1773,8 +1836,22 @@
 	    }, {
 	        key: 'draw',
 	        value: function draw() {
+	            this.updateCircleGroup();
 	            this.renderCtrls();
 	            this.renderCurve();
+	        }
+	    }, {
+	        key: 'updateCircleGroup',
+	        value: function updateCircleGroup() {
+	            var children = this.ctrlCircleGroup.children,
+	                len = children.length;
+	            for (var i = 0; i < len; i += 2) {
+
+	                children[i].x = this.controlPoints[i * 2];
+	                children[i].y = this.controlPoints[i * 2 + 1];
+	                children[i + 1].x = this.controlPoints[i * 2 + 2];
+	                children[i + 1].y = this.controlPoints[i * 2 + 3];
+	            }
 	        }
 	    }, {
 	        key: 'renderCtrls',
@@ -1824,6 +1901,104 @@
 	}(_index.Group);
 
 	exports.default = BezierCurveShape;
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	/**
+	 * Created by dntzhang on 2017/4/9.
+	 */
+
+	var Drag = function () {
+	    function Drag(target, option) {
+	        _classCallCheck(this, Drag);
+
+	        this.target = target;
+	        this.isMouseDown = false;
+	        this.preX = null;
+	        this.preY = null;
+	        var noop = function noop() {};
+	        this.move = option.move || noop;
+	        this.over = option.over || noop;
+	        this.out = option.out || noop;
+	        this.down = option.down || noop;
+	        this.up = option.up || noop;
+	        target._hasBindDrag = true;
+	        this.bindEvent();
+	    }
+
+	    _createClass(Drag, [{
+	        key: 'bindEvent',
+	        value: function bindEvent() {
+	            var _this = this;
+
+	            this._uh = this._upHandler.bind(this);
+	            this._mh = this._moveHandler.bind(this);
+	            var target = this.target;
+
+	            target.addEventListener('mouseover', function (evt) {
+	                _this.over(evt);
+	            });
+
+	            target.addEventListener('mouseout', function (evt) {
+	                _this.out(evt);
+	            });
+
+	            target.addEventListener('mousedown', function (evt) {
+	                _this.isMouseDown = true;
+	                console.info(_this.isMouseDown);
+	                _this.preX = evt.stageX;
+	                _this.preY = evt.stageY;
+	                _this.down(evt);
+	                document.addEventListener('mouseup', _this._uh, false);
+	                document.addEventListener('mousemove', _this._mh, false);
+	            });
+	        }
+	    }, {
+	        key: '_moveHandler',
+	        value: function _moveHandler(evt) {
+	            if (this.isMouseDown) {
+	                evt.dx = evt.stageX - this.preX;
+	                evt.dy = evt.stageY - this.preY;
+	                this.move(evt);
+
+	                this.preX = evt.stageX;
+	                this.preY = evt.stageY;
+	            }
+	        }
+	    }, {
+	        key: '_upHandler',
+	        value: function _upHandler(evt) {
+	            this.isMouseDown = false;
+	            this.up(evt);
+	            this.preX = null;
+	            this.preY = null;
+	            document.removeEventListener('mousemove', this._mh, false);
+	            document.removeEventListener('mouseup', this._uh, false);
+	        }
+	    }]);
+
+	    return Drag;
+	}();
+
+	var drag = function drag(target, option) {
+	    if (!target._hasBindDrag) {
+	        new Drag(target, option);
+	    }
+	};
+
+	exports.default = drag;
 
 /***/ }
 /******/ ]);
