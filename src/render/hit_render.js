@@ -59,9 +59,11 @@ class HitRender extends  Render {
         mtx = o._hitMatrix;
         mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
         if (o instanceof Graphics) {
+            ctx.globalAlpha = o.complexAlpha;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             this.renderGraphics(o)
         } else if (o instanceof  Path|| o instanceof Circle) {
+            ctx.globalAlpha = o.complexAlpha;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             o.draw(ctx)
         } else if (o instanceof Group) {

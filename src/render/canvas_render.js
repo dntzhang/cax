@@ -15,6 +15,7 @@ class CanvasRender extends  Render {
 
     render(obj){
         this.ctx.save()
+        this.ctx.globalAlpha = obj.complexAlpha;
         this.ctx.transform(obj._matrix.a,obj._matrix.b,obj._matrix.c,obj._matrix.d,obj._matrix.tx,obj._matrix.ty)
         if(obj instanceof Graphics){
             this.renderGraphics(obj)

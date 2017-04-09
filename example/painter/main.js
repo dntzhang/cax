@@ -34,9 +34,13 @@ stage.canvas.addEventListener('mousemove',(evt)=> {
     const currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth
     const currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth
     if (isMouseDown) {
-        shape.updateControlPoints(startX,startY,currentX,currentY)
-        stage.update()
+        shape.virtualCurve.visible = false
+        shape.updateControlPoints(startX, startY, currentX, currentY)
+    } else {
+        shape.virtualCurve.visible = true
+        shape.renderVirtualCurve(currentX, currentY)
     }
+    stage.update()
     evt.preventDefault();
     posDiv.innerHTML = currentX + '_' + currentY
 })

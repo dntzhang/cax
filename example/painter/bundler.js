@@ -85,9 +85,13 @@
 	    var currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	    var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 	    if (isMouseDown) {
+	        shape.virtualCurve.visible = false;
 	        shape.updateControlPoints(startX, startY, currentX, currentY);
-	        stage.update();
+	    } else {
+	        shape.virtualCurve.visible = true;
+	        shape.renderVirtualCurve(currentX, currentY);
 	    }
+	    stage.update();
 	    evt.preventDefault();
 	    posDiv.innerHTML = currentX + '_' + currentY;
 	});
@@ -295,7 +299,7 @@
 
 	        var _this = _possibleConstructorReturn(this, (DisplayObject.__proto__ || Object.getPrototypeOf(DisplayObject)).call(this));
 
-	        _this.alpha = _this.scaleX = _this.scaleY = 1;
+	        _this.alpha = _this.complexAlpha = _this.scaleX = _this.scaleY = 1;
 	        _this.x = _this.y = _this.rotation = _this.skewX = _this.skewY = _this.originX = _this.originY = 0;
 	        _this.cursor = "default";
 	        _this.visible = true;
@@ -912,6 +916,7 @@
 	        key: 'render',
 	        value: function render(obj) {
 	            this.ctx.save();
+	            this.ctx.globalAlpha = obj.complexAlpha;
 	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
 	            if (obj instanceof _graphics2.default) {
 	                this.renderGraphics(obj);
@@ -1568,9 +1573,11 @@
 	            mtx = o._hitMatrix;
 	            mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
 	            if (o instanceof _graphics2.default) {
+	                ctx.globalAlpha = o.complexAlpha;
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                this.renderGraphics(o);
 	            } else if (o instanceof _path2.default || o instanceof _circle2.default) {
+	                ctx.globalAlpha = o.complexAlpha;
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                o.draw(ctx);
 	            } else if (o instanceof _group2.default) {
@@ -1696,10 +1703,12 @@
 
 	        _this.controlLines = new _index.Graphics();
 	        _this.curve = new _index.Graphics();
+	        _this.virtualCurve = new _index.Graphics();
+	        _this.virtualCurve.alpha = 0.5;
 
 	        _this.index = 0;
 	        _this.circleGroup = new _index.Group();
-	        _this.add(_this.controlLines, _this.curve, _this.circleGroup);
+	        _this.add(_this.controlLines, _this.curve, _this.circleGroup, _this.virtualCurve);
 	        return _this;
 	    }
 
@@ -1768,6 +1777,19 @@
 	                var index = i * 2;
 	                curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[index + 4], controlPoints[index + 5], points[i + 2], points[i + 3]);
 	            }
+	            curve.stroke();
+	        }
+	    }, {
+	        key: 'renderVirtualCurve',
+	        value: function renderVirtualCurve(currentX, currentY) {
+	            var curve = this.virtualCurve,
+	                points = this.points,
+	                controlPoints = this.controlPoints;
+	            var len = points.length,
+	                cLen = controlPoints.length;
+	            curve.clear();
+	            curve.moveTo(points[len - 2], points[len - 1]);
+	            curve.bezierCurveTo(controlPoints[cLen - 2], controlPoints[cLen - 1], currentX, currentY, currentX, currentY);
 	            curve.stroke();
 	        }
 	    }]);

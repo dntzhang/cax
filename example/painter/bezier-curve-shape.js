@@ -10,11 +10,12 @@ class BezierCurveShape extends Group {
 
         this.controlLines = new Graphics()
         this.curve = new Graphics()
-
+        this.virtualCurve = new Graphics()
+        this.virtualCurve.alpha = 0.5
 
         this.index = 0
         this.circleGroup = new Group()
-        this.add(this.controlLines, this.curve, this.circleGroup)
+        this.add(this.controlLines, this.curve, this.circleGroup, this.virtualCurve)
     }
 
     updateControlPoints(startX, startY, currentX, currentY) {
@@ -80,6 +81,17 @@ class BezierCurveShape extends Group {
         curve.stroke()
     }
 
+    renderVirtualCurve(currentX, currentY) {
+        let curve = this.virtualCurve,
+            points = this.points,
+            controlPoints = this.controlPoints
+        const len = points.length,
+            cLen = controlPoints.length
+        curve.clear()
+        curve.moveTo(points[len - 2], points[len - 1])
+        curve.bezierCurveTo(controlPoints[cLen-2], controlPoints[cLen-1], currentX, currentY, currentX, currentY)
+        curve.stroke()
+    }
 }
 
 export default BezierCurveShape
