@@ -64,7 +64,6 @@
 
 	stage.add(shape);
 
-	window.xx = shape;
 	//������stage.addEventListener,��Ϊstage.addEventListener��Ҫ��̨�ж������ܴ���ð�ݻ��߲���
 
 	stage.canvas.addEventListener('mousedown', function (evt) {
@@ -73,7 +72,6 @@
 	    startY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 
 	    if (shape.points.length > 2 && (startX - shape.points[0]) * (startX - shape.points[0]) + (startY - shape.points[1]) * (startY - shape.points[1]) < 100) {
-
 	        shape.closePath();
 	    } else {
 	        shape.addCircle(startX, startY);
@@ -104,6 +102,10 @@
 	    isMouseDown = false;
 	    shape.bindCircleEvent();
 	});
+
+	setInterval(function () {
+	    stage.update();
+	}, 16);
 
 /***/ },
 /* 1 */
@@ -612,7 +614,9 @@
 	        });
 	        //this.canvas.addEventListener("click", this._handleClick.bind(this), false);
 
-	        //this.canvas.addEventListener("dblclick", this._handleDblClick.bind(this), false);
+	        _this.canvas.addEventListener("dblclick", function (evt) {
+	            return _this._handlDblClick(evt);
+	        });
 	        //this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
 	        //this.canvas.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
 	        //this.canvas.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
@@ -632,6 +636,11 @@
 	    }
 
 	    _createClass(Stage, [{
+	        key: '_handlDblClick',
+	        value: function _handlDblClick(evt) {
+	            var obj = this._getObjectUnderPoint(evt);
+	        }
+	    }, {
 	        key: '_handleClick',
 	        value: function _handleClick(evt) {
 	            //this._computeStageXY(evt)
@@ -1740,13 +1749,79 @@
 	        _this.index = 0;
 	        _this.circleGroup = new _index.Group();
 	        _this.ctrlCircleGroup = new _index.Group();
-	        _this.add(_this.controlLines, _this.curve, _this.virtualCurve, _this.ctrlCircleGroup, _this.circleGroup);
+	        _this.add(_this.curve, _this.controlLines, _this.virtualCurve, _this.ctrlCircleGroup, _this.circleGroup);
 
 	        _this.willAdjust = false;
+
+	        _this.curve.addEventListener('click', function (evt) {
+	            _this.toggle();
+	        });
+
+	        (0, _arDrag2.default)(_this.curve, {
+	            move: function move(evt) {
+	                //this.curve.x += evt.dx
+	                //this.curve.y += evt.dy
+
+	                _this.updatePoints(evt.dx, evt.dy);
+	                _this.draw();
+	            },
+	            down: function down() {
+	                _this.willAdjust = true;
+	            },
+	            up: function up() {
+	                _this.willAdjust = false;
+	            }
+
+	        });
+
+	        _this.isEditing = false;
 	        return _this;
 	    }
 
 	    _createClass(BezierCurveShape, [{
+	        key: 'updatePoints',
+	        value: function updatePoints(dx, dy) {
+	            var _this2 = this;
+
+	            this.points.forEach(function (item, index) {
+	                if (index % 2 === 0) {
+	                    _this2.points[index] += dx;
+	                    _this2.points[index + 1] += dy;
+	                }
+	            });
+
+	            this.controlPoints.forEach(function (item, index) {
+	                if (index % 2 === 0) {
+	                    _this2.controlPoints[index] += dx;
+	                    _this2.controlPoints[index + 1] += dy;
+	                }
+	            });
+
+	            this.ctrlCircleGroup.children.forEach(function (item) {
+	                item.x += dx;
+	                item.y += dy;
+	            });
+
+	            this.circleGroup.children.forEach(function (item) {
+	                item.x += dx;
+	                item.y += dy;
+	            });
+	        }
+	    }, {
+	        key: 'toggle',
+	        value: function toggle() {
+	            if (this.isEditing) {
+	                this.controlLines.visible = true;
+	                this.ctrlCircleGroup.visible = true;
+	                this.circleGroup.visible = true;
+	            } else {
+	                this.controlLines.visible = false;
+	                this.ctrlCircleGroup.visible = false;
+	                this.circleGroup.visible = false;
+	            }
+	            this.isEditing = !this.isEditing;
+	        }
+	    }, {
 	        key: 'updateControlPoints',
 	        value: function updateControlPoints(startX, startY, currentX, currentY) {
 	            if (this.closed) return;
@@ -1780,7 +1855,7 @@
 	    }, {
 	        key: 'bindCircleEvent',
 	        value: function bindCircleEvent() {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            var c = this.circleGroup.children[this.circleGroup.children.length - 1];
 	            var cc1 = this.ctrlCircleGroup.children[this.ctrlCircleGroup.children.length - 2];
@@ -1789,33 +1864,73 @@
 	                move: function move(evt) {
 	                    c.x += evt.dx;
 	                    c.y += evt.dy;
+
+	                    var index = _this3.circleGroup.children.indexOf(c);
+
+	                    _this3.ctrlCircleGroup.children[index * 2].x += evt.dx;
+	                    _this3.ctrlCircleGroup.children[index * 2].y += evt.dy;
+	                    _this3.ctrlCircleGroup.children[index * 2 + 1].x += evt.dx;
+	                    _this3.ctrlCircleGroup.children[index * 2 + 1].y += evt.dy;
+	                    _this3.points[index * 2] += evt.dx;
+	                    _this3.points[index * 2 + 1] += evt.dy;
+
+	                    _this3.controlPoints[index * 4] += evt.dx;
+	                    _this3.controlPoints[index * 4 + 1] += evt.dy;
+	                    _this3.controlPoints[index * 4 + 2] += evt.dx;
+	                    _this3.controlPoints[index * 4 + 3] += evt.dy;
+
+	                    if (_this3.closed && index === 0) {
+	                        _this3.points[_this3.points.length - 2] += evt.dx;
+	                        _this3.points[_this3.points.length - 1] += evt.dy;
+	                    }
+	                    _this3.draw();
 	                },
 	                down: function down() {
-	                    _this2.willAdjust = true;
+	                    _this3.willAdjust = true;
 	                },
 	                up: function up() {
-	                    _this2.willAdjust = false;
+	                    _this3.willAdjust = false;
 	                }
 
 	            });
 
-	            (0, _arDrag2.default)(cc1, {
-	                move: function move() {},
-	                down: function down() {
-	                    _this2.willAdjust = true;
-	                },
-	                up: function up() {
-	                    _this2.willAdjust = false;
-	                }
-	            });
+	            (0, _arDrag2.default)([cc1, cc2], {
+	                move: function move(evt) {
+	                    evt.target.x += evt.dx;
+	                    evt.target.y += evt.dy;
 
-	            (0, _arDrag2.default)(cc2, {
-	                move: function move() {},
-	                over: function over() {
-	                    _this2.willAdjust = true;
+	                    var index = _this3.ctrlCircleGroup.children.indexOf(evt.target);
+
+	                    if (index % 2 === 0) {
+	                        _this3.controlPoints[index * 2] += evt.dx;
+	                        _this3.controlPoints[index * 2 + 1] += evt.dy;
+	                        _this3.controlPoints[index * 2 + 2] -= evt.dx;
+	                        _this3.controlPoints[index * 2 + 3] -= evt.dy;
+
+	                        _this3.ctrlCircleGroup.children[index].x += evt.dx;
+	                        _this3.ctrlCircleGroup.children[index].y += evt.dy;
+	                        _this3.ctrlCircleGroup.children[index + 1].x -= evt.dx;
+	                        _this3.ctrlCircleGroup.children[index + 1].y -= evt.dy;
+	                    } else {
+	                        index--;
+	                        _this3.controlPoints[index * 2] -= evt.dx;
+	                        _this3.controlPoints[index * 2 + 1] -= evt.dy;
+	                        _this3.controlPoints[index * 2 + 2] += evt.dx;
+	                        _this3.controlPoints[index * 2 + 3] += evt.dy;
+
+	                        _this3.ctrlCircleGroup.children[index].x -= evt.dx;
+	                        _this3.ctrlCircleGroup.children[index].y -= evt.dy;
+	                        _this3.ctrlCircleGroup.children[index + 1].x += evt.dx;
+	                        _this3.ctrlCircleGroup.children[index + 1].y += evt.dy;
+	                    }
+
+	                    _this3.draw();
+	                },
+	                down: function down() {
+	                    _this3.willAdjust = true;
 	                },
 	                up: function up() {
-	                    _this2.willAdjust = false;
+	                    _this3.willAdjust = false;
 	                }
 	            });
 	        }
@@ -1823,6 +1938,8 @@
 	        key: 'closePath',
 	        value: function closePath() {
 	            if (this.closed) return;
+	            this.circleGroup.visible = false;
+	            this.ctrlCircleGroup.visible = false;
 	            this.points.push(this.points[0], this.points[1]);
 	            this.controlLines.visible = false;
 	            var index = this.controlPoints.length;
@@ -1881,6 +1998,9 @@
 	                curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[index + 4], controlPoints[index + 5], points[i + 2], points[i + 3]);
 	            }
 	            curve.stroke();
+	            // curve.closePath()
+	            curve.fillStyle('white');
+	            curve.fill();
 	        }
 	    }, {
 	        key: 'renderVirtualCurve',
@@ -1934,7 +2054,6 @@
 	        this.out = option.out || noop;
 	        this.down = option.down || noop;
 	        this.up = option.up || noop;
-	        target._hasBindDrag = true;
 	        this.bindEvent();
 	    }
 
@@ -1957,7 +2076,6 @@
 
 	            target.addEventListener('mousedown', function (evt) {
 	                _this.isMouseDown = true;
-	                console.info(_this.isMouseDown);
 	                _this.preX = evt.stageX;
 	                _this.preY = evt.stageY;
 	                _this.down(evt);
@@ -1969,9 +2087,12 @@
 	        key: '_moveHandler',
 	        value: function _moveHandler(evt) {
 	            if (this.isMouseDown) {
-	                evt.dx = evt.stageX - this.preX;
-	                evt.dy = evt.stageY - this.preY;
-	                this.move(evt);
+	                this.move({
+	                    dx: evt.stageX - this.preX,
+	                    dy: evt.stageY - this.preY,
+	                    pureEvent: evt,
+	                    target: this.target
+	                });
 
 	                this.preX = evt.stageX;
 	                this.preY = evt.stageY;
@@ -1993,9 +2114,16 @@
 	}();
 
 	var drag = function drag(target, option) {
-	    if (!target._hasBindDrag) {
-	        new Drag(target, option);
+	    if (Object.prototype.toString.call(target) !== "[object Array]") {
+	        target = [target];
 	    }
+
+	    target.forEach(function (item) {
+	        if (!item._hasBindDrag) {
+	            item._hasBindDrag = true;
+	            new Drag(item, option);
+	        }
+	    });
 	};
 
 	exports.default = drag;

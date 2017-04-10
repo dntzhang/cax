@@ -52,3 +52,8 @@ document.addEventListener('mouseup',(evt)=> {
     isMouseDown = false
     shape.bindCircleEvent()
 })
+
+
+setInterval(function(){
+    stage.update()
+},16)

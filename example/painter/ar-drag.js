@@ -15,7 +15,6 @@ class Drag {
         this.out = option.out||noop
         this.down = option.down||noop
         this.up = option.up ||noop
-        target._hasBindDrag = true
         this.bindEvent()
     }
 
@@ -34,7 +33,6 @@ class Drag {
 
         target.addEventListener('mousedown', evt => {
             this.isMouseDown = true
-            console.info(this.isMouseDown)
             this.preX = evt.stageX
             this.preY = evt.stageY
             this.down(evt)
@@ -46,9 +44,12 @@ class Drag {
     }
     _moveHandler(evt){
         if (this.isMouseDown) {
-            evt.dx = evt.stageX - this.preX
-            evt.dy = evt.stageY - this.preY
-            this.move(evt)
+            this.move({
+                dx: evt.stageX - this.preX,
+                dy:evt.stageY - this.preY,
+                pureEvent:evt,
+                target: this.target
+            })
 
             this.preX =  evt.stageX
             this.preY = evt.stageY
@@ -67,9 +68,17 @@ class Drag {
 }
 
 const drag = function(target, option) {
-    if (!target._hasBindDrag) {
-        new Drag(target, option)
+    if(Object.prototype.toString.call(target)!=="[object Array]"){
+        target = [target]
     }
+
+    target.forEach(item =>{
+        if (!item._hasBindDrag) {
+            item._hasBindDrag = true
+            new Drag(item, option)
+        }
+    })
+
 }
 
 export default drag

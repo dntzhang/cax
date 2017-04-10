@@ -26,7 +26,7 @@ class Stage extends Group  {
         this.canvas.addEventListener("mouseout", evt => this._handleMouseOut(evt))
         //this.canvas.addEventListener("click", this._handleClick.bind(this), false);
 
-        //this.canvas.addEventListener("dblclick", this._handleDblClick.bind(this), false);
+        this.canvas.addEventListener("dblclick", evt => this._handlDblClick(evt))
         //this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
         //this.canvas.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
         //this.canvas.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
@@ -44,7 +44,9 @@ class Stage extends Group  {
 
     }
 
-
+    _handlDblClick(evt){
+        let obj = this._getObjectUnderPoint(evt)
+    }
 
     _handleClick(evt){
         //this._computeStageXY(evt)
