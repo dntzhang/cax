@@ -915,7 +915,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                var rect = obj.rect;
 	                this.ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
 	            } else if (obj instanceof _bitmap2['default']) {
-	                console.log(1);
 	                var rect = obj.rect;
 	                this.ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
 	            }
