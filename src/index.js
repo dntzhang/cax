@@ -6,17 +6,8 @@ import Graphics from './display/graphics.js'
 import Path from './display/path.js'
 import Circle from './display/circle.js'
 import Sprite from './display/sprite.js'
+import Bitmap from './display/bitmap.js'
 
-let AlloyRender = { }
-
-AlloyRender.Matrix2D = Matrix2D
-AlloyRender.Stage = Stage
-AlloyRender.DisplayObject = DisplayObject
-AlloyRender.Group = Group
-AlloyRender.Graphics = Graphics
-AlloyRender.Path = Path
-AlloyRender.Circle = Circle
-AlloyRender.Sprite = Sprite
-
-window.AlloyRender = AlloyRender
-module.exports = AlloyRender
+module.exports = {
+    Matrix2D,Stage,DisplayObject,Group,Graphics,Path,Circle,Sprite,Bitmap
+}

@@ -80,7 +80,7 @@
 	        }
 	    });
 
-	    stage.add(sprite);
+	    stage.add(sprite, new _index.Bitmap(img));
 
 	    sprite.scaleX = sprite.scaleY = 1.5;
 	    sprite.y = 160;
@@ -131,21 +131,15 @@
 
 	var _sprite2 = _interopRequireDefault(_sprite);
 
+	var _bitmap = __webpack_require__(16);
+
+	var _bitmap2 = _interopRequireDefault(_bitmap);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var AlloyRender = {};
-
-	AlloyRender.Matrix2D = _matrix2d2.default;
-	AlloyRender.Stage = _stage2.default;
-	AlloyRender.DisplayObject = _display_object2.default;
-	AlloyRender.Group = _group2.default;
-	AlloyRender.Graphics = _graphics2.default;
-	AlloyRender.Path = _path2.default;
-	AlloyRender.Circle = _circle2.default;
-	AlloyRender.Sprite = _sprite2.default;
-
-	window.AlloyRender = AlloyRender;
-	module.exports = AlloyRender;
+	module.exports = {
+	    Matrix2D: _matrix2d2.default, Stage: _stage2.default, DisplayObject: _display_object2.default, Group: _group2.default, Graphics: _graphics2.default, Path: _path2.default, Circle: _circle2.default, Sprite: _sprite2.default, Bitmap: _bitmap2.default
+	};
 
 /***/ },
 /* 2 */
@@ -550,11 +544,11 @@
 
 	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _hit_render = __webpack_require__(16);
+	var _hit_render = __webpack_require__(17);
 
 	var _hit_render2 = _interopRequireDefault(_hit_render);
 
-	var _event = __webpack_require__(17);
+	var _event = __webpack_require__(18);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -917,6 +911,10 @@
 
 	var _sprite2 = _interopRequireDefault(_sprite);
 
+	var _bitmap = __webpack_require__(16);
+
+	var _bitmap2 = _interopRequireDefault(_bitmap);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -952,6 +950,9 @@
 	                obj.draw(this.ctx);
 	            } else if (obj instanceof _sprite2.default) {
 	                obj.updateFrame();
+	                var rect = obj.rect;
+	                this.ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+	            } else if (obj instanceof _bitmap2.default) {
 	                var rect = obj.rect;
 	                this.ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
 	            }
@@ -1671,6 +1672,46 @@
 	    value: true
 	});
 
+	var _display_object = __webpack_require__(3);
+
+	var _display_object2 = _interopRequireDefault(_display_object);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Bitmap = function (_DisplayObject) {
+	    _inherits(Bitmap, _DisplayObject);
+
+	    function Bitmap(img) {
+	        _classCallCheck(this, Bitmap);
+
+	        var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
+
+	        _this.img = img;
+	        _this.rect = [0, 0, img.width, img.height];
+	        return _this;
+	    }
+
+	    return Bitmap;
+	}(_display_object2.default);
+
+	exports.default = Bitmap;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _group = __webpack_require__(6);
@@ -1685,7 +1726,7 @@
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _event = __webpack_require__(17);
+	var _event = __webpack_require__(18);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -1700,6 +1741,10 @@
 	var _sprite = __webpack_require__(15);
 
 	var _sprite2 = _interopRequireDefault(_sprite);
+
+	var _bitmap = __webpack_require__(16);
+
+	var _bitmap2 = _interopRequireDefault(_bitmap);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1795,6 +1840,11 @@
 	                o.updateFrame();
 	                var rect = o.rect;
 	                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+	            } else if (o instanceof _bitmap2.default) {
+	                ctx.globalAlpha = o.complexAlpha;
+	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+	                var rect = o.rect;
+	                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
 	            }
 
 	            if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
@@ -1841,7 +1891,7 @@
 	exports.default = HitRender;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	"use strict";

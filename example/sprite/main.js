@@ -1,4 +1,4 @@
-import { Stage, Sprite } from '../../src/index.js'
+import { Stage, Sprite, Bitmap } from '../../src/index.js'
 
 var stage = new Stage(480,480,"body")
 
@@ -47,10 +47,12 @@ img.onload = ()=> {
         }
     });
 
-    stage.add(sprite)
+    stage.add(sprite,new Bitmap(img))
 
     sprite.scaleX = sprite.scaleY = 1.5
     sprite.y = 160
+
+
 
     setInterval(()=> {
         stage.update()

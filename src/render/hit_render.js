@@ -5,6 +5,7 @@ import Event from '../base/event.js'
 import Path from '../display/path.js'
 import Circle from '../display/circle.js'
 import Sprite from '../display/sprite.js'
+import Bitmap from '../display/bitmap.js'
 
 class HitRender extends  Render {
     constructor(canvas) {
@@ -80,6 +81,11 @@ class HitRender extends  Render {
             ctx.globalAlpha = o.complexAlpha;
             ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             o.updateFrame()
+            var rect = o.rect;
+            ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+        }else if ( o instanceof Bitmap) {
+            ctx.globalAlpha = o.complexAlpha;
+            ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
             var rect = o.rect;
             ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         }

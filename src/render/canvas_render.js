@@ -4,6 +4,7 @@ import Render from './render.js'
 import Path from '../display/path.js'
 import Circle from '../display/circle.js'
 import Sprite from '../display/sprite.js'
+import Bitmap from '../display/bitmap.js'
 
 class CanvasRender extends  Render {
     constructor(canvas){
@@ -24,6 +25,9 @@ class CanvasRender extends  Render {
             obj.draw(this.ctx)
         }else if ( obj instanceof Sprite) {
             obj.updateFrame()
+            var rect = obj.rect;
+            this.ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+        }else if ( obj instanceof Bitmap) {
             var rect = obj.rect;
             this.ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         }

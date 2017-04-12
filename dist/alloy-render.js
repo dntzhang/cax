@@ -85,19 +85,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _path2 = _interopRequireDefault(_path);
 
+	var _circle = __webpack_require__(13);
+
+	var _circle2 = _interopRequireDefault(_circle);
+
+	var _sprite = __webpack_require__(14);
+
+	var _sprite2 = _interopRequireDefault(_sprite);
+
+	var _bitmap = __webpack_require__(15);
+
+	var _bitmap2 = _interopRequireDefault(_bitmap);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var AlloyRender = {};
-
-	AlloyRender.Matrix2D = _matrix2d2['default'];
-	AlloyRender.Stage = _stage2['default'];
-	AlloyRender.DisplayObject = _display_object2['default'];
-	AlloyRender.Group = _group2['default'];
-	AlloyRender.Graphics = _graphics2['default'];
-	AlloyRender.Path = _path2['default'];
-
-	window.AlloyRender = AlloyRender;
-	module.exports = AlloyRender;
+	module.exports = {
+	    Matrix2D: _matrix2d2['default'], Stage: _stage2['default'], DisplayObject: _display_object2['default'], Group: _group2['default'], Graphics: _graphics2['default'], Path: _path2['default'], Circle: _circle2['default'], Sprite: _sprite2['default'], Bitmap: _bitmap2['default']
+	};
 
 /***/ },
 /* 1 */
@@ -219,6 +223,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _matrix2d = __webpack_require__(1);
 
 	var _matrix2d2 = _interopRequireDefault(_matrix2d);
@@ -247,14 +253,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var _this = _possibleConstructorReturn(this, (DisplayObject.__proto__ || Object.getPrototypeOf(DisplayObject)).call(this));
 
-	        _this.alpha = _this.scaleX = _this.scaleY = 1;
+	        _this.alpha = _this.complexAlpha = _this.scaleX = _this.scaleY = 1;
 	        _this.x = _this.y = _this.rotation = _this.skewX = _this.skewY = _this.originX = _this.originY = 0;
 	        _this.cursor = "default";
+	        _this.visible = true;
 	        _this._matrix = new _matrix2d2['default']();
 	        _this._hitMatrix = new _matrix2d2['default']();
 	        _this.id = _uid2['default'].get();
 	        return _this;
 	    }
+
+	    _createClass(DisplayObject, [{
+	        key: 'isVisible',
+	        value: function isVisible() {
+	            return this.visible && this.alpha > 0 && this.scaleX != 0 && this.scaleY != 0;
+	        }
+	    }]);
 
 	    return DisplayObject;
 	}(_event_dispatcher2['default']);
@@ -438,8 +452,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'add',
 	        value: function add(child) {
 
-	            this.children.push(child);
-	            child.parent = this;
+	            var len = arguments.length;
+
+	            for (var i = 0; i < len; i++) {
+
+	                this.children.push(arguments[i]);
+	                arguments[i].parent = this;
+	            }
+	        }
+	    }, {
+	        key: 'remove',
+	        value: function remove(child) {
+	            var len = arguments.length;
+	            var cLen = this.children.length;
+
+	            for (var i = 0; i < len; i++) {
+
+	                for (var j = 0; j < cLen; j++) {
+
+	                    if (child.id == this.children[j].id) {
+	                        child.parent = null;
+	                        this.children.splice(j, 1);
+	                        j--;
+	                        cLen--;
+	                    }
+	                }
+	            }
 	        }
 	    }]);
 
@@ -468,11 +506,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _hit_render = __webpack_require__(13);
+	var _hit_render = __webpack_require__(16);
 
 	var _hit_render2 = _interopRequireDefault(_hit_render);
 
-	var _event = __webpack_require__(14);
+	var _event = __webpack_require__(17);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -523,7 +561,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        //this.canvas.addEventListener("click", this._handleClick.bind(this), false);
 
-	        //this.canvas.addEventListener("dblclick", this._handleDblClick.bind(this), false);
+	        _this.canvas.addEventListener("dblclick", function (evt) {
+	            return _this._handlDblClick(evt);
+	        });
 	        //this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
 	        //this.canvas.addEventListener("touchmove", this._handleMouseMove.bind(this), false);
 	        //this.canvas.addEventListener("touchstart", this._handleMouseDown.bind(this), false);
@@ -543,6 +583,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _createClass(Stage, [{
+	        key: '_handlDblClick',
+	        value: function _handlDblClick(evt) {
+	            var obj = this._getObjectUnderPoint(evt);
+	        }
+	    }, {
 	        key: '_handleClick',
 	        value: function _handleClick(evt) {
 	            //this._computeStageXY(evt)
@@ -721,9 +766,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: '_computeMatrix',
 	        value: function _computeMatrix(o, mtx) {
-	            //if (!o.isVisible()) {
-	            //    return;
-	            //}
+	            if (!o.isVisible()) {
+	                return;
+	            }
 	            if (mtx) {
 	                o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	            } else {
@@ -820,6 +865,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _path2 = _interopRequireDefault(_path);
 
+	var _circle = __webpack_require__(13);
+
+	var _circle2 = _interopRequireDefault(_circle);
+
+	var _sprite = __webpack_require__(14);
+
+	var _sprite2 = _interopRequireDefault(_sprite);
+
+	var _bitmap = __webpack_require__(15);
+
+	var _bitmap2 = _interopRequireDefault(_bitmap);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -847,11 +904,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: 'render',
 	        value: function render(obj) {
 	            this.ctx.save();
-	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
+	            this.ctx.globalAlpha = obj.complexAlpha;
+	            this.ctx.setTransform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
 	            if (obj instanceof _graphics2['default']) {
 	                this.renderGraphics(obj);
-	            } else if (obj instanceof _path2['default']) {
+	            } else if (obj instanceof _path2['default'] || obj instanceof _circle2['default']) {
 	                obj.draw(this.ctx);
+	            } else if (obj instanceof _sprite2['default']) {
+	                obj.updateFrame();
+	                var rect = obj.rect;
+	                this.ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+	            } else if (obj instanceof _bitmap2['default']) {
+	                console.log(1);
+	                var rect = obj.rect;
+	                this.ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
 	            }
 	            this.ctx.restore();
 	        }
@@ -942,6 +1008,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: "clear",
 	        value: function clear() {
 	            this.cmds.length = 0;
+	            this.beginPath();
 	            return this;
 	        }
 	    }, {
@@ -1158,38 +1225,106 @@ return /******/ (function(modules) { // webpackBootstrap
 	            //S = smooth curveto
 	            //Q = quadratic Belzier curve
 	            //T = smooth quadratic Belzier curveto
-	            //A = elliptical Arc  ��ʱδʵ�֣��ñ�����������Բ
+	            //A = elliptical Arc  暂时未实现，用贝塞尔拟合椭圆
 	            //Z = closepath
-	            //������������������Сд��ĸ����д��ʾ���Զ�λ��Сд��ʾ���Զ�λ��
+	            //以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
+	            var preX = void 0,
+	                preY = void 0;
+
 	            for (var j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
 	                var item = cmds[j];
-	                var action = item[0].toUpperCase();
-	                var pre = cmds[j - 1];
+	                var action = item[0];
+	                var preItem = cmds[j - 1];
+
 	                switch (action) {
 	                    case 'M':
-	                        ctx.moveTo(item[1], item[2]);
-	                    case 'C':
-	                        ctx.bezierCurveTo(item[1], item[2], item[3], item[4], item[5], item[6]);
+	                        preX = item[1];
+	                        preY = item[2];
+	                        ctx.moveTo(preX, preY);
+	                        break;
 	                    case 'L':
-	                        ctx.lineTo(item[1], item[2]);
+	                        preX = item[1];
+	                        preY = item[2];
+	                        ctx.lineTo(preX, preY);
+	                        break;
 	                    case 'H':
-	                        ctx.lineTo(pre[1], item[2]);
+	                        preY = item[1];
+	                        ctx.lineTo(preX, item[1]);
+	                        break;
 	                    case 'V':
-	                        ctx.lineTo(item[1], pre[2]);
+	                        preX = item[1];
+	                        ctx.lineTo(item[1], preY);
+	                        break;
+	                    case 'C':
+	                        preX = item[5];
+	                        preY = item[6];
+	                        ctx.bezierCurveTo(item[1], item[2], item[3], item[4], preX, preY);
+	                        break;
 	                    case 'S':
-	                        ctx.bezierCurveTo(pre[5] + pre[5] - pre[3], pre[6] + pre[6] - pre[4], item[1], item[2], item[3], item[4]);
+	                        ctx.bezierCurveTo(preX + preX - preItem[3], preY + preY - preItem[4], item[1], item[2], item[3], item[4]);
+	                        preX = item[3];
+	                        preY = item[4];
+	                        break;
 	                    case 'Q':
-	                        ctx.quadraticCurveTo(item[1], item[2], item[3], item[4]);
+	                        preX = item[3];
+	                        preY = item[4];
+	                        ctx.quadraticCurveTo(item[1], item[2], preX, preY);
+	                        break;
 	                    case 'T':
-	                        ctx.quadraticCurveTo(pre[3] + pre[3] - pre[1], pre[4] + pre[4] - pre[2], item[1], item[2]);
+	                        ctx.quadraticCurveTo(preX + preX - preItem[1], preY + preY - preItem[2], item[1], item[2]);
+	                        preX = item[1];
+	                        preY = item[2];
+	                        break;
+
+	                    case 'm':
+	                        preX += item[1];
+	                        preY += item[2];
+	                        ctx.moveTo(preX, preY);
+	                        break;
+	                    case 'l':
+	                        preX += item[1];
+	                        preY += item[2];
+	                        ctx.lineTo(item[1], item[2]);
+	                        break;
+	                    case 'h':
+	                        preY += item[1];
+	                        ctx.lineTo(preX, preY);
+	                        break;
+	                    case 'v':
+	                        preX += item[1];
+	                        ctx.lineTo(item[1], preY);
+	                        break;
+	                    case 'c':
+	                        ctx.bezierCurveTo(preX + item[1], preY + item[2], preX + item[3], preY + item[4], preX + item[5], preY + item[6]);
+	                        preX = preX + item[5];
+	                        preY = preY + item[6];
+	                        break;
+	                    case 's':
+	                        ctx.bezierCurveTo(preX + preX + preX - preItem[3], preY + preY + preY - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+	                        preX += item[3];
+	                        preY += item[4];
+	                        break;
+	                    case 'q':
+
+	                        ctx.quadraticCurveTo(preX + item[1], preY + item[2], item[3] + preX, item[4] + preY);
+	                        preX += item[3];
+	                        preY += item[4];
+	                        break;
+	                    case 't':
+
+	                        ctx.quadraticCurveTo(preX + preX + preX - preItem[1], preY + preY + preY - preItem[2], preX + item[1], preY + item[2]);
+	                        preX += item[1];
+	                        preY += item[2];
+	                        break;
+
 	                    case 'Z':
 	                        ctx.closePath();
+	                        break;
 	                }
 	            }
 
 	            ctx.fill();
 	            ctx.stroke();
-
 	            ctx.restore();
 	        }
 	    }]);
@@ -1278,6 +1413,270 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _display_object = __webpack_require__(2);
+
+	var _display_object2 = _interopRequireDefault(_display_object);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Circle = function (_DisplayObject) {
+	    _inherits(Circle, _DisplayObject);
+
+	    function Circle(r) {
+	        _classCallCheck(this, Circle);
+
+	        var _this = _possibleConstructorReturn(this, (Circle.__proto__ || Object.getPrototypeOf(Circle)).call(this));
+
+	        _this.r = r;
+	        // this.element.setAttribute('d', d)
+	        _this._dp = Math.PI * 2;
+	        return _this;
+	    }
+
+	    _createClass(Circle, [{
+	        key: 'draw',
+	        value: function draw(ctx) {
+
+	            ctx.beginPath();
+	            ctx.arc(0, 0, this.r, 0, this._dp, false);
+
+	            ctx.stroke();
+
+	            ctx.beginPath();
+	            ctx.fillStyle = 'white';
+	            ctx.arc(0, 0, this.r - 1, 0, this._dp, false);
+
+	            ctx.fill();
+	        }
+	    }]);
+
+	    return Circle;
+	}(_display_object2['default']);
+
+	exports['default'] = Circle;
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _display_object = __webpack_require__(2);
+
+	var _display_object2 = _interopRequireDefault(_display_object);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Sprite = function (_DisplayObject) {
+	    _inherits(Sprite, _DisplayObject);
+
+	    function Sprite(option) {
+	        _classCallCheck(this, Sprite);
+
+	        var _this = _possibleConstructorReturn(this, (Sprite.__proto__ || Object.getPrototypeOf(Sprite)).call(this));
+
+	        _this.option = option;
+	        _this.x = option.x || 0;
+	        _this.y = option.y || 0;
+	        _this.currentFrameIndex = 0;
+	        _this.animationFrameIndex = 0;
+	        _this.currentAnimation = option.currentAnimation || null;
+	        _this.rect = [0, 0, 10, 10];
+
+	        _this.img = _this.option.imgs[0];
+	        _this.interval = 1e3 / option.framerate;
+	        _this.loop = null;
+	        _this.paused = false;
+	        _this.animationEnd = option.animationEnd || null;
+	        if (_this.currentAnimation) {
+	            _this.gotoAndPlay(_this.currentAnimation);
+	        }
+	        _this.tickAnimationEnd = option.tickAnimationEnd || null;
+	        return _this;
+	    }
+
+	    _createClass(Sprite, [{
+	        key: 'play',
+	        value: function play() {
+	            this.paused = false;
+	        }
+	    }, {
+	        key: 'pause',
+	        value: function pause() {
+	            this.paused = true;
+	        }
+	    }, {
+	        key: 'reset',
+	        value: function reset() {
+	            this.currentFrameIndex = 0;
+	            this.animationFrameIndex = 0;
+	        }
+	    }, {
+	        key: 'updateFrame',
+	        value: function updateFrame() {
+	            var opt = this.option;
+	            this.dt = new Date() - this.startTime;
+	            var frames = opt.animations[this.currentAnimation].frames;
+	            var len = frames.length;
+	            this.rect = opt.frames[frames[Math.floor(this.dt / this.interval % len)]];
+	            var rectLen = this.rect.length;
+
+	            rectLen > 4 && (this.originX = this.rect[2] * this.rect[4]);
+	            rectLen > 5 && (this.originY = this.rect[3] * this.rect[5]);
+	            rectLen > 6 && (this.img = this.bitmaps[this.rect[6]].img);
+	        }
+	    }, {
+	        key: 'gotoAndPlay',
+	        value: function gotoAndPlay(animation) {
+	            this.paused = false;
+	            this.reset();
+	            clearInterval(this.loop);
+	            this.currentAnimation = animation;
+	            this.startTime = new Date();
+	        }
+	    }, {
+	        key: 'gotoAndStop',
+	        value: function gotoAndStop(animation) {
+	            this.reset();
+	            clearInterval(this.loop);
+	            var self = this;
+	            self.currentAnimation = animation;
+	            var opt = self.option;
+	            var frames = opt.animations[self.currentAnimation].frames;
+	            self.rect = opt.frames[frames[self.animationFrameIndex]];
+	            self.width = self.rect[2];
+	            self.height = self.rect[3];
+	            var rect = self.rect,
+	                rectLen = rect.length;
+	            rectLen > 4 && (self.originX = rect[2] * rect[4]);
+	            rectLen > 5 && (self.originY = rect[3] * rect[5]);
+	            rectLen > 6 && (self.img = self.bitmaps[rect[6]].img);
+	        }
+	    }]);
+
+	    return Sprite;
+	}(_display_object2['default']);
+
+	exports['default'] = Sprite;
+
+	//var sprite = new Sprite({
+	//    x: 200,
+	//    y: 200,
+	//    framerate: 5,
+	//    imgs: [ld.get("hero"), ld.get("pig")],
+	//    frames: [
+	//        // x, y, width, height, originX, originY ,imageIndex
+	//        [64, 64, 64, 64],
+	//        [128, 64, 64, 64],
+	//        [192, 64, 64, 64],
+	//        [256, 64, 64, 64],
+	//        [320, 64, 64, 64],
+	//        [384, 64, 64, 64],
+	//        [448, 64, 64, 64],
+	//
+	//        [0, 192, 64, 64],
+	//        [64, 192, 64, 64],
+	//        [128, 192, 64, 64],
+	//        [192, 192, 64, 64],
+	//        [256, 192, 64, 64],
+	//        [320, 192, 64, 64],
+	//        [384, 192, 64, 64],
+	//        [448, 192, 64, 64],
+	//        [448, 192, 64, 64]
+	//    ],
+	//    animations: {
+	//        walk: {
+	//            frames: [0, 1, 2, 3, 4, 5, 6],
+	//            next: "run",
+	//            speed: 2,
+	//            loop: false
+	//        },
+	//        happy: {
+	//            frames: [11, 12, 13, 14]
+	//        },
+	//        win: {
+	//            frames: [7, 8, 9, 10]
+	//        }
+	//    },
+	//    currentAnimation: "walk",
+	//    tickAnimationEnd: function () {
+	//        //alert("����һ��");
+	//    },
+	//    animationEnd: function () {
+	//        //alert("��������")
+	//    }
+	//});
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _display_object = __webpack_require__(2);
+
+	var _display_object2 = _interopRequireDefault(_display_object);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Bitmap = function (_DisplayObject) {
+	    _inherits(Bitmap, _DisplayObject);
+
+	    function Bitmap(img) {
+	        _classCallCheck(this, Bitmap);
+
+	        var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
+
+	        _this.img = img;
+	        _this.rect = [0, 0, img.width, img.height];
+	        return _this;
+	    }
+
+	    return Bitmap;
+	}(_display_object2['default']);
+
+	exports['default'] = Bitmap;
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _group = __webpack_require__(5);
 
 	var _group2 = _interopRequireDefault(_group);
@@ -1290,13 +1689,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _event = __webpack_require__(14);
+	var _event = __webpack_require__(17);
 
 	var _event2 = _interopRequireDefault(_event);
 
 	var _path = __webpack_require__(11);
 
 	var _path2 = _interopRequireDefault(_path);
+
+	var _circle = __webpack_require__(13);
+
+	var _circle2 = _interopRequireDefault(_circle);
+
+	var _sprite = __webpack_require__(14);
+
+	var _sprite2 = _interopRequireDefault(_sprite);
+
+	var _bitmap = __webpack_require__(15);
+
+	var _bitmap2 = _interopRequireDefault(_bitmap);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -1359,6 +1770,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: '_hitPixel',
 	        value: function _hitPixel(o, evt, mtx) {
+	            if (!o.isVisible()) return;
 	            var ctx = this.ctx;
 	            ctx.clearRect(0, 0, 2, 2);
 	            if (mtx) {
@@ -1369,9 +1781,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            mtx = o._hitMatrix;
 	            mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
 	            if (o instanceof _graphics2['default']) {
+	                ctx.globalAlpha = o.complexAlpha;
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                this.renderGraphics(o);
-	            } else if (o instanceof _path2['default']) {
+	            } else if (o instanceof _path2['default'] || o instanceof _circle2['default']) {
+	                ctx.globalAlpha = o.complexAlpha;
 	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
 	                o.draw(ctx);
 	            } else if (o instanceof _group2['default']) {
@@ -1383,6 +1797,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    if (target) return target;
 	                    ctx.restore();
 	                }
+	            } else if (o instanceof _sprite2['default']) {
+	                ctx.globalAlpha = o.complexAlpha;
+	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+	                o.updateFrame();
+	                var rect = o.rect;
+	                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+	            } else if (o instanceof _bitmap2['default']) {
+	                ctx.globalAlpha = o.complexAlpha;
+	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+	                var rect = o.rect;
+	                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
 	            }
 
 	            if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
@@ -1429,7 +1854,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports['default'] = HitRender;
 
 /***/ },
-/* 14 */
+/* 17 */
 /***/ function(module, exports) {
 
 	"use strict";
