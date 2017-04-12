@@ -3,6 +3,7 @@ import Graphics from '../display/graphics.js'
 import Render from './render.js'
 import Path from '../display/path.js'
 import Circle from '../display/circle.js'
+import Sprite from '../display/sprite.js'
 
 class CanvasRender extends  Render {
     constructor(canvas){
@@ -16,11 +17,15 @@ class CanvasRender extends  Render {
     render(obj){
         this.ctx.save()
         this.ctx.globalAlpha = obj.complexAlpha;
-        this.ctx.transform(obj._matrix.a,obj._matrix.b,obj._matrix.c,obj._matrix.d,obj._matrix.tx,obj._matrix.ty)
+        this.ctx.setTransform(obj._matrix.a,obj._matrix.b,obj._matrix.c,obj._matrix.d,obj._matrix.tx,obj._matrix.ty)
         if(obj instanceof Graphics){
             this.renderGraphics(obj)
         }else if (obj instanceof  Path|| obj instanceof Circle){
             obj.draw(this.ctx)
+        }else if ( obj instanceof Sprite) {
+            obj.updateFrame()
+            var rect = obj.rect;
+            this.ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         }
         this.ctx.restore()
     }

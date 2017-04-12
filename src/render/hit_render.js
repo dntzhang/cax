@@ -4,6 +4,7 @@ import Render from './render.js'
 import Event from '../base/event.js'
 import Path from '../display/path.js'
 import Circle from '../display/circle.js'
+import Sprite from '../display/sprite.js'
 
 class HitRender extends  Render {
     constructor(canvas) {
@@ -75,6 +76,12 @@ class HitRender extends  Render {
                 if (target) return target;
                 ctx.restore();
             }
+        }else if ( o instanceof Sprite) {
+            ctx.globalAlpha = o.complexAlpha;
+            ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+            o.updateFrame()
+            var rect = o.rect;
+            ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         }
 
         if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
