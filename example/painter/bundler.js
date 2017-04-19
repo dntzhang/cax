@@ -48,7 +48,7 @@
 
 	var _index = __webpack_require__(1);
 
-	var _bezierCurveShape = __webpack_require__(17);
+	var _bezierCurveShape = __webpack_require__(19);
 
 	var _bezierCurveShape2 = _interopRequireDefault(_bezierCurveShape);
 
@@ -141,20 +141,19 @@
 
 	var _circle2 = _interopRequireDefault(_circle);
 
+	var _sprite = __webpack_require__(15);
+
+	var _sprite2 = _interopRequireDefault(_sprite);
+
+	var _bitmap = __webpack_require__(16);
+
+	var _bitmap2 = _interopRequireDefault(_bitmap);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var AlloyRender = {};
-
-	AlloyRender.Matrix2D = _matrix2d2.default;
-	AlloyRender.Stage = _stage2.default;
-	AlloyRender.DisplayObject = _display_object2.default;
-	AlloyRender.Group = _group2.default;
-	AlloyRender.Graphics = _graphics2.default;
-	AlloyRender.Path = _path2.default;
-	AlloyRender.Circle = _circle2.default;
-
-	window.AlloyRender = AlloyRender;
-	module.exports = AlloyRender;
+	module.exports = {
+	    Matrix2D: _matrix2d2.default, Stage: _stage2.default, DisplayObject: _display_object2.default, Group: _group2.default, Graphics: _graphics2.default, Path: _path2.default, Circle: _circle2.default, Sprite: _sprite2.default, Bitmap: _bitmap2.default
+	};
 
 /***/ },
 /* 2 */
@@ -559,11 +558,11 @@
 
 	var _renderer2 = _interopRequireDefault(_renderer);
 
-	var _hit_render = __webpack_require__(15);
+	var _hit_render = __webpack_require__(17);
 
 	var _hit_render2 = _interopRequireDefault(_hit_render);
 
-	var _event = __webpack_require__(16);
+	var _event = __webpack_require__(18);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -922,6 +921,14 @@
 
 	var _circle2 = _interopRequireDefault(_circle);
 
+	var _sprite = __webpack_require__(15);
+
+	var _sprite2 = _interopRequireDefault(_sprite);
+
+	var _bitmap = __webpack_require__(16);
+
+	var _bitmap2 = _interopRequireDefault(_bitmap);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -950,11 +957,18 @@
 	        value: function render(obj) {
 	            this.ctx.save();
 	            this.ctx.globalAlpha = obj.complexAlpha;
-	            this.ctx.transform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
+	            this.ctx.setTransform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
 	            if (obj instanceof _graphics2.default) {
 	                this.renderGraphics(obj);
 	            } else if (obj instanceof _path2.default || obj instanceof _circle2.default) {
 	                obj.draw(this.ctx);
+	            } else if (obj instanceof _sprite2.default) {
+	                obj.updateFrame();
+	                var rect = obj.rect;
+	                this.ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+	            } else if (obj instanceof _bitmap2.default) {
+	                var rect = obj.rect;
+	                this.ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
 	            }
 	            this.ctx.restore();
 	        }
@@ -1510,6 +1524,210 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _display_object = __webpack_require__(3);
+
+	var _display_object2 = _interopRequireDefault(_display_object);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Sprite = function (_DisplayObject) {
+	    _inherits(Sprite, _DisplayObject);
+
+	    function Sprite(option) {
+	        _classCallCheck(this, Sprite);
+
+	        var _this = _possibleConstructorReturn(this, (Sprite.__proto__ || Object.getPrototypeOf(Sprite)).call(this));
+
+	        _this.option = option;
+	        _this.x = option.x || 0;
+	        _this.y = option.y || 0;
+	        _this.currentFrameIndex = 0;
+	        _this.animationFrameIndex = 0;
+	        _this.currentAnimation = option.currentAnimation || null;
+	        _this.rect = [0, 0, 10, 10];
+
+	        _this.img = _this.option.imgs[0];
+	        _this.interval = 1e3 / option.framerate;
+	        _this.loop = null;
+	        _this.paused = false;
+	        _this.animationEnd = option.animationEnd || null;
+	        if (_this.currentAnimation) {
+	            _this.gotoAndPlay(_this.currentAnimation);
+	        }
+	        _this.tickAnimationEnd = option.tickAnimationEnd || null;
+	        return _this;
+	    }
+
+	    _createClass(Sprite, [{
+	        key: 'play',
+	        value: function play() {
+	            this.paused = false;
+	        }
+	    }, {
+	        key: 'pause',
+	        value: function pause() {
+	            this.paused = true;
+	        }
+	    }, {
+	        key: 'reset',
+	        value: function reset() {
+	            this.currentFrameIndex = 0;
+	            this.animationFrameIndex = 0;
+	        }
+	    }, {
+	        key: 'updateFrame',
+	        value: function updateFrame() {
+	            var opt = this.option;
+	            this.dt = new Date() - this.startTime;
+	            var frames = opt.animations[this.currentAnimation].frames;
+	            var len = frames.length;
+	            this.rect = opt.frames[frames[Math.floor(this.dt / this.interval % len)]];
+	            var rectLen = this.rect.length;
+
+	            rectLen > 4 && (this.originX = this.rect[2] * this.rect[4]);
+	            rectLen > 5 && (this.originY = this.rect[3] * this.rect[5]);
+	            rectLen > 6 && (this.img = this.bitmaps[this.rect[6]].img);
+	        }
+	    }, {
+	        key: 'gotoAndPlay',
+	        value: function gotoAndPlay(animation) {
+	            this.paused = false;
+	            this.reset();
+	            clearInterval(this.loop);
+	            this.currentAnimation = animation;
+	            this.startTime = new Date();
+	        }
+	    }, {
+	        key: 'gotoAndStop',
+	        value: function gotoAndStop(animation) {
+	            this.reset();
+	            clearInterval(this.loop);
+	            var self = this;
+	            self.currentAnimation = animation;
+	            var opt = self.option;
+	            var frames = opt.animations[self.currentAnimation].frames;
+	            self.rect = opt.frames[frames[self.animationFrameIndex]];
+	            self.width = self.rect[2];
+	            self.height = self.rect[3];
+	            var rect = self.rect,
+	                rectLen = rect.length;
+	            rectLen > 4 && (self.originX = rect[2] * rect[4]);
+	            rectLen > 5 && (self.originY = rect[3] * rect[5]);
+	            rectLen > 6 && (self.img = self.bitmaps[rect[6]].img);
+	        }
+	    }]);
+
+	    return Sprite;
+	}(_display_object2.default);
+
+	exports.default = Sprite;
+
+	//var sprite = new Sprite({
+	//    x: 200,
+	//    y: 200,
+	//    framerate: 5,
+	//    imgs: [ld.get("hero"), ld.get("pig")],
+	//    frames: [
+	//        // x, y, width, height, originX, originY ,imageIndex
+	//        [64, 64, 64, 64],
+	//        [128, 64, 64, 64],
+	//        [192, 64, 64, 64],
+	//        [256, 64, 64, 64],
+	//        [320, 64, 64, 64],
+	//        [384, 64, 64, 64],
+	//        [448, 64, 64, 64],
+	//
+	//        [0, 192, 64, 64],
+	//        [64, 192, 64, 64],
+	//        [128, 192, 64, 64],
+	//        [192, 192, 64, 64],
+	//        [256, 192, 64, 64],
+	//        [320, 192, 64, 64],
+	//        [384, 192, 64, 64],
+	//        [448, 192, 64, 64],
+	//        [448, 192, 64, 64]
+	//    ],
+	//    animations: {
+	//        walk: {
+	//            frames: [0, 1, 2, 3, 4, 5, 6],
+	//            next: "run",
+	//            speed: 2,
+	//            loop: false
+	//        },
+	//        happy: {
+	//            frames: [11, 12, 13, 14]
+	//        },
+	//        win: {
+	//            frames: [7, 8, 9, 10]
+	//        }
+	//    },
+	//    currentAnimation: "walk",
+	//    tickAnimationEnd: function () {
+	//        //alert("����һ��");
+	//    },
+	//    animationEnd: function () {
+	//        //alert("��������")
+	//    }
+	//});
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _display_object = __webpack_require__(3);
+
+	var _display_object2 = _interopRequireDefault(_display_object);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Bitmap = function (_DisplayObject) {
+	    _inherits(Bitmap, _DisplayObject);
+
+	    function Bitmap(img) {
+	        _classCallCheck(this, Bitmap);
+
+	        var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
+
+	        _this.img = img;
+	        _this.rect = [0, 0, img.width, img.height];
+	        return _this;
+	    }
+
+	    return Bitmap;
+	}(_display_object2.default);
+
+	exports.default = Bitmap;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _group = __webpack_require__(6);
 
 	var _group2 = _interopRequireDefault(_group);
@@ -1522,7 +1740,7 @@
 
 	var _render2 = _interopRequireDefault(_render);
 
-	var _event = __webpack_require__(16);
+	var _event = __webpack_require__(18);
 
 	var _event2 = _interopRequireDefault(_event);
 
@@ -1533,6 +1751,14 @@
 	var _circle = __webpack_require__(14);
 
 	var _circle2 = _interopRequireDefault(_circle);
+
+	var _sprite = __webpack_require__(15);
+
+	var _sprite2 = _interopRequireDefault(_sprite);
+
+	var _bitmap = __webpack_require__(16);
+
+	var _bitmap2 = _interopRequireDefault(_bitmap);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1622,6 +1848,17 @@
 	                    if (target) return target;
 	                    ctx.restore();
 	                }
+	            } else if (o instanceof _sprite2.default) {
+	                ctx.globalAlpha = o.complexAlpha;
+	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+	                o.updateFrame();
+	                var rect = o.rect;
+	                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+	            } else if (o instanceof _bitmap2.default) {
+	                ctx.globalAlpha = o.complexAlpha;
+	                ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+	                var rect = o.rect;
+	                ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
 	            }
 
 	            if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
@@ -1668,7 +1905,7 @@
 	exports.default = HitRender;
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1704,7 +1941,7 @@
 	exports.default = Event;
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1717,7 +1954,7 @@
 
 	var _index = __webpack_require__(1);
 
-	var _arDrag = __webpack_require__(18);
+	var _arDrag = __webpack_require__(20);
 
 	var _arDrag2 = _interopRequireDefault(_arDrag);
 
@@ -1867,10 +2104,10 @@
 
 	                    var index = _this3.circleGroup.children.indexOf(c);
 
-	                    _this3.ctrlCircleGroup.children[index * 2].x += evt.dx;
-	                    _this3.ctrlCircleGroup.children[index * 2].y += evt.dy;
-	                    _this3.ctrlCircleGroup.children[index * 2 + 1].x += evt.dx;
-	                    _this3.ctrlCircleGroup.children[index * 2 + 1].y += evt.dy;
+	                    //this.ctrlCircleGroup.children[index * 2].x += evt.dx
+	                    //this.ctrlCircleGroup.children[index * 2].y += evt.dy
+	                    //this.ctrlCircleGroup.children[index * 2 + 1].x += evt.dx
+	                    //this.ctrlCircleGroup.children[index * 2 + 1].y += evt.dy
 	                    _this3.points[index * 2] += evt.dx;
 	                    _this3.points[index * 2 + 1] += evt.dy;
 
@@ -1907,10 +2144,10 @@
 	                        _this3.controlPoints[index * 2 + 2] -= evt.dx;
 	                        _this3.controlPoints[index * 2 + 3] -= evt.dy;
 
-	                        _this3.ctrlCircleGroup.children[index].x += evt.dx;
-	                        _this3.ctrlCircleGroup.children[index].y += evt.dy;
-	                        _this3.ctrlCircleGroup.children[index + 1].x -= evt.dx;
-	                        _this3.ctrlCircleGroup.children[index + 1].y -= evt.dy;
+	                        //this.ctrlCircleGroup.children[index].x += evt.dx
+	                        //this.ctrlCircleGroup.children[index].y += evt.dy
+	                        //this.ctrlCircleGroup.children[index + 1].x -= evt.dx
+	                        //this.ctrlCircleGroup.children[index + 1].y -= evt.dy
 	                    } else {
 	                        index--;
 	                        _this3.controlPoints[index * 2] -= evt.dx;
@@ -1918,10 +2155,10 @@
 	                        _this3.controlPoints[index * 2 + 2] += evt.dx;
 	                        _this3.controlPoints[index * 2 + 3] += evt.dy;
 
-	                        _this3.ctrlCircleGroup.children[index].x -= evt.dx;
-	                        _this3.ctrlCircleGroup.children[index].y -= evt.dy;
-	                        _this3.ctrlCircleGroup.children[index + 1].x += evt.dx;
-	                        _this3.ctrlCircleGroup.children[index + 1].y += evt.dy;
+	                        //this.ctrlCircleGroup.children[index].x -= evt.dx
+	                        //this.ctrlCircleGroup.children[index].y -= evt.dy
+	                        //this.ctrlCircleGroup.children[index + 1].x += evt.dx
+	                        //this.ctrlCircleGroup.children[index + 1].y += evt.dy
 	                    }
 
 	                    _this3.draw();
@@ -1942,9 +2179,6 @@
 	            this.ctrlCircleGroup.visible = false;
 	            this.points.push(this.points[0], this.points[1]);
 	            this.controlLines.visible = false;
-	            var index = this.controlPoints.length;
-	            this.controlPoints[index] = this.controlPoints[0];
-	            this.controlPoints[index + 1] = this.controlPoints[1];
 	            this.closed = true;
 
 	            this.virtualCurve.visible = false;
@@ -1993,9 +2227,13 @@
 	                controlPoints = this.controlPoints;
 	            curve.clear();
 	            curve.moveTo(points[0], points[1]);
-	            for (var i = 0, len = points.length; i < len; i += 2) {
+	            for (var i = 0, len = points.length - 2; i < len; i += 2) {
 	                var index = i * 2;
-	                curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[index + 4], controlPoints[index + 5], points[i + 2], points[i + 3]);
+	                if (this.closed && i + 2 === points.length - 2) {
+	                    curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[0], controlPoints[1], points[i + 2], points[i + 3]);
+	                } else {
+	                    curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[index + 4], controlPoints[index + 5], points[i + 2], points[i + 3]);
+	                }
 	            }
 	            curve.stroke();
 	            // curve.closePath()
@@ -2023,7 +2261,7 @@
 	exports.default = BezierCurveShape;
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports) {
 
 	'use strict';

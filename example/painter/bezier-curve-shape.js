@@ -129,10 +129,10 @@ class BezierCurveShape extends Group {
 
                 const index = this.circleGroup.children.indexOf(c)
 
-                this.ctrlCircleGroup.children[index * 2].x += evt.dx
-                this.ctrlCircleGroup.children[index * 2].y += evt.dy
-                this.ctrlCircleGroup.children[index * 2 + 1].x += evt.dx
-                this.ctrlCircleGroup.children[index * 2 + 1].y += evt.dy
+                //this.ctrlCircleGroup.children[index * 2].x += evt.dx
+                //this.ctrlCircleGroup.children[index * 2].y += evt.dy
+                //this.ctrlCircleGroup.children[index * 2 + 1].x += evt.dx
+                //this.ctrlCircleGroup.children[index * 2 + 1].y += evt.dy
                 this.points[index * 2] += evt.dx
                 this.points[index * 2 + 1] += evt.dy
 
@@ -170,10 +170,12 @@ class BezierCurveShape extends Group {
                     this.controlPoints[index * 2 + 2] -= evt.dx
                     this.controlPoints[index * 2 + 3] -= evt.dy
 
-                    this.ctrlCircleGroup.children[index].x += evt.dx
-                    this.ctrlCircleGroup.children[index].y += evt.dy
-                    this.ctrlCircleGroup.children[index + 1].x -= evt.dx
-                    this.ctrlCircleGroup.children[index + 1].y -= evt.dy
+
+
+                    //this.ctrlCircleGroup.children[index].x += evt.dx
+                    //this.ctrlCircleGroup.children[index].y += evt.dy
+                    //this.ctrlCircleGroup.children[index + 1].x -= evt.dx
+                    //this.ctrlCircleGroup.children[index + 1].y -= evt.dy
                 } else {
                     index--
                     this.controlPoints[index * 2] -= evt.dx
@@ -181,10 +183,11 @@ class BezierCurveShape extends Group {
                     this.controlPoints[index * 2 + 2] += evt.dx
                     this.controlPoints[index * 2 + 3] += evt.dy
 
-                    this.ctrlCircleGroup.children[index].x -= evt.dx
-                    this.ctrlCircleGroup.children[index].y -= evt.dy
-                    this.ctrlCircleGroup.children[index + 1].x += evt.dx
-                    this.ctrlCircleGroup.children[index + 1].y += evt.dy
+
+                    //this.ctrlCircleGroup.children[index].x -= evt.dx
+                    //this.ctrlCircleGroup.children[index].y -= evt.dy
+                    //this.ctrlCircleGroup.children[index + 1].x += evt.dx
+                    //this.ctrlCircleGroup.children[index + 1].y += evt.dy
                 }
 
 
@@ -206,9 +209,6 @@ class BezierCurveShape extends Group {
         this.ctrlCircleGroup.visible = false
         this.points.push(this.points[0], this.points[1])
         this.controlLines.visible = false
-        const index = this.controlPoints.length
-        this.controlPoints[index] = this.controlPoints[0]
-        this.controlPoints[index + 1] = this.controlPoints[1]
         this.closed = true
 
         this.virtualCurve.visible = false
@@ -254,9 +254,13 @@ class BezierCurveShape extends Group {
             controlPoints = this.controlPoints
         curve.clear()
         curve.moveTo(points[0], points[1])
-        for (let i = 0, len = points.length; i < len; i += 2) {
+        for (let i = 0, len = points.length-2; i < len; i += 2) {
             let index = i * 2
-            curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[index + 4], controlPoints[index + 5], points[i + 2], points[i + 3])
+            if(this.closed&&i+2 === points.length-2){
+                curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[0], controlPoints[1],  points[i + 2], points[i + 3])
+            }else {
+                curve.bezierCurveTo(controlPoints[index + 2], controlPoints[index + 3], controlPoints[index + 4], controlPoints[index + 5], points[i + 2], points[i + 3])
+            }
 
         }
         curve.stroke()
