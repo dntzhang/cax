@@ -42,6 +42,9 @@ class Stage extends Group  {
         this._boundingClientRect = this.canvas.getBoundingClientRect()
         this._overObject = null
 
+
+        this._scaleX = 1
+        this._scaleY = 1
     }
 
     _handlDblClick(evt){
@@ -56,6 +59,11 @@ class Stage extends Group  {
 
     _handleMouseDown(evt){
         let obj = this._getObjectUnderPoint(evt)
+    }
+
+    scaleStage(x,y){
+        this._scaleX = x
+        this._scaleY = y
     }
 
     _handleMouseUp(evt){
@@ -138,8 +146,8 @@ class Stage extends Group  {
 
     _computeStageXY(evt){
         this._boundingClientRect = this.canvas.getBoundingClientRect()
-        evt.stageX  = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth
-        evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth
+        evt.stageX  = (evt.clientX - this._boundingClientRect.left - this.borderLeftWidth)/this._scaleX
+        evt.stageY = (evt.clientY - this._boundingClientRect.top - this.borderTopWidth)/this._scaleY
     }
 
     update(){

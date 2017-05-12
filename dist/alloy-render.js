@@ -579,6 +579,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _this._boundingClientRect = _this.canvas.getBoundingClientRect();
 	        _this._overObject = null;
 
+	        _this._scaleX = 1;
+	        _this._scaleY = 1;
 	        return _this;
 	    }
 
@@ -597,6 +599,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: '_handleMouseDown',
 	        value: function _handleMouseDown(evt) {
 	            var obj = this._getObjectUnderPoint(evt);
+	        }
+	    }, {
+	        key: 'scaleStage',
+	        value: function scaleStage(x, y) {
+	            this._scaleX = x;
+	            this._scaleY = y;
 	        }
 	    }, {
 	        key: '_handleMouseUp',
@@ -682,8 +690,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: '_computeStageXY',
 	        value: function _computeStageXY(evt) {
 	            this._boundingClientRect = this.canvas.getBoundingClientRect();
-	            evt.stageX = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth;
-	            evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth;
+	            evt.stageX = (evt.clientX - this._boundingClientRect.left - this.borderLeftWidth) / this._scaleX;
+	            evt.stageY = (evt.clientY - this._boundingClientRect.top - this.borderTopWidth) / this._scaleY;
 	        }
 	    }, {
 	        key: 'update',
