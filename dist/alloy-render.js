@@ -581,6 +581,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        _this._scaleX = 1;
 	        _this._scaleY = 1;
+
+	        _this._mouseDownX = 0;
+	        _this._mouseDownY = 0;
+
+	        _this._mouseUpX = 0;
+	        _this._mouseUpY = 0;
+
 	        return _this;
 	    }
 
@@ -593,12 +600,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: '_handleClick',
 	        value: function _handleClick(evt) {
 	            //this._computeStageXY(evt)
-	            var obj = this._getObjectUnderPoint(evt);
+	            if (Math.abs(this._mouseDownX - this._mouseUpX) < 20 && Math.abs(this._mouseDownY - this._mouseUpY) < 20) {
+	                var obj = this._getObjectUnderPoint(evt);
+	            }
 	        }
 	    }, {
 	        key: '_handleMouseDown',
 	        value: function _handleMouseDown(evt) {
 	            var obj = this._getObjectUnderPoint(evt);
+	            this._mouseDownX = evt.stageX;
+	            this._mouseDownY = evt.stageY;
 	        }
 	    }, {
 	        key: 'scaleStage',
@@ -610,6 +621,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        key: '_handleMouseUp',
 	        value: function _handleMouseUp(evt) {
 	            var obj = this._getObjectUnderPoint(evt);
+
+	            this._mouseUpX = evt.stageX;
+	            this._mouseUpY = evt.stageY;
 	        }
 	    }, {
 	        key: '_handleMouseOut',

@@ -45,6 +45,13 @@ class Stage extends Group  {
 
         this._scaleX = 1
         this._scaleY = 1
+
+        this._mouseDownX = 0
+        this._mouseDownY = 0
+
+        this._mouseUpX = 0
+        this._mouseUpY = 0
+
     }
 
     _handlDblClick(evt){
@@ -53,12 +60,15 @@ class Stage extends Group  {
 
     _handleClick(evt){
         //this._computeStageXY(evt)
-        let obj = this._getObjectUnderPoint(evt)
-
+        if(Math.abs(this._mouseDownX- this._mouseUpX)<20&&Math.abs(this._mouseDownY- this._mouseUpY)<20) {
+            let obj = this._getObjectUnderPoint(evt)
+        }
     }
 
     _handleMouseDown(evt){
         let obj = this._getObjectUnderPoint(evt)
+        this._mouseDownX = evt.stageX
+        this._mouseDownY = evt.stageY
     }
 
     scaleStage(x,y){
@@ -68,6 +78,9 @@ class Stage extends Group  {
 
     _handleMouseUp(evt){
         let obj = this._getObjectUnderPoint(evt)
+
+        this._mouseUpX = evt.stageX
+        this._mouseUpY = evt.stageY
     }
 
     _handleMouseOut(evt) {
