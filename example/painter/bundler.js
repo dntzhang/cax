@@ -60,21 +60,53 @@
 	    startY = void 0,
 	    isMouseDown = false,
 	    posDiv = document.getElementById('pos'),
-	    shape = new _bezierCurveShape2.default();
+	    shape = null;
 
-	stage.add(shape);
+	//
+	var BZDRAWING = 'bz-drawing';
+	var BZCLOSED = 'bz-closed';
+	var BZSTART = 'bz-start';
+	var DRAG = 'drag';
+
+	stage.currentAction = BZDRAWING;
+
+	window.stage = stage;
+
+	stage.beginDrag = function () {
+
+	    stage.currentAction = DRAG;
+
+	    stage.children.forEach(function (child) {
+	        child.dragDisabled = false;
+	    });
+	};
+
+	stage.beginDraw = function () {
+
+	    stage.currentAction = BZDRAWING;
+
+	    stage.children.forEach(function (child) {
+	        child.dragDisabled = true;
+	    });
+	};
 
 	//������stage.addEventListener,��Ϊstage.addEventListener��Ҫ��̨�ж������ܴ���ð�ݻ��߲���
 
 	stage.canvas.addEventListener('mousedown', function (evt) {
+	    if (stage.currentAction === DRAG) return;
 	    _boundingClientRect = stage.canvas.getBoundingClientRect();
 	    startX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	    startY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
 
-	    if (shape.points.length > 2 && (startX - shape.points[0]) * (startX - shape.points[0]) + (startY - shape.points[1]) * (startY - shape.points[1]) < 100) {
+	    if (shape && shape.points.length > 2 && (startX - shape.points[0]) * (startX - shape.points[0]) + (startY - shape.points[1]) * (startY - shape.points[1]) < 100) {
 	        shape.closePath();
 	    } else {
+	        if (shape === null) {
+	            shape = new _bezierCurveShape2.default();
+	            stage.add(shape);
+	        }
 	        shape.addCircle(startX, startY);
+	        shape.updateControlPoints(startX, startY, startX, startY);
 	        isMouseDown = true;
 	    }
 
@@ -82,16 +114,19 @@
 	});
 
 	stage.canvas.addEventListener('mousemove', function (evt) {
+	    if (stage.currentAction === DRAG) return;
 	    var currentX = evt.clientX - _boundingClientRect.left - stage.borderLeftWidth;
 	    var currentY = evt.clientY - _boundingClientRect.top - stage.borderTopWidth;
-	    if (isMouseDown) {
-	        if (!shape.willAdjust) {
-	            shape.virtualCurve.visible = false;
-	            shape.updateControlPoints(startX, startY, currentX, currentY);
+	    if (shape) {
+	        if (isMouseDown) {
+	            if (!shape.willAdjust) {
+	                shape.virtualCurve.visible = false;
+	                shape.updateControlPoints(startX, startY, currentX, currentY);
+	            }
+	        } else if (!shape.closed) {
+	            shape.virtualCurve.visible = true;
+	            shape.renderVirtualCurve(currentX, currentY);
 	        }
-	    } else if (!shape.closed) {
-	        shape.virtualCurve.visible = true;
-	        shape.renderVirtualCurve(currentX, currentY);
 	    }
 	    stage.update();
 	    evt.preventDefault();
@@ -99,8 +134,12 @@
 	});
 
 	document.addEventListener('mouseup', function (evt) {
+	    if (stage.currentAction === DRAG) return;
 	    isMouseDown = false;
 	    shape.bindCircleEvent();
+	    if (shape.closed) {
+	        shape = null;
+	    }
 	});
 
 	setInterval(function () {
@@ -631,6 +670,15 @@
 	        _this._boundingClientRect = _this.canvas.getBoundingClientRect();
 	        _this._overObject = null;
 
+	        _this._scaleX = 1;
+	        _this._scaleY = 1;
+
+	        _this._mouseDownX = 0;
+	        _this._mouseDownY = 0;
+
+	        _this._mouseUpX = 0;
+	        _this._mouseUpY = 0;
+
 	        return _this;
 	    }
 
@@ -643,17 +691,30 @@
 	        key: '_handleClick',
 	        value: function _handleClick(evt) {
 	            //this._computeStageXY(evt)
-	            var obj = this._getObjectUnderPoint(evt);
+	            if (Math.abs(this._mouseDownX - this._mouseUpX) < 20 && Math.abs(this._mouseDownY - this._mouseUpY) < 20) {
+	                var obj = this._getObjectUnderPoint(evt);
+	            }
 	        }
 	    }, {
 	        key: '_handleMouseDown',
 	        value: function _handleMouseDown(evt) {
 	            var obj = this._getObjectUnderPoint(evt);
+	            this._mouseDownX = evt.stageX;
+	            this._mouseDownY = evt.stageY;
+	        }
+	    }, {
+	        key: 'scaleStage',
+	        value: function scaleStage(x, y) {
+	            this._scaleX = x;
+	            this._scaleY = y;
 	        }
 	    }, {
 	        key: '_handleMouseUp',
 	        value: function _handleMouseUp(evt) {
 	            var obj = this._getObjectUnderPoint(evt);
+
+	            this._mouseUpX = evt.stageX;
+	            this._mouseUpY = evt.stageY;
 	        }
 	    }, {
 	        key: '_handleMouseOut',
@@ -734,8 +795,8 @@
 	        key: '_computeStageXY',
 	        value: function _computeStageXY(evt) {
 	            this._boundingClientRect = this.canvas.getBoundingClientRect();
-	            evt.stageX = evt.clientX - this._boundingClientRect.left - this.borderLeftWidth;
-	            evt.stageY = evt.clientY - this._boundingClientRect.top - this.borderTopWidth;
+	            evt.stageX = (evt.clientX - this._boundingClientRect.left - this.borderLeftWidth) / this._scaleX;
+	            evt.stageY = (evt.clientY - this._boundingClientRect.top - this.borderTopWidth) / this._scaleY;
 	        }
 	    }, {
 	        key: 'update',
@@ -1994,13 +2055,16 @@
 	            _this.toggle();
 	        });
 
+	        _this.dragDisabled = true;
+
 	        (0, _arDrag2.default)(_this.curve, {
 	            move: function move(evt) {
 	                //this.curve.x += evt.dx
 	                //this.curve.y += evt.dy
-
-	                _this.updatePoints(evt.dx, evt.dy);
-	                _this.draw();
+	                if (!_this.dragDisabled) {
+	                    _this.updatePoints(evt.dx, evt.dy);
+	                    _this.draw();
+	                }
 	            },
 	            down: function down() {
 	                _this.willAdjust = true;

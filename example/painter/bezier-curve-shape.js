@@ -27,14 +27,16 @@ class BezierCurveShape extends Group {
             this.toggle()
         })
 
+        this.dragDisabled = true
 
         drag(this.curve, {
             move: (evt)=> {
                 //this.curve.x += evt.dx
                 //this.curve.y += evt.dy
-
-                this.updatePoints(evt.dx,evt.dy)
-                this.draw()
+                if(!this.dragDisabled) {
+                    this.updatePoints(evt.dx, evt.dy)
+                    this.draw()
+                }
             },
             down: ()=> {
                 this.willAdjust = true
