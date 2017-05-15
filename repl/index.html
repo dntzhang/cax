@@ -153,7 +153,7 @@ stage.addEventListener('mouseout',evt =>{
 
     editor.on("changes",function(a){
         var b=a.getValue();compile(b),localStorage.setItem(storageKey,b);
-        window.history.pushState({a:1}, "My Profile",window.location.protocol + "//alloyteam.github.io/alloyrender/repl/index.html?code="+encodeURIComponent(b));}
+        window.history.pushState({a:1}, "My Profile",window.location.protocol + "//alloyteam.github.io/AlloyRender/repl/index.html?code="+encodeURIComponent(b));}
     );
 </script>
 </body>
