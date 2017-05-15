@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../dist/alloy-render.js"></script>
+</head>
+<body style="background-color: #ccc;">
+    <canvas width="500" height="300" id="myCanvas"></canvas>
+
+    <script>
+        parent.postMessage(JSON.stringify({
+            type: 'ready',
+        }), '*');
+
+
+        function tick(){
+            if(window.stage) {
+                window.stage.update()
+            }
+            requestAnimationFrame(tick)
+        }
+
+        tick()
+    </script>
+</body>
+</html>

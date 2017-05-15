@@ -6,15 +6,16 @@ import Event from '../base/event.js'
 class Stage extends Group  {
     constructor(width,height,renderTo) {
         super()
-        this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo
-
-
-        this.canvas = document.createElement('canvas')
-        this.canvas.width = width
-        this.canvas.height = height
-        this.renderTo.appendChild(this.canvas)
+        if(arguments.length === 1){
+            this.canvas = typeof width === 'string'?document.querySelector(width):width
+        }else {
+            this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo
+            this.canvas = document.createElement('canvas')
+            this.canvas.width = width
+            this.canvas.height = height
+            this.renderTo.appendChild(this.canvas)
+        }
         this.renderer = new Renderer(this.canvas)
-
         this.canvas.addEventListener('click', evt => this._handleClick(evt))
 
         this.canvas.addEventListener("mousemove", evt => this._handleMouseMove(evt))

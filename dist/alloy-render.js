@@ -532,14 +532,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var _this = _possibleConstructorReturn(this, (Stage.__proto__ || Object.getPrototypeOf(Stage)).call(this));
 
-	        _this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo;
-
-	        _this.canvas = document.createElement('canvas');
-	        _this.canvas.width = width;
-	        _this.canvas.height = height;
-	        _this.renderTo.appendChild(_this.canvas);
+	        if (arguments.length === 1) {
+	            _this.canvas = typeof width === 'string' ? document.querySelector(width) : width;
+	        } else {
+	            _this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo;
+	            _this.canvas = document.createElement('canvas');
+	            _this.canvas.width = width;
+	            _this.canvas.height = height;
+	            _this.renderTo.appendChild(_this.canvas);
+	        }
 	        _this.renderer = new _renderer2['default'](_this.canvas);
-
 	        _this.canvas.addEventListener('click', function (evt) {
 	            return _this._handleClick(evt);
 	        });
