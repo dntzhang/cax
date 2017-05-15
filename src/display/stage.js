@@ -53,6 +53,9 @@ class Stage extends Group  {
         this._mouseUpX = 0
         this._mouseUpY = 0
 
+        this.willDragObject = null
+        this.preStageX = null
+        this.preStageY = null
     }
 
     _handlDblClick(evt){
@@ -68,8 +71,11 @@ class Stage extends Group  {
 
     _handleMouseDown(evt){
         let obj = this._getObjectUnderPoint(evt)
+        this.willDragObject = obj
         this._mouseDownX = evt.stageX
         this._mouseDownY = evt.stageY
+        this.preStageX = evt.stageX
+        this.preStageY = evt.stageY
     }
 
     scaleStage(x,y){
@@ -82,6 +88,10 @@ class Stage extends Group  {
 
         this._mouseUpX = evt.stageX
         this._mouseUpY = evt.stageY
+
+        this.willDragObject = null
+        this.preStageX = null
+        this.preStageY = null
     }
 
     _handleMouseOut(evt) {
@@ -111,6 +121,15 @@ class Stage extends Group  {
         mockEvt.stageX = evt.stageX
         mockEvt.stageY = evt.stageY
         mockEvt.pureEvent = evt
+
+        if(this.willDragObject){
+            mockEvt.type = 'drag'
+            mockEvt.dx =  mockEvt.stageX - this.preStageX
+            mockEvt.dy =  mockEvt.stageY - this.preStageY
+            this.preStageX = mockEvt.stageX
+            this.preStageY = mockEvt.stageY
+            this.willDragObject.dispatchEvent(mockEvt)
+        }
 
         if (obj) {
             if (this._overObject === null) {
