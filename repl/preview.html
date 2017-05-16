@@ -9,19 +9,12 @@
     <canvas width="500" height="300" id="myCanvas"></canvas>
 
     <script>
-        parent.postMessage(JSON.stringify({
-            type: 'ready',
-        }), '*');
+
+        var script = document.createElement("script");
+        script.innerHTML =  parent._sourceCode;
+        document.body.appendChild(script)
 
 
-        function tick(){
-            if(window.stage) {
-                window.stage.update()
-            }
-            requestAnimationFrame(tick)
-        }
-
-        tick()
     </script>
 </body>
 </html>
