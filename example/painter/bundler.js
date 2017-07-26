@@ -623,14 +623,16 @@
 
 	        var _this = _possibleConstructorReturn(this, (Stage.__proto__ || Object.getPrototypeOf(Stage)).call(this));
 
-	        _this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo;
-
-	        _this.canvas = document.createElement('canvas');
-	        _this.canvas.width = width;
-	        _this.canvas.height = height;
-	        _this.renderTo.appendChild(_this.canvas);
+	        if (arguments.length === 1) {
+	            _this.canvas = typeof width === 'string' ? document.querySelector(width) : width;
+	        } else {
+	            _this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo;
+	            _this.canvas = document.createElement('canvas');
+	            _this.canvas.width = width;
+	            _this.canvas.height = height;
+	            _this.renderTo.appendChild(_this.canvas);
+	        }
 	        _this.renderer = new _renderer2.default(_this.canvas);
-
 	        _this.canvas.addEventListener('click', function (evt) {
 	            return _this._handleClick(evt);
 	        });
@@ -679,6 +681,9 @@
 	        _this._mouseUpX = 0;
 	        _this._mouseUpY = 0;
 
+	        _this.willDragObject = null;
+	        _this.preStageX = null;
+	        _this.preStageY = null;
 	        return _this;
 	    }
 
@@ -699,8 +704,11 @@
 	        key: '_handleMouseDown',
 	        value: function _handleMouseDown(evt) {
 	            var obj = this._getObjectUnderPoint(evt);
+	            this.willDragObject = obj;
 	            this._mouseDownX = evt.stageX;
 	            this._mouseDownY = evt.stageY;
+	            this.preStageX = evt.stageX;
+	            this.preStageY = evt.stageY;
 	        }
 	    }, {
 	        key: 'scaleStage',
@@ -715,6 +723,10 @@
 
 	            this._mouseUpX = evt.stageX;
 	            this._mouseUpY = evt.stageY;
+
+	            this.willDragObject = null;
+	            this.preStageX = null;
+	            this.preStageY = null;
 	        }
 	    }, {
 	        key: '_handleMouseOut',
@@ -744,6 +756,15 @@
 	            mockEvt.stageX = evt.stageX;
 	            mockEvt.stageY = evt.stageY;
 	            mockEvt.pureEvent = evt;
+
+	            if (this.willDragObject) {
+	                mockEvt.type = 'drag';
+	                mockEvt.dx = mockEvt.stageX - this.preStageX;
+	                mockEvt.dy = mockEvt.stageY - this.preStageY;
+	                this.preStageX = mockEvt.stageX;
+	                this.preStageY = mockEvt.stageY;
+	                this.willDragObject.dispatchEvent(mockEvt);
+	            }
 
 	            if (obj) {
 	                if (this._overObject === null) {
@@ -1733,7 +1754,7 @@
 	//        //alert("����һ��");
 	//    },
 	//    animationEnd: function () {
-	//        //alert("��������")
+	//        //alert("�������")
 	//    }
 	//});
 
