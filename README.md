@@ -12,7 +12,7 @@ AlloyRender
 
 # api document
 
-[api文档](./doc/doc.md)
+[api文档](https://github.com/AlloyTeam/AlloyRender/blob/master/docs/doc.md)
 
 # License
 This content is released under the [MIT](http://opensource.org/licenses/MIT) License.
