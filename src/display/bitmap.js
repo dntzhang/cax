@@ -13,8 +13,9 @@ class Bitmap extends DisplayObject {
 
             }else {
                 this.img = new Image()
-
+                this.visible = false
                 this.img.onload = ()=> {
+                    this.visible = true
                     this.rect = [0, 0, this.img.width, this.img.height]
                     onLoad && onLoad.call(this)
                     Bitmap.cache[img] = this.img

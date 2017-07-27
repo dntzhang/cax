@@ -1705,8 +1705,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                onLoad && onLoad.call(_this);
 	            } else {
 	                _this.img = new Image();
-
+	                _this.visible = false;
 	                _this.img.onload = function () {
+	                    _this.visible = true;
 	                    _this.rect = [0, 0, _this.img.width, _this.img.height];
 	                    onLoad && onLoad.call(_this);
 	                    Bitmap.cache[img] = _this.img;
