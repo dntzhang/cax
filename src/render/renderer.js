@@ -56,7 +56,7 @@ class Renderer {
                 this.renderList.push(o);
                 this.initComplex(o);
             } else {
-               // o.initAABB();
+                o.initAABB();
                 //if (this.isInStage(o)) {
                     this.renderList.push(o);
                     this.initComplex(o);

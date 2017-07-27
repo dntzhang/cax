@@ -25,7 +25,50 @@ class HitRender extends  Render {
         this.ctx.clearRect(0, 0, this.width, this.height)
     }
 
-    hitAABB(root, evt) {
+
+
+    hitAABB( o, evt) {
+        var list = o.children.slice(0),
+            l = list.length;
+        for (var i = l - 1; i >= 0; i--) {
+            var child = list[i];
+            //if (!this.isbindingEvent(child)) continue;
+            var target = this._hitAABB( child, evt);
+            if (target) return target;
+        }
+    }
+
+    _hitAABB( o, evt) {
+        if (!o.isVisible()) {
+            return;
+        }
+        if (o instanceof Group) {
+            var list = o.children.slice(0),
+                l = list.length;
+            for (var i = l - 1; i >= 0; i--) {
+                var child = list[i];
+                var target = this._hitAABB( child, evt);
+                if (target) return target;
+            }
+        } else {
+            if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
+                //this._bubbleEvent(o, type, evt);
+                this._dispatchEvent(o, evt)
+                return o;
+            }
+        }
+    }
+
+    checkPointInAABB(x, y, AABB) {
+        var minX = AABB[0];
+        if (x < minX) return false;
+        var minY = AABB[1];
+        if (y < minY) return false;
+        var maxX = minX + AABB[2];
+        if (x > maxX) return false;
+        var maxY = minY + AABB[3];
+        if (y > maxY) return false;
+        return true;
     }
 
     hitPixel( o, evt) {
