@@ -10,7 +10,9 @@ AlloyRender
   <a href="https://travis-ci.org/AlloyTeam/omi"><img src="https://travis-ci.org/AlloyTeam/omi.svg"></a>
 </p>
 
----
+# api document
+
+[api文档](./doc/doc.md)
 
 # License
 This content is released under the [MIT](http://opensource.org/licenses/MIT) License.
