@@ -28,8 +28,8 @@ class Matrix2D {
             sin = 0
         }
         if (skewX || skewY) {
-            skewX *= AlloyPaper.Matrix2D.DEG_TO_RAD
-            skewY *= AlloyPaper.Matrix2D.DEG_TO_RAD
+            skewX *= DEG_TO_RAD
+            skewY *= DEG_TO_RAD
             this.append(Math.cos(skewY), Math.sin(skewY), -Math.sin(skewX), Math.cos(skewX), x, y)
             this.append(cos * scaleX, sin * scaleX, -sin * scaleY, cos * scaleY, 0, 0)
         } else {
