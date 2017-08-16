@@ -76,6 +76,24 @@ class Matrix2D {
         return this
     }
 
+    invert() {
+		let a1 = this.a;
+		let b1 = this.b;
+		let c1 = this.c;
+		let d1 = this.d;
+		let tx1 = this.tx;
+		let n = a1*d1-b1*c1;
+
+		this.a = d1/n;
+		this.b = -b1/n;
+		this.c = -c1/n;
+		this.d = a1/n;
+		this.tx = (c1*this.ty-d1*tx1)/n;
+		this.ty = -(a1*this.ty-b1*tx1)/n;
+		return this;
+	};
+
+
     copy(matrix) {
         return this.setValues(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty)
     }
