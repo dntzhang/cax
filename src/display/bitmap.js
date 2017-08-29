@@ -35,6 +35,25 @@ class Bitmap extends DisplayObject {
             Bitmap.cache[img.src] = img
         }
     }
+
+
+    clone(){
+        let bitmap = new Bitmap(this.img)
+        bitmap.x = this.x
+        bitmap.y = this.y
+
+        bitmap.scaleX = this.scaleX
+        bitmap.scaleY = this.scaleY
+        bitmap.rotation = this.rotation
+        bitmap.skewX = this.skewX
+        bitmap.skewY = this.skewY
+        bitmap.originX = this.originX
+        bitmap.originY = this.originY
+        bitmap.width = this.width
+        bitmap.height = this.height
+
+        return bitmap
+    }
 }
 
 Bitmap.cache = {

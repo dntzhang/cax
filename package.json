@@ -10,6 +10,7 @@
     "hit": "webpack -w",
     "bitmap": "webpack -w",
     "painter": "webpack -w",
+    "select-box": "webpack -w",
     "bezier": "webpack -w",
     "sprite": "webpack -w",
     "test": "karma start test/karma.conf.js"
