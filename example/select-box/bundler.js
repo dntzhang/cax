@@ -2221,8 +2221,6 @@
 
 	        _this.centerX = (_this.rects[0].x + _this.rects[2].x) / 2;
 	        _this.centerY = (_this.rects[0].y + _this.rects[2].y) / 2;
-	        _this.preX = (_this.rects[1].x + _this.rects[2].x) / 2;
-	        _this.preY = (_this.rects[1].y + _this.rects[2].y) / 2;
 
 	        (0, _arDrag2.default)(graphics, {
 	            move: function move(evt) {
@@ -2231,13 +2229,22 @@
 	                var angle = getRotateAngle({
 	                    x: evt.stageX - _this.centerX,
 	                    y: evt.stageY - _this.centerY
-	                }, { x: graphics.x - _this.centerX, y: graphics.y - _this.centerY });
+	                }, {
+	                    x: _this.preX - _this.centerX,
+	                    y: _this.preY - _this.centerY
+	                });
+
 	                target.rotation = _this._rotation + angle;
 	                _this.obj.rotation = target.rotation;
 
+	                var n = _this.n(evt.stageX - _this.centerX, evt.stageY - _this.centerY);
+	                graphics.x = _this.centerX + n[0] * (target.width * target.scaleX / 2 + 40);
+	                graphics.y = _this.centerY + n[1] * (target.height * target.scaleY / 2 + 40);
 	                _this.updateCtrl();
 	            },
 	            down: function down() {
+	                _this.preX = graphics.x;
+	                _this.preY = graphics.y;
 	                _this._rotation = target.rotation;
 	            },
 	            up: function up(evt) {
@@ -2247,8 +2254,6 @@
 	                _this._scaleY = _this.obj.scaleY;
 
 	                _this._rotation = target.rotation;
-	                _this.preX = _this.rGraphics.x;
-	                _this.preY = _this.rGraphics.y;
 	            }
 	        });
 
@@ -2267,8 +2272,9 @@
 	    }, {
 	        key: 'getRotationPoint',
 	        value: function getRotationPoint(rects) {
-	            var x = (this.rects[1].x + this.rects[2].x) / 2 + (rects[2].y - rects[1].y) / 3;
-	            var y = (this.rects[1].y + this.rects[2].y) / 2 + (rects[1].x - rects[2].x) / 3;
+	            var n = this.n(rects[2].y - rects[1].y, rects[1].x - rects[2].x);
+	            var x = (rects[1].x + rects[2].x) / 2 + n[0] * 40;
+	            var y = (rects[1].y + rects[2].y) / 2 + n[1] * 40;
 	            return { x: x, y: y };
 	        }
 	    }, {
@@ -2304,7 +2310,7 @@
 	                        _this2.updateRotationPoint(_this2.obj.rectPoints);
 	                    },
 	                    down: function down() {},
-	                    up: function up(evt) {
+	                    up: function up() {
 	                        _this2.obj.initAABB();
 	                        _this2.rects = _this2.obj.rectPoints;
 	                        _this2._scaleX = _this2.obj.scaleX;

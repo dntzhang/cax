@@ -61,8 +61,7 @@ class EditBox extends Group {
 
         this.centerX = (this.rects[0].x + this.rects[2].x) / 2
         this.centerY = (this.rects[0].y + this.rects[2].y) / 2
-        this.preX = (this.rects[1].x + this.rects[2].x) / 2
-        this.preY = (this.rects[1].y + this.rects[2].y) / 2
+
 
         drag(graphics, {
             move: (evt)=> {
@@ -71,15 +70,23 @@ class EditBox extends Group {
                 let angle = getRotateAngle({
                     x: evt.stageX - this.centerX,
                     y: evt.stageY - this.centerY
-                }, {x: graphics.x - this.centerX, y: graphics.y - this.centerY})
+                }, {
+                    x: this.preX - this.centerX,
+                    y: this.preY - this.centerY
+                })
+
                 target.rotation = this._rotation + angle
                 this.obj.rotation = target.rotation
 
-
+                let n = this.n(evt.stageX - this.centerX, evt.stageY - this.centerY)
+                graphics.x = this.centerX + n[0] * (target.width * target.scaleX / 2 + 40)
+                graphics.y = this.centerY + n[1] * (target.height * target.scaleY / 2 + 40)
                 this.updateCtrl()
 
             },
             down: ()=> {
+                this.preX = graphics.x
+                this.preY = graphics.y
                 this._rotation = target.rotation
             },
             up: (evt)=> {
@@ -89,8 +96,7 @@ class EditBox extends Group {
                 this._scaleY = this.obj.scaleY
 
                 this._rotation = target.rotation
-                this.preX = this.rGraphics.x
-                this.preY = this.rGraphics.y
+
             }
         })
 
@@ -105,8 +111,9 @@ class EditBox extends Group {
     }
 
     getRotationPoint(rects) {
-        let x =(this.rects[1].x + this.rects[2].x) / 2 + (rects[2].y - rects[1].y) / 3
-        let y =(this.rects[1].y + this.rects[2].y) / 2 + (rects[1].x - rects[2].x) / 3
+        let n = this.n( (rects[2].y - rects[1].y), (rects[1].x - rects[2].x))
+        let x =(rects[1].x + rects[2].x) / 2 + n[0]*40
+        let y =(rects[1].y + rects[2].y) / 2 + n[1]*40
         return {x: x, y: y}
     }
 
@@ -147,12 +154,11 @@ class EditBox extends Group {
                 down: ()=> {
 
                 },
-                up: (evt)=> {
+                up: ()=> {
                     this.obj.initAABB()
                     this.rects = this.obj.rectPoints
                     this._scaleX = this.obj.scaleX
                     this._scaleY = this.obj.scaleY
-
                 }
             })
         })
