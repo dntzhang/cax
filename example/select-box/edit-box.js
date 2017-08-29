@@ -13,6 +13,36 @@ class EditBox extends Group {
         this.obj.initAABB()
         this.rects = this.obj.rectPoints
         this.render()
+
+        this.rotationPoint = this.getRotationPoint(this.obj.rectPoints)
+        let graphics = new Graphics()
+        graphics.x =  this.rotationPoint.x
+        graphics.y = this.rotationPoint.y
+        graphics.beginPath()
+            .arc(0,0, 5, 0, Math.PI * 2)
+            .fillStyle('black')
+            .fill()
+            .strokeStyle("#046ab4")
+            .lineWidth(3)
+            .stroke()
+        graphics.cursor = 'move'
+        this.add(graphics)
+
+        this.rGraphics = graphics
+
+    }
+
+    getRotationPoint(rects) {
+        var x = (rects[1].x + rects[2].x) / 2 + (rects[2].y - rects[1].y) / 3
+        var y = (rects[1].y + rects[2].y) / 2 + (rects[1].x - rects[2].x) / 3
+
+        return {x:x,y:y}
+    }
+
+    updateRotationPoint(rects){
+        let p = this.getRotationPoint(rects)
+        this.rGraphics.x = p.x
+        this.rGraphics.y = p.y
     }
 
     render() {
@@ -21,11 +51,11 @@ class EditBox extends Group {
             graphics.x = rect.x
             graphics.y = rect.y
             graphics.beginPath()
-                .arc(0,0, 20, 0, Math.PI * 2)
+                .arc(0,0, 5, 0, Math.PI * 2)
                 .fillStyle('#f4862c')
                 .fill()
                 .strokeStyle("#046ab4")
-                .lineWidth(6)
+                .lineWidth(3)
                 .stroke()
             graphics.cursor = 'move'
             this.add(graphics)
@@ -39,6 +69,9 @@ class EditBox extends Group {
                     this.rects[index].x += evt.dx
                     this.rects[index].y += evt.dy
                     this.updateByDrag(index)
+
+
+                    this.updateRotationPoint( this.obj.rectPoints)
                 },
                 down: ()=> {
 
@@ -103,8 +136,10 @@ class EditBox extends Group {
 
         this.children.forEach((child,_index) => {
            // if(_index !== index){
-                child.x =this.obj.rectPoints[_index].x
+            if(_index<4) {
+                child.x = this.obj.rectPoints[_index].x
                 child.y = this.obj.rectPoints[_index].y
+            }
             //}
         })
 

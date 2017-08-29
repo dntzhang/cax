@@ -2179,10 +2179,36 @@
 	        _this.obj.initAABB();
 	        _this.rects = _this.obj.rectPoints;
 	        _this.render();
+
+	        _this.rotationPoint = _this.getRotationPoint(_this.obj.rectPoints);
+	        var graphics = new _index2.Graphics();
+	        graphics.x = _this.rotationPoint.x;
+	        graphics.y = _this.rotationPoint.y;
+	        graphics.beginPath().arc(0, 0, 5, 0, Math.PI * 2).fillStyle('black').fill().strokeStyle("#046ab4").lineWidth(3).stroke();
+	        graphics.cursor = 'move';
+	        _this.add(graphics);
+
+	        _this.rGraphics = graphics;
+
 	        return _this;
 	    }
 
 	    _createClass(EditBox, [{
+	        key: 'getRotationPoint',
+	        value: function getRotationPoint(rects) {
+	            var x = (rects[1].x + rects[2].x) / 2 + (rects[2].y - rects[1].y) / 3;
+	            var y = (rects[1].y + rects[2].y) / 2 + (rects[1].x - rects[2].x) / 3;
+
+	            return { x: x, y: y };
+	        }
+	    }, {
+	        key: 'updateRotationPoint',
+	        value: function updateRotationPoint(rects) {
+	            var p = this.getRotationPoint(rects);
+	            this.rGraphics.x = p.x;
+	            this.rGraphics.y = p.y;
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _this2 = this;
@@ -2191,7 +2217,7 @@
 	                var graphics = new _index2.Graphics();
 	                graphics.x = rect.x;
 	                graphics.y = rect.y;
-	                graphics.beginPath().arc(0, 0, 20, 0, Math.PI * 2).fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(6).stroke();
+	                graphics.beginPath().arc(0, 0, 5, 0, Math.PI * 2).fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(3).stroke();
 	                graphics.cursor = 'move';
 	                _this2.add(graphics);
 
@@ -2204,6 +2230,8 @@
 	                        _this2.rects[index].x += evt.dx;
 	                        _this2.rects[index].y += evt.dy;
 	                        _this2.updateByDrag(index);
+
+	                        _this2.updateRotationPoint(_this2.obj.rectPoints);
 	                    },
 	                    down: function down() {},
 	                    up: function up(evt) {
@@ -2265,8 +2293,10 @@
 
 	            this.children.forEach(function (child, _index) {
 	                // if(_index !== index){
-	                child.x = _this3.obj.rectPoints[_index].x;
-	                child.y = _this3.obj.rectPoints[_index].y;
+	                if (_index < 4) {
+	                    child.x = _this3.obj.rectPoints[_index].x;
+	                    child.y = _this3.obj.rectPoints[_index].y;
+	                }
 	                //}
 	            });
 	        }
