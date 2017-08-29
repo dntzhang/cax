@@ -17,11 +17,11 @@ const DRAG = 'drag'
 
 var bitmap = new Bitmap('./test.png',()=> {
     stage.add(bitmap)
-    bitmap.x = 100
-    bitmap.y = 100
+    bitmap.x = 200
+    bitmap.y = 200
     bitmap.rotation = 45
-    bitmap.originX = bitmap.width/2
-    bitmap.originY = bitmap.height/2
+    bitmap.originX = bitmap.width / 2
+    bitmap.originY = bitmap.height / 2
 
     var sb = new SelectBox(bitmap)
 

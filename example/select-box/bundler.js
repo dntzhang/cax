@@ -70,8 +70,8 @@
 
 	var bitmap = new _index.Bitmap('./test.png', function () {
 	    stage.add(bitmap);
-	    bitmap.x = 100;
-	    bitmap.y = 100;
+	    bitmap.x = 200;
+	    bitmap.y = 200;
 	    bitmap.rotation = 45;
 	    bitmap.originX = bitmap.width / 2;
 	    bitmap.originY = bitmap.height / 2;
@@ -2163,6 +2163,35 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	function getLen(v) {
+	    return Math.sqrt(v.x * v.x + v.y * v.y);
+	}
+
+	function dot(v1, v2) {
+	    return v1.x * v2.x + v1.y * v2.y;
+	}
+
+	function getAngle(v1, v2) {
+	    var mr = getLen(v1) * getLen(v2);
+	    if (mr === 0) return 0;
+	    var r = dot(v1, v2) / mr;
+	    if (r > 1) r = 1;
+	    return Math.acos(r);
+	}
+
+	function cross(v1, v2) {
+	    return v1.x * v2.y - v2.x * v1.y;
+	}
+
+	function getRotateAngle(v1, v2) {
+	    var angle = getAngle(v1, v2);
+	    if (cross(v1, v2) > 0) {
+	        angle *= -1;
+	    }
+
+	    return angle * 180 / Math.PI;
+	}
+
 	var EditBox = function (_Group) {
 	    _inherits(EditBox, _Group);
 
@@ -2190,20 +2219,62 @@
 
 	        _this.rGraphics = graphics;
 
+	        _this.centerX = (_this.rects[0].x + _this.rects[2].x) / 2;
+	        _this.centerY = (_this.rects[0].y + _this.rects[2].y) / 2;
+	        _this.preX = (_this.rects[1].x + _this.rects[2].x) / 2;
+	        _this.preY = (_this.rects[1].y + _this.rects[2].y) / 2;
+
+	        (0, _arDrag2.default)(graphics, {
+	            move: function move(evt) {
+	                //evt.target.x += evt.dx
+	                //evt.target.y += evt.dy
+	                var angle = getRotateAngle({
+	                    x: evt.stageX - _this.centerX,
+	                    y: evt.stageY - _this.centerY
+	                }, { x: graphics.x - _this.centerX, y: graphics.y - _this.centerY });
+	                target.rotation = _this._rotation + angle;
+	                _this.obj.rotation = target.rotation;
+
+	                _this.updateCtrl();
+	            },
+	            down: function down() {
+	                _this._rotation = target.rotation;
+	            },
+	            up: function up(evt) {
+	                _this.obj.initAABB();
+	                _this.rects = _this.obj.rectPoints;
+	                _this._scaleX = _this.obj.scaleX;
+	                _this._scaleY = _this.obj.scaleY;
+
+	                _this._rotation = target.rotation;
+	                _this.preX = _this.rGraphics.x;
+	                _this.preY = _this.rGraphics.y;
+	            }
+	        });
+
+	        _this.updateRotationPoint(_this.rects);
 	        return _this;
 	    }
 
 	    _createClass(EditBox, [{
+	        key: 'n',
+	        value: function n(x, y) {
+	            var sum = x * x + y * y;
+	            if (sum === 0) return [0, 0];
+	            var len = Math.sqrt(sum);
+	            return [x / len, y / len];
+	        }
+	    }, {
 	        key: 'getRotationPoint',
 	        value: function getRotationPoint(rects) {
-	            var x = (rects[1].x + rects[2].x) / 2 + (rects[2].y - rects[1].y) / 3;
-	            var y = (rects[1].y + rects[2].y) / 2 + (rects[1].x - rects[2].x) / 3;
-
+	            var x = (this.rects[1].x + this.rects[2].x) / 2 + (rects[2].y - rects[1].y) / 3;
+	            var y = (this.rects[1].y + this.rects[2].y) / 2 + (rects[1].x - rects[2].x) / 3;
 	            return { x: x, y: y };
 	        }
 	    }, {
 	        key: 'updateRotationPoint',
 	        value: function updateRotationPoint(rects) {
+
 	            var p = this.getRotationPoint(rects);
 	            this.rGraphics.x = p.x;
 	            this.rGraphics.y = p.y;
@@ -2226,7 +2297,6 @@
 	                        evt.target.x += evt.dx;
 	                        evt.target.y += evt.dy;
 
-	                        // console.log(index)
 	                        _this2.rects[index].x += evt.dx;
 	                        _this2.rects[index].y += evt.dy;
 	                        _this2.updateByDrag(index);
@@ -2246,8 +2316,6 @@
 	    }, {
 	        key: 'updateByDrag',
 	        value: function updateByDrag(index) {
-	            var _this3 = this;
-
 	            var a = 1,
 	                b = 2,
 	                c = 2,
@@ -2288,9 +2356,16 @@
 
 	            this.target.scaleX = this.obj.scaleX;
 	            this.target.scaleY = this.obj.scaleY;
+
+	            this.updateCtrl();
+	        }
+	    }, {
+	        key: 'updateCtrl',
+	        value: function updateCtrl() {
+	            var _this3 = this;
+
 	            this.obj._matrix.identity().appendTransform(this.obj.x, this.obj.y, this.obj.scaleX, this.obj.scaleY, this.obj.rotation, this.obj.skewX, this.obj.skewY, this.obj.originX, this.obj.originY);
 	            this.obj.initAABB();
-
 	            this.children.forEach(function (child, _index) {
 	                // if(_index !== index){
 	                if (_index < 4) {
@@ -2315,7 +2390,8 @@
 	            if (len_sq != 0) //in case of 0 length line
 	                param = dot / len_sq;
 
-	            var xx, yy;
+	            var xx = void 0,
+	                yy = void 0;
 
 	            if (param < 0) {
 	                xx = x1;
@@ -2407,6 +2483,8 @@
 	                this.move({
 	                    dx: evt.stageX - this.preX,
 	                    dy: evt.stageY - this.preY,
+	                    stageX: evt.stageX,
+	                    stageY: evt.stageY,
 	                    pureEvent: evt,
 	                    target: this.target
 	                });

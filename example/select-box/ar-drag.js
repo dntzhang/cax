@@ -47,6 +47,8 @@ class Drag {
             this.move({
                 dx: evt.stageX - this.preX,
                 dy:evt.stageY - this.preY,
+                stageX:evt.stageX,
+                stageY:evt.stageY,
                 pureEvent:evt,
                 target: this.target
             })

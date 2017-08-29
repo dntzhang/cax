@@ -1,6 +1,35 @@
 import { Graphics, Group, Circle, DisplayObject } from '../../src/index.js'
 import drag from './ar-drag.js'
 
+function getLen(v) {
+    return Math.sqrt(v.x * v.x + v.y * v.y);
+}
+
+function dot(v1, v2) {
+    return v1.x * v2.x + v1.y * v2.y;
+}
+
+function getAngle(v1, v2) {
+    var mr = getLen(v1) * getLen(v2);
+    if (mr === 0) return 0;
+    var r = dot(v1, v2) / mr;
+    if (r > 1) r = 1;
+    return Math.acos(r);
+}
+
+function cross(v1, v2) {
+    return v1.x * v2.y - v2.x * v1.y;
+}
+
+function getRotateAngle(v1, v2) {
+    var angle = getAngle(v1, v2);
+    if (cross(v1, v2) > 0) {
+        angle *= -1;
+    }
+
+    return angle * 180 / Math.PI;
+}
+
 class EditBox extends Group {
 
     constructor(target) {
@@ -16,10 +45,10 @@ class EditBox extends Group {
 
         this.rotationPoint = this.getRotationPoint(this.obj.rectPoints)
         let graphics = new Graphics()
-        graphics.x =  this.rotationPoint.x
+        graphics.x = this.rotationPoint.x
         graphics.y = this.rotationPoint.y
         graphics.beginPath()
-            .arc(0,0, 5, 0, Math.PI * 2)
+            .arc(0, 0, 5, 0, Math.PI * 2)
             .fillStyle('black')
             .fill()
             .strokeStyle("#046ab4")
@@ -30,28 +59,71 @@ class EditBox extends Group {
 
         this.rGraphics = graphics
 
+        this.centerX = (this.rects[0].x + this.rects[2].x) / 2
+        this.centerY = (this.rects[0].y + this.rects[2].y) / 2
+        this.preX = (this.rects[1].x + this.rects[2].x) / 2
+        this.preY = (this.rects[1].y + this.rects[2].y) / 2
+
+        drag(graphics, {
+            move: (evt)=> {
+                //evt.target.x += evt.dx
+                //evt.target.y += evt.dy
+                let angle = getRotateAngle({
+                    x: evt.stageX - this.centerX,
+                    y: evt.stageY - this.centerY
+                }, {x: graphics.x - this.centerX, y: graphics.y - this.centerY})
+                target.rotation = this._rotation + angle
+                this.obj.rotation = target.rotation
+
+
+                this.updateCtrl()
+
+            },
+            down: ()=> {
+                this._rotation = target.rotation
+            },
+            up: (evt)=> {
+                this.obj.initAABB()
+                this.rects = this.obj.rectPoints
+                this._scaleX = this.obj.scaleX
+                this._scaleY = this.obj.scaleY
+
+                this._rotation = target.rotation
+                this.preX = this.rGraphics.x
+                this.preY = this.rGraphics.y
+            }
+        })
+
+        this.updateRotationPoint(this.rects)
+    }
+
+    n(x, y) {
+        var sum = x * x + y * y
+        if (sum === 0) return [0, 0]
+        var len = Math.sqrt(sum)
+        return [x / len, y / len]
     }
 
     getRotationPoint(rects) {
-        var x = (rects[1].x + rects[2].x) / 2 + (rects[2].y - rects[1].y) / 3
-        var y = (rects[1].y + rects[2].y) / 2 + (rects[1].x - rects[2].x) / 3
-
-        return {x:x,y:y}
+        let x =(this.rects[1].x + this.rects[2].x) / 2 + (rects[2].y - rects[1].y) / 3
+        let y =(this.rects[1].y + this.rects[2].y) / 2 + (rects[1].x - rects[2].x) / 3
+        return {x: x, y: y}
     }
 
-    updateRotationPoint(rects){
+    updateRotationPoint(rects) {
+
         let p = this.getRotationPoint(rects)
         this.rGraphics.x = p.x
         this.rGraphics.y = p.y
     }
 
     render() {
-        this.rects.forEach((rect,index)=> {
+        this.rects.forEach((rect, index)=> {
             let graphics = new Graphics()
             graphics.x = rect.x
             graphics.y = rect.y
             graphics.beginPath()
-                .arc(0,0, 5, 0, Math.PI * 2)
+                .arc(0, 0, 5, 0, Math.PI * 2)
                 .fillStyle('#f4862c')
                 .fill()
                 .strokeStyle("#046ab4")
@@ -65,13 +137,12 @@ class EditBox extends Group {
                     evt.target.x += evt.dx
                     evt.target.y += evt.dy
 
-                    // console.log(index)
                     this.rects[index].x += evt.dx
                     this.rects[index].y += evt.dy
                     this.updateByDrag(index)
 
 
-                    this.updateRotationPoint( this.obj.rectPoints)
+                    this.updateRotationPoint(this.obj.rectPoints)
                 },
                 down: ()=> {
 
@@ -122,21 +193,28 @@ class EditBox extends Group {
         let h = this.pDistance(this.rects[index].x, this.rects[index].y, this.rects[c].x, this.rects[c].y, this.rects[d].x, this.rects[d].y)
 
 
-        let _w = this.obj.width*this._scaleX/2
-        let _h = this.obj.height*this._scaleY/2
-        this.obj.scaleX =this._scaleX* (w-_w) / _w
-        this.obj.scaleY =this._scaleY* (h-_h) / _h
+        let _w = this.obj.width * this._scaleX / 2
+        let _h = this.obj.height * this._scaleY / 2
+        this.obj.scaleX = this._scaleX * (w - _w) / _w
+        this.obj.scaleY = this._scaleY * (h - _h) / _h
 
 
         this.target.scaleX = this.obj.scaleX
         this.target.scaleY = this.obj.scaleY
+
+
+
+
+        this.updateCtrl()
+
+    }
+
+    updateCtrl(){
         this.obj._matrix.identity().appendTransform(this.obj.x, this.obj.y, this.obj.scaleX, this.obj.scaleY, this.obj.rotation, this.obj.skewX, this.obj.skewY, this.obj.originX, this.obj.originY)
         this.obj.initAABB()
-
-
-        this.children.forEach((child,_index) => {
-           // if(_index !== index){
-            if(_index<4) {
+        this.children.forEach((child, _index) => {
+            // if(_index !== index){
+            if (_index < 4) {
                 child.x = this.obj.rectPoints[_index].x
                 child.y = this.obj.rectPoints[_index].y
             }
@@ -148,18 +226,18 @@ class EditBox extends Group {
 
     pDistance(x, y, x1, y1, x2, y2) {
 
-        var A = x - x1;
-        var B = y - y1;
-        var C = x2 - x1;
-        var D = y2 - y1;
+        let A = x - x1;
+        let B = y - y1;
+        let C = x2 - x1;
+        let D = y2 - y1;
 
-        var dot = A * C + B * D;
-        var len_sq = C * C + D * D;
-        var param = -1;
+        let dot = A * C + B * D;
+        let len_sq = C * C + D * D;
+        let param = -1;
         if (len_sq != 0) //in case of 0 length line
             param = dot / len_sq;
 
-        var xx, yy;
+        let xx, yy;
 
         if (param < 0) {
             xx = x1;
@@ -174,8 +252,8 @@ class EditBox extends Group {
             yy = y1 + param * D;
         }
 
-        var dx = x - xx;
-        var dy = y - yy;
+        let dx = x - xx;
+        let dy = y - yy;
         return Math.sqrt(dx * dx + dy * dy);
     }
 
