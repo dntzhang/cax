@@ -32,6 +32,7 @@ class EventDispatcher{
                 arr.splice(index, 1)
                 return false
             }
+            return true;
         })
     }
 
