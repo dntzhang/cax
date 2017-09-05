@@ -15,6 +15,11 @@ class Drag {
         this.out = option.out||noop
         this.down = option.down||noop
         this.up = option.up ||noop
+        this.listener = {
+            mouseover: [],
+            mouseout: [],
+            mousedown: [],
+        };
         this.bindEvent()
     }
 
@@ -23,15 +28,15 @@ class Drag {
         this._mh = this._moveHandler.bind(this);
         let target = this.target
 
-        target.addEventListener('mouseover', evt => {
+        let overListener = target.addEventListener('mouseover', evt => {
             this.over(evt)
         })
 
-        target.addEventListener('mouseout', evt => {
+        let outListener = target.addEventListener('mouseout', evt => {
             this.out(evt)
         })
 
-        target.addEventListener('mousedown', evt => {
+        let downListener = target.addEventListener('mousedown', evt => {
             this.isMouseDown = true
             this.preX = evt.stageX
             this.preY = evt.stageY
@@ -40,7 +45,9 @@ class Drag {
             document.addEventListener('mousemove',this._mh,false)
         })
 
-
+        this.listener.mouseover.push(overListener);
+        this.listener.mouseout.push(outListener);
+        this.listener.mousedown.push(downListener);
     }
     _moveHandler(evt){
         if (this.isMouseDown) {
@@ -77,7 +84,7 @@ const drag = function(target, option) {
     target.forEach(item =>{
         if (!item._hasBindDrag) {
             item._hasBindDrag = true
-            new Drag(item, option)
+            item.drag = new Drag(item, option)
         }
     })
 

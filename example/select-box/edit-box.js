@@ -1,4 +1,5 @@
-import { Graphics, Group, Circle, DisplayObject } from '../../src/index.js'
+// import { Graphics, Group, Circle, DisplayObject } from '../../src/index.js'
+const {Group,Stage,Bitmap,Sprite,Graphics} = AlloyRender
 import drag from './ar-drag.js'
 
 function getLen(v) {
@@ -34,6 +35,7 @@ class EditBox extends Group {
 
     constructor(target) {
         super()
+        this.cb = null;
         this.target = target
         this.obj = target.clone()
         this._scaleX = this.obj.scaleX
@@ -44,6 +46,7 @@ class EditBox extends Group {
         this.render()
 
         this.rotationPoint = this.getRotationPoint(this.obj.rectPoints)
+
         let graphics = new Graphics()
         graphics.x = this.rotationPoint.x
         graphics.y = this.rotationPoint.y
@@ -62,7 +65,6 @@ class EditBox extends Group {
         this.centerX = (this.rects[0].x + this.rects[2].x) / 2
         this.centerY = (this.rects[0].y + this.rects[2].y) / 2
 
-
         drag(graphics, {
             move: (evt)=> {
                 //evt.target.x += evt.dx
@@ -75,14 +77,15 @@ class EditBox extends Group {
                     y: this.preY - this.centerY
                 })
 
-                target.rotation = this._rotation + angle
-                this.obj.rotation = target.rotation
+                let rotation = this._rotation + angle
+                this.obj.rotation = rotation
+                this.callback();
 
-                let n = this.n(evt.stageX - this.centerX, evt.stageY - this.centerY)
-                graphics.x = this.centerX + n[0] * (target.width * target.scaleX / 2 + 40)
-                graphics.y = this.centerY + n[1] * (target.height * target.scaleY / 2 + 40)
+                // let n = this.n(evt.stageX - this.centerX, evt.stageY - this.centerY)
+                // graphics.x = this.centerX + n[0] * (target.width * target.scaleX / 2 + 40)
+                // graphics.y = this.centerY + n[1] * (target.height * target.scaleY / 2 + 40)
+
                 this.updateCtrl()
-
             },
             down: ()=> {
                 this.preX = graphics.x
@@ -100,7 +103,7 @@ class EditBox extends Group {
             }
         })
 
-        this.updateRotationPoint(this.rects)
+        this.handleTranslate();
     }
 
     n(x, y) {
@@ -111,18 +114,76 @@ class EditBox extends Group {
     }
 
     getRotationPoint(rects) {
-        let n = this.n( (rects[2].y - rects[1].y), (rects[1].x - rects[2].x))
-        let x =(rects[1].x + rects[2].x) / 2 + n[0]*40
-        let y =(rects[1].y + rects[2].y) / 2 + n[1]*40
+        this.centerX = (rects[0].x + rects[2].x) / 2;
+        this.centerY = (rects[0].y + rects[2].y) / 2;
+
+        let vec = [rects[1].x - rects[0].x,
+                   rects[1].y - rects[0].y];
+
+        let scale = 0.6;
+
+        let x = this.centerX + vec[0] * scale;
+        let y = this.centerY + vec[1] * scale;
         return {x: x, y: y}
     }
 
     updateRotationPoint(rects) {
-
         let p = this.getRotationPoint(rects)
         this.rGraphics.x = p.x
         this.rGraphics.y = p.y
     }
+
+    remove() {
+
+        let evt = ["mousedown", "mouseover", "mouseout"];
+
+        evt.forEach(e => {
+            if(this.target._listeners[e] != void 0) {
+                let listeners = this.target.drag.listener[e];
+                listeners.forEach(listener => {
+                    this.target.removeEventListener(e, listener, false);
+                    this.target.removeEventListener(e, listener, true);
+                })
+            }
+        })
+
+        this.target._hasBindDrag = false;
+        console.log(this.target)
+    }
+
+    handleTranslate() {
+        this.isTargetDown = false;
+        let lastStageX = 0, lastStageY = 0;
+        let lastObjX, lastObjY;
+        this.target.cursor = 'move'
+        drag(this.target, {
+            move: evt => {
+                if(this.isTargetDown) {
+                    let xMove = evt.stageX - lastStageX,
+                        yMove = evt.stageY - lastStageY;
+
+                    this.obj.x = lastObjX + xMove;
+                    this.obj.y = lastObjY + yMove;
+
+                    this.updateCtrl();
+                    this.callback();
+                }
+            },
+
+            down: evt => {
+                this.isTargetDown = true;
+                lastStageX = evt.stageX;
+                lastStageY = evt.stageY;
+                lastObjX = this.obj.x;
+                lastObjY = this.obj.y;
+            },
+
+            up: () => {
+                this.isTargetDown = false;
+            }
+        })
+    }
+
 
     render() {
         this.rects.forEach((rect, index)=> {
@@ -147,8 +208,6 @@ class EditBox extends Group {
                     this.rects[index].x += evt.dx
                     this.rects[index].y += evt.dy
                     this.updateByDrag(index)
-
-
                     this.updateRotationPoint(this.obj.rectPoints)
                 },
                 down: ()=> {
@@ -204,15 +263,28 @@ class EditBox extends Group {
         this.obj.scaleX = this._scaleX * (w - _w) / _w
         this.obj.scaleY = this._scaleY * (h - _h) / _h
 
-
-        this.target.scaleX = this.obj.scaleX
-        this.target.scaleY = this.obj.scaleY
-
-
-
+        this.callback();
 
         this.updateCtrl()
 
+    }
+
+    callback() {
+        let state = {};
+        state.scaleX = this.obj.scaleX;
+        state.scaleY = this.obj.scaleY;
+        state.originX = this.obj.originX;
+        state.originY = this.obj.originY;
+        state.x      = this.obj.x;
+        state.y      = this.obj.y;
+        state.rotation = this.obj.rotation;
+        this.cb(state);
+    }
+
+    updateRPoint() {
+        let pos = this.getRotationPoint(this.obj.rectPoints);
+        this.rGraphics.x = pos.x;
+        this.rGraphics.y = pos.y;
     }
 
     updateCtrl(){
@@ -227,6 +299,7 @@ class EditBox extends Group {
             //}
         })
 
+        this.updateRPoint()
     }
 
 
@@ -261,6 +334,11 @@ class EditBox extends Group {
         let dx = x - xx;
         let dy = y - yy;
         return Math.sqrt(dx * dx + dy * dy);
+    }
+
+
+    onChange(cb) {
+        this.cb = cb;
     }
 
 }
