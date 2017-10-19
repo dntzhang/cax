@@ -40,8 +40,10 @@ class EditBox extends Group {
         this._scaleY = this.obj.scaleY
         this.obj._matrix.appendTransform(target.x, target.y, target.scaleX, target.scaleY, target.rotation, target.skewX, target.skewY, target.originX, target.originY)
         this.obj.initAABB()
+        this.rgs = []
         this.rects = this.obj.rectPoints
         this.render()
+
 
         this.rotationPoint = this.getRotationPoint(this.obj.rectPoints)
         let graphics = new Graphics()
@@ -101,6 +103,9 @@ class EditBox extends Group {
         })
 
         this.updateRotationPoint(this.rects)
+
+
+
     }
 
     n(x, y) {
@@ -124,7 +129,56 @@ class EditBox extends Group {
         this.rGraphics.y = p.y
     }
 
+    renderMask(){
+        this.maskGraphics.clear().beginPath()
+            .moveTo( this.rects[0].x, this.rects[0].y)
+            .lineTo( this.rects[1].x, this.rects[1].y)
+            .lineTo( this.rects[2].x, this.rects[2].y)
+            .lineTo( this.rects[3].x, this.rects[3].y)
+            .closePath()
+            .fillStyle('rgba(0,0,0,.3)')
+            .fill()
+    }
+
     render() {
+        this.maskGraphics = new Graphics()
+        this.maskGraphics.cursor = 'move'
+        this.renderMask()
+
+
+        drag(this.maskGraphics, {
+            move: (evt)=> {
+                this.children.forEach((child, _index) => {
+                        child.x += evt.dx
+                        child.y += evt.dy
+                })
+                console.log(self)
+                this.rects.forEach((rect, _index) => {
+                    rect.x += evt.dx
+                    rect.y += evt.dy
+                })
+                this.obj.x += evt.dx
+                this.obj.y += evt.dy
+                this.target.x += evt.dx
+                this.target.y += evt.dy
+
+            },
+            down: ()=> {
+
+            },
+            up: ()=> {
+                //this.obj.initAABB()
+                //this.rects = this.obj.rectPoints
+                //this._scaleX = this.obj.scaleX
+                //this._scaleY = this.obj.scaleY
+                this.centerX = (this.rects[0].x + this.rects[2].x) / 2
+                this.centerY = (this.rects[0].y + this.rects[2].y) / 2
+                this.updateRotationPoint(this.obj.rectPoints)
+            }
+        })
+
+
+        this.add(this.maskGraphics)
         this.rects.forEach((rect, index)=> {
             let graphics = new Graphics()
             graphics.x = rect.x
@@ -138,7 +192,7 @@ class EditBox extends Group {
                 .stroke()
             graphics.cursor = 'move'
             this.add(graphics)
-
+            this.rgs.push(graphics)
             drag(graphics, {
                 move: (evt)=> {
                     evt.target.x += evt.dx
@@ -162,6 +216,8 @@ class EditBox extends Group {
                 }
             })
         })
+
+
     }
 
     updateByDrag(index) {
@@ -218,12 +274,12 @@ class EditBox extends Group {
     updateCtrl(){
         this.obj._matrix.identity().appendTransform(this.obj.x, this.obj.y, this.obj.scaleX, this.obj.scaleY, this.obj.rotation, this.obj.skewX, this.obj.skewY, this.obj.originX, this.obj.originY)
         this.obj.initAABB()
-        this.children.forEach((child, _index) => {
+        this.rgs.forEach((child, _index) => {
             // if(_index !== index){
-            if (_index < 4) {
+
                 child.x = this.obj.rectPoints[_index].x
                 child.y = this.obj.rectPoints[_index].y
-            }
+
             //}
         })
 

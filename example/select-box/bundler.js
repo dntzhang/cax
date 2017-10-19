@@ -2206,6 +2206,7 @@
 	        _this._scaleY = _this.obj.scaleY;
 	        _this.obj._matrix.appendTransform(target.x, target.y, target.scaleX, target.scaleY, target.rotation, target.skewX, target.skewY, target.originX, target.originY);
 	        _this.obj.initAABB();
+	        _this.rgs = [];
 	        _this.rects = _this.obj.rectPoints;
 	        _this.render();
 
@@ -2258,6 +2259,7 @@
 	        });
 
 	        _this.updateRotationPoint(_this.rects);
+
 	        return _this;
 	    }
 
@@ -2286,10 +2288,48 @@
 	            this.rGraphics.y = p.y;
 	        }
 	    }, {
+	        key: 'renderMask',
+	        value: function renderMask() {
+	            this.maskGraphics.clear().beginPath().moveTo(this.rects[0].x, this.rects[0].y).lineTo(this.rects[1].x, this.rects[1].y).lineTo(this.rects[2].x, this.rects[2].y).lineTo(this.rects[3].x, this.rects[3].y).closePath().fillStyle('rgba(0,0,0,.3)').fill();
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _this2 = this;
 
+	            this.maskGraphics = new _index2.Graphics();
+	            this.maskGraphics.cursor = 'move';
+	            this.renderMask();
+
+	            (0, _arDrag2.default)(this.maskGraphics, {
+	                move: function move(evt) {
+	                    _this2.children.forEach(function (child, _index) {
+	                        child.x += evt.dx;
+	                        child.y += evt.dy;
+	                    });
+	                    console.log(self);
+	                    _this2.rects.forEach(function (rect, _index) {
+	                        rect.x += evt.dx;
+	                        rect.y += evt.dy;
+	                    });
+	                    _this2.obj.x += evt.dx;
+	                    _this2.obj.y += evt.dy;
+	                    _this2.target.x += evt.dx;
+	                    _this2.target.y += evt.dy;
+	                },
+	                down: function down() {},
+	                up: function up() {
+	                    //this.obj.initAABB()
+	                    //this.rects = this.obj.rectPoints
+	                    //this._scaleX = this.obj.scaleX
+	                    //this._scaleY = this.obj.scaleY
+	                    _this2.centerX = (_this2.rects[0].x + _this2.rects[2].x) / 2;
+	                    _this2.centerY = (_this2.rects[0].y + _this2.rects[2].y) / 2;
+	                    _this2.updateRotationPoint(_this2.obj.rectPoints);
+	                }
+	            });
+
+	            this.add(this.maskGraphics);
 	            this.rects.forEach(function (rect, index) {
 	                var graphics = new _index2.Graphics();
 	                graphics.x = rect.x;
@@ -2297,7 +2337,7 @@
 	                graphics.beginPath().arc(0, 0, 5, 0, Math.PI * 2).fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(3).stroke();
 	                graphics.cursor = 'move';
 	                _this2.add(graphics);
-
+	                _this2.rgs.push(graphics);
 	                (0, _arDrag2.default)(graphics, {
 	                    move: function move(evt) {
 	                        evt.target.x += evt.dx;
@@ -2372,12 +2412,12 @@
 
 	            this.obj._matrix.identity().appendTransform(this.obj.x, this.obj.y, this.obj.scaleX, this.obj.scaleY, this.obj.rotation, this.obj.skewX, this.obj.skewY, this.obj.originX, this.obj.originY);
 	            this.obj.initAABB();
-	            this.children.forEach(function (child, _index) {
+	            this.rgs.forEach(function (child, _index) {
 	                // if(_index !== index){
-	                if (_index < 4) {
-	                    child.x = _this3.obj.rectPoints[_index].x;
-	                    child.y = _this3.obj.rectPoints[_index].y;
-	                }
+
+	                child.x = _this3.obj.rectPoints[_index].x;
+	                child.y = _this3.obj.rectPoints[_index].y;
+
 	                //}
 	            });
 	        }
