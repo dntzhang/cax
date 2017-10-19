@@ -448,6 +448,7 @@
 	                    arr.splice(index, 1);
 	                    return false;
 	                }
+	                return true;
 	            });
 	        }
 	    }, {
@@ -2493,6 +2494,11 @@
 	        this.out = option.out || noop;
 	        this.down = option.down || noop;
 	        this.up = option.up || noop;
+	        this.listener = {
+	            mouseover: [],
+	            mouseout: [],
+	            mousedown: []
+	        };
 	        this.bindEvent();
 	    }
 
@@ -2505,15 +2511,15 @@
 	            this._mh = this._moveHandler.bind(this);
 	            var target = this.target;
 
-	            target.addEventListener('mouseover', function (evt) {
+	            var overListener = target.addEventListener('mouseover', function (evt) {
 	                _this.over(evt);
 	            });
 
-	            target.addEventListener('mouseout', function (evt) {
+	            var outListener = target.addEventListener('mouseout', function (evt) {
 	                _this.out(evt);
 	            });
 
-	            target.addEventListener('mousedown', function (evt) {
+	            var downListener = target.addEventListener('mousedown', function (evt) {
 	                _this.isMouseDown = true;
 	                _this.preX = evt.stageX;
 	                _this.preY = evt.stageY;
@@ -2521,6 +2527,10 @@
 	                document.addEventListener('mouseup', _this._uh, false);
 	                document.addEventListener('mousemove', _this._mh, false);
 	            });
+
+	            this.listener.mouseover.push(overListener);
+	            this.listener.mouseout.push(outListener);
+	            this.listener.mousedown.push(downListener);
 	        }
 	    }, {
 	        key: '_moveHandler',
@@ -2562,7 +2572,7 @@
 	    target.forEach(function (item) {
 	        if (!item._hasBindDrag) {
 	            item._hasBindDrag = true;
-	            new Drag(item, option);
+	            item.drag = new Drag(item, option);
 	        }
 	    });
 	};
