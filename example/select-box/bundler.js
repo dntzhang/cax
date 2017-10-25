@@ -2239,10 +2239,12 @@
 	                target.rotation = _this._rotation + angle;
 	                _this.obj.rotation = target.rotation;
 
-	                var n = _this.n(evt.stageX - _this.centerX, evt.stageY - _this.centerY);
-	                graphics.x = _this.centerX + n[0] * (target.width * target.scaleX / 2 + 40);
-	                graphics.y = _this.centerY + n[1] * (target.height * target.scaleY / 2 + 40);
+	                //  let n = this.n(evt.stageX - this.centerX, evt.stageY - this.centerY)
+	                //  graphics.x = this.centerX + n[0] * (target.width * target.scaleX / 2 + 40)
+	                // graphics.y = this.centerY + n[1] * (target.height * target.scaleY / 2 + 40)
 	                _this.updateCtrl();
+
+	                _this.updateRotationPoint(_this.obj.rectPoints);
 	            },
 	            down: function down() {
 	                _this.preX = graphics.x;
@@ -2289,48 +2291,10 @@
 	            this.rGraphics.y = p.y;
 	        }
 	    }, {
-	        key: 'renderMask',
-	        value: function renderMask() {
-	            this.maskGraphics.clear().beginPath().moveTo(this.rects[0].x, this.rects[0].y).lineTo(this.rects[1].x, this.rects[1].y).lineTo(this.rects[2].x, this.rects[2].y).lineTo(this.rects[3].x, this.rects[3].y).closePath().fillStyle('rgba(0,0,0,.3)').fill();
-	        }
-	    }, {
 	        key: 'render',
 	        value: function render() {
 	            var _this2 = this;
 
-	            this.maskGraphics = new _index2.Graphics();
-	            this.maskGraphics.cursor = 'move';
-	            this.renderMask();
-
-	            (0, _arDrag2.default)(this.maskGraphics, {
-	                move: function move(evt) {
-	                    _this2.children.forEach(function (child, _index) {
-	                        child.x += evt.dx;
-	                        child.y += evt.dy;
-	                    });
-	                    console.log(self);
-	                    _this2.rects.forEach(function (rect, _index) {
-	                        rect.x += evt.dx;
-	                        rect.y += evt.dy;
-	                    });
-	                    _this2.obj.x += evt.dx;
-	                    _this2.obj.y += evt.dy;
-	                    _this2.target.x += evt.dx;
-	                    _this2.target.y += evt.dy;
-	                },
-	                down: function down() {},
-	                up: function up() {
-	                    //this.obj.initAABB()
-	                    //this.rects = this.obj.rectPoints
-	                    //this._scaleX = this.obj.scaleX
-	                    //this._scaleY = this.obj.scaleY
-	                    _this2.centerX = (_this2.rects[0].x + _this2.rects[2].x) / 2;
-	                    _this2.centerY = (_this2.rects[0].y + _this2.rects[2].y) / 2;
-	                    _this2.updateRotationPoint(_this2.obj.rectPoints);
-	                }
-	            });
-
-	            this.add(this.maskGraphics);
 	            this.rects.forEach(function (rect, index) {
 	                var graphics = new _index2.Graphics();
 	                graphics.x = rect.x;
