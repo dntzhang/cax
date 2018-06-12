@@ -1,18 +1,10 @@
-﻿
-<h1 align="center">
-AlloyRender
-</h1>
-<p align="center">
-2d rendering engine for the web written in es6+
-</p>
+# Cax
 
-<p align="center">
-  <a href="https://travis-ci.org/AlloyTeam/omi"><img src="https://travis-ci.org/AlloyTeam/omi.svg"></a>
-</p>
+comin
 
-# Api document
+# API
 
-[Api doc](https://github.com/AlloyTeam/AlloyRender/blob/master/docs/doc.md)
+[API](https://github.com/dntzhang/cax/blob/master/docs/doc.md)
 
 # License
 This content is released under the [MIT](http://opensource.org/licenses/MIT) License.
