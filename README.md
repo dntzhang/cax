@@ -2,6 +2,8 @@
 
 > 小程序和 Web 通用 Canvas 渲染引擎
 
+[DEMO](https://dntzhang.github.io/cax)
+
 ## 特性
 
 * 支持小程序和 Web 浏览器渲染
