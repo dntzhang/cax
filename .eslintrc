@@ -1,0 +1,9 @@
+{
+    "extends": "standard",
+    "rules": {
+        "one-var": 0,
+        "no-mixed-operators": 0,
+        "standard/no-callback-literal": 0,
+        "new-cap": 0
+    }
+}

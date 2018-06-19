@@ -1,0 +1,4 @@
+<!-- sample.wxml -->
+<view class="container">
+  <cax id="myCanvas"></cax>
+</view>
