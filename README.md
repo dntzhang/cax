@@ -50,10 +50,15 @@
 到 GitHub [下载 cax 自定义组件](https://github.com/dntzhang/cax/tree/master/packages/cax-weapp)，然后小程序引入 cax 自定义组件:
 
 └── cax
+
     ├── cax.js
+    
     ├── cax.json
+    
     ├── cax.wxml
+    
     ├── cax.wxss
+    
     └── index.js
 
 在 page 或者 component 里声明依赖:
