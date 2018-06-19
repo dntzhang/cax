@@ -30,7 +30,7 @@
 	- [Circel](#circel)
 	- [Ellipse](#ellipse)
   - [Element](#element)
-    	- [Button](#button)
+	- [Button](#button)
 - [属性](#属性)
   - [Transform](#transform)
   - [Alpha](#alpha)
