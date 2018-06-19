@@ -39,8 +39,8 @@
 	- [小程序事件](#小程序事件) 
   - [Web 事件](#web-事件) 
 - [自定义对象](#自定义对象)
-	- [自定义 Shape](#自定义shape) 
-  - [自定义 Element](#自定义element) 
+	- [自定义 Shape](#自定义-shape) 
+  - [自定义 Element](#自定义-element) 
 - [License](#license)
 
 
