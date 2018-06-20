@@ -10,14 +10,14 @@ export default class Music {
 
     instance = this
 
-    this.bgmAudio = new Audio()
+    this.bgmAudio = wx.createInnerAudioContext()
     this.bgmAudio.loop = true
     this.bgmAudio.src  = 'audio/bgm.mp3'
 
-    this.shootAudio     = new Audio()
+    this.shootAudio     =wx.createInnerAudioContext()
     this.shootAudio.src = 'audio/bullet.mp3'
 
-    this.boomAudio     = new Audio()
+    this.boomAudio     = wx.createInnerAudioContext()
     this.boomAudio.src = 'audio/boom.mp3'
 
     this.playBgm()
@@ -28,12 +28,12 @@ export default class Music {
   }
 
   playShoot() {
-    this.shootAudio.currentTime = 0
+   // this.shootAudio.currentTime = 0
     this.shootAudio.play()
   }
 
   playExplosion() {
-    this.boomAudio.currentTime = 0
+   // this.boomAudio.currentTime = 0
     this.boomAudio.play()
   }
 }

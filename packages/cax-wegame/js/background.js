@@ -1,4 +1,4 @@
-import cax from './js/libs/cax'
+import cax from './libs/cax'
 
 const info = wx.getSystemInfoSync()
 const screenWidth = info.windowWidth
@@ -17,7 +17,7 @@ export default class BackGround extends cax.Group {
         this.bgDown = new cax.Bitmap(BG_IMG_SRC)
 
         this.bgDown.y = screenHeight * -1
-        this.bgUp.y = 0
+        this.bgUp.y = -1
 
         this.bgDown.scaleX = this.bgUp.scaleX = screenWidth / BG_WIDTH
         this.bgDown.scaleY = this.bgUp.scaleY = screenHeight / BG_HEIGHT
@@ -31,11 +31,11 @@ export default class BackGround extends cax.Group {
         this.bgUp.y += 2
 
         if (this.bgUp.y >= screenHeight) {
-            this.bgUp.y = screenHeight * -1
+            this.bgUp.y = this.bgDown.y - screenHeight
         }
 
         if (this.bgDown.y >= screenHeight) {
-            this.bgDown.y = screenHeight * -1
+            this.bgDown.y = this.bgUp.y - screenHeight
         }
 
     }
