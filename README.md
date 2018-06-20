@@ -1,6 +1,6 @@
 # Cax [![](https://badge.fury.io/js/cax.svg)](https://badge.fury.io/js/cax) 
 
-> 小程序和 Web 通用 Canvas 渲染引擎
+> 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
 
 [点我看看 DEMO](https://dntzhang.github.io/cax)
 
