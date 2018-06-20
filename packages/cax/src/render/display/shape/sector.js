@@ -1,6 +1,6 @@
 import Shape from './shape'
 
-class Sector extends cax.Shape {
+class Sector extends Shape {
   constructor (r, from, to, option) {
     super()
 

@@ -6,19 +6,19 @@ class Rect extends Graphics {
 
     this.width = width
     this.height = height
-    option = option || {}
-    this.empty = option.empty
-    this.color = option.color
-    this.border = option.border
+    this.option = option || {}
   }
 
   render (ctx) {
     this.clear()
-    if (!this.empty) {
-      this.fillStyle(this.color)
+
+    if (this.option.fillStyle) {
+      this.fillStyle(this.option.fillStyle)
       this.fillRect(0, 0, this.width, this.height)
-    } else {
-      this.strokeStyle(this.color)
+    }
+
+    if (this.option.strokeStyle) {
+      this.strokeStyle(this.option.strokeStyle)
       this.strokeRect(0, 0, this.width, this.height)
     }
     super.render(ctx)

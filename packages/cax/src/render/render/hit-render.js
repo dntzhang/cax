@@ -9,8 +9,12 @@ import Text from '../display/text.js'
 class HitRender extends Render {
   constructor () {
     super()
+    if (typeof wx !== 'undefined' && wx.createCanvas) {
+      this.canvas = wx.createCanvas()
+    } else {
+      this.canvas = document.createElement('canvas')
+    }
 
-    this.canvas = document.createElement('canvas')
     this.canvas.width = 1
     this.canvas.height = 1
     this.ctx = this.canvas.getContext('2d')

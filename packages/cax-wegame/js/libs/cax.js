@@ -2607,7 +2607,7 @@ var Stage = function (_Group) {
     var len = arguments.length;
     _this.isWegame = typeof wx !== 'undefined' && wx.createCanvas;
     if (len === 0) {
-      // wegame
+      //wegame
       _this.canvas = wx.createCanvas();
     } else if (len === 4) {
       var _ret;
@@ -2649,6 +2649,7 @@ var Stage = function (_Group) {
         return _this._handleMouseUp(evt);
       });
     } else {
+
       _this.canvas.addEventListener('click', function (evt) {
         return _this._handleClick(evt);
       });
@@ -2700,6 +2701,7 @@ var Stage = function (_Group) {
     _this.willDragObject = null;
     _this.preStageX = null;
     _this.preStageY = null;
+
     return _this;
   }
 

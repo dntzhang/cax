@@ -8,43 +8,59 @@ class Stage extends Group {
   constructor (width, height, renderTo) {
     super()
     const len = arguments.length
-    if (len === 1) {
-      this.canvas = typeof width === 'string' ? document.querySelector(width) : width
+    this.isWegame = typeof wx !== 'undefined' && wx.createCanvas
+    if (len === 0) { // wegame
+      this.canvas = wx.createCanvas()
     } else if (len === 4) { // weapp
       return new WeStage(arguments[0], arguments[1], arguments[2], arguments[3])
     } else {
-      this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo
-      if (this.renderTo.tagName === 'CANVAS') {
-        this.canvas = this.renderTo
-        this.canvas.width = width
-        this.canvas.height = height
+      if (len === 1) {
+        this.canvas = typeof width === 'string' ? document.querySelector(width) : width
       } else {
-        this.canvas = document.createElement('canvas')
-        this.canvas.width = width
-        this.canvas.height = height
-        this.renderTo.appendChild(this.canvas)
+        this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo
+        if (this.renderTo.tagName === 'CANVAS') {
+          this.canvas = this.renderTo
+          this.canvas.width = width
+          this.canvas.height = height
+        } else {
+          this.canvas = document.createElement('canvas')
+          this.canvas.width = width
+          this.canvas.height = height
+          this.renderTo.appendChild(this.canvas)
+        }
       }
+      // get rect again when trigger onscroll onresize event!?
+      this._boundingClientRect = this.canvas.getBoundingClientRect()
+
+      this.offset = this._getOffset(this.canvas)
     }
     this.renderer = new Renderer(this.canvas)
-    this.canvas.addEventListener('click', evt => this._handleClick(evt))
-    this.canvas.addEventListener('mousedown', evt => this._handleMouseDown(evt))
-    this.canvas.addEventListener('mousemove', evt => this._handleMouseMove(evt))
-    this.canvas.addEventListener('mouseup', evt => this._handleMouseUp(evt))
-    this.canvas.addEventListener('mouseout', evt => this._handleMouseOut(evt))
-    this.canvas.addEventListener('touchstart', evt => this._handleMouseDown(evt))
-    this.canvas.addEventListener('touchmove', evt => this._handleMouseMove(evt))
-    this.canvas.addEventListener('touchend', evt => this._handleMouseUp(evt))
+    if (this.isWegame) {
+      wx.onTouchStart(evt => this._handleMouseDown(evt))
 
-    this.canvas.addEventListener('dblclick', evt => this._handlDblClick(evt))
-    // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+      wx.onTouchMove(evt => this._handleMouseMove(evt))
+
+      wx.onTouchEnd(evt => this._handleMouseUp(evt))
+    } else {
+      this.canvas.addEventListener('click', evt => this._handleClick(evt))
+      this.canvas.addEventListener('mousedown', evt => this._handleMouseDown(evt))
+      this.canvas.addEventListener('mousemove', evt => this._handleMouseMove(evt))
+      this.canvas.addEventListener('mouseup', evt => this._handleMouseUp(evt))
+      this.canvas.addEventListener('mouseout', evt => this._handleMouseOut(evt))
+      this.canvas.addEventListener('touchstart', evt => this._handleMouseDown(evt))
+      this.canvas.addEventListener('touchmove', evt => this._handleMouseMove(evt))
+      this.canvas.addEventListener('touchend', evt => this._handleMouseUp(evt))
+
+      this.canvas.addEventListener('dblclick', evt => this._handlDblClick(evt))
+      // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+    }
 
     this.borderTopWidth = 0
     this.borderLeftWidth = 0
 
     this.hitAABB = false
     this._hitRender = new HitRender()
-    // get rect again when trigger onscroll onresize event!?
-    this._boundingClientRect = this.canvas.getBoundingClientRect()
+
     this._overObject = null
 
     this._scaleX = 1
@@ -59,8 +75,6 @@ class Stage extends Group {
     this.willDragObject = null
     this.preStageX = null
     this.preStageY = null
-
-    this.offset = this._getOffset(this.canvas)
   }
 
   _handlDblClick (evt) {
@@ -165,7 +179,7 @@ class Stage extends Group {
       mockEvt.type = 'mouseout'
       this._overObject.dispatchEvent(mockEvt)
       this._overObject = null
-      this._setCursor({cursor: 'default'})
+      this._setCursor({ cursor: 'default' })
     }
   }
 
@@ -187,7 +201,7 @@ class Stage extends Group {
   }
 
   _computeStageXY (evt) {
-    this._boundingClientRect = this.canvas.getBoundingClientRect()
+    this._boundingClientRect = this.isWegame ? {left: 0, top: 0} : this.canvas.getBoundingClientRect()
     if (evt.touches || evt.changedTouches) {
       const firstTouch = evt.touches[0] || evt.changedTouches[0]
       if (firstTouch) {
@@ -201,10 +215,13 @@ class Stage extends Group {
   }
 
   _getOffset (el) {
-    var _t = 0,
+    if (this.isWegame) {
+      return [0, 0]
+    }
+    let _t = 0,
       _l = 0
     if (document.documentElement.getBoundingClientRect && el.getBoundingClientRect) {
-      var box = el.getBoundingClientRect()
+      let box = el.getBoundingClientRect()
       _l = box.left
       _t = box.top
     } else {
