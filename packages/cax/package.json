@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "eslint src",
     "fix": "eslint src --fix",
+    "fixwegame": "eslint ../cax-wegame --fix",
     "fixweapp": "eslint ../cax-weapp --fix",
     "lint:example": "eslint example --fix",
     "nest": "webpack -w",

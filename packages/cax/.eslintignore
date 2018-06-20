@@ -15,3 +15,4 @@ example/todo/bundler.js
 example/tree/bundler.js
 
 ../cax-weapp/cax/index.js
+../cax-wegame/js/libs/cax.js
