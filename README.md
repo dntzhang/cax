@@ -126,6 +126,17 @@ rect.on('touchend', () => {
   console.log('touchend')
 })
 ```
+## 一分钟入门小游戏 cax 使用
+
+到 GitHub [下载 cax 小游戏示例](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame)，目录结构如下:
+
+![](./asset/wegame.png)
+
+``` js
+const stage = new cax.Stage()
+```
+
+和小程序以及 Web 不同的是，小游戏创建 Stage 不需要传任何参数。
 
 ## 一分钟入门 Web cax 使用
 
