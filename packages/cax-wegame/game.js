@@ -10,6 +10,8 @@ const player = new Player()
 const stage = new cax.Stage()
 const enemyGroup = new EnemyGroup()
 const music = new Music()
+const info = wx.getSystemInfoSync()
+const screenHeight = info.windowHeight
 
 stage.add(bg, enemyGroup, player)
 
@@ -53,3 +55,14 @@ function update () {
 }
 
 update()
+
+
+const text = new cax.Text('powered by cax', {
+    font: '20px Arial',
+    color: '#42B035',
+    baseline: 'top'
+  })
+text.y = screenHeight - 30
+text.x = 4
+text.alpha = 0.6
+stage.add(text)
