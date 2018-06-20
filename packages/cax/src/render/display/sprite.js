@@ -10,7 +10,7 @@ class Sprite extends DisplayObject {
 
     this.imgMap = {}
 
-    if (util.isWx) {
+    if (util.isWeapp) {
       this.option.imgs.forEach(img => {
         util.getImageInWx(img, (result) => {
           this.imgMap[img] = result.img
@@ -27,7 +27,7 @@ class Sprite extends DisplayObject {
         const len = this.option.imgs.length
         let loadedCount = 0
         this.option.imgs.forEach(src => {
-          const img = new window.Image()
+          const img = util.isWegame ? wx.createImage() : new window.Image()
           img.onload = () => {
             this.imgMap[src] = img
             loadedCount++
@@ -88,7 +88,7 @@ class Sprite extends DisplayObject {
 
       rectLen > 4 && (this.originX = this.rect[2] * this.rect[4])
       rectLen > 5 && (this.originY = this.rect[3] * this.rect[5])
-      rectLen > 6 && (this.img = this.imgMap[this.option[this.rect[6]]])
+      rectLen > 6 && (this.img = this.imgMap[this.option.imgs[this.rect[6]]])
 
       if (index === len - 1 && (!this.endTime || Date.now() - this.endTime > this.interval)) {
         this.endTime = Date.now()

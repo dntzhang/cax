@@ -52,5 +52,6 @@ const root = getGlobal()
 export default{
   getImageInWx,
   root,
-  isWx: typeof wx !== 'undefined'
+  isWeapp: typeof wx !== 'undefined' && !wx.createCanvas,
+  isWegame: typeof wx !== 'undefined' && wx.createCanvas
 }

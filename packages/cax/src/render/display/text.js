@@ -1,7 +1,7 @@
 import DisplayObject from './display-object'
 import util from '../../common/util'
 
-const measureCtx = util.isWx ? null : document.createElement('canvas').getContext('2d')
+const measureCtx = (util.isWeapp || util.isWegame) ? null : document.createElement('canvas').getContext('2d')
 
 class Text extends DisplayObject {
   constructor (text, option) {

@@ -11,7 +11,7 @@ class Bitmap extends DisplayObject {
         onLoad && onLoad.call(this)
         this.width = this.img.width
         this.height = this.img.height
-      } else if (util.isWx) {
+      } else if (util.isWeapp) {
         util.getImageInWx(img, (result) => {
           this.img = result.img
           if (!this.rect) {
@@ -19,7 +19,7 @@ class Bitmap extends DisplayObject {
           }
         })
       } else {
-        this.img = new window.Image()
+        this.img = util.isWegame ? wx.createImage() : new window.Image()
         this.visible = false
         this.img.onload = () => {
           this.visible = true

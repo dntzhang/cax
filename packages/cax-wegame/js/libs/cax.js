@@ -606,7 +606,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var measureCtx = _util2.default.isWx ? null : document.createElement('canvas').getContext('2d');
+var measureCtx = _util2.default.isWeapp || _util2.default.isWegame ? null : document.createElement('canvas').getContext('2d');
 
 var Text = function (_DisplayObject) {
   _inherits(Text, _DisplayObject);
@@ -681,7 +681,7 @@ var Sprite = function (_DisplayObject) {
 
     _this.imgMap = {};
 
-    if (_util2.default.isWx) {
+    if (_util2.default.isWeapp) {
       _this.option.imgs.forEach(function (img) {
         _util2.default.getImageInWx(img, function (result) {
           _this.imgMap[img] = result.img;
@@ -697,7 +697,7 @@ var Sprite = function (_DisplayObject) {
         var _len = _this.option.imgs.length;
         var loadedCount = 0;
         _this.option.imgs.forEach(function (src) {
-          var img = new window.Image();
+          var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
           img.onload = function () {
             _this.imgMap[src] = img;
             loadedCount++;
@@ -764,7 +764,7 @@ var Sprite = function (_DisplayObject) {
 
         rectLen > 4 && (this.originX = this.rect[2] * this.rect[4]);
         rectLen > 5 && (this.originY = this.rect[3] * this.rect[5]);
-        rectLen > 6 && (this.img = this.imgMap[this.option[this.rect[6]]]);
+        rectLen > 6 && (this.img = this.imgMap[this.option.imgs[this.rect[6]]]);
 
         if (index === len - 1 && (!this.endTime || Date.now() - this.endTime > this.interval)) {
           this.endTime = Date.now();
@@ -857,7 +857,7 @@ var Bitmap = function (_DisplayObject) {
         onLoad && onLoad.call(_this);
         _this.width = _this.img.width;
         _this.height = _this.img.height;
-      } else if (_util2.default.isWx) {
+      } else if (_util2.default.isWeapp) {
         _util2.default.getImageInWx(img, function (result) {
           _this.img = result.img;
           if (!_this.rect) {
@@ -865,7 +865,7 @@ var Bitmap = function (_DisplayObject) {
           }
         });
       } else {
-        _this.img = new window.Image();
+        _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
         _this.visible = false;
         _this.img.onload = function () {
           _this.visible = true;
@@ -1063,7 +1063,8 @@ var root = getGlobal();
 exports.default = {
   getImageInWx: getImageInWx,
   root: root,
-  isWx: typeof wx !== 'undefined'
+  isWeapp: typeof wx !== 'undefined' && !wx.createCanvas,
+  isWegame: typeof wx !== 'undefined' && wx.createCanvas
 };
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)))
 
@@ -2607,7 +2608,7 @@ var Stage = function (_Group) {
     var len = arguments.length;
     _this.isWegame = typeof wx !== 'undefined' && wx.createCanvas;
     if (len === 0) {
-      //wegame
+      // wegame
       _this.canvas = wx.createCanvas();
     } else if (len === 4) {
       var _ret;
@@ -2649,7 +2650,6 @@ var Stage = function (_Group) {
         return _this._handleMouseUp(evt);
       });
     } else {
-
       _this.canvas.addEventListener('click', function (evt) {
         return _this._handleClick(evt);
       });
@@ -2701,7 +2701,6 @@ var Stage = function (_Group) {
     _this.willDragObject = null;
     _this.preStageX = null;
     _this.preStageY = null;
-
     return _this;
   }
 
