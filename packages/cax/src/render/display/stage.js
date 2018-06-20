@@ -11,6 +11,7 @@ class Stage extends Group {
     this.isWegame = typeof wx !== 'undefined' && wx.createCanvas
     if (len === 0) { // wegame
       this.canvas = wx.createCanvas()
+      this.disableMoveDetection = true
     } else if (len === 4) { // weapp
       return new WeStage(arguments[0], arguments[1], arguments[2], arguments[3])
     } else {
@@ -135,6 +136,7 @@ class Stage extends Group {
   }
 
   _handleMouseMove (evt) {
+    if(this.disableMoveDetection) return
     let obj = this._getObjectUnderPoint(evt)
     let mockEvt = new Event()
     mockEvt.stageX = evt.stageX

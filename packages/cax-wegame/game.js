@@ -22,25 +22,18 @@ stage.add(player.bulletGroup)
 
 let touchX = null
 let touchY = null
-stage.on('touchstart', (e) => {
-    e.preventDefault()
-
-    touchX = e.touches[0].clientX
-    touchY = e.touches[0].clientY
-      
-
-})
 
 
-stage.on('touchmove', (e) => {
-    e.preventDefault()
-
+wx.onTouchStart(function (e) {
     touchX = e.touches[0].clientX
     touchY = e.touches[0].clientY
 })
 
-stage.on('touchend', (e) => {
+wx.onTouchMove(function (e) {
+    touchX = e.touches[0].clientX
+    touchY = e.touches[0].clientY
 })
+
 
 
 

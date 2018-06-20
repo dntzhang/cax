@@ -1,8 +1,9 @@
 import cax from './js/libs/cax'
 import Bullet from './bullet'
 
-const screenWidth = window.innerWidth
-const screenHeight = window.innerHeight
+const info = wx.getSystemInfoSync()
+const screenWidth = info.windowWidth
+const screenHeight = info.windowHeight
 
 // 玩家相关常量设置
 const PLAYER_IMG_SRC = 'images/hero.png'

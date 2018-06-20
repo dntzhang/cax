@@ -2610,6 +2610,7 @@ var Stage = function (_Group) {
     if (len === 0) {
       // wegame
       _this.canvas = wx.createCanvas();
+      _this.disableMoveDetection = true;
     } else if (len === 4) {
       var _ret;
 
@@ -2770,6 +2771,7 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseMove',
     value: function _handleMouseMove(evt) {
+      if (this.disableMoveDetection) return;
       var obj = this._getObjectUnderPoint(evt);
       var mockEvt = new _event2.default();
       mockEvt.stageX = evt.stageX;

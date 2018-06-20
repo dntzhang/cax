@@ -1,7 +1,8 @@
 import cax from './js/libs/cax'
 
-const screenWidth = window.innerWidth
-const screenHeight = window.innerHeight
+const info = wx.getSystemInfoSync()
+const screenWidth = info.windowWidth
+const screenHeight = info.windowHeight
 
 const BG_IMG_SRC = 'images/bg.jpg'
 const BG_WIDTH = 512
