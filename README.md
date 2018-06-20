@@ -6,7 +6,7 @@
 
 ## 特性
 
-* Learn Once, Write Everywhere(小程序、小游戏、PC Web、Mobile Web)
+* Learn Once, Write Anywhere(小程序、小游戏、PC Web、Mobile Web)
 * 支持小程序、小游戏以及 Web 浏览器渲染
 * 小程序、小游戏和 Web 拥有相同简洁轻巧的 API
 * 高性能的渲染架构
