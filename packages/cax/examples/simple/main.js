@@ -44,7 +44,7 @@ const sprite = new cax.Sprite({
     }
 });
 
-const rect = new cax.Rect(200, 100)
+const rect = new cax.Rect(200, 100, { fillStyle: 'black' })
 const text = new cax.Text('Drag Me!', {
     color: 'white',
     font: '20px Arial'

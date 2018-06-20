@@ -591,7 +591,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var measureCtx = _util2.default.isWx ? null : document.createElement('canvas').getContext('2d');
+var measureCtx = _util2.default.isWeapp || _util2.default.isWegame ? null : document.createElement('canvas').getContext('2d');
 
 var Text = function (_DisplayObject) {
   _inherits(Text, _DisplayObject);
@@ -666,7 +666,7 @@ var Sprite = function (_DisplayObject) {
 
     _this.imgMap = {};
 
-    if (_util2.default.isWx) {
+    if (_util2.default.isWeapp) {
       _this.option.imgs.forEach(function (img) {
         _util2.default.getImageInWx(img, function (result) {
           _this.imgMap[img] = result.img;
@@ -682,7 +682,7 @@ var Sprite = function (_DisplayObject) {
         var _len = _this.option.imgs.length;
         var loadedCount = 0;
         _this.option.imgs.forEach(function (src) {
-          var img = new window.Image();
+          var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
           img.onload = function () {
             _this.imgMap[src] = img;
             loadedCount++;
@@ -749,7 +749,7 @@ var Sprite = function (_DisplayObject) {
 
         rectLen > 4 && (this.originX = this.rect[2] * this.rect[4]);
         rectLen > 5 && (this.originY = this.rect[3] * this.rect[5]);
-        rectLen > 6 && (this.img = this.imgMap[this.option[this.rect[6]]]);
+        rectLen > 6 && (this.img = this.imgMap[this.option.imgs[this.rect[6]]]);
 
         if (index === len - 1 && (!this.endTime || Date.now() - this.endTime > this.interval)) {
           this.endTime = Date.now();
@@ -842,7 +842,7 @@ var Bitmap = function (_DisplayObject) {
         onLoad && onLoad.call(_this);
         _this.width = _this.img.width;
         _this.height = _this.img.height;
-      } else if (_util2.default.isWx) {
+      } else if (_util2.default.isWeapp) {
         _util2.default.getImageInWx(img, function (result) {
           _this.img = result.img;
           if (!_this.rect) {
@@ -850,7 +850,7 @@ var Bitmap = function (_DisplayObject) {
           }
         });
       } else {
-        _this.img = new window.Image();
+        _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
         _this.visible = false;
         _this.img.onload = function () {
           _this.visible = true;
@@ -1048,7 +1048,8 @@ var root = getGlobal();
 exports.default = {
   getImageInWx: getImageInWx,
   root: root,
-  isWx: typeof wx !== 'undefined'
+  isWeapp: typeof wx !== 'undefined' && !wx.createCanvas,
+  isWegame: typeof wx !== 'undefined' && wx.createCanvas
 };
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
 
@@ -1498,7 +1499,7 @@ var sprite = new _index2.default.Sprite({
     animationEnd: function animationEnd() {}
 });
 
-var rect = new _index2.default.Rect(200, 100);
+var rect = new _index2.default.Rect(200, 100, { fillStyle: 'black' });
 var text = new _index2.default.Text('Drag Me!', {
     color: 'white',
     font: '20px Arial'
@@ -2730,64 +2731,88 @@ var Stage = function (_Group) {
     var _this = _possibleConstructorReturn(this, (Stage.__proto__ || Object.getPrototypeOf(Stage)).call(this));
 
     var len = arguments.length;
-    if (len === 1) {
-      _this.canvas = typeof width === 'string' ? document.querySelector(width) : width;
+    _this.isWegame = typeof wx !== 'undefined' && wx.createCanvas;
+    if (len === 0) {
+      // wegame
+      _this.canvas = wx.createCanvas();
+      _this.disableMoveDetection = true;
     } else if (len === 4) {
       var _ret;
 
       // weapp
       return _ret = new _weStage2.default(arguments[0], arguments[1], arguments[2], arguments[3]), _possibleConstructorReturn(_this, _ret);
     } else {
-      _this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo;
-      if (_this.renderTo.tagName === 'CANVAS') {
-        _this.canvas = _this.renderTo;
-        _this.canvas.width = width;
-        _this.canvas.height = height;
+      if (len === 1) {
+        _this.canvas = typeof width === 'string' ? document.querySelector(width) : width;
       } else {
-        _this.canvas = document.createElement('canvas');
-        _this.canvas.width = width;
-        _this.canvas.height = height;
-        _this.renderTo.appendChild(_this.canvas);
+        _this.renderTo = typeof renderTo === 'string' ? document.querySelector(renderTo) : renderTo;
+        if (_this.renderTo.tagName === 'CANVAS') {
+          _this.canvas = _this.renderTo;
+          _this.canvas.width = width;
+          _this.canvas.height = height;
+        } else {
+          _this.canvas = document.createElement('canvas');
+          _this.canvas.width = width;
+          _this.canvas.height = height;
+          _this.renderTo.appendChild(_this.canvas);
+        }
       }
+      // get rect again when trigger onscroll onresize event!?
+      _this._boundingClientRect = _this.canvas.getBoundingClientRect();
+
+      _this.offset = _this._getOffset(_this.canvas);
     }
     _this.renderer = new _renderer2.default(_this.canvas);
-    _this.canvas.addEventListener('click', function (evt) {
-      return _this._handleClick(evt);
-    });
-    _this.canvas.addEventListener('mousedown', function (evt) {
-      return _this._handleMouseDown(evt);
-    });
-    _this.canvas.addEventListener('mousemove', function (evt) {
-      return _this._handleMouseMove(evt);
-    });
-    _this.canvas.addEventListener('mouseup', function (evt) {
-      return _this._handleMouseUp(evt);
-    });
-    _this.canvas.addEventListener('mouseout', function (evt) {
-      return _this._handleMouseOut(evt);
-    });
-    _this.canvas.addEventListener('touchstart', function (evt) {
-      return _this._handleMouseDown(evt);
-    });
-    _this.canvas.addEventListener('touchmove', function (evt) {
-      return _this._handleMouseMove(evt);
-    });
-    _this.canvas.addEventListener('touchend', function (evt) {
-      return _this._handleMouseUp(evt);
-    });
+    if (_this.isWegame) {
+      wx.onTouchStart(function (evt) {
+        return _this._handleMouseDown(evt);
+      });
 
-    _this.canvas.addEventListener('dblclick', function (evt) {
-      return _this._handlDblClick(evt);
-    });
-    // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+      wx.onTouchMove(function (evt) {
+        return _this._handleMouseMove(evt);
+      });
+
+      wx.onTouchEnd(function (evt) {
+        return _this._handleMouseUp(evt);
+      });
+    } else {
+      _this.canvas.addEventListener('click', function (evt) {
+        return _this._handleClick(evt);
+      });
+      _this.canvas.addEventListener('mousedown', function (evt) {
+        return _this._handleMouseDown(evt);
+      });
+      _this.canvas.addEventListener('mousemove', function (evt) {
+        return _this._handleMouseMove(evt);
+      });
+      _this.canvas.addEventListener('mouseup', function (evt) {
+        return _this._handleMouseUp(evt);
+      });
+      _this.canvas.addEventListener('mouseout', function (evt) {
+        return _this._handleMouseOut(evt);
+      });
+      _this.canvas.addEventListener('touchstart', function (evt) {
+        return _this._handleMouseDown(evt);
+      });
+      _this.canvas.addEventListener('touchmove', function (evt) {
+        return _this._handleMouseMove(evt);
+      });
+      _this.canvas.addEventListener('touchend', function (evt) {
+        return _this._handleMouseUp(evt);
+      });
+
+      _this.canvas.addEventListener('dblclick', function (evt) {
+        return _this._handlDblClick(evt);
+      });
+      // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+    }
 
     _this.borderTopWidth = 0;
     _this.borderLeftWidth = 0;
 
     _this.hitAABB = false;
     _this._hitRender = new _hitRender2.default();
-    // get rect again when trigger onscroll onresize event!?
-    _this._boundingClientRect = _this.canvas.getBoundingClientRect();
+
     _this._overObject = null;
 
     _this._scaleX = 1;
@@ -2802,8 +2827,6 @@ var Stage = function (_Group) {
     _this.willDragObject = null;
     _this.preStageX = null;
     _this.preStageY = null;
-
-    _this.offset = _this._getOffset(_this.canvas);
     return _this;
   }
 
@@ -2873,6 +2896,7 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseMove',
     value: function _handleMouseMove(evt) {
+      if (this.disableMoveDetection) return;
       var obj = this._getObjectUnderPoint(evt);
       var mockEvt = new _event2.default();
       mockEvt.stageX = evt.stageX;
@@ -2942,7 +2966,7 @@ var Stage = function (_Group) {
   }, {
     key: '_computeStageXY',
     value: function _computeStageXY(evt) {
-      this._boundingClientRect = this.canvas.getBoundingClientRect();
+      this._boundingClientRect = this.isWegame ? { left: 0, top: 0 } : this.canvas.getBoundingClientRect();
       if (evt.touches || evt.changedTouches) {
         var firstTouch = evt.touches[0] || evt.changedTouches[0];
         if (firstTouch) {
@@ -2957,6 +2981,9 @@ var Stage = function (_Group) {
   }, {
     key: '_getOffset',
     value: function _getOffset(el) {
+      if (this.isWegame) {
+        return [0, 0];
+      }
       var _t = 0,
           _l = 0;
       if (document.documentElement.getBoundingClientRect && el.getBoundingClientRect) {
@@ -2977,6 +3004,16 @@ var Stage = function (_Group) {
     key: 'update',
     value: function update() {
       this.renderer.update(this);
+    }
+  }, {
+    key: 'on',
+    value: function on(type, fn) {
+      this.canvas.addEventListener(type, fn);
+    }
+  }, {
+    key: 'off',
+    value: function off(type, fn) {
+      this.canvas.removeEventListener(type, fn);
     }
   }]);
 
@@ -3452,7 +3489,12 @@ var HitRender = function (_Render) {
 
     var _this = _possibleConstructorReturn(this, (HitRender.__proto__ || Object.getPrototypeOf(HitRender)).call(this));
 
-    _this.canvas = document.createElement('canvas');
+    if (typeof wx !== 'undefined' && wx.createCanvas) {
+      _this.canvas = wx.createCanvas();
+    } else {
+      _this.canvas = document.createElement('canvas');
+    }
+
     _this.canvas.width = 1;
     _this.canvas.height = 1;
     _this.ctx = _this.canvas.getContext('2d');
@@ -4017,10 +4059,7 @@ var Rect = function (_Graphics) {
 
     _this.width = width;
     _this.height = height;
-    option = option || {};
-    _this.empty = option.empty;
-    _this.color = option.color;
-    _this.border = option.border;
+    _this.option = option || {};
     return _this;
   }
 
@@ -4028,11 +4067,14 @@ var Rect = function (_Graphics) {
     key: 'render',
     value: function render(ctx) {
       this.clear();
-      if (!this.empty) {
-        this.fillStyle(this.color);
+
+      if (this.option.fillStyle) {
+        this.fillStyle(this.option.fillStyle);
         this.fillRect(0, 0, this.width, this.height);
-      } else {
-        this.strokeStyle(this.color);
+      }
+
+      if (this.option.strokeStyle) {
+        this.strokeStyle(this.option.strokeStyle);
         this.strokeRect(0, 0, this.width, this.height);
       }
       _get(Rect.prototype.__proto__ || Object.getPrototypeOf(Rect.prototype), 'render', this).call(this, ctx);
@@ -4325,7 +4367,7 @@ var queue = [],
     vendors = ['ms', 'moz', 'webkit', 'o'],
     x = 0;
 
-if (window) {
+if (typeof window !== 'undefined') {
   for (; x < vendors.length && !window.requestAnimationFrame; ++x) {
     window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
     window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];

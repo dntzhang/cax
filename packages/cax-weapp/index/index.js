@@ -5,7 +5,9 @@ Page({
     const info = wx.getSystemInfoSync()
     const stage = new cax.Stage(info.windowWidth, info.windowHeight / 2, 'myCanvas', this)
 
-    const rect = new cax.Rect(100, 100)
+    const rect = new cax.Rect(100, 100, {
+      fillStyle: 'black'
+    })
 
     rect.originX = 50
     rect.originY = 50
@@ -28,10 +30,13 @@ Page({
     rect.on('tap', () => {
       console.log('rect tap')
     })
+    console.log(111)
 
     stage.add(rect)
 
-    const rect2 = new cax.Rect(100, 100)
+    const rect2 = new cax.Rect(100, 100, {
+      fillStyle: 'black'
+    })
 
     // rect.originX = 50
     // rect.originY = 50

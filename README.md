@@ -21,6 +21,7 @@
 ---
 
 - [一分钟入门小程序 cax 使用](#一分钟入门小程序-cax-使用)
+- [一分钟入门小游戏 cax 使用](#一分钟入门小游戏-cax-使用)
 - [一分钟入门 Web cax 使用](#一分钟入门-web-cax-使用)
 - [内置对象](#内置对象)
   - [Group](#group)
@@ -86,7 +87,9 @@ Page({
   onLoad: function () {
     //比 web 里使用 cax 多传递 this，this 代表 Page 或 Component 的实例
     const stage = new cax.Stage(200, 200, 'myCanvas', this)
-    const rect = new cax.Rect(100, 100)
+    const rect = new cax.Rect(100, 100, {
+      fillStyle: 'black'
+    })
     
     rect.originX = 50
     rect.originY = 50
@@ -140,7 +143,9 @@ npm i cax
 import cax from 'cax'
 
 const stage = new cax.Stage(200, 200, '#renderTo')
-const rect = new cax.Rect(100, 100)
+const rect = new cax.Rect(100, 100, {
+  fillStyle: 'black'
+})
 
 stage.add(rect)
 stage.update()
@@ -159,7 +164,9 @@ stage.update()
 
 ```js
 const group = new cax.Group()
-const rect = new cax.Rect(100, 100)
+const rect = new cax.Rect(100, 100 {
+  fillStyle: 'black'
+})
 group.add(rect)
 stage.add(group)
 stage.update()
@@ -276,7 +283,9 @@ stage.add(graphics)
 #### Rect
 
 ``` js
-const rect = new cax.Rect(200, 100)
+const rect = new cax.Rect(200, 100, {
+  fillStyle: 'black'
+})
 ```
 
 #### Circel
