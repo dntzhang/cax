@@ -238,6 +238,14 @@ class Stage extends Group {
   update () {
     this.renderer.update(this)
   }
+
+  on(type, fn) {
+    this.canvas.addEventListener(type, fn)
+  }
+
+  off(type, fn) {
+    this.canvas.removeEventListener(type, fn)
+  }
 }
 
 export default Stage

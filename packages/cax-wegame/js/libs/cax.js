@@ -2878,6 +2878,16 @@ var Stage = function (_Group) {
     value: function update() {
       this.renderer.update(this);
     }
+  }, {
+    key: 'on',
+    value: function on(type, fn) {
+      this.canvas.addEventListener(type, fn);
+    }
+  }, {
+    key: 'off',
+    value: function off(type, fn) {
+      this.canvas.removeEventListener(type, fn);
+    }
   }]);
 
   return Stage;
