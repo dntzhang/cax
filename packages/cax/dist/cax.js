@@ -4226,7 +4226,7 @@ var queue = [],
     vendors = ['ms', 'moz', 'webkit', 'o'],
     x = 0;
 
-if (window) {
+if (typeof window !== 'undefined') {
   for (; x < vendors.length && !window.requestAnimationFrame; ++x) {
     window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
     window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
