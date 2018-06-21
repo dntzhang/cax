@@ -425,7 +425,7 @@ cax.To.get(bitmap)
     .end(function () {
         console.log(" task three has completed!")
     })
-    .start();
+    .start()
 ```
 
 当然，也可以通过 set 方法支持任意属性的运动，如:
