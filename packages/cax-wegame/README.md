@@ -112,7 +112,7 @@ Page({
 
 效果如下所示:
 
-![](./asset/demo.jpg)
+![](../../asset/demo.jpg)
 
 除了 tap 事件，也可以帮 rect 绑定其他触摸事件：
 
@@ -131,9 +131,9 @@ rect.on('touchend', () => {
 ```
 ## 一分钟入门小游戏 cax 使用
 
-到 GitHub [下载 cax 小游戏示例](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame)，目录结构如下:
+到 GitHub [下载 cax 小游戏示例](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame)，目录结构和运行效果如下:
 
-![](./asset/wegame.png)
+![](../../asset/cax-wegame.png)
 
 ``` js
 const stage = new cax.Stage()
