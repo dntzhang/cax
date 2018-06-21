@@ -119,5 +119,8 @@ Page({
       rect.rotation++
       stage.update()
     }, 16)
+
+
+    cax.To.get(rect).to().x(200, 2000, cax.easing.elasticInOut).start()
   }
 })

@@ -66,3 +66,5 @@ text.y = screenHeight - 30
 text.x = 4
 text.alpha = 0.6
 stage.add(text)
+
+cax.To.get(text).to().x(100, 2000, cax.easing.elasticInOut).start()

@@ -1861,36 +1861,50 @@ var queue = [],
     now = Date.now,
     lastTime = 0,
     vendors = ['ms', 'moz', 'webkit', 'o'],
-    x = 0;
+    x = 0,
+    isWeapp = typeof wx !== 'undefined' && !wx.createCanvas,
+    isWegame = typeof wx !== 'undefined' && wx.createCanvas,
+    isBrowser = typeof window !== 'undefined';
 
-if (typeof window !== 'undefined') {
+var raf = isBrowser ? window.requestAnimationFrame : null;
+var caf = isBrowser ? window.cancelAnimationFrame : null;
+
+function mockRaf(callback, element) {
+  var currTime = now();
+  var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+  var id = setTimeout(function () {
+    callback(currTime + timeToCall);
+  }, timeToCall);
+  lastTime = currTime + timeToCall;
+  return id;
+}
+
+function mockCaf(id) {
+  clearTimeout(id);
+}
+
+if (isBrowser) {
+
+  window.setRafInterval = setRafInterval;
+  window.clearRafInterval = clearRafInterval;
 
   for (; x < vendors.length && !window.requestAnimationFrame; ++x) {
     window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
     window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
   }
 
-  window.setRafInterval = setRafInterval;
-  window.clearRafInterval = clearRafInterval;
-
-  if (!window.requestAnimationFrame) {
-    var _requestAnimationFrame = function _requestAnimationFrame(callback, element) {
-      var currTime = now();
-      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      var id = setTimeout(function () {
-        callback(currTime + timeToCall);
-      }, timeToCall);
-      lastTime = currTime + timeToCall;
-      return id;
-    };
-
-    var _cancelAnimationFrame = function _cancelAnimationFrame(id) {
-      clearTimeout(id);
-    };
-
-    window.cancelAnimationFrame = _cancelAnimationFrame;
-    window.requestAnimationFrame = _requestAnimationFrame;
+  if (!raf) {
+    raf = mockRaf;
+    caf = mockCaf;
+    window.requestAnimationFrame = raf;
+    window.cancelAnimationFrame = caf;
   }
+} else if (isWeapp) {
+  raf = mockRaf;
+  caf = mockCaf;
+} else if (isWegame) {
+  raf = requestAnimationFrame;
+  caf = cancelAnimationFrame;
 }
 
 function setRafInterval(fn, interval) {
@@ -1898,7 +1912,7 @@ function setRafInterval(fn, interval) {
   queue.push({ id: id, fn: fn, interval: interval, lastTime: now() });
   if (!ticking) {
     var tick = function tick() {
-      tickId = requestAnimationFrame(tick);
+      tickId = raf(tick);
       each(queue, function (item) {
         if (item.interval < 17 || now() - item.lastTime >= item.interval) {
           item.fn();
@@ -1924,7 +1938,7 @@ function clearRafInterval(id) {
   }
 
   if (queue.length === 0) {
-    cancelAnimationFrame(tickId);
+    caf(tickId);
     ticking = false;
   }
 }

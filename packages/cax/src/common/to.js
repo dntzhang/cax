@@ -208,7 +208,7 @@ class To {
     if (this.index < len) {
       this.exec(this.cmds[this.index], this.index === len - 1)
     } else {
-        clearRafInterval(this.loop)
+      clearRafInterval(this.loop)
     }
     return this
   }
