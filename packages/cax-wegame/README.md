@@ -1,4 +1,4 @@
-# Cax [![](https://badge.fury.io/js/cax.svg)](https://badge.fury.io/js/cax) 
+# Cax [![](https://img.shields.io/npm/v/cax.svg)](https://www.npmjs.com/package/cax) 
 
 > 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
 
@@ -38,6 +38,7 @@
 - [属性](#属性)
   - [Transform](#transform)
   - [Alpha](#alpha)
+  - [CompositeOperation](#compositeOperation)
   - [Cursor](#cursor)
 - [事件](#事件)
 	- [小程序事件](#小程序事件) 
@@ -109,7 +110,7 @@ Page({
 
 效果如下所示:
 
-![](../../asset/demo.jpg)
+![](./asset/demo.jpg)
 
 除了 tap 事件，也可以帮 rect 绑定其他触摸事件：
 
@@ -130,7 +131,7 @@ rect.on('touchend', () => {
 
 到 GitHub [下载 cax 小游戏示例](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame)，目录结构如下:
 
-![](../../asset/wegame.png)
+![](./asset/wegame.png)
 
 ``` js
 const stage = new cax.Stage()
@@ -168,7 +169,7 @@ stage.update()
 
 ### Group
 
-用于分组，可以 group 可以嵌套 group，父容器的属性会叠加在子属性上, 比如：
+用于分组， group 也可以嵌套 group，父容器的属性会叠加在子属性上, 比如：
 
 * group 的 x 是 100, group 里的 bitmap 的 x 是 200， 最后 bitmap 渲染到 stage 上的 x 是 300
 * group 的 alpha 是 0.7, group 里的 bitmap 的 alpha 是 0.6, 最后 bitmap 渲染到 stage 上的 alpha 是 0.42
@@ -182,6 +183,8 @@ group.add(rect)
 stage.add(group)
 stage.update()
 ```
+
+group 拥有常用的 add 和 remove 方法进行元素的增加和删除。先 add 的会先绘制，所有后 add 的会盖在先 add 的上面。
 
 ### Bitmap
 
@@ -289,7 +292,7 @@ stage.add(graphics)
 
 ### Shape
 
-与 Graphics 不同的是， Shape 一般拥有有限的宽高。下面这些属于 Shape。
+与 Graphics 不同的是， Shape 一般拥有有限的宽高，所以可以使用离屏 Canvas 进行缓存。下面这些属于 Shape。
 
 #### Rect
 
@@ -310,6 +313,8 @@ const circel = new cax.Circel(10)
 ``` js
 const ellipse = new cax.Ellipse(10)
 ```
+
+注意：从技术上小游戏和 Web 可以离屏 Canvas，小程序不行，因为小程序不支持动态创建离屏 Canvas。
 
 ### Element
 
@@ -348,6 +353,14 @@ const button = new cax.Button({
 | alpha | 元素的透明度 |
 
 注意这里父子都设置了 alpha 会进行乘法叠加。
+
+### compositeOperation 
+
+|属性名      |描述   |
+|---|---|
+| compositeOperation | 源图像绘制到目标图像上的叠加模式 |
+
+注意这里如果自身没有定义 compositeOperation 会进行向上查找，找到最近的定义了 compositeOperation 的父容器作为自己的 compositeOperation。
 
 ### Cursor
 
@@ -459,6 +472,9 @@ const button = new cax.Button({
   text: "Click Me!"
 })
 ```
+
+一般情况下，稍微复杂组合体都建议使用继承自 Group，这样利于扩展也方便管理自身内部的元件。
+可以看到小游戏的 DEMO 里的 [Player、Bullet、Enemy、Background](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame/js) 全都是继承自 Group。
 
 ## License
 
