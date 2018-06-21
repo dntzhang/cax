@@ -21,7 +21,7 @@ stage.add(bitmap)
 
 cax.To.get(bitmap)
     .to()
-    .set("y", 240, 2000, cax.easing.elasticInOut)
+    .y(240, 2000, cax.easing.elasticInOut)
     .rotation(240, 2000, cax.easing.elasticInOut)
     .end(function () {
         console.log(" task one has completed!")

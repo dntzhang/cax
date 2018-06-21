@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -432,15 +432,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _matrix2d = __webpack_require__(19);
+var _matrix2d = __webpack_require__(20);
 
 var _matrix2d2 = _interopRequireDefault(_matrix2d);
 
-var _eventDispatcher = __webpack_require__(20);
+var _eventDispatcher = __webpack_require__(21);
 
 var _eventDispatcher2 = _interopRequireDefault(_eventDispatcher);
 
-var _uid = __webpack_require__(21);
+var _uid = __webpack_require__(22);
 
 var _uid2 = _interopRequireDefault(_uid);
 
@@ -1051,7 +1051,7 @@ exports.default = {
   isWeapp: typeof wx !== 'undefined' && !wx.createCanvas,
   isWegame: typeof wx !== 'undefined' && wx.createCanvas
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
 
 /***/ }),
 /* 10 */
@@ -1809,7 +1809,7 @@ TWEEN.Interpolation = {
     root.TWEEN = TWEEN;
   }
 })(undefined);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
 
 /***/ }),
 /* 11 */
@@ -1821,10 +1821,123 @@ TWEEN.Interpolation = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.setRafInterval = setRafInterval;
+exports.clearRafInterval = clearRafInterval;
+/*!
+ *  raf-interval v0.3.0 By dntzhang
+ *  Github: https://github.com/dntzhang/raf-interval
+ *  MIT Licensed.
+ */
+// ;(function () {
+if (!Date.now) {
+  Date.now = function now() {
+    return new Date().getTime();
+  };
+}
+
+var queue = [],
+    id = -1,
+    ticking = false,
+    tickId = null,
+    now = Date.now,
+    lastTime = 0,
+    vendors = ['ms', 'moz', 'webkit', 'o'],
+    x = 0;
+
+if (typeof window !== 'undefined') {
+  for (; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+  }
+
+  window.requestAnimationFrame = requestAnimationFrame;
+  window.cancelAnimationFrame = cancelAnimationFrame;
+  window.setRafInterval = setRafInterval;
+  window.clearRafInterval = clearRafInterval;
+}
+
+// if (window && !window.requestAnimationFrame) {
+function requestAnimationFrame(callback, element) {
+  var currTime = now();
+  var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+  var id = setTimeout(function () {
+    callback(currTime + timeToCall);
+  }, timeToCall);
+  lastTime = currTime + timeToCall;
+  return id;
+}
+// }
+
+// if (!window.cancelAnimationFrame) {
+function cancelAnimationFrame(id) {
+  clearTimeout(id);
+}
+// }
+
+function setRafInterval(fn, interval) {
+  id++;
+  queue.push({ id: id, fn: fn, interval: interval, lastTime: now() });
+  if (!ticking) {
+    var tick = function tick() {
+      tickId = requestAnimationFrame(tick);
+      each(queue, function (item) {
+        if (item.interval < 17 || now() - item.lastTime >= item.interval) {
+          item.fn();
+          item.lastTime = now();
+        }
+      });
+    };
+    ticking = true;
+    tick();
+  }
+  return id;
+}
+
+function clearRafInterval(id) {
+  var i = 0,
+      len = queue.length;
+
+  for (; i < len; i++) {
+    if (id === queue[i].id) {
+      queue.splice(i, 1);
+      break;
+    }
+  }
+
+  if (queue.length === 0) {
+    cancelAnimationFrame(tickId);
+    ticking = false;
+  }
+}
+
+function each(arr, fn) {
+  if (Array.prototype.forEach) {
+    arr.forEach(fn);
+  } else {
+    var i = 0,
+        len = arr.length;
+    for (; i < len; i++) {
+      fn(arr[i], i);
+    }
+  }
+}
+
+// })()
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _canvasRender = __webpack_require__(22);
+var _canvasRender = __webpack_require__(23);
 
 var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
@@ -1960,7 +2073,7 @@ var Renderer = function () {
 exports.default = Renderer;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1976,11 +2089,11 @@ var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _renderer = __webpack_require__(11);
+var _renderer = __webpack_require__(12);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _wxHitRender = __webpack_require__(25);
+var _wxHitRender = __webpack_require__(26);
 
 var _wxHitRender2 = _interopRequireDefault(_wxHitRender);
 
@@ -2140,7 +2253,7 @@ var WeStage = function (_Group) {
 exports.default = WeStage;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2219,13 +2332,13 @@ var RoundedRect = function (_Shape) {
 exports.default = RoundedRect;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _index = __webpack_require__(15);
+var _index = __webpack_require__(16);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -2247,7 +2360,7 @@ bitmap.on('click', function () {
 
 stage.add(bitmap);
 
-_index2.default.To.get(bitmap).to().set("y", 240, 2000, _index2.default.easing.elasticInOut).rotation(240, 2000, _index2.default.easing.elasticInOut).end(function () {
+_index2.default.To.get(bitmap).to().y(240, 2000, _index2.default.easing.elasticInOut).rotation(240, 2000, _index2.default.easing.elasticInOut).end(function () {
     console.log(" task one has completed!");
 }).wait(500).to().rotation(0, 1400, _index2.default.easing.elasticInOut).end(function () {
     console.log(" task two has completed!");
@@ -2260,7 +2373,7 @@ _index2.default.setInterval(function () {
 }, 16);
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2274,15 +2387,15 @@ var _tween = __webpack_require__(10);
 
 var _tween2 = _interopRequireDefault(_tween);
 
-var _to = __webpack_require__(17);
+var _to = __webpack_require__(18);
 
 var _to2 = _interopRequireDefault(_to);
 
-var _stage = __webpack_require__(18);
+var _stage = __webpack_require__(19);
 
 var _stage2 = _interopRequireDefault(_stage);
 
-var _weStage = __webpack_require__(12);
+var _weStage = __webpack_require__(13);
 
 var _weStage2 = _interopRequireDefault(_weStage);
 
@@ -2306,39 +2419,39 @@ var _sprite = __webpack_require__(5);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-var _roundedRect = __webpack_require__(13);
+var _roundedRect = __webpack_require__(14);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
-var _arrowPath = __webpack_require__(26);
+var _arrowPath = __webpack_require__(27);
 
 var _arrowPath2 = _interopRequireDefault(_arrowPath);
 
-var _ellipse = __webpack_require__(27);
+var _ellipse = __webpack_require__(28);
 
 var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _button = __webpack_require__(28);
+var _button = __webpack_require__(29);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _rect = __webpack_require__(29);
+var _rect = __webpack_require__(30);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _circle = __webpack_require__(30);
+var _circle = __webpack_require__(31);
 
 var _circle2 = _interopRequireDefault(_circle);
 
-var _polygon = __webpack_require__(31);
+var _polygon = __webpack_require__(32);
 
 var _polygon2 = _interopRequireDefault(_polygon);
 
-var _equilateralPolygon = __webpack_require__(32);
+var _equilateralPolygon = __webpack_require__(33);
 
 var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
-var _rafInterval = __webpack_require__(33);
+var _rafInterval = __webpack_require__(11);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2387,7 +2500,7 @@ var cax = {
 exports.default = cax;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2580,7 +2693,7 @@ process.umask = function () {
 };
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2596,7 +2709,7 @@ var _tween = __webpack_require__(10);
 
 var _tween2 = _interopRequireDefault(_tween);
 
-var _rafInterval = __webpack_require__(33);
+var _rafInterval = __webpack_require__(11);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2991,7 +3104,7 @@ To.get = function (element) {
 exports.default = To;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3007,11 +3120,11 @@ var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _renderer = __webpack_require__(11);
+var _renderer = __webpack_require__(12);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _hitRender = __webpack_require__(24);
+var _hitRender = __webpack_require__(25);
 
 var _hitRender2 = _interopRequireDefault(_hitRender);
 
@@ -3019,7 +3132,7 @@ var _event = __webpack_require__(7);
 
 var _event2 = _interopRequireDefault(_event);
 
-var _weStage = __webpack_require__(12);
+var _weStage = __webpack_require__(13);
 
 var _weStage2 = _interopRequireDefault(_weStage);
 
@@ -3332,7 +3445,7 @@ var Stage = function (_Group) {
 exports.default = Stage;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3461,7 +3574,7 @@ var Matrix2D = function () {
 exports.default = Matrix2D;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3588,7 +3701,7 @@ var EventDispatcher = function () {
 exports.default = EventDispatcher;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3608,7 +3721,7 @@ UID.get = function () {
 exports.default = UID;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3712,7 +3825,7 @@ var CanvasRender = function (_Render) {
 exports.default = CanvasRender;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3742,7 +3855,7 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3966,7 +4079,7 @@ var HitRender = function (_Render) {
 exports.default = HitRender;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4100,7 +4213,7 @@ var WxHitRender = function (_Render) {
 exports.default = WxHitRender;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4196,7 +4309,7 @@ var ArrowPath = function (_Shape) {
 exports.default = ArrowPath;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4275,7 +4388,7 @@ var Ellipse = function (_Shape) {
 exports.default = Ellipse;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4293,7 +4406,7 @@ var _text = __webpack_require__(4);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _roundedRect = __webpack_require__(13);
+var _roundedRect = __webpack_require__(14);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
@@ -4332,7 +4445,7 @@ var Button = function (_Group) {
 exports.default = Button;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4396,7 +4509,7 @@ var Rect = function (_Graphics) {
 exports.default = Rect;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4462,7 +4575,7 @@ var Circle = function (_Shape) {
 exports.default = Circle;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4536,7 +4649,7 @@ var Polygon = function (_Shape) {
 exports.default = Polygon;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4642,119 +4755,6 @@ var EquilateralPolygon = function (_Shape) {
 }(_shape2.default);
 
 exports.default = EquilateralPolygon;
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.setRafInterval = setRafInterval;
-exports.clearRafInterval = clearRafInterval;
-/*!
- *  raf-interval v0.3.0 By dntzhang
- *  Github: https://github.com/dntzhang/raf-interval
- *  MIT Licensed.
- */
-// ;(function () {
-if (!Date.now) {
-  Date.now = function now() {
-    return new Date().getTime();
-  };
-}
-
-var queue = [],
-    id = -1,
-    ticking = false,
-    tickId = null,
-    now = Date.now,
-    lastTime = 0,
-    vendors = ['ms', 'moz', 'webkit', 'o'],
-    x = 0;
-
-if (typeof window !== 'undefined') {
-  for (; x < vendors.length && !window.requestAnimationFrame; ++x) {
-    window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-    window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
-  }
-
-  window.requestAnimationFrame = requestAnimationFrame;
-  window.cancelAnimationFrame = cancelAnimationFrame;
-  window.setRafInterval = setRafInterval;
-  window.clearRafInterval = clearRafInterval;
-}
-
-// if (window && !window.requestAnimationFrame) {
-function requestAnimationFrame(callback, element) {
-  var currTime = now();
-  var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-  var id = setTimeout(function () {
-    callback(currTime + timeToCall);
-  }, timeToCall);
-  lastTime = currTime + timeToCall;
-  return id;
-}
-// }
-
-// if (!window.cancelAnimationFrame) {
-function cancelAnimationFrame(id) {
-  clearTimeout(id);
-}
-// }
-
-function setRafInterval(fn, interval) {
-  id++;
-  queue.push({ id: id, fn: fn, interval: interval, lastTime: now() });
-  if (!ticking) {
-    var tick = function tick() {
-      tickId = requestAnimationFrame(tick);
-      each(queue, function (item) {
-        if (item.interval < 17 || now() - item.lastTime >= item.interval) {
-          item.fn();
-          item.lastTime = now();
-        }
-      });
-    };
-    ticking = true;
-    tick();
-  }
-  return id;
-}
-
-function clearRafInterval(id) {
-  var i = 0,
-      len = queue.length;
-
-  for (; i < len; i++) {
-    if (id === queue[i].id) {
-      queue.splice(i, 1);
-      break;
-    }
-  }
-
-  if (queue.length === 0) {
-    cancelAnimationFrame(tickId);
-    ticking = false;
-  }
-}
-
-function each(arr, fn) {
-  if (Array.prototype.forEach) {
-    arr.forEach(fn);
-  } else {
-    var i = 0,
-        len = arr.length;
-    for (; i < len; i++) {
-      fn(arr[i], i);
-    }
-  }
-}
-
-// })()
 
 /***/ })
 /******/ ]);

@@ -2,7 +2,7 @@
 
 > 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
 
-* [点我看看 DEMO](https://dntzhang.github.io/cax)
+* [综合 DEMO](https://dntzhang.github.io/cax) [运动 DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
 * 小程序 DEMO 正在审核中敬请期待
 * 小游戏 DEMO 正在审核中敬请期待
 
@@ -17,7 +17,7 @@
 * 支持 Canvas 元素管理
 * 支持 Canvas 元素事件体系
 * 图灵完毕的 group 嵌套体系
-* 内置 tween 运动能力
+* 内置 tween 和 to 的运动能力
 * 内置文本、位图、序列帧、绘图对象和多种矢量绘制对象
 
 ---
@@ -45,6 +45,7 @@
 - [事件](#事件)
 	- [小程序事件](#小程序事件) 
   - [Web 事件](#web-事件) 
+- [运动](#运动)
 - [自定义对象](#自定义对象)
 	- [自定义 Shape](#自定义-shape) 
   - [自定义 Element](#自定义-element) 
@@ -398,6 +399,48 @@ const button = new cax.Button({
 | touchmove | 手指触摸后移动 |
 | touchend | 手指触摸动作结束 |
 | drag | 拖拽 |
+
+## 运动
+
+cax 内置了 to 的能力以连缀的方式写运动效果：
+
+``` js
+cax.To.get(bitmap)
+    .to()
+    .y(240, 2000, cax.easing.elasticInOut)
+    .rotation(240, 2000, cax.easing.elasticInOut)
+    .end(function () {
+        console.log(" task one has completed!")
+    })
+    .wait(500)
+    .to()
+    .rotation(0, 1400, cax.easing.elasticInOut)
+    .end(function () {
+        console.log(" task two has completed!")
+    })
+    .wait(500)
+    .to()
+    .scaleX(1, 1400, cax.easing.elasticInOut)
+    .scaleY(1, 1400, cax.easing.elasticInOut)
+    .end(function () {
+        console.log(" task three has completed!")
+    })
+    .start();
+```
+
+当然，也可以通过 set 方法支持任意属性的运动，如:
+
+``` js
+.set('y', 240, 2000, cax.easing.elasticInOut)
+``` 
+
+等同于
+
+``` js
+.y(240, 2000, cax.easing.elasticInOut)
+```
+
+[演示地址](http://dntzhang.github.io/cax/packages/cax/examples/to/)
 
 ## 自定义对象
 
