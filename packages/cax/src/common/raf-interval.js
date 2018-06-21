@@ -3,7 +3,7 @@
  *  Github: https://github.com/dntzhang/raf-interval
  *  MIT Licensed.
  */
-// ;(function () {
+
 if (!Date.now) {
   Date.now = function now () {
     return new Date().getTime()
@@ -19,36 +19,38 @@ var queue = [],
   vendors = ['ms', 'moz', 'webkit', 'o'],
   x = 0
 
+
 if (typeof window !== 'undefined') {
+
   for (; x < vendors.length && !window.requestAnimationFrame; ++x) {
     window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame']
     window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
-        window[vendors[x] + 'CancelRequestAnimationFrame']
+      window[vendors[x] + 'CancelRequestAnimationFrame']
   }
 
-  window.requestAnimationFrame = requestAnimationFrame
-  window.cancelAnimationFrame = cancelAnimationFrame
   window.setRafInterval = setRafInterval
   window.clearRafInterval = clearRafInterval
-}
 
-// if (window && !window.requestAnimationFrame) {
-function requestAnimationFrame (callback, element) {
-  var currTime = now()
-  var timeToCall = Math.max(0, 16 - (currTime - lastTime))
-  var id = setTimeout(function () {
-    callback(currTime + timeToCall)
-  }, timeToCall)
-  lastTime = currTime + timeToCall
-  return id
-}
-// }
+  if (!window.requestAnimationFrame) {
+    function requestAnimationFrame(callback, element) {
+      var currTime = now()
+      var timeToCall = Math.max(0, 16 - (currTime - lastTime))
+      var id = setTimeout(function () {
+        callback(currTime + timeToCall)
+      }, timeToCall)
+      lastTime = currTime + timeToCall
+      return id
+    }
 
-// if (!window.cancelAnimationFrame) {
-function cancelAnimationFrame (id) {
-  clearTimeout(id)
+    function cancelAnimationFrame(id) {
+      clearTimeout(id)
+    }
+
+    window.cancelAnimationFrame = cancelAnimationFrame
+    window.requestAnimationFrame = requestAnimationFrame
+
+  }
 }
-// }
 
 export function setRafInterval (fn, interval) {
   id++
@@ -97,5 +99,3 @@ function each (arr, fn) {
     }
   }
 }
-
-// })()

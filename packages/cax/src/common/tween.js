@@ -79,12 +79,17 @@ TWEEN.nextId = function () {
 // Include a performance.now polyfill.
 // In node.js, use process.hrtime.
 if (typeof (window) === 'undefined' && typeof (process) !== 'undefined') {
-  TWEEN.now = function () {
-    var time = process.hrtime()
-
-    // Convert [seconds, nanoseconds] to milliseconds.
-    return time[0] * 1000 + time[1] / 1000000
+  if(typeof wx !== 'undefined'){
+    TWEEN.now = Date.now
+  }else{
+    TWEEN.now = function () {
+      var time = process.hrtime()
+  
+      // Convert [seconds, nanoseconds] to milliseconds.
+      return time[0] * 1000 + time[1] / 1000000
+    }
   }
+  
 } else if (typeof (window) !== 'undefined' &&
 // In a browser, use window.performance.now if it is available.
          window.performance !== undefined && window.performance.now !== undefined) {
