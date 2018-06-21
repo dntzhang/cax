@@ -1143,12 +1143,16 @@ TWEEN.nextId = function () {
 // Include a performance.now polyfill.
 // In node.js, use process.hrtime.
 if (typeof window === 'undefined' && typeof process !== 'undefined') {
-  TWEEN.now = function () {
-    var time = process.hrtime();
+  if (typeof wx !== 'undefined') {
+    TWEEN.now = Date.now;
+  } else {
+    TWEEN.now = function () {
+      var time = process.hrtime();
 
-    // Convert [seconds, nanoseconds] to milliseconds.
-    return time[0] * 1000 + time[1] / 1000000;
-  };
+      // Convert [seconds, nanoseconds] to milliseconds.
+      return time[0] * 1000 + time[1] / 1000000;
+    };
+  }
 } else if (typeof window !== 'undefined' &&
 // In a browser, use window.performance.now if it is available.
 window.performance !== undefined && window.performance.now !== undefined) {
@@ -1828,7 +1832,7 @@ exports.clearRafInterval = clearRafInterval;
  *  Github: https://github.com/dntzhang/raf-interval
  *  MIT Licensed.
  */
-// ;(function () {
+
 if (!Date.now) {
   Date.now = function now() {
     return new Date().getTime();
@@ -1842,22 +1846,15 @@ var queue = [],
     now = Date.now,
     lastTime = 0,
     vendors = ['ms', 'moz', 'webkit', 'o'],
-    x = 0;
+    x = 0,
+    isWeapp = typeof wx !== 'undefined' && !wx.createCanvas,
+    isWegame = typeof wx !== 'undefined' && wx.createCanvas,
+    isBrowser = typeof window !== 'undefined';
 
-if (typeof window !== 'undefined') {
-  for (; x < vendors.length && !window.requestAnimationFrame; ++x) {
-    window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-    window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
-  }
+var raf = isBrowser ? window.requestAnimationFrame : null;
+var caf = isBrowser ? window.cancelAnimationFrame : null;
 
-  window.requestAnimationFrame = requestAnimationFrame;
-  window.cancelAnimationFrame = cancelAnimationFrame;
-  window.setRafInterval = setRafInterval;
-  window.clearRafInterval = clearRafInterval;
-}
-
-// if (window && !window.requestAnimationFrame) {
-function requestAnimationFrame(callback, element) {
+function mockRaf(callback, element) {
   var currTime = now();
   var timeToCall = Math.max(0, 16 - (currTime - lastTime));
   var id = setTimeout(function () {
@@ -1866,20 +1863,40 @@ function requestAnimationFrame(callback, element) {
   lastTime = currTime + timeToCall;
   return id;
 }
-// }
 
-// if (!window.cancelAnimationFrame) {
-function cancelAnimationFrame(id) {
+function mockCaf(id) {
   clearTimeout(id);
 }
-// }
+
+if (isBrowser) {
+  window.setRafInterval = setRafInterval;
+  window.clearRafInterval = clearRafInterval;
+
+  for (; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+    window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+  }
+
+  if (!raf) {
+    raf = mockRaf;
+    caf = mockCaf;
+    window.requestAnimationFrame = raf;
+    window.cancelAnimationFrame = caf;
+  }
+} else if (isWeapp) {
+  raf = mockRaf;
+  caf = mockCaf;
+} else if (isWegame) {
+  raf = requestAnimationFrame;
+  caf = cancelAnimationFrame;
+}
 
 function setRafInterval(fn, interval) {
   id++;
   queue.push({ id: id, fn: fn, interval: interval, lastTime: now() });
   if (!ticking) {
     var tick = function tick() {
-      tickId = requestAnimationFrame(tick);
+      tickId = raf(tick);
       each(queue, function (item) {
         if (item.interval < 17 || now() - item.lastTime >= item.interval) {
           item.fn();
@@ -1905,7 +1922,7 @@ function clearRafInterval(id) {
   }
 
   if (queue.length === 0) {
-    cancelAnimationFrame(tickId);
+    caf(tickId);
     ticking = false;
   }
 }
@@ -1921,8 +1938,6 @@ function each(arr, fn) {
     }
   }
 }
-
-// })()
 
 /***/ }),
 /* 12 */
