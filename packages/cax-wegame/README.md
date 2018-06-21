@@ -2,7 +2,9 @@
 
 > 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
 
-[点我看看 DEMO](https://dntzhang.github.io/cax)
+* [点我看看 DEMO](https://dntzhang.github.io/cax)
+* 小程序 DEMO 正在审核中敬请期待
+* 小游戏 DEMO 正在审核中敬请期待
 
 ## 特性
 
@@ -38,7 +40,7 @@
 - [属性](#属性)
   - [Transform](#transform)
   - [Alpha](#alpha)
-  - [CompositeOperation](#compositeOperation)
+  - [CompositeOperation](#compositeoperation)
   - [Cursor](#cursor)
 - [事件](#事件)
 	- [小程序事件](#小程序事件) 
