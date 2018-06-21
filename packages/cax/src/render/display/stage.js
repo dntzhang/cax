@@ -136,7 +136,7 @@ class Stage extends Group {
   }
 
   _handleMouseMove (evt) {
-    if(this.disableMoveDetection) return
+    if (this.disableMoveDetection) return
     let obj = this._getObjectUnderPoint(evt)
     let mockEvt = new Event()
     mockEvt.stageX = evt.stageX
@@ -241,11 +241,11 @@ class Stage extends Group {
     this.renderer.update(this)
   }
 
-  on(type, fn) {
+  on (type, fn) {
     this.canvas.addEventListener(type, fn)
   }
 
-  off(type, fn) {
+  off (type, fn) {
     this.canvas.removeEventListener(type, fn)
   }
 }

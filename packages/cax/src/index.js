@@ -1,4 +1,5 @@
 import TWEEN from './common/tween'
+import To from './common/to'
 
 import Stage from './render/display/stage'
 import WeStage from './render/display/we-stage'
@@ -52,17 +53,7 @@ const cax = {
   clearInterval: clearRafInterval,
 
   caxCanvasId: 0,
-  stage: function (id, width, height, page) {
-    const c = page.selectComponent('#' + id)
-    c.setData({
-      width,
-      height
-    })
-
-    const stage = new cax.WeStage(c.getCaxCanvasId(), width, height, c)
-    c.stage = stage
-    return stage
-  }
+  To
 };
 
 ['Quadratic',

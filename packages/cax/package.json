@@ -1,6 +1,6 @@
 {
   "name": "cax",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "小程序和 Web 通用 Canvas 渲染引擎",
   "main": "dist/cax.js",
   "scripts": {
@@ -14,6 +14,7 @@
     "dag": "webpack -w",
     "bar-x": "webpack -w",
     "bar": "webpack -w",
+    "to": "webpack -w",
     "rect": "webpack -w",
     "radar": "webpack -w",
     "line": "webpack -w",
