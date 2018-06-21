@@ -1,6 +1,6 @@
 ## Cax 1.0.1
 
-# 给小程序、小游戏、Web 增加了 to.js 的运动能力
+* 给小程序、小游戏、Web 增加了 to.js 的运动能力
 
 ```js
 cax.To.get(bitmap)
