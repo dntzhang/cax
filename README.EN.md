@@ -4,7 +4,7 @@ English | [简体中文](./README.md)
 
 > Cross platform 2d rendering engine
 
-* [Simple DEMO](https://dntzhang.github.io/cax) | 
+* [Simple DEMO](https://dntzhang.github.io/cax) 
 * [Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
 
 ## Features
@@ -232,7 +232,7 @@ const button = new cax.Button({
 })
 ```
 
-## 属性
+## Property
 
 ### Transform
 
@@ -272,8 +272,6 @@ Notice that if you don't have a definition of compositeOperation to look up, fin
 
 
 ## Event
-
-
 
 |Name      |Describe   |
 |---|---|
