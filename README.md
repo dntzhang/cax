@@ -1,3 +1,5 @@
+简体中文 | [English](./README.EN.md) 
+
 # Cax [![](https://img.shields.io/npm/v/cax.svg)](https://www.npmjs.com/package/cax) 
 
 > 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
