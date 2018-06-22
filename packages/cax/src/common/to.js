@@ -14,82 +14,106 @@ class To {
     this.cycleCount = 0
   }
 
-  to () {
+  to (target, duration, easing) {
     this.cmds.push(['to'])
+    if(arguments.length !== 0){
+      for(let key in target){
+        this.set(key, target[key], duration, easing)
+      }
+    }
     return this
   }
-  set (prop, value, time, ease) {
-    this.cmds[this.cmds.length - 1].push([prop, [value, time, ease]])
+
+  set (prop, value, duration, easing) {
+    this.cmds[this.cmds.length - 1].push([prop, [value, duration, easing]])
     return this
   }
+
   x () {
     this.cmds[this.cmds.length - 1].push(['x', arguments])
     return this
   }
+
   y () {
     this.cmds[this.cmds.length - 1].push(['y', arguments])
     return this
   }
+
   z () {
     this.cmds[this.cmds.length - 1].push(['z', arguments])
     return this
   }
+
   rotation () {
     this.cmds[this.cmds.length - 1].push(['rotation', arguments])
     return this
   }
+
   scaleX () {
     this.cmds[this.cmds.length - 1].push(['scaleX', arguments])
     return this
   }
+
   scaleY () {
     this.cmds[this.cmds.length - 1].push(['scaleY', arguments])
     return this
   }
+
   skewX () {
     this.cmds[this.cmds.length - 1].push(['skewX', arguments])
     return this
   }
+
   skewY () {
     this.cmds[this.cmds.length - 1].push(['skewY', arguments])
     return this
   }
+
   originX () {
     this.cmds[this.cmds.length - 1].push(['originX', arguments])
     return this
   }
+
   originY () {
     this.cmds[this.cmds.length - 1].push(['originY', arguments])
     return this
   }
+
   alpha () {
     this.cmds[this.cmds.length - 1].push(['alpha', arguments])
     return this
   }
+
   begin (fn) {
     this.cmds[this.cmds.length - 1].begin = fn
     return this
   }
+
   progress (fn) {
     this.cmds[this.cmds.length - 1].progress = fn
     return this
   }
+
   end (fn) {
     this.cmds[this.cmds.length - 1].end = fn
     return this
   }
+
   wait () {
     this.cmds.push(['wait', arguments])
     return this
   }
+
   then () {
     this.cmds.push(['then', arguments])
     return this
   }
+
   cycle () {
     this.cmds.push(['cycle', arguments])
     return this
   }
+
   rubber () {
     this.cmds = this.cmds.concat([['to', ['scaleX', {
       '0': 1.25,
@@ -130,6 +154,7 @@ class To {
     }]]])
     return this
   }
+
   bounceIn () {
     this.cmds = this.cmds.concat([['to', ['scaleX', {
       '0': 0,
@@ -170,6 +195,7 @@ class To {
     }]]])
     return this
   }
+
   flipInX () {
     this.cmds = this.cmds.concat([['to', ['rotateX', {
       '0': -90,
@@ -192,6 +218,7 @@ class To {
     }]]])
     return this
   }
+
   zoomOut () {
     this.cmds = this.cmds.concat([['to', ['scaleX', {
       '0': 0,
@@ -202,6 +229,7 @@ class To {
     }]]])
     return this
   }
+
   start () {
     if (this._pause) return
     var len = this.cmds.length
@@ -212,6 +240,7 @@ class To {
     }
     return this
   }
+
   pause () {
     this._pause = true
     for (var i = 0, len = this.tweens.length; i < len; i++) {
@@ -222,6 +251,7 @@ class To {
       this.currentTaskBegin = new Date()
     }
   }
+
   toggle () {
     if (this._pause) {
       this.play()
@@ -229,6 +259,7 @@ class To {
       this.pause()
     }
   }
+
   play () {
     this._pause = false
     for (var i = 0, len = this.tweens.length; i < len; i++) {
@@ -244,6 +275,7 @@ class To {
       }, this.timeout)
     }
   }
+
   stop () {
     for (var i = 0, len = this.tweens.length; i < len; i++) {
       this.tweens[i].pause()
@@ -251,6 +283,7 @@ class To {
     }
     this.cmds.length = 0
   }
+
   exec (cmd, last) {
     var len = cmd.length,
       self = this
@@ -268,13 +301,13 @@ class To {
           var t = new TWEEN.Tween(this.element)
             .to(target, task[1][1])
             .onStart(function () {
-              if (cmd.start) cmd.start()
+              if (cmd.begin) cmd.begin.call(self.element)
             })
             .onUpdate(function () {
               if (cmd.progress) cmd.progress.call(self.element)
               // self.element[prop] = this[prop];
             })
-            .easing(ease || To.linear)
+            .easing(ease || TWEEN.Easing.Linear.None)
             .onComplete(function () {
               self.stepCompleteCount++
               if (self.stepCompleteCount === len - 1) {

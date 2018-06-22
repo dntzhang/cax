@@ -2375,12 +2375,30 @@ bitmap.on('click', function () {
 
 stage.add(bitmap);
 
-_index2.default.To.get(bitmap).to().y(240, 2000, _index2.default.easing.elasticInOut).rotation(240, 2000, _index2.default.easing.elasticInOut).end(function () {
-    console.log(" task one has completed!");
-}).wait(500).to().rotation(0, 1400, _index2.default.easing.elasticInOut).end(function () {
-    console.log(" task two has completed!");
-}).wait(500).to().scaleX(1, 1400, _index2.default.easing.elasticInOut).scaleY(1, 1400, _index2.default.easing.elasticInOut).end(function () {
-    console.log(" task three has completed!");
+_index2.default.To.get(bitmap).to().y(340, 2000, _index2.default.easing.elasticInOut).rotation(240, 2000, _index2.default.easing.elasticInOut).begin(function () {
+    console.log("Task one has began!");
+}).progress(function () {
+    console.log("Task one is progressing!");
+}).end(function () {
+    console.log("Task one has completed!");
+}).wait(500).to().rotation(0, 1400, _index2.default.easing.elasticInOut).begin(function () {
+    console.log("Task two has began!");
+}).progress(function () {
+    console.log("Task two is progressing!");
+}).end(function () {
+    console.log("Task two has completed!");
+}).wait(500).to().scaleX(1, 1400, _index2.default.easing.elasticInOut).scaleY(1, 1400, _index2.default.easing.elasticInOut).begin(function () {
+    console.log("Task three has began!");
+}).progress(function () {
+    console.log("Task three is progressing!");
+}).end(function () {
+    console.log("Task three has completed!");
+}).wait(500).to({ x: 300, y: 200 }, 1000, _index2.default.easing.elasticInOut).rotation(360, 1000, _index2.default.easing.elasticInOut).begin(function () {
+    console.log("Task four has began!");
+}).progress(function () {
+    console.log("Task four is progressing!");
+}).end(function () {
+    console.log("Task four has completed!");
 }).start();
 
 _index2.default.setInterval(function () {
@@ -2747,14 +2765,19 @@ var To = function () {
 
   _createClass(To, [{
     key: 'to',
-    value: function to() {
+    value: function to(target, duration, easing) {
       this.cmds.push(['to']);
+      if (arguments.length !== 0) {
+        for (var key in target) {
+          this.set(key, target[key], duration, easing);
+        }
+      }
       return this;
     }
   }, {
     key: 'set',
-    value: function set(prop, value, time, ease) {
-      this.cmds[this.cmds.length - 1].push([prop, [value, time, ease]]);
+    value: function set(prop, value, duration, easing) {
+      this.cmds[this.cmds.length - 1].push([prop, [value, duration, easing]]);
       return this;
     }
   }, {
@@ -3055,11 +3078,11 @@ var To = function () {
             target[prop] = task[1][0];
 
             var t = new _tween2.default.Tween(this.element).to(target, task[1][1]).onStart(function () {
-              if (cmd.start) cmd.start();
+              if (cmd.begin) cmd.begin.call(self.element);
             }).onUpdate(function () {
               if (cmd.progress) cmd.progress.call(self.element);
               // self.element[prop] = this[prop];
-            }).easing(ease || To.linear).onComplete(function () {
+            }).easing(ease || _tween2.default.Easing.Linear.None).onComplete(function () {
               self.stepCompleteCount++;
               if (self.stepCompleteCount === len - 1) {
                 if (cmd.end) cmd.end.call(self.element);

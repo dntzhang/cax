@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.1 By dntzhang 
+ *  cax v1.0.2 By dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
  */
@@ -1884,7 +1884,6 @@ function mockCaf(id) {
 }
 
 if (isBrowser) {
-
   window.setRafInterval = setRafInterval;
   window.clearRafInterval = clearRafInterval;
 
@@ -2719,14 +2718,19 @@ var To = function () {
 
   _createClass(To, [{
     key: 'to',
-    value: function to() {
+    value: function to(target, duration, easing) {
       this.cmds.push(['to']);
+      if (arguments.length !== 0) {
+        for (var key in target) {
+          this.set(key, target[key], duration, easing);
+        }
+      }
       return this;
     }
   }, {
     key: 'set',
-    value: function set(prop, value, time, ease) {
-      this.cmds[this.cmds.length - 1].push([prop, [value, time, ease]]);
+    value: function set(prop, value, duration, easing) {
+      this.cmds[this.cmds.length - 1].push([prop, [value, duration, easing]]);
       return this;
     }
   }, {
@@ -3027,11 +3031,11 @@ var To = function () {
             target[prop] = task[1][0];
 
             var t = new _tween2.default.Tween(this.element).to(target, task[1][1]).onStart(function () {
-              if (cmd.start) cmd.start();
+              if (cmd.begin) cmd.begin.call(self.element);
             }).onUpdate(function () {
               if (cmd.progress) cmd.progress.call(self.element);
               // self.element[prop] = this[prop];
-            }).easing(ease || To.linear).onComplete(function () {
+            }).easing(ease || _tween2.default.Easing.Linear.None).onComplete(function () {
               self.stepCompleteCount++;
               if (self.stepCompleteCount === len - 1) {
                 if (cmd.end) cmd.end.call(self.element);
