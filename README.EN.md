@@ -294,26 +294,60 @@ Cax has built-in to capability to write motion effects in a continuous way.
 ``` js
 cax.To.get(bitmap)
     .to()
-    .y(240, 2000, cax.easing.elasticInOut)
+    .y(340, 2000, cax.easing.elasticInOut)
     .rotation(240, 2000, cax.easing.elasticInOut)
-    .end(function () {
-        console.log(" task one has completed!")
+    .begin(() => {
+        console.log("Task one has began!")
+    })
+    .progress(() => {
+        console.log("Task one is progressing!")
+    })
+    .end(() => {
+        console.log("Task one has completed!")
     })
     .wait(500)
     .to()
     .rotation(0, 1400, cax.easing.elasticInOut)
-    .end(function () {
-        console.log(" task two has completed!")
+    .begin(() => {
+        console.log("Task two has began!")
+    })
+    .progress(() => {
+        console.log("Task two is progressing!")
+    })
+    .end(() => {
+        console.log("Task two has completed!")
     })
     .wait(500)
     .to()
     .scaleX(1, 1400, cax.easing.elasticInOut)
     .scaleY(1, 1400, cax.easing.elasticInOut)
-    .end(function () {
-        console.log(" task three has completed!")
+    .begin(() => {
+        console.log("Task three has began!")
     })
-    .start()
+    .progress(() => {
+        console.log("Task three is progressing!")
+    })
+    .end(() => {
+        console.log("Task three has completed!")
+    })
+    .wait(500)
+    .to({ x: 300, y: 200 }, 1000, cax.easing.elasticInOut)
+    .rotation(360, 1000, cax.easing.elasticInOut)
+    .begin(() => {
+        console.log("Task four has began!")
+    })
+    .progress(() => {
+        console.log("Task four is progressing!")
+    })
+    .end(() => {
+        console.log("Task four has completed!")
+    })
+    .start();
 ```
+
+* `to` and `to` are parallel
+* `to` and `wait` are parallel before
+* The serial between `to` and `to` is serial with the next `to` and `to`
 
 Of course, `set` can also be used to support the movement of arbitrary attributes, such as:
 
