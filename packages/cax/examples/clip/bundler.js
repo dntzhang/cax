@@ -2421,14 +2421,13 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stage = new _index2.default.Stage(600, 400, 'body');
+var stage = new _index2.default.Stage(260, 200, '#canvasCtn');
 var bitmap = new _index2.default.Bitmap('./wepay-diy.jpg', function () {
-
     stage.update();
 });
 
-bitmap.x = 300;
-bitmap.y = 200;
+bitmap.x = 130;
+bitmap.y = 100;
 bitmap.originX = 40;
 bitmap.originY = 40;
 bitmap.cursor = 'pointer';
@@ -2441,6 +2440,14 @@ clipPath.arc(40, 40, 25, 0, Math.PI * 2);
 bitmap.clip(clipPath);
 
 stage.add(bitmap);
+
+var tag = true;
+
+document.querySelector('#toggleBtn').addEventListener('click', function () {
+    bitmap.clip(tag ? null : clipPath);
+    tag = !tag;
+    stage.update();
+});
 
 /***/ }),
 /* 16 */

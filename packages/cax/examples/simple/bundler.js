@@ -2421,7 +2421,7 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stage = new _index2.default.Stage(600, 400, 'body');
+var stage = new _index2.default.Stage(300, 400, 'body');
 
 var group = new _index2.default.Group();
 
@@ -2453,22 +2453,12 @@ var text = new _index2.default.Text('Drag Me!', {
     font: '20px Arial'
 });
 
-var caxText = new _index2.default.Text('Hello Cax!', {
-    color: 'red',
-    font: '30px Arial'
-});
-
-caxText.x = 300;
-caxText.y = 200;
-
-stage.add(caxText);
-
 text.x = 100 - text.getWidth() / 2;
 text.y = 40;
 
 var bitmap = new _index2.default.Bitmap('./wepay.png');
 bitmap.rect = [0, 0, 170, 140];
-bitmap.x = 200;
+bitmap.x = 150;
 
 group.add(rect, text);
 
@@ -2476,11 +2466,12 @@ group.cursor = 'move';
 group.on('drag', function (evt) {
     group.x += evt.dx;
     group.y += evt.dy;
+    evt.preventDefault();
 });
 
 bitmap.cursor = 'pointer';
 bitmap.on('click', function () {
-    console.log('微信支付');
+    alert('wepay');
 });
 
 bitmap.on('touchstart', function () {
@@ -2509,6 +2500,15 @@ stage.add(sprite);
 var marioBtimap = new _index2.default.Bitmap('./mario-sheet.png');
 stage.add(marioBtimap);
 marioBtimap.y = 300;
+
+marioBtimap.on('drag', function (evt) {
+    marioBtimap.x += evt.dx;
+    marioBtimap.y += evt.dy;
+    evt.preventDefault();
+});
+
+marioBtimap.cursor = 'move';
+
 sprite.scaleX = sprite.scaleY = 1.5;
 sprite.y = 160;
 
@@ -2519,17 +2519,32 @@ ellipse.x = 200;
 ellipse.y = 250;
 ellipse.originX = 50;
 ellipse.originY = 25;
-ellipse.cursor = 'pointer';
+
+ellipse.on('drag', function (evt) {
+    ellipse.x += evt.dx;
+    ellipse.y += evt.dy;
+    evt.preventDefault();
+});
+
+ellipse.cursor = 'move';
 stage.add(ellipse);
 
 var ball = new _index2.default.Graphics();
 ball.beginPath().arc(377, 391, 140, 0, Math.PI * 2).closePath().fillStyle('#f4862c').fill().strokeStyle("#046ab4").lineWidth(8).stroke().beginPath().moveTo(298, 506).bezierCurveTo(236, 396, 302, 272, 407, 254).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(328, 258).bezierCurveTo(360, 294, 451, 272, 503, 332).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(282, 288).bezierCurveTo(391, 292, 481, 400, 488, 474).strokeStyle("#046ab4").lineWidth(6).stroke().beginPath().moveTo(242, 352).bezierCurveTo(352, 244, 319, 423, 409, 527).strokeStyle("#046ab4").lineWidth(6).stroke();
 
-ball.x = 340;
-ball.y = -80;
-ball.scaleX = ball.scaleY = 0.5;
+ball.x = 140;
+ball.y = 80;
+ball.scaleX = ball.scaleY = 0.3;
 
 stage.add(ball);
+
+ball.on('drag', function (evt) {
+    ball.x += evt.dx;
+    ball.y += evt.dy;
+    evt.preventDefault();
+});
+
+ball.cursor = 'move';
 
 var graphics = new _index2.default.Graphics();
 graphics.beginPath().arc(0, 0, 10, 0, Math.PI * 2).closePath().fillStyle('#f4862c').fill().strokeStyle('black').stroke();
@@ -2538,6 +2553,24 @@ graphics.x = 100;
 graphics.y = 200;
 
 stage.add(graphics);
+
+var caxText = new _index2.default.Text('Hello Cax!', {
+    color: 'red',
+    font: '30px Arial'
+});
+
+caxText.x = 100;
+caxText.y = 200;
+
+caxText.on('drag', function (evt) {
+    caxText.x += evt.dx;
+    caxText.y += evt.dy;
+    evt.preventDefault();
+});
+
+caxText.cursor = 'move';
+
+stage.add(caxText);
 
 _index2.default.setInterval(function () {
     ellipse.rotation++;

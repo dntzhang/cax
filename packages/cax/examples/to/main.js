@@ -1,6 +1,6 @@
 import cax from '../../src/index.js'
 
-const stage = new cax.Stage(600, 400, 'body')
+const stage = new cax.Stage(300, 400, 'body')
 const bitmap = new cax.Bitmap('./wepay-diy.jpg')
 
 bitmap.x = 200
@@ -58,7 +58,7 @@ cax.To.get(bitmap)
         console.log("Task three has completed!")
     })
     .wait(500)
-    .to({ x: 300, y: 200 }, 1000, cax.easing.elasticInOut)
+    .to({ x: 160, y: 200 }, 1000, cax.easing.elasticInOut)
     .rotation(360, 1000, cax.easing.elasticInOut)
     .begin(() => {
         console.log("Task four has began!")
