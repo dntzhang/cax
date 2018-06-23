@@ -45,6 +45,7 @@ English | [简体中文](./README.md)
 - [Custom Object](#custom-object)
 	- [Custom Shape](#custom-shape) 
   - [Custom Element](#custom-element) 
+- [Who is using cax?](#who-is-using-cax)
 - [License](#license)
 
 ## Getting Started
@@ -458,6 +459,10 @@ const button = new cax.Button({
 ```
 
 In general, it is suggested that inherit Group from a slightly complex combination, which is conducive to expansion and management of internal components.
+
+# Who is using cax?
+
+![](./asset/wx.png)  ![](./asset/qq.png)
 
 ## License
 
