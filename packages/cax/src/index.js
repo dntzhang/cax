@@ -53,6 +53,7 @@ const cax = {
   clearInterval: clearRafInterval,
 
   caxCanvasId: 0,
+  TWEEN,
   To
 };
 

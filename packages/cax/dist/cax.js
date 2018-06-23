@@ -2476,6 +2476,7 @@ var cax = {
   clearInterval: _rafInterval.clearRafInterval,
 
   caxCanvasId: 0,
+  TWEEN: _tween2.default,
   To: _to2.default
 };
 
