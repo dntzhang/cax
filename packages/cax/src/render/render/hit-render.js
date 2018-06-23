@@ -118,11 +118,16 @@ class HitRender extends Render {
         ctx.restore()
       }
     }else{
-      ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
-      if(o.clipGraphics){
-        o.clipGraphics.render(ctx)
+      const ocg = o.clipGraphics
+      if(ocg){
+        ctx.beginPath()
+        ocg._matrix.copy(mtx)
+        ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY)
+        ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty)
+        ocg.render(ctx)
         ctx.clip(o.clipRuleNonzero?'nonzero': 'evenodd')
       }
+      ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
       if (o instanceof Graphics) {
         ctx.globalCompositeOperation = o.complexCompositeOperation
         ctx.globalAlpha = o.complexAlpha

@@ -102,6 +102,10 @@ class DisplayObject extends EventDispatcher {
     this.clipGraphics = graphics
     this.clipRuleNonzero = !notClipRuleNonzero
   }
+
+  unclip(){
+    this.clipGraphics = null
+  }
 }
 
 export default DisplayObject

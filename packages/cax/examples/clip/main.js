@@ -14,7 +14,9 @@ bitmap.on('click', () => {
 })
 
 const clipPath = new cax.Graphics()
-clipPath.arc(40, 40, 25, 0, Math.PI * 2)
+clipPath.x = 40
+clipPath.y = 40
+clipPath.arc(0, 0, 25, 0, Math.PI * 2)
 bitmap.clip(clipPath)
 
 stage.add(bitmap)
