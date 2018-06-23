@@ -53,6 +53,7 @@
 - [自定义对象](#自定义对象)
 	- [自定义 Shape](#自定义-shape) 
   - [自定义 Element](#自定义-element) 
+- [谁在使用？](#谁在使用？)
 - [License](#license)
 
 
@@ -575,6 +576,10 @@ const button = new cax.Button({
 
 一般情况下，稍微复杂组合体都建议使用继承自 Group，这样利于扩展也方便管理自身内部的元件。
 可以看到小游戏的 DEMO 里的 [Player、Bullet、Enemy、Background](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame/js) 全都是继承自 Group。
+
+## 谁在使用？
+
+![](./asset/wx.png)  ![](./asset/qq.png)
 
 ## License
 
