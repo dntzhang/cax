@@ -5,6 +5,7 @@
 * Web DEMO
   * [综合 DEMO](https://dntzhang.github.io/cax) 
   * [运动 DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
+  * [裁剪 DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
 * 小程序 DEMO 正在审核中敬请期待
 * 小游戏 DEMO 正在审核中敬请期待
 
@@ -18,7 +19,7 @@
 * 松耦合的渲染架构
 * 支持 Canvas 元素管理
 * 支持 Canvas 元素事件体系
-* 图灵完毕的 group 嵌套体系
+* 图灵完备的 group 嵌套体系
 * 内置 tween 和 to 的运动能力
 * 内置文本、位图、序列帧、绘图对象和多种矢量绘制对象
 
@@ -48,6 +49,7 @@
 	- [小程序事件](#小程序事件) 
   - [Web 事件](#web-事件) 
 - [运动](#运动)
+- [裁剪](#裁剪)
 - [自定义对象](#自定义对象)
 	- [自定义 Shape](#自定义-shape) 
   - [自定义 Element](#自定义-element) 
@@ -316,7 +318,7 @@ const circel = new cax.Circel(10)
 #### Ellipse
 
 ``` js
-const ellipse = new cax.Ellipse(10)
+const ellipse = new cax.Ellipse(120, 20)
 ```
 
 注意：从技术上小游戏和 Web 可以离屏 Canvas，小程序不行，因为小程序不支持动态创建离屏 Canvas。
@@ -478,7 +480,22 @@ cax.To.get(bitmap)
 .y(240, 2000, cax.easing.elasticInOut)
 ```
 
-[演示地址](http://dntzhang.github.io/cax/packages/cax/examples/to/)
+[运动演示地址](http://dntzhang.github.io/cax/packages/cax/examples/to/)
+
+## 裁剪
+
+```js
+const stage = new cax.Stage(600, 400, 'body')
+const bitmap = new cax.Bitmap('./wepay-diy.jpg', () => {
+    stage.update()
+})
+const clipPath = new cax.Graphics()
+clipPath.arc(40, 40, 25, 0, Math.PI * 2)
+bitmap.clip(clipPath)
+stage.add(bitmap)
+```
+
+[裁剪演示地址](http://dntzhang.github.io/cax/packages/cax/examples/clip/)
 
 ## 自定义对象
 
