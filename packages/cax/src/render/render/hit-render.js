@@ -19,7 +19,7 @@ class HitRender extends Render {
     this.canvas.height = 1
     this.ctx = this.canvas.getContext('2d')
 
-    //debug event
+    // debug event
     // this.canvas.width = 441
     // this.canvas.height = 441
     // this.ctx = this.canvas.getContext('2d')
@@ -85,7 +85,7 @@ class HitRender extends Render {
       let child = list[i]
       mtx.initialize(1, 0, 0, 1, 0, 0)
       mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
-      //if (!this.checkBoundEvent(child)) continue
+      // if (!this.checkBoundEvent(child)) continue
       ctx.save()
       let target = this._hitPixel(child, evt, mtx, cb)
       ctx.restore()
@@ -117,15 +117,15 @@ class HitRender extends Render {
         if (target) return target
         ctx.restore()
       }
-    }else{
+    } else {
       const ocg = o.clipGraphics
-      if(ocg){
+      if (ocg) {
         ctx.beginPath()
         ocg._matrix.copy(mtx)
         ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY)
         ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty)
         ocg.render(ctx)
-        ctx.clip(o.clipRuleNonzero?'nonzero': 'evenodd')
+        ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd')
       }
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
       if (o instanceof Graphics) {
@@ -146,7 +146,7 @@ class HitRender extends Render {
       } else if (o instanceof Text) {
         ctx.globalCompositeOperation = o.complexCompositeOperation
         ctx.globalAlpha = o.complexAlpha
-        
+
         ctx.font = o.font
         ctx.fillStyle = o.color
         ctx.textBaseline = o.baseline

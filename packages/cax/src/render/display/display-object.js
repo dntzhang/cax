@@ -97,13 +97,13 @@ class DisplayObject extends EventDispatcher {
     move && this.on('mousemove', move)
   }
 
-  //https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clip
+  // https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clip
   clip (graphics, notClipRuleNonzero) {
     this.clipGraphics = graphics
     this.clipRuleNonzero = !notClipRuleNonzero
   }
 
-  unclip(){
+  unclip () {
     this.clipGraphics = null
   }
 }

@@ -11,6 +11,7 @@
     "lint:example": "eslint example --fix",
     "nest": "webpack -w",
     "clip": "webpack -w",
+    "clip-transform": "webpack -w",
     "map": "webpack -w",
     "dag": "webpack -w",
     "bar-x": "webpack -w",

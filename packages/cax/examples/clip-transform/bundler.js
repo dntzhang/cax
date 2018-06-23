@@ -1,19 +1,4 @@
-/*!
- *  cax v1.0.4 By dntzhang 
- *  Github: https://github.com/dntzhang/cax
- *  MIT Licensed.
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["cax"] = factory();
-	else
-		root["cax"] = factory();
-})(typeof self !== 'undefined' ? self : this, function() {
-return /******/ (function(modules) { // webpackBootstrap
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -498,15 +483,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _matrix2d = __webpack_require__(19);
+var _matrix2d = __webpack_require__(20);
 
 var _matrix2d2 = _interopRequireDefault(_matrix2d);
 
-var _eventDispatcher = __webpack_require__(20);
+var _eventDispatcher = __webpack_require__(21);
 
 var _eventDispatcher2 = _interopRequireDefault(_eventDispatcher);
 
-var _uid = __webpack_require__(21);
+var _uid = __webpack_require__(22);
 
 var _uid2 = _interopRequireDefault(_uid);
 
@@ -624,7 +609,7 @@ var DisplayObject = function (_EventDispatcher) {
       move && this.on('mousemove', move);
     }
 
-    // https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clip
+    //https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clip
 
   }, {
     key: 'clip',
@@ -1133,7 +1118,7 @@ exports.default = {
   isWeapp: typeof wx !== 'undefined' && !wx.createCanvas,
   isWegame: typeof wx !== 'undefined' && wx.createCanvas
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
 
 /***/ }),
 /* 10 */
@@ -1895,7 +1880,7 @@ TWEEN.Interpolation = {
     root.TWEEN = TWEEN;
   }
 })(undefined);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
 
 /***/ }),
 /* 11 */
@@ -2034,7 +2019,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _canvasRender = __webpack_require__(22);
+var _canvasRender = __webpack_require__(23);
 
 var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
@@ -2190,7 +2175,7 @@ var _renderer = __webpack_require__(12);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _wxHitRender = __webpack_require__(25);
+var _wxHitRender = __webpack_require__(26);
 
 var _wxHitRender2 = _interopRequireDefault(_wxHitRender);
 
@@ -2435,6 +2420,68 @@ exports.default = RoundedRect;
 "use strict";
 
 
+var _index = __webpack_require__(16);
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var w = 576;
+var h = 360;
+var r = 65;
+var stage = new _index2.default.Stage(w, h, '#canvasCtn');
+var bitmap = new _index2.default.Bitmap('./wepay.png', function () {
+    stage.update();
+});
+
+var clipPath = new _index2.default.Graphics();
+clipPath.x = 40 + Math.random() * 200;
+clipPath.y = 40 + Math.random() * 200;
+clipPath.arc(0, 0, r, 0, Math.PI * 2);
+bitmap.clip(clipPath);
+
+stage.add(bitmap);
+
+var tag = true;
+
+stage.on('click', function (evt) {
+    clipPath.x = evt.stageX * 576 / window.innerWidth;
+    clipPath.y = evt.stageY * 576 / window.innerWidth;
+});
+
+var speedX = 1,
+    speedY = 1;
+
+_index2.default.setInterval(function () {
+
+    clipPath.x += speedX;
+    clipPath.y += speedY;
+    if (clipPath.y > h - r) {
+        clipPath.y = h - r;
+        speedY *= -1;
+    } else if (clipPath.y < r) {
+        clipPath.y = r;
+        speedY *= -1;
+    }
+
+    if (clipPath.x > w - r) {
+        clipPath.x = w - r;
+        speedX *= -1;
+    } else if (clipPath.x < r) {
+        clipPath.x = r;
+        speedX *= -1;
+    }
+
+    stage.update();
+}, 15);
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -2443,11 +2490,11 @@ var _tween = __webpack_require__(10);
 
 var _tween2 = _interopRequireDefault(_tween);
 
-var _to = __webpack_require__(17);
+var _to = __webpack_require__(18);
 
 var _to2 = _interopRequireDefault(_to);
 
-var _stage = __webpack_require__(18);
+var _stage = __webpack_require__(19);
 
 var _stage2 = _interopRequireDefault(_stage);
 
@@ -2479,31 +2526,31 @@ var _roundedRect = __webpack_require__(14);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
-var _arrowPath = __webpack_require__(26);
+var _arrowPath = __webpack_require__(27);
 
 var _arrowPath2 = _interopRequireDefault(_arrowPath);
 
-var _ellipse = __webpack_require__(27);
+var _ellipse = __webpack_require__(28);
 
 var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _button = __webpack_require__(28);
+var _button = __webpack_require__(29);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _rect = __webpack_require__(29);
+var _rect = __webpack_require__(30);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _circle = __webpack_require__(30);
+var _circle = __webpack_require__(31);
 
 var _circle2 = _interopRequireDefault(_circle);
 
-var _polygon = __webpack_require__(31);
+var _polygon = __webpack_require__(32);
 
 var _polygon2 = _interopRequireDefault(_polygon);
 
-var _equilateralPolygon = __webpack_require__(32);
+var _equilateralPolygon = __webpack_require__(33);
 
 var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
@@ -2557,8 +2604,11 @@ var cax = {
 exports.default = cax;
 
 /***/ }),
-/* 16 */
-/***/ (function(module, exports) {
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 // shim for using process in browser
 var process = module.exports = {};
@@ -2574,7 +2624,7 @@ var cachedClearTimeout;
 function defaultSetTimout() {
     throw new Error('setTimeout has not been defined');
 }
-function defaultClearTimeout () {
+function defaultClearTimeout() {
     throw new Error('clearTimeout has not been defined');
 }
 (function () {
@@ -2596,7 +2646,7 @@ function defaultClearTimeout () {
     } catch (e) {
         cachedClearTimeout = defaultClearTimeout;
     }
-} ())
+})();
 function runTimeout(fun) {
     if (cachedSetTimeout === setTimeout) {
         //normal enviroments in sane situations
@@ -2610,17 +2660,15 @@ function runTimeout(fun) {
     try {
         // when when somebody has screwed with setTimeout but no I.E. maddness
         return cachedSetTimeout(fun, 0);
-    } catch(e){
+    } catch (e) {
         try {
             // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
             return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
+        } catch (e) {
             // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
             return cachedSetTimeout.call(this, fun, 0);
         }
     }
-
-
 }
 function runClearTimeout(marker) {
     if (cachedClearTimeout === clearTimeout) {
@@ -2635,19 +2683,16 @@ function runClearTimeout(marker) {
     try {
         // when when somebody has screwed with setTimeout but no I.E. maddness
         return cachedClearTimeout(marker);
-    } catch (e){
+    } catch (e) {
         try {
             // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
             return cachedClearTimeout.call(null, marker);
-        } catch (e){
+        } catch (e) {
             // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
             // Some versions of I.E. have different rules for clearTimeout vs setTimeout
             return cachedClearTimeout.call(this, marker);
         }
     }
-
-
-
 }
 var queue = [];
 var draining = false;
@@ -2677,7 +2722,7 @@ function drainQueue() {
     draining = true;
 
     var len = queue.length;
-    while(len) {
+    while (len) {
         currentQueue = queue;
         queue = [];
         while (++queueIndex < len) {
@@ -2733,21 +2778,26 @@ process.emit = noop;
 process.prependListener = noop;
 process.prependOnceListener = noop;
 
-process.listeners = function (name) { return [] }
+process.listeners = function (name) {
+    return [];
+};
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
 
-process.cwd = function () { return '/' };
+process.cwd = function () {
+    return '/';
+};
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
-process.umask = function() { return 0; };
-
+process.umask = function () {
+    return 0;
+};
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3163,7 +3213,7 @@ To.get = function (element) {
 exports.default = To;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3183,7 +3233,7 @@ var _renderer = __webpack_require__(12);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _hitRender = __webpack_require__(24);
+var _hitRender = __webpack_require__(25);
 
 var _hitRender2 = _interopRequireDefault(_hitRender);
 
@@ -3509,7 +3559,7 @@ var Stage = function (_Group) {
 exports.default = Stage;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3638,7 +3688,7 @@ var Matrix2D = function () {
 exports.default = Matrix2D;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3765,7 +3815,7 @@ var EventDispatcher = function () {
 exports.default = EventDispatcher;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3785,7 +3835,7 @@ UID.get = function () {
 exports.default = UID;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3892,23 +3942,27 @@ var CanvasRender = function (_Render) {
 exports.default = CanvasRender;
 
 /***/ }),
-/* 23 */
-/***/ (function(module, exports) {
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var g;
 
 // This works in non-strict mode
-g = (function() {
+g = function () {
 	return this;
-})();
+}();
 
 try {
 	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
+	g = g || Function("return this")() || (1, eval)("this");
+} catch (e) {
 	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
+	if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") g = window;
 }
 
 // g can still be undefined, but nothing to do about it...
@@ -3917,9 +3971,8 @@ try {
 
 module.exports = g;
 
-
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3985,7 +4038,7 @@ var HitRender = function (_Render) {
     _this.canvas.height = 1;
     _this.ctx = _this.canvas.getContext('2d');
 
-    // debug event
+    //debug event
     // this.canvas.width = 441
     // this.canvas.height = 441
     // this.ctx = this.canvas.getContext('2d')
@@ -4058,7 +4111,7 @@ var HitRender = function (_Render) {
         var child = list[i];
         mtx.initialize(1, 0, 0, 1, 0, 0);
         mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
-        // if (!this.checkBoundEvent(child)) continue
+        //if (!this.checkBoundEvent(child)) continue
         ctx.save();
         var target = this._hitPixel(child, evt, mtx, cb);
         ctx.restore();
@@ -4153,7 +4206,7 @@ var HitRender = function (_Render) {
 exports.default = HitRender;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4287,7 +4340,7 @@ var WxHitRender = function (_Render) {
 exports.default = WxHitRender;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4383,7 +4436,7 @@ var ArrowPath = function (_Shape) {
 exports.default = ArrowPath;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4462,7 +4515,7 @@ var Ellipse = function (_Shape) {
 exports.default = Ellipse;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4519,7 +4572,7 @@ var Button = function (_Group) {
 exports.default = Button;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4583,7 +4636,7 @@ var Rect = function (_Graphics) {
 exports.default = Rect;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4649,7 +4702,7 @@ var Circle = function (_Shape) {
 exports.default = Circle;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4723,7 +4776,7 @@ var Polygon = function (_Shape) {
 exports.default = Polygon;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4832,4 +4885,3 @@ exports.default = EquilateralPolygon;
 
 /***/ })
 /******/ ]);
-});

@@ -16,8 +16,8 @@ class To {
 
   to (target, duration, easing) {
     this.cmds.push(['to'])
-    if(arguments.length !== 0){
-      for(let key in target){
+    if (arguments.length !== 0) {
+      for (let key in target) {
         this.set(key, target[key], duration, easing)
       }
     }

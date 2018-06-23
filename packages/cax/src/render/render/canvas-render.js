@@ -24,13 +24,13 @@ class CanvasRender extends Render {
     ctx.save()
     ctx.globalCompositeOperation = obj.complexCompositeOperation
     ctx.globalAlpha = obj.complexAlpha
-    if(ocg){
+    if (ocg) {
       ctx.beginPath()
       ocg._matrix.copy(obj._matrix)
       ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY)
       ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty)
       ocg.render(ctx)
-      ctx.clip(obj.clipRuleNonzero?'nonzero': 'evenodd')
+      ctx.clip(obj.clipRuleNonzero ? 'nonzero' : 'evenodd')
     }
     ctx.setTransform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty)
     if (obj instanceof Graphics) {
@@ -54,7 +54,6 @@ class CanvasRender extends Render {
   clear () {
     this.ctx.clearRect(0, 0, this.width, this.height)
   }
-
 }
 
 export default CanvasRender

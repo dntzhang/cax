@@ -1,13 +1,13 @@
 import DisplayObject from './display-object.js'
 
-const assMap ={
+const assMap = {
   fillStyle: true,
   strokeStyle: true,
   lineWidth: true,
   lineCap: true,
   lineDashOffset: true,
-  lineJoin : true,
-  miterLimit :true
+  lineJoin: true,
+  miterLimit: true
 }
 
 class Graphics extends DisplayObject {
@@ -85,22 +85,22 @@ class Graphics extends DisplayObject {
   lineCap () {
     this.cmds.push(['lineCap', arguments])
     return this
-  } 
+  }
 
   lineDashOffset () {
     this.cmds.push(['lineDashOffset', arguments])
     return this
-  } 
+  }
 
   lineJoin () {
     this.cmds.push(['lineJoin', arguments])
     return this
-  } 
+  }
 
   miterLimit () {
     this.cmds.push(['miterLimit', arguments])
     return this
-  } 
+  }
 
   stroke () {
     this.cmds.push(['stroke', arguments])

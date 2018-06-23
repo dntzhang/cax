@@ -242,7 +242,10 @@ class Stage extends Group {
   }
 
   on (type, fn) {
-    this.canvas.addEventListener(type, fn)
+    this.canvas.addEventListener(type, (evt) => {
+      this._computeStageXY(evt)
+      fn(evt)
+    })
   }
 
   off (type, fn) {
