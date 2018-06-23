@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.2 By dntzhang 
+ *  cax v1.0.4 By dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
  */
@@ -214,6 +214,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var assMap = {
+  fillStyle: true,
+  strokeStyle: true,
+  lineWidth: true,
+  lineCap: true,
+  lineDashOffset: true,
+  lineJoin: true,
+  miterLimit: true
+};
+
 var Graphics = function (_DisplayObject) {
   _inherits(Graphics, _DisplayObject);
 
@@ -223,21 +233,32 @@ var Graphics = function (_DisplayObject) {
     var _this = _possibleConstructorReturn(this, (Graphics.__proto__ || Object.getPrototypeOf(Graphics)).call(this));
 
     _this.cmds = [];
-    _this.assMethod = ['fillStyle', 'strokeStyle', 'lineWidth'];
     _this.currentGradient = null;
     return _this;
   }
 
   _createClass(Graphics, [{
     key: 'clearRect',
-    value: function clearRect(x, y, width, height) {
+    value: function clearRect() {
       this.cmds.push(['clearRect', arguments]);
+      return this;
+    }
+  }, {
+    key: 'rect',
+    value: function rect() {
+      this.cmds.push(['rect', arguments]);
       return this;
     }
   }, {
     key: 'clear',
     value: function clear() {
       this.cmds.length = 0;
+      return this;
+    }
+  }, {
+    key: 'setLineDash',
+    value: function setLineDash() {
+      this.cmds.push(['setLineDash', arguments]);
       return this;
     }
   }, {
@@ -295,6 +316,30 @@ var Graphics = function (_DisplayObject) {
       return this;
     }
   }, {
+    key: 'lineCap',
+    value: function lineCap() {
+      this.cmds.push(['lineCap', arguments]);
+      return this;
+    }
+  }, {
+    key: 'lineDashOffset',
+    value: function lineDashOffset() {
+      this.cmds.push(['lineDashOffset', arguments]);
+      return this;
+    }
+  }, {
+    key: 'lineJoin',
+    value: function lineJoin() {
+      this.cmds.push(['lineJoin', arguments]);
+      return this;
+    }
+  }, {
+    key: 'miterLimit',
+    value: function miterLimit() {
+      this.cmds.push(['miterLimit', arguments]);
+      return this;
+    }
+  }, {
     key: 'stroke',
     value: function stroke() {
       this.cmds.push(['stroke', arguments]);
@@ -316,6 +361,12 @@ var Graphics = function (_DisplayObject) {
     key: 'bezierCurveTo',
     value: function bezierCurveTo() {
       this.cmds.push(['bezierCurveTo', arguments]);
+      return this;
+    }
+  }, {
+    key: 'quadraticCurveTo',
+    value: function quadraticCurveTo() {
+      this.cmds.push(['quadraticCurveTo', arguments]);
       return this;
     }
   }, {
@@ -355,7 +406,7 @@ var Graphics = function (_DisplayObject) {
 
       this.cmds.forEach(function (cmd) {
         var methodName = cmd[0];
-        if (_this2.assMethod.join('-').match(new RegExp('\\b' + methodName + '\\b', 'g'))) {
+        if (assMap[methodName]) {
           ctx[methodName] = cmd[1][0];
         } else if (methodName === 'addColorStop') {
           _this2.currentGradient && _this2.currentGradient.addColorStop(cmd[1][0], cmd[1][1]);
@@ -482,6 +533,8 @@ var DisplayObject = function (_EventDispatcher) {
     _this._matrix = new _matrix2d2.default();
     _this._hitMatrix = new _matrix2d2.default();
     _this.id = _uid2.default.get();
+    _this.clipGraphics = null;
+    _this.clipRuleNonzero = true;
     return _this;
   }
 
@@ -569,6 +622,20 @@ var DisplayObject = function (_EventDispatcher) {
       this.on('mouseover', over);
       this.on('mouseout', out);
       move && this.on('mousemove', move);
+    }
+
+    // https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clip
+
+  }, {
+    key: 'clip',
+    value: function clip(graphics, notClipRuleNonzero) {
+      this.clipGraphics = graphics;
+      this.clipRuleNonzero = !notClipRuleNonzero;
+    }
+  }, {
+    key: 'unclip',
+    value: function unclip() {
+      this.clipGraphics = null;
     }
   }]);
 
@@ -2476,6 +2543,7 @@ var cax = {
   clearInterval: _rafInterval.clearRafInterval,
 
   caxCanvasId: 0,
+  TWEEN: _tween2.default,
   To: _to2.default
 };
 
@@ -3421,7 +3489,12 @@ var Stage = function (_Group) {
   }, {
     key: 'on',
     value: function on(type, fn) {
-      this.canvas.addEventListener(type, fn);
+      var _this2 = this;
+
+      this.canvas.addEventListener(type, function (evt) {
+        _this2._computeStageXY(evt);
+        fn(evt);
+      });
     }
   }, {
     key: 'off',
@@ -3776,9 +3849,18 @@ var CanvasRender = function (_Render) {
     key: 'render',
     value: function render(obj) {
       var ctx = this.ctx;
+      var ocg = obj.clipGraphics;
       ctx.save();
       ctx.globalCompositeOperation = obj.complexCompositeOperation;
       ctx.globalAlpha = obj.complexAlpha;
+      if (ocg) {
+        ctx.beginPath();
+        ocg._matrix.copy(obj._matrix);
+        ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY);
+        ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty);
+        ocg.render(ctx);
+        ctx.clip(obj.clipRuleNonzero ? 'nonzero' : 'evenodd');
+      }
       ctx.setTransform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
       if (obj instanceof _graphics2.default) {
         obj.render(ctx);
@@ -3802,12 +3884,6 @@ var CanvasRender = function (_Render) {
     value: function clear() {
       this.ctx.clearRect(0, 0, this.width, this.height);
     }
-  }, {
-    key: 'hitAABB',
-    value: function hitAABB() {}
-  }, {
-    key: 'hitPixel',
-    value: function hitPixel() {}
   }]);
 
   return CanvasRender;
@@ -3912,6 +3988,7 @@ var HitRender = function (_Render) {
     // debug event
     // this.canvas.width = 441
     // this.canvas.height = 441
+    // this.ctx = this.canvas.getContext('2d')
     // document.body.appendChild(this.canvas)
 
     _this.disableEvents = ['mouseover', 'mouseout', 'mousemove', 'touchmove'];
@@ -3981,18 +4058,18 @@ var HitRender = function (_Render) {
         var child = list[i];
         mtx.initialize(1, 0, 0, 1, 0, 0);
         mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
-        if (!this.checkBoundEvent(child)) continue;
+        // if (!this.checkBoundEvent(child)) continue
         ctx.save();
         var target = this._hitPixel(child, evt, mtx, cb);
         ctx.restore();
         if (target) return target;
       }
     }
-  }, {
-    key: 'checkBoundEvent',
-    value: function checkBoundEvent() {
-      return true;
-    }
+
+    // checkBoundEvent () {
+    //   return true
+    // }
+
   }, {
     key: '_hitPixel',
     value: function _hitPixel(o, evt, mtx, cb) {
@@ -4006,12 +4083,7 @@ var HitRender = function (_Render) {
       }
       mtx = o._hitMatrix;
       mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
-      if (o instanceof _graphics2.default) {
-        ctx.globalCompositeOperation = o.complexCompositeOperation;
-        ctx.globalAlpha = o.complexAlpha;
-        ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-        o.render(ctx);
-      } else if (o instanceof _group2.default) {
+      if (o instanceof _group2.default) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = l - 1; i >= 0; i--) {
@@ -4020,27 +4092,41 @@ var HitRender = function (_Render) {
           if (target) return target;
           ctx.restore();
         }
-      } else if (o instanceof _sprite2.default && o.rect) {
-        ctx.globalCompositeOperation = o.complexCompositeOperation;
-        ctx.globalAlpha = o.complexAlpha;
+      } else {
+        var ocg = o.clipGraphics;
+        if (ocg) {
+          ctx.beginPath();
+          ocg._matrix.copy(mtx);
+          ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY);
+          ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty);
+          ocg.render(ctx);
+          ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
+        }
         ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-        o.updateFrame();
-        var rect = o.rect;
-        ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-      } else if (o instanceof _bitmap2.default && o.rect) {
-        ctx.globalCompositeOperation = o.complexCompositeOperation;
-        ctx.globalAlpha = o.complexAlpha;
-        ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-        var bRect = o.rect;
-        ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
-      } else if (o instanceof _text2.default) {
-        ctx.globalCompositeOperation = o.complexCompositeOperation;
-        ctx.globalAlpha = o.complexAlpha;
-        ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-        ctx.font = o.font;
-        ctx.fillStyle = o.color;
-        ctx.textBaseline = o.baseline;
-        ctx.fillText(o.text, 0, 0);
+        if (o instanceof _graphics2.default) {
+          ctx.globalCompositeOperation = o.complexCompositeOperation;
+          ctx.globalAlpha = o.complexAlpha;
+          o.render(ctx);
+        } else if (o instanceof _sprite2.default && o.rect) {
+          ctx.globalCompositeOperation = o.complexCompositeOperation;
+          ctx.globalAlpha = o.complexAlpha;
+          o.updateFrame();
+          var rect = o.rect;
+          ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+        } else if (o instanceof _bitmap2.default && o.rect) {
+          ctx.globalCompositeOperation = o.complexCompositeOperation;
+          ctx.globalAlpha = o.complexAlpha;
+          var bRect = o.rect;
+          ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
+        } else if (o instanceof _text2.default) {
+          ctx.globalCompositeOperation = o.complexCompositeOperation;
+          ctx.globalAlpha = o.complexAlpha;
+
+          ctx.font = o.font;
+          ctx.fillStyle = o.color;
+          ctx.textBaseline = o.baseline;
+          ctx.fillText(o.text, 0, 0);
+        }
       }
 
       if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
