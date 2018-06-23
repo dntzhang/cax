@@ -18,6 +18,7 @@ English | [简体中文](./README.md)
 * Support event of element like DOM
 * Turing complete group nesting system
 * Built-in motion library (to.js and tween.js)
+* Support clip and clip transformation
 * Built-in Text, Bitmap, Sprite, Graphics and Shape
 
 ---
