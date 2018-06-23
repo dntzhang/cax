@@ -24,6 +24,10 @@ class CanvasRender extends Render {
     ctx.globalCompositeOperation = obj.complexCompositeOperation
     ctx.globalAlpha = obj.complexAlpha
     ctx.setTransform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty)
+    if(obj.clipGraphics){
+      obj.clipGraphics.render(ctx)
+      ctx.clip(obj.clipRuleNonzero?'nonzero': 'evenodd')
+    }
     if (obj instanceof Graphics) {
       obj.render(ctx)
     } else if (obj instanceof Sprite && obj.rect) {

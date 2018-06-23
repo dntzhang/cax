@@ -1,20 +1,39 @@
 import DisplayObject from './display-object.js'
 
+const assMap ={
+  fillStyle: true,
+  strokeStyle: true,
+  lineWidth: true,
+  lineCap: true,
+  lineDashOffset: true,
+  lineJoin : true,
+  miterLimit :true
+}
+
 class Graphics extends DisplayObject {
   constructor () {
     super()
     this.cmds = []
-    this.assMethod = ['fillStyle', 'strokeStyle', 'lineWidth']
     this.currentGradient = null
   }
 
-  clearRect (x, y, width, height) {
+  clearRect () {
     this.cmds.push(['clearRect', arguments])
+    return this
+  }
+
+  rect () {
+    this.cmds.push(['rect', arguments])
     return this
   }
 
   clear () {
     this.cmds.length = 0
+    return this
+  }
+
+  setLineDash () {
+    this.cmds.push(['setLineDash', arguments])
     return this
   }
 
@@ -63,6 +82,26 @@ class Graphics extends DisplayObject {
     return this
   }
 
+  lineCap () {
+    this.cmds.push(['lineCap', arguments])
+    return this
+  } 
+
+  lineDashOffset () {
+    this.cmds.push(['lineDashOffset', arguments])
+    return this
+  } 
+
+  lineJoin () {
+    this.cmds.push(['lineJoin', arguments])
+    return this
+  } 
+
+  miterLimit () {
+    this.cmds.push(['miterLimit', arguments])
+    return this
+  } 
+
   stroke () {
     this.cmds.push(['stroke', arguments])
     return this
@@ -80,6 +119,11 @@ class Graphics extends DisplayObject {
 
   bezierCurveTo () {
     this.cmds.push(['bezierCurveTo', arguments])
+    return this
+  }
+
+  quadraticCurveTo () {
+    this.cmds.push(['quadraticCurveTo', arguments])
     return this
   }
 
@@ -111,7 +155,7 @@ class Graphics extends DisplayObject {
   render (ctx) {
     this.cmds.forEach(cmd => {
       const methodName = cmd[0]
-      if (this.assMethod.join('-').match(new RegExp('\\b' + methodName + '\\b', 'g'))) {
+      if (assMap[methodName]) {
         ctx[methodName] = cmd[1][0]
       } else if (methodName === 'addColorStop') {
         this.currentGradient && this.currentGradient.addColorStop(cmd[1][0], cmd[1][1])

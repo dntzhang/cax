@@ -12,6 +12,8 @@ class DisplayObject extends EventDispatcher {
     this._matrix = new Matrix2D()
     this._hitMatrix = new Matrix2D()
     this.id = UID.get()
+    this.clipGraphics = null
+    this.clipRuleNonzero = true
   }
 
   isVisible () {
@@ -93,6 +95,12 @@ class DisplayObject extends EventDispatcher {
     this.on('mouseover', over)
     this.on('mouseout', out)
     move && this.on('mousemove', move)
+  }
+
+  //https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/clip
+  clip (graphics, notClipRuleNonzero) {
+    this.clipGraphics = graphics
+    this.clipRuleNonzero = !notClipRuleNonzero
   }
 }
 
