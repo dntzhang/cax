@@ -7,7 +7,7 @@ const bitmap = new cax.Bitmap('./wepay-diy.jpg',()=>{
     stage.update()
 })
 
-bitmap.x = 200
+bitmap.x = 300
 bitmap.y = 200
 bitmap.originX = 40
 bitmap.originY = 40

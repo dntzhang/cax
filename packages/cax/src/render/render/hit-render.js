@@ -19,9 +19,10 @@ class HitRender extends Render {
     this.canvas.height = 1
     this.ctx = this.canvas.getContext('2d')
 
-    // debug event
+    //debug event
     // this.canvas.width = 441
     // this.canvas.height = 441
+    // this.ctx = this.canvas.getContext('2d')
     // document.body.appendChild(this.canvas)
 
     this.disableEvents = ['mouseover', 'mouseout', 'mousemove', 'touchmove']
@@ -32,12 +33,12 @@ class HitRender extends Render {
   }
 
   hitAABB (o, evt, cb) {
-    var list = o.children.slice(0),
+    let list = o.children.slice(0),
       l = list.length
-    for (var i = l - 1; i >= 0; i--) {
-      var child = list[i]
+    for (let i = l - 1; i >= 0; i--) {
+      let child = list[i]
       // if (!this.isbindingEvent(child)) continue;
-      var target = this._hitAABB(child, evt, cb)
+      let target = this._hitAABB(child, evt, cb)
       if (target) return target
     }
   }
@@ -47,11 +48,11 @@ class HitRender extends Render {
       return
     }
     if (o instanceof Group) {
-      var list = o.children.slice(0),
+      let list = o.children.slice(0),
         l = list.length
-      for (var i = l - 1; i >= 0; i--) {
-        var child = list[i]
-        var target = this._hitAABB(child, evt)
+      for (let i = l - 1; i >= 0; i--) {
+        let child = list[i]
+        let target = this._hitAABB(child, evt)
         if (target) return target
       }
     } else {
@@ -64,13 +65,13 @@ class HitRender extends Render {
   }
 
   checkPointInAABB (x, y, AABB) {
-    var minX = AABB[0]
+    let minX = AABB[0]
     if (x < minX) return false
-    var minY = AABB[1]
+    let minY = AABB[1]
     if (y < minY) return false
-    var maxX = minX + AABB[2]
+    let maxX = minX + AABB[2]
     if (x > maxX) return false
-    var maxY = minY + AABB[3]
+    let maxY = minY + AABB[3]
     if (y > maxY) return false
     return true
   }
@@ -84,17 +85,17 @@ class HitRender extends Render {
       let child = list[i]
       mtx.initialize(1, 0, 0, 1, 0, 0)
       mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
-      if (!this.checkBoundEvent(child)) continue
+      //if (!this.checkBoundEvent(child)) continue
       ctx.save()
-      var target = this._hitPixel(child, evt, mtx, cb)
+      let target = this._hitPixel(child, evt, mtx, cb)
       ctx.restore()
       if (target) return target
     }
   }
 
-  checkBoundEvent () {
-    return true
-  }
+  // checkBoundEvent () {
+  //   return true
+  // }
 
   _hitPixel (o, evt, mtx, cb) {
     if (!o.isVisible()) return
@@ -107,41 +108,45 @@ class HitRender extends Render {
     }
     mtx = o._hitMatrix
     mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
-    if (o instanceof Graphics) {
-      ctx.globalCompositeOperation = o.complexCompositeOperation
-      ctx.globalAlpha = o.complexAlpha
-      ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
-      o.render(ctx)
-    } else if (o instanceof Group) {
-      var list = o.children.slice(0),
+    if (o instanceof Group) {
+      let list = o.children.slice(0),
         l = list.length
-      for (var i = l - 1; i >= 0; i--) {
+      for (let i = l - 1; i >= 0; i--) {
         ctx.save()
-        var target = this._hitPixel(list[i], evt, mtx, cb)
+        let target = this._hitPixel(list[i], evt, mtx, cb)
         if (target) return target
         ctx.restore()
       }
-    } else if (o instanceof Sprite && o.rect) {
-      ctx.globalCompositeOperation = o.complexCompositeOperation
-      ctx.globalAlpha = o.complexAlpha
+    }else{
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
-      o.updateFrame()
-      var rect = o.rect
-      ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3])
-    } else if (o instanceof Bitmap && o.rect) {
-      ctx.globalCompositeOperation = o.complexCompositeOperation
-      ctx.globalAlpha = o.complexAlpha
-      ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
-      var bRect = o.rect
-      ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3])
-    } else if (o instanceof Text) {
-      ctx.globalCompositeOperation = o.complexCompositeOperation
-      ctx.globalAlpha = o.complexAlpha
-      ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
-      ctx.font = o.font
-      ctx.fillStyle = o.color
-      ctx.textBaseline = o.baseline
-      ctx.fillText(o.text, 0, 0)
+      if(o.clipGraphics){
+        o.clipGraphics.render(ctx)
+        ctx.clip(o.clipRuleNonzero?'nonzero': 'evenodd')
+      }
+      if (o instanceof Graphics) {
+        ctx.globalCompositeOperation = o.complexCompositeOperation
+        ctx.globalAlpha = o.complexAlpha
+        o.render(ctx)
+      } else if (o instanceof Sprite && o.rect) {
+        ctx.globalCompositeOperation = o.complexCompositeOperation
+        ctx.globalAlpha = o.complexAlpha
+        o.updateFrame()
+        let rect = o.rect
+        ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3])
+      } else if (o instanceof Bitmap && o.rect) {
+        ctx.globalCompositeOperation = o.complexCompositeOperation
+        ctx.globalAlpha = o.complexAlpha
+        let bRect = o.rect
+        ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3])
+      } else if (o instanceof Text) {
+        ctx.globalCompositeOperation = o.complexCompositeOperation
+        ctx.globalAlpha = o.complexAlpha
+        
+        ctx.font = o.font
+        ctx.fillStyle = o.color
+        ctx.textBaseline = o.baseline
+        ctx.fillText(o.text, 0, 0)
+      }
     }
 
     if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
