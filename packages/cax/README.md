@@ -1,3 +1,5 @@
+简体中文 | [English](./README.EN.md) 
+
 # Cax [![](https://img.shields.io/npm/v/cax.svg)](https://www.npmjs.com/package/cax) 
 
 > 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
@@ -495,6 +497,17 @@ clipPath.arc(40, 40, 25, 0, Math.PI * 2)
 bitmap.clip(clipPath)
 stage.add(bitmap)
 ```
+
+使用下面的代码可以得到同样的效果:
+
+```js
+const clipPath = new cax.Graphics()
+clipPath.x = 40
+clipPath.y = 40
+clipPath.arc(0, 0, 25, 0, Math.PI * 2)
+```
+
+所以，裁剪区域也是支持所有 transform 属性(x,y,scaleX,scaleY,rotation,skewX,skewY,originX,originY)。
 
 [裁剪演示地址](http://dntzhang.github.io/cax/packages/cax/examples/clip/)
 
