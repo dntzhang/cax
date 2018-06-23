@@ -5,9 +5,10 @@
 > 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
 
 * Web DEMO
-  * [综合 DEMO](https://dntzhang.github.io/cax) 
-  * [运动 DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
-  * [裁剪 DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
+  * [Simple DEMO](https://dntzhang.github.io/cax) 
+  * [Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
+  * [Clip DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
+  * [Clip Transform DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform/) 
 * 小程序 DEMO 正在审核中敬请期待
 * 小游戏 DEMO 正在审核中敬请期待
 

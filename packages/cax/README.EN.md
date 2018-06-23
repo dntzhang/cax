@@ -4,9 +4,10 @@ English | [简体中文](./README.md)
 
 > Cross platform 2d rendering engine
 
-* [Simple DEMO](https://dntzhang.github.io/cax) 
-* [Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
-* [Clip DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
+  * [Simple DEMO](https://dntzhang.github.io/cax) 
+  * [Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
+  * [Clip DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
+  * [Clip Transform DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform/) 
 
 ## Features
 
