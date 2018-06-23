@@ -6,6 +6,7 @@ English | [简体中文](./README.md)
 
 * [Simple DEMO](https://dntzhang.github.io/cax) 
 * [Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
+* [Clip DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
 
 ## Features
 
@@ -40,6 +41,7 @@ English | [简体中文](./README.md)
   - [Cursor](#cursor)
 - [Event](#event)
 - [Motion](#motion)
+- [Clip](#clip)
 - [Custom Object](#custom-object)
 	- [Custom Shape](#custom-shape) 
   - [Custom Element](#custom-element) 
@@ -215,7 +217,7 @@ const circel = new cax.Circel(10)
 #### Ellipse
 
 ``` js
-const ellipse = new cax.Ellipse(10)
+const ellipse = new cax.Ellipse(120, 20)
 ```
 
 ### Element
@@ -361,7 +363,23 @@ Equate to:
 .y(240, 2000, cax.easing.elasticInOut)
 ```
 
-[DEMO](http://dntzhang.github.io/cax/packages/cax/examples/to/)
+[Motion Demo](http://dntzhang.github.io/cax/packages/cax/examples/to/)
+
+## Clip
+
+
+```js
+const stage = new cax.Stage(600, 400, 'body')
+const bitmap = new cax.Bitmap('./wepay-diy.jpg', () => {
+    stage.update()
+})
+const clipPath = new cax.Graphics()
+clipPath.arc(40, 40, 25, 0, Math.PI * 2)
+bitmap.clip(clipPath)
+stage.add(bitmap)
+```
+
+[Clip Demo](http://dntzhang.github.io/cax/packages/cax/examples/clip/)
 
 ## Custom Object
 

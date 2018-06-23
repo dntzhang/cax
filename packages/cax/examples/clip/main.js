@@ -1,9 +1,7 @@
 import cax from '../../src/index.js'
-import Graphics from '../../src/render/display/graphics.js';
-
 const stage = new cax.Stage(600, 400, 'body')
-const bitmap = new cax.Bitmap('./wepay-diy.jpg',()=>{
-    
+const bitmap = new cax.Bitmap('./wepay-diy.jpg', () => {
+
     stage.update()
 })
 
@@ -16,14 +14,8 @@ bitmap.on('click', () => {
     alert('微信支付')
 })
 
-const clipPath = new Graphics()
+const clipPath = new cax.Graphics()
 clipPath.arc(40, 40, 25, 0, Math.PI * 2)
-bitmap.clip(clipPath, false)
+bitmap.clip(clipPath)
 
 stage.add(bitmap)
-
-
-
-// cax.setInterval(() => {
-//     stage.update()
-// }, 16)

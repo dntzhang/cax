@@ -76,6 +76,117 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _displayObject = __webpack_require__(3);
+
+var _displayObject2 = _interopRequireDefault(_displayObject);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Group = function (_DisplayObject) {
+  _inherits(Group, _DisplayObject);
+
+  function Group(data) {
+    _classCallCheck(this, Group);
+
+    var _this = _possibleConstructorReturn(this, (Group.__proto__ || Object.getPrototypeOf(Group)).call(this, data));
+
+    _this.children = [];
+    return _this;
+  }
+
+  _createClass(Group, [{
+    key: 'add',
+    value: function add(child) {
+      var len = arguments.length;
+
+      for (var i = 0; i < len; i++) {
+        this.children.push(arguments[i]);
+        arguments[i].parent = this;
+      }
+    }
+  }, {
+    key: 'addChildAt',
+    value: function addChildAt(child, index) {
+      var par = child.parent;
+      par && par.removeChildAt(par.children.indexOf(child));
+      child.parent = this;
+      this.children.splice(index, 0, child);
+    }
+  }, {
+    key: 'removeChildAt',
+    value: function removeChildAt(index) {
+      var child = this.children[index];
+      if (child) {
+        child.parent = null;
+      }
+      this.children.splice(index, 1);
+    }
+  }, {
+    key: 'replace',
+    value: function replace(current, pre) {
+      var index = pre.parent.children.indexOf(pre);
+      this.removeChildAt(index);
+      this.addChildAt(current, index);
+    }
+  }, {
+    key: 'remove',
+    value: function remove(child) {
+      var len = arguments.length;
+      var cLen = this.children.length;
+
+      for (var i = 0; i < len; i++) {
+        for (var j = 0; j < cLen; j++) {
+          if (child.id === this.children[j].id) {
+            child.parent = null;
+            this.children.splice(j, 1);
+            j--;
+            cLen--;
+          }
+        }
+      }
+    }
+  }, {
+    key: 'empty',
+    value: function empty() {
+      this.children.forEach(function (child) {
+        child.parent = null;
+      });
+      this.children.length = 0;
+    }
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      this.empty();
+      _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
+    }
+  }]);
+
+  return Group;
+}(_displayObject2.default);
+
+exports.default = Group;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _displayObject = __webpack_require__(3);
 
 var _displayObject2 = _interopRequireDefault(_displayObject);
@@ -302,117 +413,6 @@ var Graphics = function (_DisplayObject) {
 exports.default = Graphics;
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _displayObject = __webpack_require__(3);
-
-var _displayObject2 = _interopRequireDefault(_displayObject);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Group = function (_DisplayObject) {
-  _inherits(Group, _DisplayObject);
-
-  function Group(data) {
-    _classCallCheck(this, Group);
-
-    var _this = _possibleConstructorReturn(this, (Group.__proto__ || Object.getPrototypeOf(Group)).call(this, data));
-
-    _this.children = [];
-    return _this;
-  }
-
-  _createClass(Group, [{
-    key: 'add',
-    value: function add(child) {
-      var len = arguments.length;
-
-      for (var i = 0; i < len; i++) {
-        this.children.push(arguments[i]);
-        arguments[i].parent = this;
-      }
-    }
-  }, {
-    key: 'addChildAt',
-    value: function addChildAt(child, index) {
-      var par = child.parent;
-      par && par.removeChildAt(par.children.indexOf(child));
-      child.parent = this;
-      this.children.splice(index, 0, child);
-    }
-  }, {
-    key: 'removeChildAt',
-    value: function removeChildAt(index) {
-      var child = this.children[index];
-      if (child) {
-        child.parent = null;
-      }
-      this.children.splice(index, 1);
-    }
-  }, {
-    key: 'replace',
-    value: function replace(current, pre) {
-      var index = pre.parent.children.indexOf(pre);
-      this.removeChildAt(index);
-      this.addChildAt(current, index);
-    }
-  }, {
-    key: 'remove',
-    value: function remove(child) {
-      var len = arguments.length;
-      var cLen = this.children.length;
-
-      for (var i = 0; i < len; i++) {
-        for (var j = 0; j < cLen; j++) {
-          if (child.id === this.children[j].id) {
-            child.parent = null;
-            this.children.splice(j, 1);
-            j--;
-            cLen--;
-          }
-        }
-      }
-    }
-  }, {
-    key: 'empty',
-    value: function empty() {
-      this.children.forEach(function (child) {
-        child.parent = null;
-      });
-      this.children.length = 0;
-    }
-  }, {
-    key: 'destroy',
-    value: function destroy() {
-      this.empty();
-      _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
-    }
-  }]);
-
-  return Group;
-}(_displayObject2.default);
-
-exports.default = Group;
-
-/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -427,7 +427,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _graphics = __webpack_require__(0);
+var _graphics = __webpack_require__(1);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -2018,7 +2018,7 @@ var _canvasRender = __webpack_require__(23);
 
 var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -2162,7 +2162,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -2419,10 +2419,6 @@ var _index = __webpack_require__(16);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _graphics = __webpack_require__(0);
-
-var _graphics2 = _interopRequireDefault(_graphics);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var stage = new _index2.default.Stage(600, 400, 'body');
@@ -2440,15 +2436,11 @@ bitmap.on('click', function () {
     alert('微信支付');
 });
 
-var clipPath = new _graphics2.default();
+var clipPath = new _index2.default.Graphics();
 clipPath.arc(40, 40, 25, 0, Math.PI * 2);
-bitmap.clip(clipPath, false);
+bitmap.clip(clipPath);
 
 stage.add(bitmap);
-
-// cax.setInterval(() => {
-//     stage.update()
-// }, 16)
 
 /***/ }),
 /* 16 */
@@ -2477,7 +2469,7 @@ var _weStage = __webpack_require__(13);
 
 var _weStage2 = _interopRequireDefault(_weStage);
 
-var _graphics = __webpack_require__(0);
+var _graphics = __webpack_require__(1);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -2489,7 +2481,7 @@ var _text = __webpack_require__(4);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -3200,7 +3192,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -3817,7 +3809,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graphics = __webpack_require__(0);
+var _graphics = __webpack_require__(1);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -3955,11 +3947,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _graphics = __webpack_require__(0);
+var _graphics = __webpack_require__(1);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -4184,7 +4176,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graphics = __webpack_require__(0);
+var _graphics = __webpack_require__(1);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -4491,7 +4483,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -4552,7 +4544,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _graphics = __webpack_require__(0);
+var _graphics = __webpack_require__(1);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
