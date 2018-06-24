@@ -1,3 +1,8 @@
+## Cax 1.0.6
+
+* fix url 直接引用 cax.js 需要 cax.default 才能访问到 cax 模块的问题
+
+
 ## Cax 1.0.5
 
 * 支持离屏 cache Shape 和 Text 对象 

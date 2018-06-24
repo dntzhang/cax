@@ -73,4 +73,4 @@ const cax = {
   cax.easing[itemLower + 'InOut'] = TWEEN.Easing[item].InOut
 })
 
-export default cax
+module.exports = cax

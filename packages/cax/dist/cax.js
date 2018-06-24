@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.5 By dntzhang 
+ *  cax v1.0.6 By dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
  */
@@ -2500,10 +2500,6 @@ exports.default = RoundedRect;
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 var _tween = __webpack_require__(10);
 
 var _tween2 = _interopRequireDefault(_tween);
@@ -2619,7 +2615,7 @@ var cax = {
   cax.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
 });
 
-exports.default = cax;
+module.exports = cax;
 
 /***/ }),
 /* 16 */
