@@ -839,9 +839,15 @@ var _index2 = _interopRequireDefault(_index);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ele = document.querySelector('#animateEle');
-_index2.default.get({ rotate: 0, x: 0, y: 0 }, _index2.default.easing.elasticInOut).to({ rotate: 720, x: 200, y: 200 }, 1600, _index2.default.easing.elasticInOut).progress(function () {
-    ele.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px) rotate(' + this.rotate + 'deg)';
-}).start();
+
+ele.onload = function () {
+
+    _index2.default.get({ rotate: 0, x: 0, y: 0 }).to({ rotate: 720, x: 200, y: 200 }, 1600, _index2.default.easing.elasticInOut).progress(function () {
+        ele.style.transform = 'translate(' + this.x + 'px, ' + this.y + 'px) rotate(' + this.rotate + 'deg)';
+    }).start();
+};
+
+ele.src = ele.src;
 
 /***/ }),
 /* 2 */
@@ -849,10 +855,6 @@ _index2.default.get({ rotate: 0, x: 0, y: 0 }, _index2.default.easing.elasticInO
 
 "use strict";
 
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 
 var _to = __webpack_require__(3);
 
@@ -875,9 +877,7 @@ _to2.default.easing = {
     _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
 });
 
-console.log(_to2.default.easing);
-
-exports.default = _to2.default;
+module.exports = _to2.default;
 
 /***/ }),
 /* 3 */
