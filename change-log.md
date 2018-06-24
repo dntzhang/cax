@@ -1,7 +1,10 @@
+## Cax 1.0.7
+
+* 兼容　to-to 的 easing 用法
+
 ## Cax 1.0.6
 
 * fix url 直接引用 cax.js 需要 cax.default 才能访问到 cax 模块的问题
-
 
 ## Cax 1.0.5
 

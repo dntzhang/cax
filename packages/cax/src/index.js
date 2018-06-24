@@ -21,6 +21,10 @@ import EquilateralPolygon from './render/display/shape/equilateral-polygon'
 
 import {setRafInterval, clearRafInterval} from './common/raf-interval'
 
+To.easing = {
+  linear: TWEEN.Easing.Linear.None
+}
+
 const cax = {
   easing: {
     linear: TWEEN.Easing.Linear.None
@@ -71,6 +75,10 @@ const cax = {
   cax.easing[itemLower + 'In'] = TWEEN.Easing[item].In
   cax.easing[itemLower + 'Out'] = TWEEN.Easing[item].Out
   cax.easing[itemLower + 'InOut'] = TWEEN.Easing[item].InOut
+
+  To.easing[itemLower + 'In'] = TWEEN.Easing[item].In
+  To.easing[itemLower + 'Out'] = TWEEN.Easing[item].Out
+  To.easing[itemLower + 'InOut'] = TWEEN.Easing[item].InOut
 })
 
 module.exports = cax

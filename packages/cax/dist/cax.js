@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.6 By dntzhang 
+ *  cax v1.0.7 By dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
  */
@@ -2572,6 +2572,10 @@ var _rafInterval = __webpack_require__(11);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+_to2.default.easing = {
+  linear: _tween2.default.Easing.Linear.None
+};
+
 var cax = {
   easing: {
     linear: _tween2.default.Easing.Linear.None
@@ -2613,6 +2617,10 @@ var cax = {
   cax.easing[itemLower + 'In'] = _tween2.default.Easing[item].In;
   cax.easing[itemLower + 'Out'] = _tween2.default.Easing[item].Out;
   cax.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
+
+  _to2.default.easing[itemLower + 'In'] = _tween2.default.Easing[item].In;
+  _to2.default.easing[itemLower + 'Out'] = _tween2.default.Easing[item].Out;
+  _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
 });
 
 module.exports = cax;
