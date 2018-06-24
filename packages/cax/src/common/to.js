@@ -344,14 +344,19 @@ class To {
         break
       case 'cycle':
         var count = cmd[1][1]
-        if (count && self.cycleCount === count) {
-          self.index++
+        if(count === undefined){
+          self.index = cmd[1][0]||0
           self.start()
-          if (last && self.complete) self.complete()
-        } else {
-          self.cycleCount++
-          self.index = cmd[1][0]
-          self.start()
+        }else{
+          if (count && self.cycleCount === count) {
+            self.index++
+            self.start()
+            if (last && self.complete) self.complete()
+          } else {
+            self.cycleCount++
+            self.index = cmd[1][0]
+            self.start()
+          }
         }
         break
     }

@@ -14,6 +14,7 @@
     "clip-transform": "webpack -w",
     "map": "webpack -w",
     "dag": "webpack -w",
+    "clip-transform-to": "webpack -w",
     "cache": "webpack -w",
     "bar-x": "webpack -w",
     "bar": "webpack -w",
