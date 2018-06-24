@@ -45,12 +45,12 @@
 
         stage.add(bitmap)
 
+        var eio = To.easing.elasticInOut
 
-
-        cax.To.get(bitmap)
+        To.get(bitmap)
             .to()
-            .y(340, 2000, cax.easing.elasticInOut)
-            .rotation(240, 2000, cax.easing.elasticInOut)
+            .y(340, 2000, eio)
+            .rotation(240, 2000, eio)
             .begin(() => {
                 console.log("Task one has began!")
             })
@@ -62,7 +62,7 @@
             })
             .wait(500)
             .to()
-            .rotation(0, 1400, cax.easing.elasticInOut)
+            .rotation(0, 1400, eio)
             .begin(() => {
                 console.log("Task two has began!")
             })
@@ -74,8 +74,8 @@
             })
             .wait(500)
             .to()
-            .scaleX(1, 1400, cax.easing.elasticInOut)
-            .scaleY(1, 1400, cax.easing.elasticInOut)
+            .scaleX(1, 1400, eio)
+            .scaleY(1, 1400, eio)
             .begin(() => {
                 console.log("Task three has began!")
             })
@@ -86,8 +86,8 @@
                 console.log("Task three has completed!")
             })
             .wait(500)
-            .to({ x: 160, y: 200 }, 1000, cax.easing.elasticInOut)
-            .rotation(360, 1000, cax.easing.elasticInOut)
+            .to({ x: 160, y: 200 }, 1000, eio)
+            .rotation(360, 1000, eio)
             .begin(() => {
                 console.log("Task four has began!")
             })
@@ -98,8 +98,6 @@
                 console.log("Task four has completed!")
             })
             .start();
-
-
 
         cax.setInterval(() => {
             stage.update()

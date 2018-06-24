@@ -1,6 +1,6 @@
 简体中文 | [English](./README.EN.md) 
 
-# to-to [![](https://img.shields.io/npm/v/cax.svg)](https://www.npmjs.com/package/cax) 
+# to-to [![](https://img.shields.io/npm/v/to-to.svg)](https://www.npmjs.com/package/to-to) 
 
 > 简单轻量的 Javascript 运动引擎
 
@@ -19,7 +19,7 @@
 
 ## 一分钟入门 to-to 使用
 
-Get to-to through npm or cdn:
+通过 npm 安装或者 cdn 下载下来在 HTML 引用该脚本:
 
 ``` bash
 npm i to-to
@@ -43,7 +43,7 @@ To.get({ rotate: 0, x: 0, y: 0 })
     .start()
 ```
 
-## 在 cax 中使用　to
+## 在 cax 中使用　to-to
 
 cax 内置了 to 的能力以连缀的方式写运动效果：
 

@@ -22,7 +22,4 @@ To.easing = {
     })
 
 
-    
-console.log(To.easing)
-
-export default To
+module.exports = To

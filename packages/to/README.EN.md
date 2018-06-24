@@ -1,6 +1,6 @@
 English | [简体中文](./README.md) 
 
-# Cax [![](https://img.shields.io/npm/v/cax.svg)](https://www.npmjs.com/package/cax) 
+# Cax [![](https://img.shields.io/npm/v/to-to.svg)](https://www.npmjs.com/package/to-to) 
 
 > Simple and lightweight javascript animation engine
 
@@ -43,7 +43,7 @@ To.get({ rotate: 0, x: 0, y: 0 })
     .start()
 ```
 
-## Using in cax
+## Using to-to in cax
 
 Cax has built-in to capability to write motion effects in a continuous way.
 

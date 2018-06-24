@@ -1,5 +1,6 @@
 /*!
- *  cax v0.1.0 By dntzhang 
+ *  to-to v0.1.0 
+ *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
  */
@@ -847,10 +848,6 @@ TWEEN.Interpolation = {
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _to = __webpack_require__(2);
 
 var _to2 = _interopRequireDefault(_to);
@@ -872,7 +869,7 @@ _to2.default.easing = {
     _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
 });
 
-exports.default = _to2.default;
+module.exports = _to2.default;
 
 /***/ }),
 /* 2 */
