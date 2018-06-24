@@ -6,7 +6,6 @@ English | [简体中文](./README.md)
 
 * [Simple DEMO](http://dntzhang.github.io/cax/packages/to/examples/simple/) 
 * [Animation DEMO](https://dntzhang.github.io/cax/packages/to/examples/to/) 
-* [Clip DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
 * [Clip Transform Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform-to/) 
 
 ## Features
