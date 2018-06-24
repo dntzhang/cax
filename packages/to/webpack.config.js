@@ -67,7 +67,7 @@ if(ENV === 'build'||ENV === 'build-min'){
         },
         plugins: [
             // Avoid publishing files when compilation fails
-            new webpack.BannerPlugin(" to-to v"+packageJSON.version+" \r\n By https://github.com/dntzhang \r\n Github: https://github.com/dntzhang/cax\r\n MIT Licensed."),
+            new webpack.BannerPlugin(" to2to v"+packageJSON.version+" \r\n By https://github.com/dntzhang \r\n Github: https://github.com/dntzhang/cax\r\n MIT Licensed."),
             new webpack.NoEmitOnErrorsPlugin()
         ],
         stats: {

@@ -1,6 +1,6 @@
 ## Cax 1.0.7
 
-* 兼容　to-to 的 easing 用法
+* 兼容　to2to 的 easing 用法
 
 ## Cax 1.0.6
 

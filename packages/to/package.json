@@ -1,8 +1,8 @@
 {
-  "name": "to-to",
+  "name": "to2to",
   "version": "0.1.0",
-  "description": "小程序、小游戏和 Web 通用运动引擎",
-  "main": "dist/cax.js",
+  "description": "Simple and lightweight javascript animation engine - 小程序、小游戏和 Web 通用运动引擎",
+  "main": "dist/to.js",
   "scripts": {
     "lint": "eslint src",
     "fix": "eslint src --fix",

@@ -1,5 +1,5 @@
 /*!
- *  to-to v0.1.0 
+ *  to2to v0.1.0 
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.

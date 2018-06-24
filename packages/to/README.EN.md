@@ -1,6 +1,6 @@
 English | [简体中文](./README.md) 
 
-# Cax [![](https://img.shields.io/npm/v/to-to.svg)](https://www.npmjs.com/package/to-to) 
+# to2to [![](https://img.shields.io/npm/v/to2to.svg)](https://www.npmjs.com/package/to2to) 
 
 > Simple and lightweight javascript animation engine
 
@@ -19,19 +19,19 @@ English | [简体中文](./README.md)
 
 ## Getting Started
 
-Get to-to through npm or cdn:
+Get to2to through npm or cdn:
 
 ``` bash
-npm i to-to
+npm i to2to
 ```
 
-* [https://unpkg.com/to-to@latest/dist/to.min.js](https://unpkg.com/to-to@latest/dist/to.min.js)
-* [https://unpkg.com/to-to@latest/dist/to.js](https://unpkg.com/to-to@latest/dist/to.js)
+* [https://unpkg.com/to2to@latest/dist/to.min.js](https://unpkg.com/to2to@latest/dist/to.min.js)
+* [https://unpkg.com/to2to@latest/dist/to.js](https://unpkg.com/to2to@latest/dist/to.js)
 
 Usage:
 
 ``` js
-import To from 'to-to'
+import To from 'to2to'
 
 const ele = document.querySelector('#animateEle')
 
@@ -43,7 +43,7 @@ To.get({ rotate: 0, x: 0, y: 0 })
     .start()
 ```
 
-## Using to-to in cax
+## Using to2to in cax
 
 Cax has built-in to capability to write motion effects in a continuous way.
 

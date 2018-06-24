@@ -1,6 +1,6 @@
 简体中文 | [English](./README.EN.md) 
 
-# to-to [![](https://img.shields.io/npm/v/to-to.svg)](https://www.npmjs.com/package/to-to) 
+# to2to [![](https://img.shields.io/npm/v/to2to.svg)](https://www.npmjs.com/package/to2to) 
 
 > 简单轻量的 Javascript 运动引擎
 
@@ -17,21 +17,21 @@
 * 运动一切（Canvas、DOM、WebGL、SVG、Object..）
 * 支持小程序、小游戏以及 Web 浏览器用相同简介的 API 运动
 
-## 一分钟入门 to-to 使用
+## 一分钟入门 to2to 使用
 
 通过 npm 安装或者 cdn 下载下来在 HTML 引用该脚本:
 
 ``` bash
-npm i to-to
+npm i to2to
 ```
 
-* [https://unpkg.com/to-to@latest/dist/to.min.js](https://unpkg.com/to-to@latest/dist/to.min.js)
-* [https://unpkg.com/to-to@latest/dist/to.js](https://unpkg.com/to-to@latest/dist/to.js)
+* [https://unpkg.com/to2to@latest/dist/to.min.js](https://unpkg.com/to2to@latest/dist/to.min.js)
+* [https://unpkg.com/to2to@latest/dist/to.js](https://unpkg.com/to2to@latest/dist/to.js)
 
 Usage:
 
 ``` js
-import To from 'to-to'
+import To from 'to2to'
 
 const ele = document.querySelector('#animateEle')
 
@@ -43,7 +43,7 @@ To.get({ rotate: 0, x: 0, y: 0 })
     .start()
 ```
 
-## 在 cax 中使用　to-to
+## 在 cax 中使用　to2to
 
 cax 内置了 to 的能力以连缀的方式写运动效果：
 
