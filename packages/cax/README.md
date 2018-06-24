@@ -9,6 +9,7 @@
   * [Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
   * [Clip DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
   * [Clip Transform DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform/) 
+  * [Clip Transform Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform-to/) 
 * 小程序 DEMO 正在审核中敬请期待
 * 小游戏 DEMO 正在审核中敬请期待
 
@@ -482,6 +483,18 @@ cax.To.get(bitmap)
 
 ``` js
 .y(240, 2000, cax.easing.elasticInOut)
+```
+
+如果想要循环播放的话可以使用 `cycle` 方法:
+
+``` js
+cax.To.get(bitmap)
+    .to()
+    .y(340, 2000, cax.easing.elasticInOut)
+    .to
+    .y(0, 2000, cax.easing.elasticInOut)
+    .cycle()
+    .start()
 ```
 
 [运动演示地址](http://dntzhang.github.io/cax/packages/cax/examples/to/)

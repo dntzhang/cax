@@ -8,6 +8,7 @@ English | [简体中文](./README.md)
   * [Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
   * [Clip DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
   * [Clip Transform DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform/) 
+  * [Clip Transform Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform-to/) 
 
 ## Features
 
@@ -364,6 +365,18 @@ Equate to:
 
 ``` js
 .y(240, 2000, cax.easing.elasticInOut)
+```
+
+If you want circular motion, you can use the `cycle` method:
+
+``` js
+cax.To.get(bitmap)
+    .to()
+    .y(340, 2000, cax.easing.elasticInOut)
+    .to
+    .y(0, 2000, cax.easing.elasticInOut)
+    .cycle()
+    .start()
 ```
 
 [Motion Demo](http://dntzhang.github.io/cax/packages/cax/examples/to/)

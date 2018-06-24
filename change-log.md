@@ -1,3 +1,8 @@
+## Cax 1.0.5
+
+* 支持离屏 cache Shape 和 Text 对象 
+* To 支持 cycle 方法无限循环运动
+
 ## Cax 1.0.4
 
 * 支持 Clip 区域的变形 
