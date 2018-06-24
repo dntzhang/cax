@@ -1,7 +1,7 @@
 {
-  "name": "cax",
-  "version": "1.0.5",
-  "description": "小程序、小游戏和 Web 通用 Canvas 渲染引擎",
+  "name": "to-to",
+  "version": "0.1.0",
+  "description": "小程序、小游戏和 Web 通用运动引擎",
   "main": "dist/cax.js",
   "scripts": {
     "lint": "eslint src",
