@@ -128,7 +128,9 @@ class HitRender extends Render {
         ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd')
       }
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
-      if (o instanceof Graphics) {
+      if (o.cacheCanvas) {
+        ctx.drawImage(o.cacheCanvas, 0, 0)
+      } else if (o instanceof Graphics) {
         ctx.globalCompositeOperation = o.complexCompositeOperation
         ctx.globalAlpha = o.complexAlpha
         o.render(ctx)

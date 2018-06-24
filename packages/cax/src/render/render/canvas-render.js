@@ -33,7 +33,9 @@ class CanvasRender extends Render {
       ctx.clip(obj.clipRuleNonzero ? 'nonzero' : 'evenodd')
     }
     ctx.setTransform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty)
-    if (obj instanceof Graphics) {
+    if (obj.cacheCanvas) {
+      ctx.drawImage(obj.cacheCanvas, 0, 0)
+    } else if (obj instanceof Graphics) {
       obj.render(ctx)
     } else if (obj instanceof Sprite && obj.rect) {
       obj.updateFrame()

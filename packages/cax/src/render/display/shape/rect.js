@@ -1,6 +1,6 @@
-import Graphics from '../graphics.js'
+import Shape from './shape'
 
-class Rect extends Graphics {
+class Rect extends Shape {
   constructor (width, height, option) {
     super()
 
@@ -9,9 +9,7 @@ class Rect extends Graphics {
     this.option = option || {}
   }
 
-  render (ctx) {
-    this.clear()
-
+  draw () {
     if (this.option.fillStyle) {
       this.fillStyle(this.option.fillStyle)
       this.fillRect(0, 0, this.width, this.height)
@@ -21,7 +19,6 @@ class Rect extends Graphics {
       this.strokeStyle(this.option.strokeStyle)
       this.strokeRect(0, 0, this.width, this.height)
     }
-    super.render(ctx)
   }
 }
 
