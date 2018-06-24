@@ -47,10 +47,12 @@ To.get({ rotate: 0, x: 0, y: 0 })
 Cax has built-in to capability to write motion effects in a continuous way.
 
 ``` js
+const easing = cax.To.easing.elasticInOut
+
 cax.To.get(bitmap)
     .to()
-    .y(340, 2000, cax.easing.elasticInOut)
-    .rotation(240, 2000, cax.easing.elasticInOut)
+    .y(340, 2000, easing)
+    .rotation(240, 2000, easing)
     .begin(() => {
         console.log("Task one has began!")
     })
@@ -62,7 +64,7 @@ cax.To.get(bitmap)
     })
     .wait(500)
     .to()
-    .rotation(0, 1400, cax.easing.elasticInOut)
+    .rotation(0, 1400, easing)
     .begin(() => {
         console.log("Task two has began!")
     })
@@ -74,8 +76,8 @@ cax.To.get(bitmap)
     })
     .wait(500)
     .to()
-    .scaleX(1, 1400, cax.easing.elasticInOut)
-    .scaleY(1, 1400, cax.easing.elasticInOut)
+    .scaleX(1, 1400, easing)
+    .scaleY(1, 1400, easing)
     .begin(() => {
         console.log("Task three has began!")
     })
@@ -86,8 +88,8 @@ cax.To.get(bitmap)
         console.log("Task three has completed!")
     })
     .wait(500)
-    .to({ x: 300, y: 200 }, 1000, cax.easing.elasticInOut)
-    .rotation(360, 1000, cax.easing.elasticInOut)
+    .to({ x: 160, y: 200 }, 1000, easing)
+    .rotation(360, 1000, easing)
     .begin(() => {
         console.log("Task four has began!")
     })
