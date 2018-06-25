@@ -331,18 +331,6 @@ cax.To.get(bitmap)
 * `to` and `wait` are serial 
 * The serial between `to` and `to` is serial with the next `to` and `to`
 
-Of course, `set` can also be used to support the movement of arbitrary attributes, such as:
-
-``` js
-.set('y', 240, 2000, cax.easing.elasticInOut)
-``` 
-
-Equate to:
-
-``` js
-.y(240, 2000, cax.easing.elasticInOut)
-```
-
 If you want circular motion, you can use the `cycle` method:
 
 ``` js
