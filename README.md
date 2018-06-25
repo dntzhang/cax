@@ -499,7 +499,7 @@ cax.To.get(bitmap)
     .start()
 ```
 
-[运动演示地址](http://dntzhang.github.io/cax/packages/cax/examples/to/)
+[→ 运动演示地址](http://dntzhang.github.io/cax/packages/cax/examples/to/)
 
 ## 裁剪
 
@@ -525,7 +525,7 @@ clipPath.arc(0, 0, 25, 0, Math.PI * 2)
 
 所以，裁剪区域也是支持所有 transform 属性(x,y,scaleX,scaleY,rotation,skewX,skewY,originX,originY)。
 
-[裁剪演示地址](http://dntzhang.github.io/cax/packages/cax/examples/clip/)
+[→ 裁剪演示地址](http://dntzhang.github.io/cax/packages/cax/examples/clip/)
 
 ## 自定义对象
 
