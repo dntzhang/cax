@@ -1,3 +1,11 @@
+## Cax 1.0.8
+
+* 支持 to2to 的 自定义动画的用法
+
+```js
+To.get(bitmap).animate('rubber').start()
+```
+
 ## Cax 1.0.7
 
 * 兼容　to2to 的 easing 用法
