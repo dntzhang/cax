@@ -23,7 +23,7 @@
 * 支持 Canvas 元素管理
 * 支持 Canvas 元素事件体系
 * 图灵完备的 group 嵌套体系
-* 内置 tween 和 to 的运动能力
+* 内置 [to2to](https://github.com/dntzhang/cax/tree/master/packages/to) 的跨平台运动引擎
 * 支持可以变形的 clip 裁剪体系
 * 内置文本、位图、序列帧、绘图对象和多种矢量绘制对象
 

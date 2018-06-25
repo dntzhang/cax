@@ -18,7 +18,7 @@ English | [简体中文](./README.md)
 * Support element of canvas management
 * Support event of element like DOM
 * Turing complete group nesting system
-* Built-in motion library (to.js and tween.js)
+* Built-in cross platform motion library [to2to](https://github.com/dntzhang/cax/tree/master/packages/to)
 * Support clip and clip transformation
 * Built-in Text, Bitmap, Sprite, Graphics and Shape
 
