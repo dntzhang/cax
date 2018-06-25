@@ -472,7 +472,8 @@ cax.To.get(bitmap)
     .start()
 ```
 
-[→ 运动演示地址](http://dntzhang.github.io/cax/packages/cax/examples/to/)
+* [→ 运动演示地址](http://dntzhang.github.io/cax/packages/cax/examples/to/)
+* [→ 去 to2to 一看究竟](https://github.com/dntzhang/cax/tree/master/packages/to)
 
 ## 裁剪
 

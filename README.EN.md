@@ -354,7 +354,8 @@ cax.To.get(bitmap)
     .start()
 ```
 
-[Motion Demo](http://dntzhang.github.io/cax/packages/cax/examples/to/)
+* [→ Motion Demo](http://dntzhang.github.io/cax/packages/cax/examples/to/)
+* [→ to2to package](https://github.com/dntzhang/cax/tree/master/packages/to)
 
 ## Clip
 
@@ -381,7 +382,7 @@ clipPath.arc(0, 0, 25, 0, Math.PI * 2)
 
 So you can find that clip graphics supports all the transformation props(x,y,scaleX,scaleY,rotation,skewX,skewY,originX,originY).
 
-[Clip Demo](http://dntzhang.github.io/cax/packages/cax/examples/clip/)
+[→ Clip Demo](http://dntzhang.github.io/cax/packages/cax/examples/clip/)
 
 ## Custom Object
 
