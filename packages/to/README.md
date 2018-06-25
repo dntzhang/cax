@@ -9,6 +9,8 @@
 * [Clip Transform Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform-to/) 
 * [Animate DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
 
+to2to 中文念 '兔兔兔'，作为 cax 内置的运动套件独立出一个package ，因为它本身可以和平台环境运动对象无关。既可运动 dom，也可运动 cax 内置对象，也可运动对象子面量。众所周知，运动需要循环的 tick 去不断执行偏移函数，小程序，小游戏和web各浏览器的 相应的 API 还是有差异，to2to 抹平了这些差异，让你使用同样的api可以在不同环境畅快运动。
+
 ## 特性
 
 * 超轻量级的代码体积
