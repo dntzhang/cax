@@ -114,122 +114,6 @@ class To {
     return this
   }
 
-  rubber () {
-    this.cmds = this.cmds.concat([['to', ['scaleX', {
-      '0': 1.25,
-      '1': 300
-    }], ['scaleY', {
-      '0': 0.75,
-      '1': 300
-    }]], ['to', ['scaleX', {
-      '0': 0.75,
-      '1': 100
-    }], ['scaleY', {
-      '0': 1.25,
-      '1': 100
-    }]], ['to', ['scaleX', {
-      '0': 1.15,
-      '1': 100
-    }], ['scaleY', {
-      '0': 0.85,
-      '1': 100
-    }]], ['to', ['scaleX', {
-      '0': 0.95,
-      '1': 150
-    }], ['scaleY', {
-      '0': 1.05,
-      '1': 150
-    }]], ['to', ['scaleX', {
-      '0': 1.05,
-      '1': 100
-    }], ['scaleY', {
-      '0': 0.95,
-      '1': 100
-    }]], ['to', ['scaleX', {
-      '0': 1,
-      '1': 250
-    }], ['scaleY', {
-      '0': 1,
-      '1': 250
-    }]]])
-    return this
-  }
-
-  bounceIn () {
-    this.cmds = this.cmds.concat([['to', ['scaleX', {
-      '0': 0,
-      '1': 0
-    }], ['scaleY', {
-      '0': 0,
-      '1': 0
-    }]], ['to', ['scaleX', {
-      '0': 1.35,
-      '1': 200
-    }], ['scaleY', {
-      '0': 1.35,
-      '1': 200
-    }]], ['to', ['scaleX', {
-      '0': 0.9,
-      '1': 100
-    }], ['scaleY', {
-      '0': 0.9,
-      '1': 100
-    }]], ['to', ['scaleX', {
-      '0': 1.1,
-      '1': 100
-    }], ['scaleY', {
-      '0': 1.1,
-      '1': 100
-    }]], ['to', ['scaleX', {
-      '0': 0.95,
-      '1': 100
-    }], ['scaleY', {
-      '0': 0.95,
-      '1': 100
-    }]], ['to', ['scaleX', {
-      '0': 1,
-      '1': 100
-    }], ['scaleY', {
-      '0': 1,
-      '1': 100
-    }]]])
-    return this
-  }
-
-  flipInX () {
-    this.cmds = this.cmds.concat([['to', ['rotateX', {
-      '0': -90,
-      '1': 0
-    }]], ['to', ['rotateX', {
-      '0': 20,
-      '1': 300
-    }]], ['to', ['rotateX', {
-      '0': -20,
-      '1': 300
-    }]], ['to', ['rotateX', {
-      '0': 10,
-      '1': 300
-    }]], ['to', ['rotateX', {
-      '0': -5,
-      '1': 300
-    }]], ['to', ['rotateX', {
-      '0': 0,
-      '1': 300
-    }]]])
-    return this
-  }
-
-  zoomOut () {
-    this.cmds = this.cmds.concat([['to', ['scaleX', {
-      '0': 0,
-      '1': 400
-    }], ['scaleY', {
-      '0': 0,
-      '1': 400
-    }]]])
-    return this
-  }
-
   start () {
     if (this._pause) return
     var len = this.cmds.length
@@ -282,6 +166,11 @@ class To {
       TWEEN.remove(this.tweens[i])
     }
     this.cmds.length = 0
+  }
+
+  animate (name) {
+    this.cmds = this.cmds.concat(To.animationMap[name] || [])
+    return this
   }
 
   exec (cmd, last) {
@@ -366,6 +255,11 @@ class To {
 To.get = function (element) {
   var to = new To(element)
   return to
+}
+
+To.animationMap = {}
+To.extend = function(animationName, cmds){
+  To.animationMap[animationName] = cmds
 }
 
 export default To

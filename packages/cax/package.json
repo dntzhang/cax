@@ -1,6 +1,6 @@
 {
   "name": "cax",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "小程序、小游戏和 Web 通用 Canvas 渲染引擎",
   "main": "dist/cax.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "fixweapp": "eslint ../cax-weapp --fix",
     "lint:example": "eslint example --fix",
     "nest": "webpack -w",
+    "to-animate": "webpack -w",
     "clip": "webpack -w",
     "clip-transform": "webpack -w",
     "map": "webpack -w",

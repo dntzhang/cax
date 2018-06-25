@@ -1,5 +1,6 @@
 import TWEEN from './common/tween'
 import To from './common/to'
+import './common/animate'
 
 import Stage from './render/display/stage'
 import WeStage from './render/display/we-stage'

@@ -1,32 +1,107 @@
-import TWEEN from '../common/tween'
+import To from './to'
 
-export function fadeIn (obj) {
-  obj.alpha = 0
-  new TWEEN.Tween(obj).to({ alpha: 1 }, 600).start()
-}
+To.extend('rubber', [['to', ['scaleX', {
+  '0': 1.25,
+  '1': 300
+}], ['scaleY', {
+  '0': 0.75,
+  '1': 300
+}]], ['to', ['scaleX', {
+  '0': 0.75,
+  '1': 100
+}], ['scaleY', {
+  '0': 1.25,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1.15,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.85,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 0.95,
+  '1': 150
+}], ['scaleY', {
+  '0': 1.05,
+  '1': 150
+}]], ['to', ['scaleX', {
+  '0': 1.05,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.95,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1,
+  '1': 250
+}], ['scaleY', {
+  '0': 1,
+  '1': 250
+}]]])
 
-export function fadeOut (obj) {
-  obj.alpha = 1
-  new TWEEN.Tween(obj).to({ alpha: 0 }, 600).start()
-}
 
-export function fadeOutAndDestroy (obj) {
-  obj.alpha = 1
-  new TWEEN.Tween(obj).to({ alpha: 0 }, 600).onComplete(() => {
-    obj.destroy()
-  }).start()
-}
+To.extend('bounceIn', [['to', ['scaleX', {
+  '0': 0,
+  '1': 0
+}], ['scaleY', {
+  '0': 0,
+  '1': 0
+}]], ['to', ['scaleX', {
+  '0': 1.35,
+  '1': 200
+}], ['scaleY', {
+  '0': 1.35,
+  '1': 200
+}]], ['to', ['scaleX', {
+  '0': 0.9,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.9,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1.1,
+  '1': 100
+}], ['scaleY', {
+  '0': 1.1,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 0.95,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.95,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1,
+  '1': 100
+}], ['scaleY', {
+  '0': 1,
+  '1': 100
+}]]])
 
-export function bounceIn (obj, from, to) {
-  from = from || 0
-  obj.from = from
-  new TWEEN.Tween(obj).to({ scaleX: to || 1, scaleY: to || 1 }, 300)
-    .easing(TWEEN.Easing.Bounce.Out).start()
-}
+To.extend('flipInX', [['to', ['rotateX', {
+  '0': -90,
+  '1': 0
+}]], ['to', ['rotateX', {
+  '0': 20,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': -20,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': 10,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': -5,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': 0,
+  '1': 300
+}]]])
 
-export function bounceOut (obj, from, to) {
-  from = from || 1
-  obj.from = from
-  new TWEEN.Tween(obj).to({ scaleX: to || 0, scaleY: to || 0 }, 300)
-    .easing(TWEEN.Easing.Bounce.Out).start()
-}
+
+To.extend('zoomOut', [['to', ['scaleX', {
+  '0': 0,
+  '1': 400
+}], ['scaleY', {
+  '0': 0,
+  '1': 400
+}]]])  
