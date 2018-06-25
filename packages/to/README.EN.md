@@ -8,6 +8,7 @@ English | [简体中文](./README.md)
 * [Animation DEMO](https://dntzhang.github.io/cax/packages/to/examples/to/) 
 * [Clip Transform Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform-to/) 
 * [Animate DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
+* [Swing DEMO](https://dntzhang.github.io/cax/packages/to/examples/swing/) 
 
 ## Features
 

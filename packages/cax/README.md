@@ -11,6 +11,7 @@
   * [Clip Transform DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform/) 
   * [Clip Transform Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform-to/) 
   * [To2To Animate DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
+  * [Swing DEMO](https://dntzhang.github.io/cax/packages/to/examples/swing/) 
 * 小程序 DEMO 正在审核中敬请期待
 * 小游戏 DEMO 正在审核中敬请期待
 

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta charset="UTF-8">
+    <title>Cax Motion Demo</title>
+    <style>
+        canvas {
+            border: 1px solid #ccc;
+            margin-top: 120px;
+            margin-left: 0;
+            margin-right: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: #444444;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="https://github.com/dntzhang/cax" target="_blank" style="position: fixed; right: 0; top: 0; z-index: 3;">
+        <img src="//alloyteam.github.io/github.png" alt="">
+    </a>
+    <script src="../../dist/to.js"></script>
+    <script src="../../../cax/dist/cax.js"></script>
+
+    <script>
+        var stage = new cax.Stage(300, 400, 'body')
+        var bitmap = new cax.Bitmap('./wepay-diy.jpg', function () {
+
+
+            var sineInOut = To.easing.sinusoidalInOut
+
+
+            To.get(bitmap)
+                .to().scaleY(0.8, 450, sineInOut).skewX(20, 900, sineInOut)
+                .wait(900)
+                .cycle().start()
+
+            To.get(bitmap)
+                .wait(450)
+                .to().scaleY(1, 450, sineInOut)
+                .wait(900)
+                .cycle().start()
+
+            To.get(bitmap)
+                .wait(900)
+                .to().scaleY(0.8, 450, sineInOut).skewX(-20, 900, sineInOut)
+                .cycle()
+                .start()
+
+            To.get(bitmap)
+                .wait(1350)
+                .to().scaleY(1, 450, sineInOut)
+                .cycle()
+                .start()
+
+        })
+
+        bitmap.x = 150
+        bitmap.y = 200
+        bitmap.originX = 40
+        bitmap.originY = 80
+        bitmap.cursor = 'pointer'
+
+        stage.add(bitmap)
+
+
+        cax.setInterval(() => {
+            stage.update()
+        }, 16)
+    </script>
+
+</body>
+
+</html>
