@@ -1,3 +1,7 @@
+## Cax 1.0.9
+
+* to2to 的`begin`、`end`以及`progress`回调暴露运动 object 参数给使用者
+
 ## Cax 1.0.8
 
 * 支持 to2to 的 自定义动画的用法
