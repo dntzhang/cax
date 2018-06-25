@@ -301,9 +301,7 @@ Cax has built-in to capability to write motion effects in a continuous way.
 const easing = cax.To.easing.elasticInOut
 
 cax.To.get(bitmap)
-    .to()
-    .y(340, 2000, easing)
-    .rotation(240, 2000, easing)
+    .to({ y: 340, rotation: 240 }, 2000, easing)
     .begin(() => {
         console.log("Task one has began!")
     })
@@ -325,36 +323,11 @@ cax.To.get(bitmap)
     .end(() => {
         console.log("Task two has completed!")
     })
-    .wait(500)
-    .to()
-    .scaleX(1, 1400, easing)
-    .scaleY(1, 1400, easing)
-    .begin(() => {
-        console.log("Task three has began!")
-    })
-    .progress(() => {
-        console.log("Task three is progressing!")
-    })
-    .end(() => {
-        console.log("Task three has completed!")
-    })
-    .wait(500)
-    .to({ x: 160, y: 200 }, 1000, easing)
-    .rotation(360, 1000, easing)
-    .begin(() => {
-        console.log("Task four has began!")
-    })
-    .progress(() => {
-        console.log("Task four is progressing!")
-    })
-    .end(() => {
-        console.log("Task four has completed!")
-    })
     .start();
 ```
 
 * `to` and `to` are parallel
-* `to` and `wait` are parallel before
+* `to` and `wait` are serial 
 * The serial between `to` and `to` is serial with the next `to` and `to`
 
 Of course, `set` can also be used to support the movement of arbitrary attributes, such as:

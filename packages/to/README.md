@@ -50,9 +50,7 @@ cax 内置了 to 的能力以连缀的方式写运动效果：
 const easing = cax.To.easing.elasticInOut
 
 cax.To.get(bitmap)
-    .to()
-    .y(340, 2000, easing)
-    .rotation(240, 2000, easing)
+    .to({ y: 340, rotation: 240 }, 2000, easing)
     .begin(() => {
         console.log("Task one has began!")
     })
@@ -74,36 +72,11 @@ cax.To.get(bitmap)
     .end(() => {
         console.log("Task two has completed!")
     })
-    .wait(500)
-    .to()
-    .scaleX(1, 1400, easing)
-    .scaleY(1, 1400, easing)
-    .begin(() => {
-        console.log("Task three has began!")
-    })
-    .progress(() => {
-        console.log("Task three is progressing!")
-    })
-    .end(() => {
-        console.log("Task three has completed!")
-    })
-    .wait(500)
-    .to({ x: 160, y: 200 }, 1000, easing)
-    .rotation(360, 1000, easing)
-    .begin(() => {
-        console.log("Task four has began!")
-    })
-    .progress(() => {
-        console.log("Task four is progressing!")
-    })
-    .end(() => {
-        console.log("Task four has completed!")
-    })
     .start();
 ```
 
 * `to` 和 `to` 之间的是并行
-* `to` 和 `wait` 之前的是并行
+* `to` 和 `wait` 之前的是串行
 * `to` 和 `to` 之间的 与 下一个 `to` 和 `to` 之间的是串行
 
 有点绕，但是很直观，慢慢体会。
