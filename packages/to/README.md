@@ -7,6 +7,7 @@
 * [Simple DEMO](http://dntzhang.github.io/cax/packages/to/examples/simple/) 
 * [Animation DEMO](https://dntzhang.github.io/cax/packages/to/examples/to/) 
 * [Clip Transform Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform-to/) 
+* [Animate DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
 
 ## 特性
 
@@ -27,7 +28,7 @@ npm i to2to
 * [https://unpkg.com/to2to@latest/dist/to.min.js](https://unpkg.com/to2to@latest/dist/to.min.js)
 * [https://unpkg.com/to2to@latest/dist/to.js](https://unpkg.com/to2to@latest/dist/to.js)
 
-Usage:
+使用:
 
 ``` js
 import To from 'to2to'
@@ -81,18 +82,6 @@ cax.To.get(bitmap)
 
 有点绕，但是很直观，慢慢体会。
 
-当然，也可以通过 set 方法支持任意属性的运动，如:
-
-``` js
-.set('y', 240, 2000, cax.easing.elasticInOut)
-``` 
-
-等同于
-
-``` js
-.y(240, 2000, cax.easing.elasticInOut)
-```
-
 如果想要循环播放的话可以使用 `cycle` 方法:
 
 ``` js
@@ -107,6 +96,59 @@ cax.To.get(bitmap)
 
 [运动演示地址](http://dntzhang.github.io/cax/packages/cax/examples/to/)
 
+## 自定义动画
+
+通过 `animate` 方法可以使用自定义的动画: 
+
+``` js
+const stage = new cax.Stage(300, 400, 'body')
+const bitmap = new cax.Bitmap('./wepay-diy.jpg', function () {
+    var eio = To.easing.elasticInOut
+    To.get(bitmap).animate('rubber').start()
+})
+
+bitmap.x = 150
+bitmap.y = 200
+bitmap.originX = 40
+bitmap.originY = 40
+stage.add(bitmap)
+
+cax.setInterval(() => {
+    stage.update()
+}, 16)
+``` 
+
+to2to 内置了少数几个自定义动画
+
+* rubber
+* bounceIn
+* flipInX
+* zoomOut
+
+## 扩展自定义动画
+
+内置的不够用？自己动手丰衣足食:
+
+比如 `customAnimation` 就是通过下面实现的:
+
+``` js
+To.extend('customAnimation', [['to', ['scaleX', {
+  '0': 0,
+  '1': 400,
+  '2': To.easing.elasticInOut
+}], ['scaleY', {
+  '0': 0,
+  '1': 400
+}]]])  
+```
+
+索引为 2 的 easing 可以传可不传，不传代表线性匀速变化。 
+
+使用刚刚定义的自定义动画:
+
+```js
+To.get(obj).animate('customAnimation').start()
+```
 
 ## 谁在使用？
 

@@ -7,6 +7,7 @@ English | [简体中文](./README.md)
 * [Simple DEMO](http://dntzhang.github.io/cax/packages/to/examples/simple/) 
 * [Animation DEMO](https://dntzhang.github.io/cax/packages/to/examples/to/) 
 * [Clip Transform Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform-to/) 
+* [Animate DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
 
 ## Features
 
@@ -105,6 +106,60 @@ cax.To.get(bitmap)
 
 [Motion Demo](http://dntzhang.github.io/cax/packages/cax/examples/to/)
 
+
+## Custom animation
+
+You can use custom animation through the `animate` method:
+
+``` js
+const stage = new cax.Stage(300, 400, 'body')
+const bitmap = new cax.Bitmap('./wepay-diy.jpg', function () {
+    var eio = To.easing.elasticInOut
+    To.get(bitmap).animate('rubber').start()
+})
+
+bitmap.x = 150
+bitmap.y = 200
+bitmap.originX = 40
+bitmap.originY = 40
+stage.add(bitmap)
+
+cax.setInterval(() => {
+    stage.update()
+}, 16)
+``` 
+
+to2to has a few custom animations built in:
+
+* rubber
+* bounceIn
+* flipInX
+* zoomOut
+
+## Extend custom animation
+
+Built in is not enough to use? do-it-yourselfery!
+
+For example, `customAnimation` is implemented through the following:
+
+``` js
+To.extend('customAnimation', [['to', ['scaleX', {
+  '0': 0,
+  '1': 400,
+  '2': To.easing.elasticInOut
+}], ['scaleY', {
+  '0': 0,
+  '1': 400
+}]]])  
+```
+
+An index of 2 easing can be transmitted or transmitted without representing a linear uniform change.
+
+Using the defined custom animation:
+
+```js
+To.get(obj).animate('customAnimation').start()
+```
 
 # Who is using cax?
 

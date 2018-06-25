@@ -21,9 +21,7 @@ stage.add(bitmap)
 const easing = cax.To.easing.elasticInOut
 
 cax.To.get(bitmap)
-    .to()
-    .y(340, 2000, easing)
-    .rotation(240, 2000, easing)
+    .to({ y: 340, rotation: 240 }, 2000, easing)
     .begin(() => {
         console.log("Task one has began!")
     })
