@@ -1,5 +1,5 @@
 /*!
- *  to2to v0.1.0 
+ *  to2to v1.0.0 
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -76,11 +76,323 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _tween = __webpack_require__(1);
+
+var _tween2 = _interopRequireDefault(_tween);
+
+var _rafInterval = __webpack_require__(4);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var To = function () {
+  function To(element) {
+    _classCallCheck(this, To);
+
+    this.element = element;
+    this.cmds = [];
+    this.index = 0;
+    this.tweens = [];
+    this._pause = false;
+    this.loop = (0, _rafInterval.setRafInterval)(function () {
+      _tween2.default.update();
+    }, 15);
+    this.cycleCount = 0;
+  }
+
+  _createClass(To, [{
+    key: 'to',
+    value: function to(target, duration, easing) {
+      this.cmds.push(['to']);
+      if (arguments.length !== 0) {
+        for (var key in target) {
+          this.set(key, target[key], duration, easing);
+        }
+      }
+      return this;
+    }
+  }, {
+    key: 'set',
+    value: function set(prop, value, duration, easing) {
+      this.cmds[this.cmds.length - 1].push([prop, [value, duration, easing]]);
+      return this;
+    }
+  }, {
+    key: 'x',
+    value: function x() {
+      this.cmds[this.cmds.length - 1].push(['x', arguments]);
+      return this;
+    }
+  }, {
+    key: 'y',
+    value: function y() {
+      this.cmds[this.cmds.length - 1].push(['y', arguments]);
+      return this;
+    }
+  }, {
+    key: 'z',
+    value: function z() {
+      this.cmds[this.cmds.length - 1].push(['z', arguments]);
+      return this;
+    }
+  }, {
+    key: 'rotation',
+    value: function rotation() {
+      this.cmds[this.cmds.length - 1].push(['rotation', arguments]);
+      return this;
+    }
+  }, {
+    key: 'scaleX',
+    value: function scaleX() {
+      this.cmds[this.cmds.length - 1].push(['scaleX', arguments]);
+      return this;
+    }
+  }, {
+    key: 'scaleY',
+    value: function scaleY() {
+      this.cmds[this.cmds.length - 1].push(['scaleY', arguments]);
+      return this;
+    }
+  }, {
+    key: 'skewX',
+    value: function skewX() {
+      this.cmds[this.cmds.length - 1].push(['skewX', arguments]);
+      return this;
+    }
+  }, {
+    key: 'skewY',
+    value: function skewY() {
+      this.cmds[this.cmds.length - 1].push(['skewY', arguments]);
+      return this;
+    }
+  }, {
+    key: 'originX',
+    value: function originX() {
+      this.cmds[this.cmds.length - 1].push(['originX', arguments]);
+      return this;
+    }
+  }, {
+    key: 'originY',
+    value: function originY() {
+      this.cmds[this.cmds.length - 1].push(['originY', arguments]);
+      return this;
+    }
+  }, {
+    key: 'alpha',
+    value: function alpha() {
+      this.cmds[this.cmds.length - 1].push(['alpha', arguments]);
+      return this;
+    }
+  }, {
+    key: 'begin',
+    value: function begin(fn) {
+      this.cmds[this.cmds.length - 1].begin = fn;
+      return this;
+    }
+  }, {
+    key: 'progress',
+    value: function progress(fn) {
+      this.cmds[this.cmds.length - 1].progress = fn;
+      return this;
+    }
+  }, {
+    key: 'end',
+    value: function end(fn) {
+      this.cmds[this.cmds.length - 1].end = fn;
+      return this;
+    }
+  }, {
+    key: 'wait',
+    value: function wait() {
+      this.cmds.push(['wait', arguments]);
+      return this;
+    }
+  }, {
+    key: 'then',
+    value: function then() {
+      this.cmds.push(['then', arguments]);
+      return this;
+    }
+  }, {
+    key: 'cycle',
+    value: function cycle() {
+      this.cmds.push(['cycle', arguments]);
+      return this;
+    }
+  }, {
+    key: 'start',
+    value: function start() {
+      if (this._pause) return;
+      var len = this.cmds.length;
+      if (this.index < len) {
+        this.exec(this.cmds[this.index], this.index === len - 1);
+      } else {
+        (0, _rafInterval.clearRafInterval)(this.loop);
+      }
+      return this;
+    }
+  }, {
+    key: 'pause',
+    value: function pause() {
+      this._pause = true;
+      for (var i = 0, len = this.tweens.length; i < len; i++) {
+        this.tweens[i].pause();
+      }
+      if (this.currentTask === 'wait') {
+        this.timeout -= new Date() - this.currentTaskBegin;
+        this.currentTaskBegin = new Date();
+      }
+    }
+  }, {
+    key: 'toggle',
+    value: function toggle() {
+      if (this._pause) {
+        this.play();
+      } else {
+        this.pause();
+      }
+    }
+  }, {
+    key: 'play',
+    value: function play() {
+      this._pause = false;
+      for (var i = 0, len = this.tweens.length; i < len; i++) {
+        this.tweens[i].play();
+      }
+      var self = this;
+      if (this.currentTask === 'wait') {
+        setTimeout(function () {
+          if (self._pause) return;
+          self.index++;
+          self.start();
+          if (self.index === self.cmds.length && self.complete) self.complete();
+        }, this.timeout);
+      }
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      for (var i = 0, len = this.tweens.length; i < len; i++) {
+        this.tweens[i].pause();
+        _tween2.default.remove(this.tweens[i]);
+      }
+      this.cmds.length = 0;
+    }
+  }, {
+    key: 'animate',
+    value: function animate(name) {
+      this.cmds = this.cmds.concat(To.animationMap[name] || []);
+      return this;
+    }
+  }, {
+    key: 'exec',
+    value: function exec(cmd, last) {
+      var len = cmd.length,
+          self = this;
+      this.currentTask = cmd[0];
+      switch (this.currentTask) {
+        case 'to':
+          self.stepCompleteCount = 0;
+          for (var i = 1; i < len; i++) {
+            var task = cmd[i];
+            var ease = task[1][2];
+            var target = {};
+            var prop = task[0];
+            target[prop] = task[1][0];
+
+            var t = new _tween2.default.Tween(this.element).to(target, task[1][1]).onStart(function () {
+              if (cmd.begin) cmd.begin.call(self.element);
+            }).onUpdate(function () {
+              if (cmd.progress) cmd.progress.call(self.element);
+              // self.element[prop] = this[prop];
+            }).easing(ease || _tween2.default.Easing.Linear.None).onComplete(function () {
+              self.stepCompleteCount++;
+              if (self.stepCompleteCount === len - 1) {
+                if (cmd.end) cmd.end.call(self.element);
+                if (last && self.complete) self.complete();
+                self.index++;
+                self.start();
+              }
+            }).start();
+            this.tweens.push(t);
+          }
+          break;
+        case 'wait':
+          this.currentTaskBegin = new Date();
+          this.timeout = cmd[1][0];
+          setTimeout(function () {
+            if (self._pause) return;
+            self.index++;
+            self.start();
+            if (cmd.end) cmd.end.call(self.element);
+            if (last && self.complete) self.complete();
+          }, cmd[1][0]);
+          break;
+        case 'then':
+          var arg = cmd[1][0];
+          arg.index = 0;
+          arg.complete = function () {
+            self.index++;
+            self.start();
+            if (last && self.complete) self.complete();
+          };
+          arg.start();
+          break;
+        case 'cycle':
+          var count = cmd[1][1];
+          if (count === undefined) {
+            self.index = cmd[1][0] || 0;
+            self.start();
+          } else {
+            if (count && self.cycleCount === count) {
+              self.index++;
+              self.start();
+              if (last && self.complete) self.complete();
+            } else {
+              self.cycleCount++;
+              self.index = cmd[1][0];
+              self.start();
+            }
+          }
+          break;
+      }
+    }
+  }]);
+
+  return To;
+}();
+
+To.get = function (element) {
+  var to = new To(element);
+  return to;
+};
+
+To.animationMap = {};
+To.extend = function (animationName, cmds) {
+  To.animationMap[animationName] = cmds;
+};
+
+exports.default = To;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -842,17 +1154,19 @@ TWEEN.Interpolation = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _to = __webpack_require__(2);
+var _to = __webpack_require__(0);
 
 var _to2 = _interopRequireDefault(_to);
 
-var _tween = __webpack_require__(0);
+__webpack_require__(5);
+
+var _tween = __webpack_require__(1);
 
 var _tween2 = _interopRequireDefault(_tween);
 
@@ -870,427 +1184,6 @@ _to2.default.easing = {
 });
 
 module.exports = _to2.default;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _tween = __webpack_require__(0);
-
-var _tween2 = _interopRequireDefault(_tween);
-
-var _rafInterval = __webpack_require__(4);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var To = function () {
-  function To(element) {
-    _classCallCheck(this, To);
-
-    this.element = element;
-    this.cmds = [];
-    this.index = 0;
-    this.tweens = [];
-    this._pause = false;
-    this.loop = (0, _rafInterval.setRafInterval)(function () {
-      _tween2.default.update();
-    }, 15);
-    this.cycleCount = 0;
-  }
-
-  _createClass(To, [{
-    key: 'to',
-    value: function to(target, duration, easing) {
-      this.cmds.push(['to']);
-      if (arguments.length !== 0) {
-        for (var key in target) {
-          this.set(key, target[key], duration, easing);
-        }
-      }
-      return this;
-    }
-  }, {
-    key: 'set',
-    value: function set(prop, value, duration, easing) {
-      this.cmds[this.cmds.length - 1].push([prop, [value, duration, easing]]);
-      return this;
-    }
-  }, {
-    key: 'x',
-    value: function x() {
-      this.cmds[this.cmds.length - 1].push(['x', arguments]);
-      return this;
-    }
-  }, {
-    key: 'y',
-    value: function y() {
-      this.cmds[this.cmds.length - 1].push(['y', arguments]);
-      return this;
-    }
-  }, {
-    key: 'z',
-    value: function z() {
-      this.cmds[this.cmds.length - 1].push(['z', arguments]);
-      return this;
-    }
-  }, {
-    key: 'rotation',
-    value: function rotation() {
-      this.cmds[this.cmds.length - 1].push(['rotation', arguments]);
-      return this;
-    }
-  }, {
-    key: 'scaleX',
-    value: function scaleX() {
-      this.cmds[this.cmds.length - 1].push(['scaleX', arguments]);
-      return this;
-    }
-  }, {
-    key: 'scaleY',
-    value: function scaleY() {
-      this.cmds[this.cmds.length - 1].push(['scaleY', arguments]);
-      return this;
-    }
-  }, {
-    key: 'skewX',
-    value: function skewX() {
-      this.cmds[this.cmds.length - 1].push(['skewX', arguments]);
-      return this;
-    }
-  }, {
-    key: 'skewY',
-    value: function skewY() {
-      this.cmds[this.cmds.length - 1].push(['skewY', arguments]);
-      return this;
-    }
-  }, {
-    key: 'originX',
-    value: function originX() {
-      this.cmds[this.cmds.length - 1].push(['originX', arguments]);
-      return this;
-    }
-  }, {
-    key: 'originY',
-    value: function originY() {
-      this.cmds[this.cmds.length - 1].push(['originY', arguments]);
-      return this;
-    }
-  }, {
-    key: 'alpha',
-    value: function alpha() {
-      this.cmds[this.cmds.length - 1].push(['alpha', arguments]);
-      return this;
-    }
-  }, {
-    key: 'begin',
-    value: function begin(fn) {
-      this.cmds[this.cmds.length - 1].begin = fn;
-      return this;
-    }
-  }, {
-    key: 'progress',
-    value: function progress(fn) {
-      this.cmds[this.cmds.length - 1].progress = fn;
-      return this;
-    }
-  }, {
-    key: 'end',
-    value: function end(fn) {
-      this.cmds[this.cmds.length - 1].end = fn;
-      return this;
-    }
-  }, {
-    key: 'wait',
-    value: function wait() {
-      this.cmds.push(['wait', arguments]);
-      return this;
-    }
-  }, {
-    key: 'then',
-    value: function then() {
-      this.cmds.push(['then', arguments]);
-      return this;
-    }
-  }, {
-    key: 'cycle',
-    value: function cycle() {
-      this.cmds.push(['cycle', arguments]);
-      return this;
-    }
-  }, {
-    key: 'rubber',
-    value: function rubber() {
-      this.cmds = this.cmds.concat([['to', ['scaleX', {
-        '0': 1.25,
-        '1': 300
-      }], ['scaleY', {
-        '0': 0.75,
-        '1': 300
-      }]], ['to', ['scaleX', {
-        '0': 0.75,
-        '1': 100
-      }], ['scaleY', {
-        '0': 1.25,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 1.15,
-        '1': 100
-      }], ['scaleY', {
-        '0': 0.85,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 0.95,
-        '1': 150
-      }], ['scaleY', {
-        '0': 1.05,
-        '1': 150
-      }]], ['to', ['scaleX', {
-        '0': 1.05,
-        '1': 100
-      }], ['scaleY', {
-        '0': 0.95,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 1,
-        '1': 250
-      }], ['scaleY', {
-        '0': 1,
-        '1': 250
-      }]]]);
-      return this;
-    }
-  }, {
-    key: 'bounceIn',
-    value: function bounceIn() {
-      this.cmds = this.cmds.concat([['to', ['scaleX', {
-        '0': 0,
-        '1': 0
-      }], ['scaleY', {
-        '0': 0,
-        '1': 0
-      }]], ['to', ['scaleX', {
-        '0': 1.35,
-        '1': 200
-      }], ['scaleY', {
-        '0': 1.35,
-        '1': 200
-      }]], ['to', ['scaleX', {
-        '0': 0.9,
-        '1': 100
-      }], ['scaleY', {
-        '0': 0.9,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 1.1,
-        '1': 100
-      }], ['scaleY', {
-        '0': 1.1,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 0.95,
-        '1': 100
-      }], ['scaleY', {
-        '0': 0.95,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 1,
-        '1': 100
-      }], ['scaleY', {
-        '0': 1,
-        '1': 100
-      }]]]);
-      return this;
-    }
-  }, {
-    key: 'flipInX',
-    value: function flipInX() {
-      this.cmds = this.cmds.concat([['to', ['rotateX', {
-        '0': -90,
-        '1': 0
-      }]], ['to', ['rotateX', {
-        '0': 20,
-        '1': 300
-      }]], ['to', ['rotateX', {
-        '0': -20,
-        '1': 300
-      }]], ['to', ['rotateX', {
-        '0': 10,
-        '1': 300
-      }]], ['to', ['rotateX', {
-        '0': -5,
-        '1': 300
-      }]], ['to', ['rotateX', {
-        '0': 0,
-        '1': 300
-      }]]]);
-      return this;
-    }
-  }, {
-    key: 'zoomOut',
-    value: function zoomOut() {
-      this.cmds = this.cmds.concat([['to', ['scaleX', {
-        '0': 0,
-        '1': 400
-      }], ['scaleY', {
-        '0': 0,
-        '1': 400
-      }]]]);
-      return this;
-    }
-  }, {
-    key: 'start',
-    value: function start() {
-      if (this._pause) return;
-      var len = this.cmds.length;
-      if (this.index < len) {
-        this.exec(this.cmds[this.index], this.index === len - 1);
-      } else {
-        (0, _rafInterval.clearRafInterval)(this.loop);
-      }
-      return this;
-    }
-  }, {
-    key: 'pause',
-    value: function pause() {
-      this._pause = true;
-      for (var i = 0, len = this.tweens.length; i < len; i++) {
-        this.tweens[i].pause();
-      }
-      if (this.currentTask === 'wait') {
-        this.timeout -= new Date() - this.currentTaskBegin;
-        this.currentTaskBegin = new Date();
-      }
-    }
-  }, {
-    key: 'toggle',
-    value: function toggle() {
-      if (this._pause) {
-        this.play();
-      } else {
-        this.pause();
-      }
-    }
-  }, {
-    key: 'play',
-    value: function play() {
-      this._pause = false;
-      for (var i = 0, len = this.tweens.length; i < len; i++) {
-        this.tweens[i].play();
-      }
-      var self = this;
-      if (this.currentTask === 'wait') {
-        setTimeout(function () {
-          if (self._pause) return;
-          self.index++;
-          self.start();
-          if (self.index === self.cmds.length && self.complete) self.complete();
-        }, this.timeout);
-      }
-    }
-  }, {
-    key: 'stop',
-    value: function stop() {
-      for (var i = 0, len = this.tweens.length; i < len; i++) {
-        this.tweens[i].pause();
-        _tween2.default.remove(this.tweens[i]);
-      }
-      this.cmds.length = 0;
-    }
-  }, {
-    key: 'exec',
-    value: function exec(cmd, last) {
-      var len = cmd.length,
-          self = this;
-      this.currentTask = cmd[0];
-      switch (this.currentTask) {
-        case 'to':
-          self.stepCompleteCount = 0;
-          for (var i = 1; i < len; i++) {
-            var task = cmd[i];
-            var ease = task[1][2];
-            var target = {};
-            var prop = task[0];
-            target[prop] = task[1][0];
-
-            var t = new _tween2.default.Tween(this.element).to(target, task[1][1]).onStart(function () {
-              if (cmd.begin) cmd.begin.call(self.element);
-            }).onUpdate(function () {
-              if (cmd.progress) cmd.progress.call(self.element);
-              // self.element[prop] = this[prop];
-            }).easing(ease || _tween2.default.Easing.Linear.None).onComplete(function () {
-              self.stepCompleteCount++;
-              if (self.stepCompleteCount === len - 1) {
-                if (cmd.end) cmd.end.call(self.element);
-                if (last && self.complete) self.complete();
-                self.index++;
-                self.start();
-              }
-            }).start();
-            this.tweens.push(t);
-          }
-          break;
-        case 'wait':
-          this.currentTaskBegin = new Date();
-          this.timeout = cmd[1][0];
-          setTimeout(function () {
-            if (self._pause) return;
-            self.index++;
-            self.start();
-            if (cmd.end) cmd.end.call(self.element);
-            if (last && self.complete) self.complete();
-          }, cmd[1][0]);
-          break;
-        case 'then':
-          var arg = cmd[1][0];
-          arg.index = 0;
-          arg.complete = function () {
-            self.index++;
-            self.start();
-            if (last && self.complete) self.complete();
-          };
-          arg.start();
-          break;
-        case 'cycle':
-          var count = cmd[1][1];
-          if (count === undefined) {
-            self.index = cmd[1][0] || 0;
-            self.start();
-          } else {
-            if (count && self.cycleCount === count) {
-              self.index++;
-              self.start();
-              if (last && self.complete) self.complete();
-            } else {
-              self.cycleCount++;
-              self.index = cmd[1][0];
-              self.start();
-            }
-          }
-          break;
-      }
-    }
-  }]);
-
-  return To;
-}();
-
-To.get = function (element) {
-  var to = new To(element);
-  return to;
-};
-
-exports.default = To;
 
 /***/ }),
 /* 3 */
@@ -1605,6 +1498,123 @@ function each(arr, fn) {
     }
   }
 }
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _to = __webpack_require__(0);
+
+var _to2 = _interopRequireDefault(_to);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_to2.default.extend('rubber', [['to', ['scaleX', {
+  '0': 1.25,
+  '1': 300
+}], ['scaleY', {
+  '0': 0.75,
+  '1': 300
+}]], ['to', ['scaleX', {
+  '0': 0.75,
+  '1': 100
+}], ['scaleY', {
+  '0': 1.25,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1.15,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.85,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 0.95,
+  '1': 150
+}], ['scaleY', {
+  '0': 1.05,
+  '1': 150
+}]], ['to', ['scaleX', {
+  '0': 1.05,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.95,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1,
+  '1': 250
+}], ['scaleY', {
+  '0': 1,
+  '1': 250
+}]]]);
+
+_to2.default.extend('bounceIn', [['to', ['scaleX', {
+  '0': 0,
+  '1': 0
+}], ['scaleY', {
+  '0': 0,
+  '1': 0
+}]], ['to', ['scaleX', {
+  '0': 1.35,
+  '1': 200
+}], ['scaleY', {
+  '0': 1.35,
+  '1': 200
+}]], ['to', ['scaleX', {
+  '0': 0.9,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.9,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1.1,
+  '1': 100
+}], ['scaleY', {
+  '0': 1.1,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 0.95,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.95,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1,
+  '1': 100
+}], ['scaleY', {
+  '0': 1,
+  '1': 100
+}]]]);
+
+_to2.default.extend('flipInX', [['to', ['rotateX', {
+  '0': -90,
+  '1': 0
+}]], ['to', ['rotateX', {
+  '0': 20,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': -20,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': 10,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': -5,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': 0,
+  '1': 300
+}]]]);
+
+_to2.default.extend('zoomOut', [['to', ['scaleX', {
+  '0': 0,
+  '1': 400
+}], ['scaleY', {
+  '0': 0,
+  '1': 400
+}]]]);
 
 /***/ })
 /******/ ]);

@@ -1,4 +1,5 @@
 import To from './to'
+import './animate'
 import TWEEN from './tween'
 
 To.easing = {
