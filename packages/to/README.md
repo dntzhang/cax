@@ -110,7 +110,7 @@ cax.To.get(bitmap)
 
 ## 谁在使用？
 
-![](./asset/wx.png)  ![](./asset/qq.png)
+![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
 
 ## License
 

@@ -581,7 +581,7 @@ const button = new cax.Button({
 
 ## 谁在使用？
 
-![](./asset/wx.png)  ![](./asset/qq.png)
+![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
 
 ## License
 

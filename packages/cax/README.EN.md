@@ -463,7 +463,7 @@ In general, it is suggested that inherit Group from a slightly complex combinati
 
 # Who is using cax?
 
-![](./asset/wx.png)  ![](./asset/qq.png)
+![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
 
 ## License
 
