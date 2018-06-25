@@ -190,17 +190,17 @@ class To {
           var t = new TWEEN.Tween(this.element)
             .to(target, task[1][1])
             .onStart(function () {
-              if (cmd.begin) cmd.begin.call(self.element)
+              if (cmd.begin) cmd.begin.call(self.element, self.element)
             })
             .onUpdate(function () {
-              if (cmd.progress) cmd.progress.call(self.element)
+              if (cmd.progress) cmd.progress.call(self.element, self.element)
               // self.element[prop] = this[prop];
             })
             .easing(ease || TWEEN.Easing.Linear.None)
             .onComplete(function () {
               self.stepCompleteCount++
               if (self.stepCompleteCount === len - 1) {
-                if (cmd.end) cmd.end.call(self.element)
+                if (cmd.end) cmd.end.call(self.element, self.element)
                 if (last && self.complete) self.complete()
                 self.index++
                 self.start()
@@ -217,7 +217,7 @@ class To {
           if (self._pause) return
           self.index++
           self.start()
-          if (cmd.end) cmd.end.call(self.element)
+          if (cmd.end) cmd.end.call(self.element, self.element)
           if (last && self.complete) self.complete()
         }, cmd[1][0])
         break

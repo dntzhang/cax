@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.8
+ *  cax v1.0.9
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -2202,14 +2202,14 @@ var To = function () {
             target[prop] = task[1][0];
 
             var t = new _tween2.default.Tween(this.element).to(target, task[1][1]).onStart(function () {
-              if (cmd.begin) cmd.begin.call(self.element);
+              if (cmd.begin) cmd.begin.call(self.element, self.element);
             }).onUpdate(function () {
-              if (cmd.progress) cmd.progress.call(self.element);
+              if (cmd.progress) cmd.progress.call(self.element, self.element);
               // self.element[prop] = this[prop];
             }).easing(ease || _tween2.default.Easing.Linear.None).onComplete(function () {
               self.stepCompleteCount++;
               if (self.stepCompleteCount === len - 1) {
-                if (cmd.end) cmd.end.call(self.element);
+                if (cmd.end) cmd.end.call(self.element, self.element);
                 if (last && self.complete) self.complete();
                 self.index++;
                 self.start();
@@ -2225,7 +2225,7 @@ var To = function () {
             if (self._pause) return;
             self.index++;
             self.start();
-            if (cmd.end) cmd.end.call(self.element);
+            if (cmd.end) cmd.end.call(self.element, self.element);
             if (last && self.complete) self.complete();
           }, cmd[1][0]);
           break;
