@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Render - 渲染</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            text-align: center;
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas" style="border: 1px solid #ccc;background-color: #18181D" width="800" height=600 ""></canvas>
+    <a href="https://github.com/dntzhang/cax" target="_blank" style="position: fixed; right: 0; top: 0; z-index: 3;">
+        <img src="//alloyteam.github.io/github.png" alt="">
+    </a>
+    <script src="matter.js"></script>
+    <script src="../../dist/cax.js"></script>
+    <script>
+
+        // 简写
+        var Engine = Matter.Engine,
+            Render = Matter.Render,
+            World = Matter.World,
+            Bodies = Matter.Bodies,
+            Composites = Matter.Composites,
+            Body = Matter.Body,
+            Constraint = Matter.Constraint,
+            MouseConstraint = Matter.MouseConstraint,
+            Common = Matter.Common,
+            Events = Matter.Events;
+
+
+        // 创建引擎
+        var engine = Engine.create();
+
+
+
+        // 墙壁
+        var offset = 5;
+        World.add(engine.world, [
+            Bodies.rectangle(400, -offset, 800.5 + 2 * offset, 50.5, { isStatic: true }),
+            Bodies.rectangle(400, 600 + offset, 800.5 + 2 * offset, 50.5, { isStatic: true }),
+            Bodies.rectangle(800 + offset, 300, 50.5, 600.5 + 2 * offset, { isStatic: true }),
+            Bodies.rectangle(-offset, 300, 50.5, 600.5 + 2 * offset, { isStatic: true })
+        ]);
+
+        // 创建渲染器
+        var render = Render.create({
+            element: document.body,
+            engine: engine,
+            options: {
+                wireframes: false
+            }
+        });
+        var stage = new cax.Stage('#myCanvas')
+
+        // 鼠标约束
+        var mouseConstraint = MouseConstraint.create(engine, {
+            element: stage.canvas
+        });
+
+        World.add(engine.world, mouseConstraint);
+
+
+
+
+        var stack = Composites.stack(20, 20, 6, 4, 0, 0, function (x, y) {
+            if (Common.random() > 0.5) {
+                return Bodies.rectangle(x, y, 64, 64, {
+                    bitmap: new cax.Bitmap("img/box.jpg")
+                });
+            } else {
+                return Bodies.circle(x, y, 46, {
+                    desity: 0.0005,
+                    frictionAir: 0.06,
+                    friction: 0.01,
+                    bitmap: new cax.Bitmap("img/basketball.png"),
+
+                });
+            }
+        });
+
+        World.add(engine.world, stack);
+
+        var renderOptions = render.options;
+
+        Engine.run(engine);
+        Render.run(render);
+
+        renderOptions.wireframes = true;
+
+
+        var Composite = Matter.Composite
+
+
+        var bodies = Composite.allBodies(engine.world);
+
+
+
+        for (var i = 0; i < bodies.length; i += 1) {
+            var obj = bodies[i]
+
+            if (obj.bitmap) {
+                obj.bitmap.x = obj.position.x
+                obj.bitmap.y = obj.position.y
+                if (obj.label === 'Circle Body') {
+                    obj.bitmap.scaleX = obj.bitmap.scaleY = 92 / 128
+                    obj.bitmap.originX = 64
+                    obj.bitmap.originY = 64
+                    obj.bitmap.rotation = obj.angle * 180 / Math.PI
+
+
+                } else {
+
+                    obj.bitmap.scaleX = obj.bitmap.scaleY = 64 / 200
+                    obj.bitmap.originX = 100
+                    obj.bitmap.originY = 100
+                    obj.bitmap.rotation = obj.angle * 180 / Math.PI
+
+                }
+                stage.add(obj.bitmap)
+            }
+
+        }
+
+
+
+        var topRect = new cax.Rect(800, 20, { fillStyle: '#2CB044' })
+        stage.add(topRect)
+        var bottomRect = new cax.Rect(800, 20, { fillStyle: '#2CB044' })
+        bottomRect.y = 600 - 20
+        stage.add(bottomRect)
+        var leftTop = new cax.Rect(20, 600, { fillStyle: '#2CB044' })
+        stage.add(leftTop)
+        var rightBottom = new cax.Rect(20, 600, { fillStyle: '#2CB044' })
+        rightBottom.x = 800 - 20
+
+        stage.add(rightBottom)
+
+        cax.setInterval(function () {
+
+            var bodies = Composite.allBodies(engine.world);
+
+
+            for (var i = 0; i < bodies.length; i += 1) {
+                var obj = bodies[i]
+
+                if (obj.bitmap) {
+
+                    obj.bitmap.x = obj.position.x
+                    obj.bitmap.y = obj.position.y
+                    obj.bitmap.rotation = obj.angle * 180 / Math.PI
+                }
+            }
+
+            stage.update()
+        }, 16)
+
+    </script>
+
+</body>
+
+</html>
