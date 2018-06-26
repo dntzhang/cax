@@ -1,6 +1,6 @@
 # Cax + Matter-js 物理引擎结合使用
 
-显示试过 box2dweb 与 cax 结合使用，发现 box2dweb 的代码会导致 webpack 编译出的 cax 包模块执行顺序乱套。
+最初试过 box2dweb 与 [cax框架](https://github.com/dntzhang/cax) 结合使用，发现 box2dweb 的代码会导致 webpack 编译出的 cax 包模块执行顺序乱套。
 box2dweb 貌似也没有官方文档和维护地址，所以弃坑转战 Matter-js。
 
 Matter-js 是 Github 上最流行的 Web 2D 物理引擎，主要有如下特性：
