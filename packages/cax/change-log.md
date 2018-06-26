@@ -1,3 +1,7 @@
+## Cax 1.0.11
+
+* Fix https://github.com/dntzhang/cax/issues/12
+
 ## Cax 1.0.10
 
 * Fix https://github.com/dntzhang/cax/issues/9
