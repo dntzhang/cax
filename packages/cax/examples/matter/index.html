@@ -36,7 +36,8 @@
             Constraint = Matter.Constraint,
             MouseConstraint = Matter.MouseConstraint,
             Common = Matter.Common,
-            Events = Matter.Events;
+            Events = Matter.Events,
+            Composite = Matter.Composite;
 
 
         // 创建引擎
@@ -48,10 +49,10 @@
         // 墙壁
         var offset = 10;
         World.add(engine.world, [
-            Bodies.rectangle(400,600-offset , 800, offset*2, { isStatic: true }),
-            Bodies.rectangle(400,offset , 800, offset*2, { isStatic: true }),
-            Bodies.rectangle(offset, 300, offset*2, 600, { isStatic: true }),
-            Bodies.rectangle(800-offset, 300, offset*2, 600, { isStatic: true }),
+            Bodies.rectangle(400, 600 - offset, 800, offset * 2, { isStatic: true }),
+            Bodies.rectangle(400, offset, 800, offset * 2, { isStatic: true }),
+            Bodies.rectangle(offset, 300, offset * 2, 600, { isStatic: true }),
+            Bodies.rectangle(800 - offset, 300, offset * 2, 600, { isStatic: true }),
         ]);
 
 
@@ -88,64 +89,65 @@
 
 
 
-        var Composite = Matter.Composite
-        var bodies = Composite.allBodies(engine.world);
-
-        for (var i = 0; i < bodies.length; i += 1) {
-            var obj = bodies[i]
-
-            if (obj.bitmap) {
-                obj.bitmap.x = obj.position.x
-                obj.bitmap.y = obj.position.y
-                if (obj.label === 'Circle Body') {
-                    obj.bitmap.scaleX = obj.bitmap.scaleY = 92 / 128
-                    obj.bitmap.originX = 64
-                    obj.bitmap.originY = 64
-                    obj.bitmap.rotation = obj.angle * 180 / Math.PI
-
-
-                } else {
-
-                    obj.bitmap.scaleX = obj.bitmap.scaleY = 64 / 200
-                    obj.bitmap.originX = 100
-                    obj.bitmap.originY = 100
-                    obj.bitmap.rotation = obj.angle * 180 / Math.PI
-
-                }
-                stage.add(obj.bitmap)
-            }
-
-        }
-
-
-
-        var topRect = new cax.Rect(800, 20, { fillStyle: '#2CB044' })
-        stage.add(topRect)
-        var bottomRect = new cax.Rect(800, 20, { fillStyle: '#2CB044' })
-        bottomRect.y = 600 - 20
-        stage.add(bottomRect)
-        var leftTop = new cax.Rect(20, 600, { fillStyle: '#2CB044' })
-        stage.add(leftTop)
-        var rightRect = new cax.Rect(20, 600, { fillStyle: '#2CB044' })
-        rightRect.x = 800 - 20
-        stage.add(rightRect)
-
-        cax.setInterval(function () {
-
+        function initStage() {
             var bodies = Composite.allBodies(engine.world);
+
             for (var i = 0; i < bodies.length; i += 1) {
                 var obj = bodies[i]
                 if (obj.bitmap) {
                     obj.bitmap.x = obj.position.x
                     obj.bitmap.y = obj.position.y
-                    obj.bitmap.rotation = obj.angle * 180 / Math.PI
+                    if (obj.label === 'Circle Body') {
+                        obj.bitmap.scaleX = obj.bitmap.scaleY = 92 / 128
+                        obj.bitmap.originX = 64
+                        obj.bitmap.originY = 64
+                        obj.bitmap.rotation = obj.angle * 180 / Math.PI
+                    } else {
+                        obj.bitmap.scaleX = obj.bitmap.scaleY = 64 / 200
+                        obj.bitmap.originX = 100
+                        obj.bitmap.originY = 100
+                        obj.bitmap.rotation = obj.angle * 180 / Math.PI
+                    }
+                    stage.add(obj.bitmap)
                 }
             }
 
-            stage.update()
-        }, 16)
 
 
+            var topRect = new cax.Rect(800, 20, { fillStyle: '#2CB044' })
+            stage.add(topRect)
+            var bottomRect = new cax.Rect(800, 20, { fillStyle: '#2CB044' })
+            bottomRect.y = 600 - 20
+            stage.add(bottomRect)
+            var leftTop = new cax.Rect(20, 600, { fillStyle: '#2CB044' })
+            stage.add(leftTop)
+            var rightRect = new cax.Rect(20, 600, { fillStyle: '#2CB044' })
+            rightRect.x = 800 - 20
+            stage.add(rightRect)
+        }
+
+        function tick() {
+            cax.setInterval(function () {
+
+                var bodies = Composite.allBodies(engine.world);
+                for (var i = 0; i < bodies.length; i += 1) {
+                    var obj = bodies[i]
+                    if (obj.bitmap) {
+                        obj.bitmap.x = obj.position.x
+                        obj.bitmap.y = obj.position.y
+                        obj.bitmap.rotation = obj.angle * 180 / Math.PI
+                    }
+                }
+
+                stage.update()
+            }, 16)
+
+        }
+
+
+
+        initStage()
+        tick()
 
 
 
@@ -160,9 +162,9 @@
         });
         var renderOptions = render.options;
 
+        renderOptions.wireframes = true;
         Render.run(render);
 
-        renderOptions.wireframes = true;
     </script>
 
 </body>
