@@ -155,7 +155,7 @@ To.get(obj).animate('customAnimation').start()
 
 ## 谁在使用？
 
-![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
+![Tencent Wechat](../../asset/wx.png)  ![Tencent QQ](../../asset/qq.png)
 
 ## License
 

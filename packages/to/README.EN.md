@@ -164,7 +164,7 @@ To.get(obj).animate('customAnimation').start()
 
 # Who is using cax?
 
-![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
+![Tencent Wechat](../../asset/wx.png)  ![Tencent QQ](../../asset/qq.png)
 
 ## License
 
