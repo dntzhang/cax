@@ -1,5 +1,3 @@
-简体中文 | [English](./README.EN.md) 
-
 # Cax + Matter-js 物理引擎结合使用
 
 显示试过 box2dweb 与 cax 结合使用，发现 box2dweb 的代码会导致 webpack 编译出的 cax 包模块执行顺序乱套。
