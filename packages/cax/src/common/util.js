@@ -1,5 +1,5 @@
 export function getImageInWx (img, callback) {
-  if (img.indexOf('wxfile://') === 0) {
+  if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1) {
     wx.getImageInfo({
       src: img,
       success: (info) => {

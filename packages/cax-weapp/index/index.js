@@ -64,14 +64,14 @@ Page({
 
     stage.update()
 
-    const bitmap = new cax.Bitmap('https://r.photo.store.qq.com/psb?/V137Nysk1nVBJS/09YJstVgoLEi0niIWFcOJCyGmkyDaYLq.tlpDE62Zdc!/r/dDMBAAAAAAAA', () => {
+    const bitmap = new cax.Bitmap('/images/wx.png', () => {
       stage.update()
     })
 
     bitmap.on('tap', () => {
       console.log('bitmap tap')
     })
-    bitmap.scaleX = bitmap.scaleY = 5
+    
     stage.add(bitmap)
 
     const sprite = new cax.Sprite({

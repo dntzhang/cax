@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.10
+ *  cax v1.0.11
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -1144,7 +1144,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.getImageInWx = getImageInWx;
 function getImageInWx(img, callback) {
-  if (img.indexOf('wxfile://') === 0) {
+  if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1) {
     wx.getImageInfo({
       src: img,
       success: function success(info) {
