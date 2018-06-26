@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.9
+ *  cax v1.0.10
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -996,6 +996,7 @@ var Bitmap = function (_DisplayObject) {
           if (!_this.rect) {
             _this.rect = [0, 0, result.width, result.height];
           }
+          onLoad && onLoad.call(_this);
         });
       } else {
         _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
