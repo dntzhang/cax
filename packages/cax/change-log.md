@@ -1,3 +1,7 @@
+## Cax 1.0.10
+
+* Fix https://github.com/dntzhang/cax/issues/9
+
 ## Cax 1.0.9
 
 * to2to 的`begin`、`end`以及`progress`回调暴露运动 object 参数给使用者
