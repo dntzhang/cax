@@ -1,20 +1,4 @@
-/*!
- *  cax v1.0.12
- *  By https://github.com/dntzhang 
- *  Github: https://github.com/dntzhang/cax
- *  MIT Licensed.
- */
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define([], factory);
-	else if(typeof exports === 'object')
-		exports["cax"] = factory();
-	else
-		root["cax"] = factory();
-})(typeof self !== 'undefined' ? self : this, function() {
-return /******/ (function(modules) { // webpackBootstrap
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -292,15 +276,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _matrix2d = __webpack_require__(20);
+var _matrix2d = __webpack_require__(21);
 
 var _matrix2d2 = _interopRequireDefault(_matrix2d);
 
-var _eventDispatcher = __webpack_require__(21);
+var _eventDispatcher = __webpack_require__(22);
 
 var _eventDispatcher2 = _interopRequireDefault(_eventDispatcher);
 
-var _uid = __webpack_require__(22);
+var _uid = __webpack_require__(23);
 
 var _uid2 = _interopRequireDefault(_uid);
 
@@ -1200,7 +1184,7 @@ exports.default = {
   isWeapp: typeof wx !== 'undefined' && !wx.createCanvas,
   isWegame: typeof wx !== 'undefined' && wx.createCanvas
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ }),
 /* 10 */
@@ -1962,7 +1946,7 @@ TWEEN.Interpolation = {
     root.TWEEN = TWEEN;
   }
 })(undefined);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ }),
 /* 11 */
@@ -2413,7 +2397,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _canvasRender = __webpack_require__(23);
+var _canvasRender = __webpack_require__(24);
 
 var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
@@ -2569,7 +2553,7 @@ var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _wxHitRender = __webpack_require__(26);
+var _wxHitRender = __webpack_require__(27);
 
 var _wxHitRender2 = _interopRequireDefault(_wxHitRender);
 
@@ -2817,6 +2801,193 @@ exports.default = RoundedRect;
 "use strict";
 
 
+var _index = __webpack_require__(17);
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Stage = _index2.default.Stage,
+    util = _index2.default.util,
+    Graphics = _index2.default.Graphics,
+    To = _index2.default.To,
+    Group = _index2.default.Group,
+    Text = _index2.default.Text;
+
+
+var stage = new Stage(320, 400, 'body');
+
+var defaultOption = {
+    totalAngle: 0,
+    begin: Math.random() * Math.PI * 2
+};
+
+function drawPie(data, option) {
+
+    var tooltip = document.createElement('div');
+    document.body.appendChild(tooltip);
+    tooltip.style.position = 'absolute';
+    tooltip.style.width = 'auto';
+    tooltip.style.maxWidth = '400px';
+    tooltip.style.height = 'auto';
+    tooltip.style.padding = '4px 8px';
+    tooltip.style.display = 'none';
+    tooltip.style.pointerEvents = 'none';
+    tooltip.style.transition = 'all .6s';
+    tooltip.style.backgroundColor = 'rgba(0,0,0,.5)';
+    tooltip.style.color = 'white';
+    tooltip.style.textAlign = 'center';
+
+    var _option = option,
+        x = _option.x,
+        y = _option.y,
+        r = _option.r;
+
+
+    var textGroup = new Group();
+    option = Object.assign({}, defaultOption, option);
+    var totalValue = 0;
+    data.forEach(function (item) {
+        totalValue += item.value;
+    });
+
+    var current = option.begin;
+
+    var sectors = [];
+    data.forEach(function (item, index) {
+        var sector = new Graphics();
+        sector.value = item.value;
+        sector.beginPath().moveTo(0, 0).arc(0, 0, r, current, current += option.totalAngle * item / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.boxColor).lineWidth(2).stroke();
+        sector.x = x;
+        sector.y = y;
+        sectors.push(sector);
+        stage.add(sector);
+
+        if (option.tooltip) {
+            sector.hover(function (evt) {
+                bounceIn(sector, 1, 1.1);
+                tooltip.style.left = evt.pureEvent.pageX + 5 + 'px';
+                tooltip.style.top = evt.pureEvent.pageY + 5 + 'px';
+                tooltip.innerHTML = option.tooltip(data[index]);
+                tooltip.style.display = 'block';
+            }, function (evt) {
+                bounceOut(sector, 1.1, 1);
+                tooltip.style.display = 'none';
+            }, function (evt) {
+                tooltip.style.left = evt.pureEvent.pageX + 5 + 'px';
+                tooltip.style.top = evt.pureEvent.pageY + 5 + 'px';
+            });
+        }
+    });
+
+    To.get(option).to({ totalAngle: Math.PI * 2 }, option.duration, option.easing).progress(function (object) {
+
+        current = option.begin;
+        sectors.forEach(function (item, index) {
+            item.clear().beginPath().moveTo(0, 0).arc(0, 0, r, current, current += object.totalAngle * item.value / totalValue).closePath().fillStyle(option.color(index)).fill().strokeStyle(option.boxColor).lineWidth(2).stroke().closePath();
+        });
+    }).end(function (object) {
+        current = option.begin;
+        var arr = [];
+        sectors.forEach(function (item, index) {
+            var center = current + object.totalAngle * item.value / totalValue / 2;
+            current += object.totalAngle * item.value / totalValue;
+            arr.push(center);
+        });
+        textGroup.alpha = 0;
+        arr.forEach(function (angle, index) {
+            angle %= Math.PI * 2;
+            var centerX = x + r * Math.cos(angle);
+            var centerY = y + r * Math.sin(angle);
+
+            var currentColor = option.textColor(index);
+            var label = option.label(data[index]);
+            var text = new Text(label, { color: currentColor });
+
+            var g = new Graphics();
+
+            if (angle >= 0 && angle < Math.PI / 2) {
+                g.beginPath().moveTo(centerX, centerY).lineTo(centerX + 20 * 0.7, centerY + 20 * 0.5).lineTo(centerX + 20 * 0.7 + 20, centerY + 20 * 0.5).strokeStyle(currentColor).stroke();
+
+                text.x = centerX + 20 * 0.7 + 20;
+                text.y = centerY + 20 * 0.5 + option.textOffsetY;
+            } else if (angle >= Math.PI / 2 && angle < Math.PI) {
+                g.beginPath().moveTo(centerX, centerY).lineTo(centerX - 20 * 0.7, centerY + 20 * 0.5).lineTo(centerX - 20 * 0.7 - 20, centerY + 20 * 0.5).strokeStyle(currentColor).stroke();
+
+                text.x = centerX - 20 * 0.7 - 20 - stage.renderer.ctx.measureText(label).width - 3;
+                text.y = centerY + 20 * 0.5 + option.textOffsetY;
+            } else if (angle >= Math.PI && angle < Math.PI + Math.PI / 2) {
+                g.beginPath().moveTo(centerX, centerY).lineTo(centerX - 20 * 0.7, centerY - 20 * 0.5).lineTo(centerX - 20 * 0.7 - 20, centerY - 20 * 0.5).strokeStyle(currentColor).stroke();
+
+                text.x = centerX - 20 * 0.7 - 20 - stage.renderer.ctx.measureText(label).width - 3;
+                text.y = centerY - 20 * 0.5 + option.textOffsetY;
+            } else if (angle >= Math.PI + Math.PI / 2 && angle <= Math.PI * 2) {
+                g.beginPath().moveTo(centerX, centerY).lineTo(centerX + 20 * 0.7, centerY - 20 * 0.5).lineTo(centerX + 20 * 0.7 + 20, centerY - 20 * 0.5).strokeStyle(currentColor).stroke();
+
+                text.x = centerX + 20 * 0.7 + 20 + 3;
+                text.y = centerY - 20 * 0.5 + option.textOffsetY;
+            }
+
+            textGroup.add(g, text);
+        });
+
+        fadeIn(textGroup);
+    }).start();
+
+    stage.add(textGroup);
+    return { begin: option.begin, total: totalValue };
+}
+
+function fadeIn(obj) {
+    obj.alpha = 0;
+    To.get(obj).to({ alpha: 1 }, 600).start();
+}
+
+function bounceIn(obj, from, to) {
+    from = from || 0;
+    obj.from = from;
+    To.get(obj).to({ scaleX: to || 1, scaleY: to || 1 }, 300, _index2.default.easing.bounceOut).start();
+}
+
+function bounceOut(obj, from, to) {
+    from = from || 1;
+    obj.from = from;
+    To.get(obj).to({ scaleX: to || 0, scaleY: to || 0 }, 300, _index2.default.easing.bounceOut).start();
+}
+
+drawPie([{ name: 'WeChat', value: util.randomInt(10, 30) }, { name: 'Canvas', value: util.randomInt(10, 30) }, { name: 'Cax', value: util.randomInt(10, 30) }, { name: 'Tencent', value: util.randomInt(10, 30) }, { name: 'Wepay', value: util.randomInt(10, 30) }], {
+    x: stage.width / 2,
+    y: stage.height / 2,
+    r: 80,
+    color: function color(index) {
+        return ['#4BC0C0', '#FF6485', '#FFA07A', '#ADACB9', '#A37AC1'][index];
+    },
+    boxColor: 'white',
+    duration: 1000,
+    label: function label(item) {
+        return item.name;
+    },
+    easing: _index2.default.easing.bounceOut,
+    textOffsetY: -8,
+    tooltip: function tooltip(item) {
+        return item.name + '<br/>' + item.value;
+    },
+    textColor: function textColor(index) {
+        return ['#4BC0C0', '#FF6485', '#FFA07A', '#ADACB9', '#A37AC1'][index];
+    }
+});
+
+_index2.default.setInterval(function () {
+    stage.update();
+}, 16);
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _tween = __webpack_require__(10);
 
 var _tween2 = _interopRequireDefault(_tween);
@@ -2825,9 +2996,9 @@ var _to = __webpack_require__(11);
 
 var _to2 = _interopRequireDefault(_to);
 
-__webpack_require__(18);
+__webpack_require__(19);
 
-var _stage = __webpack_require__(19);
+var _stage = __webpack_require__(20);
 
 var _stage2 = _interopRequireDefault(_stage);
 
@@ -2859,31 +3030,31 @@ var _roundedRect = __webpack_require__(15);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
-var _arrowPath = __webpack_require__(27);
+var _arrowPath = __webpack_require__(28);
 
 var _arrowPath2 = _interopRequireDefault(_arrowPath);
 
-var _ellipse = __webpack_require__(28);
+var _ellipse = __webpack_require__(29);
 
 var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _button = __webpack_require__(29);
+var _button = __webpack_require__(30);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _rect = __webpack_require__(30);
+var _rect = __webpack_require__(31);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _circle = __webpack_require__(31);
+var _circle = __webpack_require__(32);
 
 var _circle2 = _interopRequireDefault(_circle);
 
-var _polygon = __webpack_require__(32);
+var _polygon = __webpack_require__(33);
 
 var _polygon2 = _interopRequireDefault(_polygon);
 
-var _equilateralPolygon = __webpack_require__(33);
+var _equilateralPolygon = __webpack_require__(34);
 
 var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
@@ -2945,8 +3116,11 @@ var cax = {
 module.exports = cax;
 
 /***/ }),
-/* 17 */
-/***/ (function(module, exports) {
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 // shim for using process in browser
 var process = module.exports = {};
@@ -2962,7 +3136,7 @@ var cachedClearTimeout;
 function defaultSetTimout() {
     throw new Error('setTimeout has not been defined');
 }
-function defaultClearTimeout () {
+function defaultClearTimeout() {
     throw new Error('clearTimeout has not been defined');
 }
 (function () {
@@ -2984,7 +3158,7 @@ function defaultClearTimeout () {
     } catch (e) {
         cachedClearTimeout = defaultClearTimeout;
     }
-} ())
+})();
 function runTimeout(fun) {
     if (cachedSetTimeout === setTimeout) {
         //normal enviroments in sane situations
@@ -2998,17 +3172,15 @@ function runTimeout(fun) {
     try {
         // when when somebody has screwed with setTimeout but no I.E. maddness
         return cachedSetTimeout(fun, 0);
-    } catch(e){
+    } catch (e) {
         try {
             // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
             return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
+        } catch (e) {
             // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
             return cachedSetTimeout.call(this, fun, 0);
         }
     }
-
-
 }
 function runClearTimeout(marker) {
     if (cachedClearTimeout === clearTimeout) {
@@ -3023,19 +3195,16 @@ function runClearTimeout(marker) {
     try {
         // when when somebody has screwed with setTimeout but no I.E. maddness
         return cachedClearTimeout(marker);
-    } catch (e){
+    } catch (e) {
         try {
             // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
             return cachedClearTimeout.call(null, marker);
-        } catch (e){
+        } catch (e) {
             // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
             // Some versions of I.E. have different rules for clearTimeout vs setTimeout
             return cachedClearTimeout.call(this, marker);
         }
     }
-
-
-
 }
 var queue = [];
 var draining = false;
@@ -3065,7 +3234,7 @@ function drainQueue() {
     draining = true;
 
     var len = queue.length;
-    while(len) {
+    while (len) {
         currentQueue = queue;
         queue = [];
         while (++queueIndex < len) {
@@ -3121,21 +3290,26 @@ process.emit = noop;
 process.prependListener = noop;
 process.prependOnceListener = noop;
 
-process.listeners = function (name) { return [] }
+process.listeners = function (name) {
+    return [];
+};
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
 };
 
-process.cwd = function () { return '/' };
+process.cwd = function () {
+    return '/';
+};
 process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
-process.umask = function() { return 0; };
-
+process.umask = function () {
+    return 0;
+};
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3252,7 +3426,7 @@ _to2.default.extend('zoomOut', [['to', ['scaleX', {
 }]]]);
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3272,7 +3446,7 @@ var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _hitRender = __webpack_require__(25);
+var _hitRender = __webpack_require__(26);
 
 var _hitRender2 = _interopRequireDefault(_hitRender);
 
@@ -3601,7 +3775,7 @@ var Stage = function (_Group) {
 exports.default = Stage;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3730,7 +3904,7 @@ var Matrix2D = function () {
 exports.default = Matrix2D;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3857,7 +4031,7 @@ var EventDispatcher = function () {
 exports.default = EventDispatcher;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3877,7 +4051,7 @@ UID.get = function () {
 exports.default = UID;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3986,23 +4160,27 @@ var CanvasRender = function (_Render) {
 exports.default = CanvasRender;
 
 /***/ }),
-/* 24 */
-/***/ (function(module, exports) {
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var g;
 
 // This works in non-strict mode
-g = (function() {
+g = function () {
 	return this;
-})();
+}();
 
 try {
 	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
+	g = g || Function("return this")() || (1, eval)("this");
+} catch (e) {
 	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
+	if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") g = window;
 }
 
 // g can still be undefined, but nothing to do about it...
@@ -4011,9 +4189,8 @@ try {
 
 module.exports = g;
 
-
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4249,7 +4426,7 @@ var HitRender = function (_Render) {
 exports.default = HitRender;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4383,7 +4560,7 @@ var WxHitRender = function (_Render) {
 exports.default = WxHitRender;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4479,7 +4656,7 @@ var ArrowPath = function (_Shape) {
 exports.default = ArrowPath;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4558,7 +4735,7 @@ var Ellipse = function (_Shape) {
 exports.default = Ellipse;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4615,7 +4792,7 @@ var Button = function (_Group) {
 exports.default = Button;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4674,7 +4851,7 @@ var Rect = function (_Shape) {
 exports.default = Rect;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4740,7 +4917,7 @@ var Circle = function (_Shape) {
 exports.default = Circle;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4814,7 +4991,7 @@ var Polygon = function (_Shape) {
 exports.default = Polygon;
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4923,4 +5100,3 @@ exports.default = EquilateralPolygon;
 
 /***/ })
 /******/ ]);
-});

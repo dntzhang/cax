@@ -1,3 +1,7 @@
+## Cax 1.0.12
+
+* Stage 增加 width 和 height 属性
+
 ## Cax 1.0.11
 
 * Fix https://github.com/dntzhang/cax/issues/12

@@ -21,6 +21,9 @@ class WeStage extends Group {
     this._hitRender = new WxHitRender(hitCtx, component, canvasId)
     this._overObject = null
     this.ctx = ctx
+
+    this.width = width
+    this.height = height
   }
 
   touchStartHandler (evt) {

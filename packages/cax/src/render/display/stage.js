@@ -76,6 +76,9 @@ class Stage extends Group {
     this.willDragObject = null
     this.preStageX = null
     this.preStageY = null
+
+    this.width = this.canvas.width
+    this.height = this.canvas.height
   }
 
   _handlDblClick (evt) {
