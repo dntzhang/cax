@@ -1,3 +1,7 @@
+## Cax 1.0.14
+
+* 对小程序 bitmap 资源进行 cache
+
 ## Cax 1.0.13
 
 * 完善了 RoundedRect
