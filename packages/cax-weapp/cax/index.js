@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.11
+ *  cax v1.0.12
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -2607,6 +2607,9 @@ var WeStage = function (_Group) {
     _this._hitRender = new _wxHitRender2.default(hitCtx, component, canvasId);
     _this._overObject = null;
     _this.ctx = ctx;
+
+    _this.width = width;
+    _this.height = height;
     return _this;
   }
 
@@ -3394,6 +3397,9 @@ var Stage = function (_Group) {
     _this.willDragObject = null;
     _this.preStageX = null;
     _this.preStageY = null;
+
+    _this.width = _this.canvas.width;
+    _this.height = _this.canvas.height;
     return _this;
   }
 
