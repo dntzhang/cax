@@ -347,6 +347,9 @@ cax.To.get(bitmap)
 
 * [→ Motion Demo](http://dntzhang.github.io/cax/packages/cax/examples/to/)
 * [→ to2to package](https://github.com/dntzhang/cax/tree/master/packages/to)
+* [→ cax.To.easing](http://tweenjs.github.io/tween.js/examples/03_graphs.html)
+
+It's important to note that, unlike tween.js, Cax uses the camelcase. For example, Cubic.In becomes cubicIn.
 
 ## Clip
 

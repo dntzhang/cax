@@ -477,6 +477,9 @@ cax.To.get(bitmap)
 
 * [→ 运动演示地址](http://dntzhang.github.io/cax/packages/cax/examples/to/)
 * [→ 去 to2to 一看究竟](https://github.com/dntzhang/cax/tree/master/packages/to)
+* [→ 看看 cax.To.easing 种类](http://tweenjs.github.io/tween.js/examples/03_graphs.html)
+
+这里需要注意，和 tween.js 不同，cax 把 easing 命名全改成了一个单词的驼峰命名。如 Cubic.In 变成了 cubicIn。
 
 ## 裁剪
 
