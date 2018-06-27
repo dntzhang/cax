@@ -64,6 +64,7 @@ class EventDispatcher {
   }
 
   _dispatchEvent (evt, type) {
+    evt.target = this
     if (this._captureListeners && type === 0) {
       let cls = this._captureListeners[evt.type]
       cls && cls.forEach(fn => {

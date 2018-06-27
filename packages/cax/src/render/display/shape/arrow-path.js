@@ -1,10 +1,14 @@
 import Shape from './shape'
 
 class ArrowPath extends Shape {
-  constructor (path) {
+  constructor (path, option) {
     super()
 
     this.path = path
+    this.option = Object.assign({
+      strokeStyle: 'black',
+      lineWidth: 1
+    }, option)
   }
 
   draw () {
@@ -12,27 +16,21 @@ class ArrowPath extends Shape {
     this.beginPath()
     const len = path.length
     if (len === 2) {
-      console.log(1)
-      this.drawArrow(path[0].x, path[0].y, path[1].x, path[1].y, 30, 10, 4, 'black')
+      this.drawArrow(path[0].x, path[0].y, path[1].x, path[1].y, 30, 10)
     } else {
       this.moveTo(path[0].x, path[0].y)
       for (let i = 1; i < len - 1; i++) {
         this.lineTo(path[i].x, path[i].y)
       }
-      this.drawArrow(path[len - 2].x, path[len - 2].y, path[len - 1].x, path[len - 1].y, 30, 10, 4, 'black')
+      this.drawArrow(path[len - 2].x, path[len - 2].y, path[len - 1].x, path[len - 1].y, 30, 10)
     }
 
     this.stroke()
   }
 
-  drawArrow (fromX, fromY, toX, toY, theta, headlen, width, color) {
-    theta = typeof theta !== 'undefined' ? theta : 30
-    headlen = typeof theta !== 'undefined' ? headlen : 10
-    width = typeof width !== 'undefined' ? width : 1
-    color = color || '#000'
+  drawArrow (fromX, fromY, toX, toY, theta, headlen) {
 
-    // 计算各角度和对应的P2,P3坐标, - 0.00001防止为0箭头少一半
-    var angle = Math.atan2(fromY - toY - 0.00001, fromX - toX) * 180 / Math.PI,
+    let angle = Math.atan2(fromY - toY , fromX - toX) * 180 / Math.PI,
       angle1 = (angle + theta) * Math.PI / 180,
       angle2 = (angle - theta) * Math.PI / 180,
       topX = headlen * Math.cos(angle1),
@@ -40,7 +38,7 @@ class ArrowPath extends Shape {
       botX = headlen * Math.cos(angle2),
       botY = headlen * Math.sin(angle2)
 
-    var arrowX = fromX - topX,
+    let arrowX = fromX - topX,
       arrowY = fromY - topY
 
     this.moveTo(arrowX, arrowY)
@@ -53,8 +51,8 @@ class ArrowPath extends Shape {
     arrowX = toX + botX
     arrowY = toY + botY
     this.lineTo(arrowX, arrowY)
-    this.strokeStyle = color
-    this.lineWidth = width
+    this.strokeStyle(this.option.strokeStyle)
+    this.lineWidth(this.option.lineWidth) 
   }
 }
 

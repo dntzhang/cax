@@ -3,7 +3,9 @@ import Shape from './shape'
 class RoundedRect extends Shape {
   constructor (width, height, r, option) {
     super()
-    this.option = option || {}
+    this.option = Object.assign({
+      lineWidth: 1
+    }, option)
     this.r = r
     this.width = width
     this.height = height
@@ -33,11 +35,17 @@ class RoundedRect extends Shape {
     this.arcTo(dx, dy, ex, ey, r)
     this.arcTo(ex, ey, ax, ay, r)
 
-    this.stroke()
+    if(this.option.fillStyle){
+      this.closePath()
+      this.fillStyle(this.option.fillStyle)
+      this.fill()
+    }
 
-    this.closePath()
-    this.fillStyle('white')
-    this.fill()
+    if(this.option.strokeStyle){
+      this.lineWidth(this.option.lineWidth)
+      this.strokeStyle(this.option.strokeStyle)
+      this.stroke()
+    }
   }
 }
 

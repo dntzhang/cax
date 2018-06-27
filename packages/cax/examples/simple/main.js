@@ -107,8 +107,8 @@ stage.add(marioBtimap)
 marioBtimap.y = 300
 
 marioBtimap.on('drag', (evt) => {
-    marioBtimap.x += evt.dx
-    marioBtimap.y += evt.dy
+    evt.target.x += evt.dx
+    evt.target.y += evt.dy
     evt.preventDefault()
 })
 
@@ -127,8 +127,8 @@ ellipse.originX = 50
 ellipse.originY = 25
 
 ellipse.on('drag', (evt) => {
-    ellipse.x += evt.dx
-    ellipse.y += evt.dy
+    evt.target.x += evt.dx
+    evt.target.y += evt.dy
     evt.preventDefault()
 })
 
@@ -155,8 +155,8 @@ ball.scaleX = ball.scaleY = 0.3
 stage.add(ball)
 
 ball.on('drag', (evt) => {
-    ball.x += evt.dx
-    ball.y += evt.dy
+    evt.target.x += evt.dx
+    evt.target.y += evt.dy
     evt.preventDefault()
 })
 
@@ -187,14 +187,43 @@ caxText.x = 100
 caxText.y = 200
 
 caxText.on('drag', (evt) => {
-    caxText.x += evt.dx
-    caxText.y += evt.dy
+    evt.target.x += evt.dx
+    evt.target.y += evt.dy
     evt.preventDefault()
 })
 
 caxText.cursor = 'move'
 
 stage.add(caxText)
+
+const ap = new cax.ArrowPath([{ x: 100, y: 200 }, { x: 100, y: 300 }])
+stage.add(ap)
+
+const ap2 = new cax.ArrowPath([{ x: 100, y: 200 }, { x: 200, y: 200 }])
+stage.add(ap2)
+
+
+
+const ap3 = new cax.ArrowPath([{ x: 100, y: 200 }, { x: 0, y: 200 }])
+stage.add(ap3)
+
+
+const ap4 = new cax.ArrowPath([{ x: 100, y: 200 }, { x: 100, y: 100 }])
+stage.add(ap4)
+
+
+const rr = new cax.RoundedRect(100, 20, 5, { fillStyle: 'red', strokeStyle: 'green', lineWidth: 4 })
+rr.y = 340
+rr.x = 30
+stage.add(rr)
+
+rr.on('drag', (evt) => {
+    evt.target.x += evt.dx
+    evt.target.y += evt.dy
+    evt.preventDefault()
+})
+rr.cursor = 'move'
+
 
 cax.setInterval(() => {
     ellipse.rotation++
