@@ -18,6 +18,7 @@ class Bitmap extends DisplayObject {
             this.rect = [0, 0, result.width, result.height]
           }
           onLoad && onLoad.call(this)
+          Bitmap.cache[img] = result.img
         })
       } else {
         this.img = util.isWegame ? wx.createImage() : new window.Image()
