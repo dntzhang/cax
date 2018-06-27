@@ -1,3 +1,9 @@
+## Cax 1.0.13
+
+* 完善了 RoundedRect
+* 完善了 ArrowPath
+* 事件的 event 暴露了 target 访问事件发生的对象，即 event.target 访问
+
 ## Cax 1.0.12
 
 * Stage 增加 width 和 height 属性
