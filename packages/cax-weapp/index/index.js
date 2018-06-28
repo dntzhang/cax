@@ -64,15 +64,18 @@ Page({
 
     stage.update()
 
-    const bitmap = new cax.Bitmap('/images/wx.png', () => {
-      stage.update()
-    })
+    const bitmap = new cax.Bitmap('/images/wx.png')
+
+    const bitmap2 = new cax.Bitmap('/images/wx.png')
 
     bitmap.on('tap', () => {
       console.log('bitmap tap')
     })
     
     stage.add(bitmap)
+
+    bitmap2.y=100
+    stage.add(bitmap2)
 
     const sprite = new cax.Sprite({
       framerate: 7,

@@ -6,8 +6,13 @@ class Bitmap extends DisplayObject {
     super()
     if (typeof img === 'string') {
       if (Bitmap.cache[img]) {
-        this.img = Bitmap.cache[img]
-        this.rect = [0, 0, this.img.width, this.img.height]
+        if(util.isWeapp){
+          this.img = Bitmap.cache[img].img
+          this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height]
+        }else{
+          this.img = Bitmap.cache[img]
+          this.rect = [0, 0, this.img.width, this.img.height]
+        }
         onLoad && onLoad.call(this)
         this.width = this.img.width
         this.height = this.img.height
@@ -18,7 +23,7 @@ class Bitmap extends DisplayObject {
             this.rect = [0, 0, result.width, result.height]
           }
           onLoad && onLoad.call(this)
-          Bitmap.cache[img] = result.img
+          Bitmap.cache[img] = result
         })
       } else {
         this.img = util.isWegame ? wx.createImage() : new window.Image()

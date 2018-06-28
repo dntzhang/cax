@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.14
+ *  cax v1.0.15
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -985,8 +985,13 @@ var Bitmap = function (_DisplayObject) {
 
     if (typeof img === 'string') {
       if (Bitmap.cache[img]) {
-        _this.img = Bitmap.cache[img];
-        _this.rect = [0, 0, _this.img.width, _this.img.height];
+        if (_util2.default.isWeapp) {
+          _this.img = Bitmap.cache[img].img;
+          _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+        } else {
+          _this.img = Bitmap.cache[img];
+          _this.rect = [0, 0, _this.img.width, _this.img.height];
+        }
         onLoad && onLoad.call(_this);
         _this.width = _this.img.width;
         _this.height = _this.img.height;
@@ -997,7 +1002,7 @@ var Bitmap = function (_DisplayObject) {
             _this.rect = [0, 0, result.width, result.height];
           }
           onLoad && onLoad.call(_this);
-          Bitmap.cache[img] = result.img;
+          Bitmap.cache[img] = result;
         });
       } else {
         _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
