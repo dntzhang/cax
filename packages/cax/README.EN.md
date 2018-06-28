@@ -17,6 +17,7 @@ English | [简体中文](./README.md)
 ## Features
 
 * Learn Once, Write Anywhere(PC Web,Mobile Web,Wegame,Weapp)
+* Write Once, Run Anywhere
 * Simple API and lightweight 
 * High performance and low degree of coupling rendering architecture
 * Support element of canvas management
