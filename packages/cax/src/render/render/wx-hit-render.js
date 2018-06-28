@@ -22,6 +22,31 @@ class WxHitRender extends Render {
     this.ctx.clearRect(0, 0, 2, 2)
   }
 
+  hitAABB (list, evt, cb){
+    const len = list.length
+    for (let i = len - 1; i >= 0; i--) {
+      let o = list[i]
+      
+      if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
+        this._dispatchEvent(o, evt)
+        cb(o)
+        return o
+      }
+    }
+  }
+
+  checkPointInAABB (x, y, AABB) {
+    let minX = AABB[0]
+    if (x < minX) return false
+    let minY = AABB[1]
+    if (y < minY) return false
+    let maxX = minX + AABB[2]
+    if (x > maxX) return false
+    let maxY = minY + AABB[3]
+    if (y > maxY) return false
+    return true
+  }
+
   hit (list, evt, cb, current) {
     const ctx = this.ctx
     const obj = list[current]

@@ -21,7 +21,7 @@ class WeStage extends Group {
     this._hitRender = new WxHitRender(hitCtx, component, canvasId)
     this._overObject = null
     this.ctx = ctx
-
+    this.hitAABB = true
     this.width = width
     this.height = height
   }
@@ -117,8 +117,13 @@ class WeStage extends Group {
 
   _getObjectUnderPoint (evt, cb) {
     const list = this.renderer.getHitRenderList(this)
-    this._hitRender.clear()
-    this._hitRender.hit(list, evt, cb, list.length - 1)
+    if (this.hitAABB) {
+      return this._hitRender.hitAABB(list, evt, cb)
+    } else {
+      this._hitRender.clear()
+      this._hitRender.hit(list, evt, cb, list.length - 1)
+    }
+    
   }
 
   update () {

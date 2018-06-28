@@ -9,19 +9,23 @@ class Bitmap extends DisplayObject {
         if(util.isWeapp){
           this.img = Bitmap.cache[img].img
           this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height]
+          this.width = this.rect[2]
+          this.height = this.rect[3]
         }else{
           this.img = Bitmap.cache[img]
           this.rect = [0, 0, this.img.width, this.img.height]
+          this.width = this.img.width
+          this.height = this.img.height
         }
         onLoad && onLoad.call(this)
-        this.width = this.img.width
-        this.height = this.img.height
       } else if (util.isWeapp) {
         util.getImageInWx(img, (result) => {
           this.img = result.img
           if (!this.rect) {
             this.rect = [0, 0, result.width, result.height]
           }
+          this.width = result.width
+          this.height = result.height
           onLoad && onLoad.call(this)
           Bitmap.cache[img] = result
         })

@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.15
+ *  cax v1.0.16
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -988,19 +988,23 @@ var Bitmap = function (_DisplayObject) {
         if (_util2.default.isWeapp) {
           _this.img = Bitmap.cache[img].img;
           _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+          _this.width = _this.rect[2];
+          _this.height = _this.rect[3];
         } else {
           _this.img = Bitmap.cache[img];
           _this.rect = [0, 0, _this.img.width, _this.img.height];
+          _this.width = _this.img.width;
+          _this.height = _this.img.height;
         }
         onLoad && onLoad.call(_this);
-        _this.width = _this.img.width;
-        _this.height = _this.img.height;
       } else if (_util2.default.isWeapp) {
         _util2.default.getImageInWx(img, function (result) {
           _this.img = result.img;
           if (!_this.rect) {
             _this.rect = [0, 0, result.width, result.height];
           }
+          _this.width = result.width;
+          _this.height = result.height;
           onLoad && onLoad.call(_this);
           Bitmap.cache[img] = result;
         });
@@ -2613,7 +2617,7 @@ var WeStage = function (_Group) {
     _this._hitRender = new _wxHitRender2.default(hitCtx, component, canvasId);
     _this._overObject = null;
     _this.ctx = ctx;
-
+    _this.hitAABB = true;
     _this.width = width;
     _this.height = height;
     return _this;
@@ -2722,8 +2726,12 @@ var WeStage = function (_Group) {
     key: '_getObjectUnderPoint',
     value: function _getObjectUnderPoint(evt, cb) {
       var list = this.renderer.getHitRenderList(this);
-      this._hitRender.clear();
-      this._hitRender.hit(list, evt, cb, list.length - 1);
+      if (this.hitAABB) {
+        return this._hitRender.hitAABB(list, evt, cb);
+      } else {
+        this._hitRender.clear();
+        this._hitRender.hit(list, evt, cb, list.length - 1);
+      }
     }
   }, {
     key: 'update',
@@ -4329,6 +4337,33 @@ var WxHitRender = function (_Render) {
     key: 'clear',
     value: function clear() {
       this.ctx.clearRect(0, 0, 2, 2);
+    }
+  }, {
+    key: 'hitAABB',
+    value: function hitAABB(list, evt, cb) {
+      var len = list.length;
+      for (var i = len - 1; i >= 0; i--) {
+        var o = list[i];
+
+        if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
+          this._dispatchEvent(o, evt);
+          cb(o);
+          return o;
+        }
+      }
+    }
+  }, {
+    key: 'checkPointInAABB',
+    value: function checkPointInAABB(x, y, AABB) {
+      var minX = AABB[0];
+      if (x < minX) return false;
+      var minY = AABB[1];
+      if (y < minY) return false;
+      var maxX = minX + AABB[2];
+      if (x > maxX) return false;
+      var maxY = minY + AABB[3];
+      if (y > maxY) return false;
+      return true;
     }
   }, {
     key: 'hit',
