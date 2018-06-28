@@ -6,7 +6,10 @@ class Button extends Group {
   constructor (option) {
     super()
     this.width = option.width
-    this.roundedRect = new RoundedRect(option.width, option.height, option.r)
+    this.roundedRect = new RoundedRect(option.width, option.height, option.borderRadius, {
+      strokeStyle: option.borderColor || 'black',
+      fillStyle: option.backgroundColor || '#F5F5F5',
+    })
     this.text = new Text(option.text, {
       font: option.font,
       color: option.color

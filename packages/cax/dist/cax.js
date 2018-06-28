@@ -2773,7 +2773,7 @@ var RoundedRect = function (_Shape) {
     _this.option = Object.assign({
       lineWidth: 1
     }, option);
-    _this.r = r;
+    _this.r = r || 0;
     _this.width = width;
     _this.height = height;
     return _this;
@@ -4610,7 +4610,10 @@ var Button = function (_Group) {
     var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this));
 
     _this.width = option.width;
-    _this.roundedRect = new _roundedRect2.default(option.width, option.height, option.r);
+    _this.roundedRect = new _roundedRect2.default(option.width, option.height, option.borderRadius, {
+      strokeStyle: option.borderColor || 'black',
+      fillStyle: option.backgroundColor || '#F5F5F5'
+    });
     _this.text = new _text2.default(option.text, {
       font: option.font,
       color: option.color

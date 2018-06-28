@@ -6,7 +6,7 @@ class RoundedRect extends Shape {
     this.option = Object.assign({
       lineWidth: 1
     }, option)
-    this.r = r
+    this.r = r || 0 
     this.width = width
     this.height = height
   }
