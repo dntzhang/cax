@@ -13,6 +13,7 @@ English | [简体中文](./README.md)
   * [Swing DEMO](https://dntzhang.github.io/cax/packages/to/examples/swing/) 
   * [Cax + Matter DEMO](http://dntzhang.github.io/cax/packages/cax/examples/matter/) 
   * [Pie Chart DEMO](http://dntzhang.github.io/cax/packages/cax/examples/pie/)
+  * [To + Shape DEMO](http://dntzhang.github.io/cax/packages/cax/examples/to-shape/)
   
 ## Features
 
