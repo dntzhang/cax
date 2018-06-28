@@ -1,3 +1,7 @@
+## Cax 1.0.15
+
+* Fix 小程序 bitmap 资源进行 cache 的问题
+
 ## Cax 1.0.14
 
 * 对小程序 bitmap 资源进行 cache
