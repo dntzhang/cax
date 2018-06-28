@@ -1,3 +1,7 @@
+## Cax 1.0.16
+
+* 由于小程序 draw 和 getCanvasImageData 诡异的问题，小程序事件触发默认使用 AABB 
+
 ## Cax 1.0.15
 
 * Fix 小程序 bitmap 资源进行 cache 的问题
