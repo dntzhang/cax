@@ -7,7 +7,8 @@ class ArrowPath extends Shape {
     this.path = path
     this.option = Object.assign({
       strokeStyle: 'black',
-      lineWidth: 1
+      lineWidth: 1,
+      headSize: 10
     }, option)
   }
 
@@ -16,27 +17,28 @@ class ArrowPath extends Shape {
     this.beginPath()
     const len = path.length
     if (len === 2) {
-      this.drawArrow(path[0].x, path[0].y, path[1].x, path[1].y, 30, 10)
+      this.drawArrow(path[0].x, path[0].y, path[1].x, path[1].y, 30)
     } else {
       this.moveTo(path[0].x, path[0].y)
       for (let i = 1; i < len - 1; i++) {
         this.lineTo(path[i].x, path[i].y)
       }
-      this.drawArrow(path[len - 2].x, path[len - 2].y, path[len - 1].x, path[len - 1].y, 30, 10)
+      this.drawArrow(path[len - 2].x, path[len - 2].y, path[len - 1].x, path[len - 1].y, 30)
     }
 
     this.stroke()
   }
 
-  drawArrow (fromX, fromY, toX, toY, theta, headlen) {
+  drawArrow (fromX, fromY, toX, toY, theta) {
 
     let angle = Math.atan2(fromY - toY , fromX - toX) * 180 / Math.PI,
       angle1 = (angle + theta) * Math.PI / 180,
       angle2 = (angle - theta) * Math.PI / 180,
-      topX = headlen * Math.cos(angle1),
-      topY = headlen * Math.sin(angle1),
-      botX = headlen * Math.cos(angle2),
-      botY = headlen * Math.sin(angle2)
+      hs = this.option.headSize,
+      topX = hs * Math.cos(angle1),
+      topY = hs * Math.sin(angle1),
+      botX = hs * Math.cos(angle2),
+      botY = hs * Math.sin(angle2)
 
     let arrowX = fromX - topX,
       arrowY = fromY - topY

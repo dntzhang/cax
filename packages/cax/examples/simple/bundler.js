@@ -969,18 +969,28 @@ var Bitmap = function (_DisplayObject) {
 
     if (typeof img === 'string') {
       if (Bitmap.cache[img]) {
-        _this.img = Bitmap.cache[img];
-        _this.rect = [0, 0, _this.img.width, _this.img.height];
+        if (_util2.default.isWeapp) {
+          _this.img = Bitmap.cache[img].img;
+          _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+          _this.width = _this.rect[2];
+          _this.height = _this.rect[3];
+        } else {
+          _this.img = Bitmap.cache[img];
+          _this.rect = [0, 0, _this.img.width, _this.img.height];
+          _this.width = _this.img.width;
+          _this.height = _this.img.height;
+        }
         onLoad && onLoad.call(_this);
-        _this.width = _this.img.width;
-        _this.height = _this.img.height;
       } else if (_util2.default.isWeapp) {
         _util2.default.getImageInWx(img, function (result) {
           _this.img = result.img;
           if (!_this.rect) {
             _this.rect = [0, 0, result.width, result.height];
           }
+          _this.width = result.width;
+          _this.height = result.height;
           onLoad && onLoad.call(_this);
+          Bitmap.cache[img] = result;
         });
       } else {
         _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
@@ -2591,7 +2601,7 @@ var WeStage = function (_Group) {
     _this._hitRender = new _wxHitRender2.default(hitCtx, component, canvasId);
     _this._overObject = null;
     _this.ctx = ctx;
-
+    _this.hitAABB = true;
     _this.width = width;
     _this.height = height;
     return _this;
@@ -2700,8 +2710,12 @@ var WeStage = function (_Group) {
     key: '_getObjectUnderPoint',
     value: function _getObjectUnderPoint(evt, cb) {
       var list = this.renderer.getHitRenderList(this);
-      this._hitRender.clear();
-      this._hitRender.hit(list, evt, cb, list.length - 1);
+      if (this.hitAABB) {
+        return this._hitRender.hitAABB(list, evt, cb);
+      } else {
+        this._hitRender.clear();
+        this._hitRender.hit(list, evt, cb, list.length - 1);
+      }
     }
   }, {
     key: 'update',
@@ -2751,7 +2765,7 @@ var RoundedRect = function (_Shape) {
     _this.option = Object.assign({
       lineWidth: 1
     }, option);
-    _this.r = r;
+    _this.r = r || 0;
     _this.width = width;
     _this.height = height;
     return _this;
@@ -4509,6 +4523,33 @@ var WxHitRender = function (_Render) {
       this.ctx.clearRect(0, 0, 2, 2);
     }
   }, {
+    key: 'hitAABB',
+    value: function hitAABB(list, evt, cb) {
+      var len = list.length;
+      for (var i = len - 1; i >= 0; i--) {
+        var o = list[i];
+
+        if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
+          this._dispatchEvent(o, evt);
+          cb(o);
+          return o;
+        }
+      }
+    }
+  }, {
+    key: 'checkPointInAABB',
+    value: function checkPointInAABB(x, y, AABB) {
+      var minX = AABB[0];
+      if (x < minX) return false;
+      var minY = AABB[1];
+      if (y < minY) return false;
+      var maxX = minX + AABB[2];
+      if (x > maxX) return false;
+      var maxY = minY + AABB[3];
+      if (y > maxY) return false;
+      return true;
+    }
+  }, {
     key: 'hit',
     value: function hit(list, evt, cb, current) {
       var _this2 = this;
@@ -4611,7 +4652,8 @@ var ArrowPath = function (_Shape) {
     _this.path = path;
     _this.option = Object.assign({
       strokeStyle: 'black',
-      lineWidth: 1
+      lineWidth: 1,
+      headSize: 10
     }, option);
     return _this;
   }
@@ -4623,28 +4665,29 @@ var ArrowPath = function (_Shape) {
       this.beginPath();
       var len = path.length;
       if (len === 2) {
-        this.drawArrow(path[0].x, path[0].y, path[1].x, path[1].y, 30, 10);
+        this.drawArrow(path[0].x, path[0].y, path[1].x, path[1].y, 30);
       } else {
         this.moveTo(path[0].x, path[0].y);
         for (var i = 1; i < len - 1; i++) {
           this.lineTo(path[i].x, path[i].y);
         }
-        this.drawArrow(path[len - 2].x, path[len - 2].y, path[len - 1].x, path[len - 1].y, 30, 10);
+        this.drawArrow(path[len - 2].x, path[len - 2].y, path[len - 1].x, path[len - 1].y, 30);
       }
 
       this.stroke();
     }
   }, {
     key: 'drawArrow',
-    value: function drawArrow(fromX, fromY, toX, toY, theta, headlen) {
+    value: function drawArrow(fromX, fromY, toX, toY, theta) {
 
       var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,
           angle1 = (angle + theta) * Math.PI / 180,
           angle2 = (angle - theta) * Math.PI / 180,
-          topX = headlen * Math.cos(angle1),
-          topY = headlen * Math.sin(angle1),
-          botX = headlen * Math.cos(angle2),
-          botY = headlen * Math.sin(angle2);
+          hs = this.option.headSize,
+          topX = hs * Math.cos(angle1),
+          topY = hs * Math.sin(angle1),
+          botX = hs * Math.cos(angle2),
+          botY = hs * Math.sin(angle2);
 
       var arrowX = fromX - topX,
           arrowY = fromY - topY;
@@ -4788,7 +4831,10 @@ var Button = function (_Group) {
     var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this));
 
     _this.width = option.width;
-    _this.roundedRect = new _roundedRect2.default(option.width, option.height, option.r);
+    _this.roundedRect = new _roundedRect2.default(option.width, option.height, option.borderRadius, {
+      strokeStyle: option.borderColor || 'black',
+      fillStyle: option.backgroundColor || '#F5F5F5'
+    });
     _this.text = new _text2.default(option.text, {
       font: option.font,
       color: option.color
