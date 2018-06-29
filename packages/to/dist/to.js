@@ -1,5 +1,5 @@
 /*!
- *  to2to v1.0.1 
+ *  to2to v1.0.2 
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -290,8 +290,7 @@ var To = function () {
     key: 'stop',
     value: function stop() {
       for (var i = 0, len = this.tweens.length; i < len; i++) {
-        this.tweens[i].pause();
-        _tween2.default.remove(this.tweens[i]);
+        this.tweens[i].stop();
       }
       this.cmds.length = 0;
     }
@@ -530,11 +529,35 @@ TWEEN.Tween = function (object, group) {
   this._onStopCallback = null;
   this._group = group || TWEEN;
   this._id = TWEEN.nextId();
+
+  this._paused = false;
+  this._passTime = null;
 };
 
 TWEEN.Tween.prototype = {
   getId: function getId() {
     return this._id;
+  },
+
+  toggle: function toggle() {
+    if (this._paused) {
+      this.play();
+    } else {
+      this.pause();
+    }
+  },
+
+
+  pause: function pause() {
+    this._paused = true;
+    var pauseTime = TWEEN.now();
+    this._passTime = pauseTime - this._startTime;
+  },
+
+  play: function play() {
+    this._paused = false;
+    var nowTime = TWEEN.now();
+    this._startTime = nowTime - this._passTime;
   },
 
   isPlaying: function isPlaying() {
@@ -679,6 +702,7 @@ TWEEN.Tween.prototype = {
   },
 
   update: function update(time) {
+    if (this._paused) return true;
     var property;
     var elapsed;
     var value;
