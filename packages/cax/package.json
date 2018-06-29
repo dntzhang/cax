@@ -16,6 +16,7 @@
     "clip-transform": "webpack -w",
     "map": "webpack -w",
     "dag": "webpack -w",
+    "vision": "webpack -w",
     "to-shape": "webpack -w",
     "clip-transform-to": "webpack -w",
     "cache": "webpack -w",
