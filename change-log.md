@@ -1,3 +1,8 @@
+## Cax 1.0.17
+
+* Text 测量宽度兼容小程序和小游戏
+* ArrowPath 完善
+
 ## Cax 1.0.16
 
 * 由于小程序 draw 和 getCanvasImageData 诡异的问题，小程序事件触发默认使用 AABB 

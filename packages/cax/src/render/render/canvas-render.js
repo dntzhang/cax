@@ -45,7 +45,9 @@ class CanvasRender extends Render {
       const bRect = obj.rect
       ctx.drawImage(obj.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3])
     } else if (obj instanceof Text) {
-      ctx.font = obj.font
+      if(obj.font){
+        ctx.font = obj.font
+      }
       ctx.fillStyle = obj.color
       ctx.textBaseline = obj.baseline
       ctx.fillText(obj.text, 0, 0)

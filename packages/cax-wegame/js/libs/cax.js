@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.16
+ *  cax v1.0.17
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -705,7 +705,15 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var measureCtx = _util2.default.isWeapp || _util2.default.isWegame ? null : document.createElement('canvas').getContext('2d');
+var measureCtx = void 0;
+
+if (_util2.default.isWeapp) {
+  measureCtx = wx.createCanvasContext('measure0');
+} else if (_util2.default.isWegame) {
+  measureCtx = wx.createCanvas().getContext('2d');
+} else {
+  measureCtx = document.createElement('canvas').getContext('2d');
+}
 
 var Text = function (_DisplayObject) {
   _inherits(Text, _DisplayObject);
@@ -727,7 +735,9 @@ var Text = function (_DisplayObject) {
   _createClass(Text, [{
     key: 'getWidth',
     value: function getWidth() {
-      measureCtx.font = this.font;
+      if (this.font) {
+        measureCtx.font = this.font;
+      }
       return measureCtx.measureText(this.text).width;
     }
   }, {
@@ -3989,7 +3999,9 @@ var CanvasRender = function (_Render) {
         var bRect = obj.rect;
         ctx.drawImage(obj.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
       } else if (obj instanceof _text2.default) {
-        ctx.font = obj.font;
+        if (obj.font) {
+          ctx.font = obj.font;
+        }
         ctx.fillStyle = obj.color;
         ctx.textBaseline = obj.baseline;
         ctx.fillText(obj.text, 0, 0);
@@ -4468,7 +4480,8 @@ var ArrowPath = function (_Shape) {
     _this.path = path;
     _this.option = Object.assign({
       strokeStyle: 'black',
-      lineWidth: 1
+      lineWidth: 1,
+      headSize: 10
     }, option);
     return _this;
   }
@@ -4480,28 +4493,29 @@ var ArrowPath = function (_Shape) {
       this.beginPath();
       var len = path.length;
       if (len === 2) {
-        this.drawArrow(path[0].x, path[0].y, path[1].x, path[1].y, 30, 10);
+        this.drawArrow(path[0].x, path[0].y, path[1].x, path[1].y, 30);
       } else {
         this.moveTo(path[0].x, path[0].y);
         for (var i = 1; i < len - 1; i++) {
           this.lineTo(path[i].x, path[i].y);
         }
-        this.drawArrow(path[len - 2].x, path[len - 2].y, path[len - 1].x, path[len - 1].y, 30, 10);
+        this.drawArrow(path[len - 2].x, path[len - 2].y, path[len - 1].x, path[len - 1].y, 30);
       }
 
       this.stroke();
     }
   }, {
     key: 'drawArrow',
-    value: function drawArrow(fromX, fromY, toX, toY, theta, headlen) {
+    value: function drawArrow(fromX, fromY, toX, toY, theta) {
 
       var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,
           angle1 = (angle + theta) * Math.PI / 180,
           angle2 = (angle - theta) * Math.PI / 180,
-          topX = headlen * Math.cos(angle1),
-          topY = headlen * Math.sin(angle1),
-          botX = headlen * Math.cos(angle2),
-          botY = headlen * Math.sin(angle2);
+          hs = this.option.headSize,
+          topX = hs * Math.cos(angle1),
+          topY = hs * Math.sin(angle1),
+          botX = hs * Math.cos(angle2),
+          botY = hs * Math.sin(angle2);
 
       var arrowX = fromX - topX,
           arrowY = fromY - topY;

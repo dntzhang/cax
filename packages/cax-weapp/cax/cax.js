@@ -17,7 +17,8 @@ Component({
   data: {
     width: 0,
     height: 0,
-    id: 'caxCanvas' + cax.caxCanvasId++
+    id: 'caxCanvas' + cax.caxCanvasId++,
+    index: cax.caxCanvasId - 1
   },
 
   /**

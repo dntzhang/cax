@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.16
+ *  cax v1.0.17
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -705,7 +705,15 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var measureCtx = _util2.default.isWeapp || _util2.default.isWegame ? null : document.createElement('canvas').getContext('2d');
+var measureCtx = void 0;
+
+if (_util2.default.isWeapp) {
+  measureCtx = wx.createCanvasContext('measure0');
+} else if (_util2.default.isWegame) {
+  measureCtx = wx.createCanvas().getContext('2d');
+} else {
+  measureCtx = document.createElement('canvas').getContext('2d');
+}
 
 var Text = function (_DisplayObject) {
   _inherits(Text, _DisplayObject);
@@ -727,7 +735,9 @@ var Text = function (_DisplayObject) {
   _createClass(Text, [{
     key: 'getWidth',
     value: function getWidth() {
-      measureCtx.font = this.font;
+      if (this.font) {
+        measureCtx.font = this.font;
+      }
       return measureCtx.measureText(this.text).width;
     }
   }, {
@@ -3989,7 +3999,9 @@ var CanvasRender = function (_Render) {
         var bRect = obj.rect;
         ctx.drawImage(obj.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
       } else if (obj instanceof _text2.default) {
-        ctx.font = obj.font;
+        if (obj.font) {
+          ctx.font = obj.font;
+        }
         ctx.fillStyle = obj.color;
         ctx.textBaseline = obj.baseline;
         ctx.fillText(obj.text, 0, 0);

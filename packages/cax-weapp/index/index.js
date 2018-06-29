@@ -30,52 +30,28 @@ Page({
     rect.on('tap', () => {
       console.log('rect tap')
     })
-    console.log(111)
+
 
     stage.add(rect)
 
-    const rect2 = new cax.Rect(100, 100, {
-      fillStyle: 'black'
-    })
+    const button = new cax.Button({ width: 100, height: 40, text: "I am button!" }) 
+    button.y = 170
+    button.x = 20
+    stage.add(button)
+    
 
-    // rect.originX = 50
-    // rect.originY = 50
-    rect2.x = 200
-    rect2.y = 100
-    rect2.rotation = 30
-
-    rect2.on('touchstart', () => {
-      console.log('rect2 touchstart')
-    })
-
-    rect2.on('touchmove', (evt) => {
-      console.log('rect2 touchmove')
-    })
-
-    rect2.on('touchend', () => {
-      console.log('rect2 touchend')
-    })
-
-    rect2.on('tap', () => {
-      console.log('rect2 tap')
-    })
-
-    stage.add(rect2)
-
-    stage.update()
+   
 
     const bitmap = new cax.Bitmap('/images/wx.png')
 
-    const bitmap2 = new cax.Bitmap('/images/wx.png')
+   
 
     bitmap.on('tap', () => {
       console.log('bitmap tap')
     })
     
     stage.add(bitmap)
-
-    bitmap2.y=100
-    stage.add(bitmap2)
+ 
 
     const sprite = new cax.Sprite({
       framerate: 7,
@@ -118,12 +94,28 @@ Page({
     sprite.y = 100
     stage.add(sprite)
 
+   
+
+    const stage2 = new cax.Stage(info.windowWidth, info.windowHeight / 2, 'myCanvas2', this)
+
+    const button2 = new cax.Button({ width: 100, height: 40, text: "I am in stage2!" }) 
+    button2.y = 170
+    button2.x = 20
+    stage2.add(button2)
+    const bitmap2 = new cax.Bitmap('/images/wx.png')
+    bitmap2.y=100
+    stage2.add(bitmap2)
+
+    cax.To.get(rect).to().x(200, 2000, cax.easing.elasticInOut).start()
+
+
+
+
     setInterval(function () {
       rect.rotation++
       stage.update()
+      stage2.update()
     }, 16)
 
-
-    cax.To.get(rect).to().x(200, 2000, cax.easing.elasticInOut).start()
   }
 })

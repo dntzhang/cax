@@ -1,7 +1,15 @@
 import DisplayObject from './display-object'
 import util from '../../common/util'
 
-const measureCtx = (util.isWeapp || util.isWegame) ? null : document.createElement('canvas').getContext('2d')
+let measureCtx
+
+if(util.isWeapp){
+  measureCtx = wx.createCanvasContext('measure0')
+}else if(util.isWegame){
+  measureCtx = wx.createCanvas().getContext('2d')
+}else{
+  measureCtx = document.createElement('canvas').getContext('2d')
+}
 
 class Text extends DisplayObject {
   constructor (text, option) {
@@ -16,7 +24,9 @@ class Text extends DisplayObject {
   }
 
   getWidth () {
-    measureCtx.font = this.font
+    if(this.font){
+      measureCtx.font = this.font
+    }
     return measureCtx.measureText(this.text).width
   }
 
