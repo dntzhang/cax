@@ -608,7 +608,7 @@ const button = new cax.Button({
 
 ## 微信交流群
 
-![](./asset/group.png)
+![](./asset/wechat.png)
 
 ## License
 
