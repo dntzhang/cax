@@ -64,6 +64,7 @@
 	- [自定义 Shape](#自定义-shape) 
   - [自定义 Element](#自定义-element) 
 - [谁在使用？](#谁在使用)
+- [微信交流群](#微信交流群)
 - [License](#license)
 
 
@@ -604,6 +605,10 @@ const button = new cax.Button({
 ## 谁在使用？
 
 ![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
+
+## 微信交流群
+
+![](./asset/group.png)
 
 ## License
 
