@@ -308,6 +308,18 @@ graphics.y = 200
 stage.add(graphics)
 ```
 
+特别注意，如果你在某个循环中执行 graphics 连缀绘制操作，请务必加上 clear() 方法，不然路径叠加到你的浏览器不堪重负:
+
+```js
+cax.setInterval(function(){
+  graphics
+    .clear()
+    .beginPath()
+    .arc(0, 0, 10, 0, Math.PI * 2)
+    .stroke()
+}, 16)
+```
+
 ### Shape
 
 与 Graphics 不同的是， Shape 一般拥有有限的宽高，所以可以使用离屏 Canvas 进行缓存。下面这些属于 Shape。

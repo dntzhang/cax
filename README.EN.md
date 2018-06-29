@@ -206,6 +206,18 @@ graphics.y = 200
 stage.add(graphics)
 ```
 
+In particular, if you perform a graphics connection rendering operation in a loop, be sure to add the clear () method, or the path will be overloaded to your browser:
+
+```js
+cax.setInterval(function(){
+  graphics
+    .clear()
+    .beginPath()
+    .arc(0, 0, 10, 0, Math.PI * 2)
+    .stroke()
+}, 16)
+```
+
 ### Shape
 
 Unlike Graphics, Shape usually has limited width height, so it can be buffered with off screen Canvas. The following are Shape.
