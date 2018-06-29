@@ -52,10 +52,6 @@ cax.To.get(clipPath)
     .cycle()
     .start()
 
-
-let speedX = 1,
-    speedY = 1
-
 cax.setInterval(function () {
     stage.update()
 }, 15)

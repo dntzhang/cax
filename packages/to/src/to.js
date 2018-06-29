@@ -162,8 +162,7 @@ class To {
 
   stop () {
     for (var i = 0, len = this.tweens.length; i < len; i++) {
-      this.tweens[i].pause()
-      TWEEN.remove(this.tweens[i])
+      this.tweens[i].stop()
     }
     this.cmds.length = 0
   }

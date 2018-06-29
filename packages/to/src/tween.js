@@ -126,11 +126,34 @@ TWEEN.Tween = function (object, group) {
   this._onStopCallback = null
   this._group = group || TWEEN
   this._id = TWEEN.nextId()
+
+  this._paused = false
+  this._passTime  = null
 }
 
 TWEEN.Tween.prototype = {
   getId: function getId () {
     return this._id
+  },
+
+  toggle() {
+    if (this._paused) {
+      this.play();
+    } else {
+      this.pause();
+    }
+  },
+
+  pause: function () {
+    this._paused = true;
+    var pauseTime = TWEEN.now()
+    this._passTime = pauseTime - this._startTime
+  },
+
+  play: function () {
+    this._paused = false;
+    var nowTime = TWEEN.now()
+    this._startTime = nowTime - this._passTime
   },
 
   isPlaying: function isPlaying () {
@@ -275,6 +298,7 @@ TWEEN.Tween.prototype = {
   },
 
   update: function update (time) {
+    if (this._paused) return true;
     var property
     var elapsed
     var value

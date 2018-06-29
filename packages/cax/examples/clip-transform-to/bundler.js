@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -276,15 +276,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _matrix2d = __webpack_require__(20);
+var _matrix2d = __webpack_require__(21);
 
 var _matrix2d2 = _interopRequireDefault(_matrix2d);
 
-var _eventDispatcher = __webpack_require__(21);
+var _eventDispatcher = __webpack_require__(22);
 
 var _eventDispatcher2 = _interopRequireDefault(_eventDispatcher);
 
-var _uid = __webpack_require__(22);
+var _uid = __webpack_require__(23);
 
 var _uid2 = _interopRequireDefault(_uid);
 
@@ -689,7 +689,15 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var measureCtx = _util2.default.isWeapp || _util2.default.isWegame ? null : document.createElement('canvas').getContext('2d');
+var measureCtx = void 0;
+
+if (_util2.default.isWeapp) {
+  measureCtx = wx.createCanvasContext('measure0');
+} else if (_util2.default.isWegame) {
+  measureCtx = wx.createCanvas().getContext('2d');
+} else {
+  measureCtx = document.createElement('canvas').getContext('2d');
+}
 
 var Text = function (_DisplayObject) {
   _inherits(Text, _DisplayObject);
@@ -711,7 +719,9 @@ var Text = function (_DisplayObject) {
   _createClass(Text, [{
     key: 'getWidth',
     value: function getWidth() {
-      measureCtx.font = this.font;
+      if (this.font) {
+        measureCtx.font = this.font;
+      }
       return measureCtx.measureText(this.text).width;
     }
   }, {
@@ -969,17 +979,28 @@ var Bitmap = function (_DisplayObject) {
 
     if (typeof img === 'string') {
       if (Bitmap.cache[img]) {
-        _this.img = Bitmap.cache[img];
-        _this.rect = [0, 0, _this.img.width, _this.img.height];
+        if (_util2.default.isWeapp) {
+          _this.img = Bitmap.cache[img].img;
+          _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+          _this.width = _this.rect[2];
+          _this.height = _this.rect[3];
+        } else {
+          _this.img = Bitmap.cache[img];
+          _this.rect = [0, 0, _this.img.width, _this.img.height];
+          _this.width = _this.img.width;
+          _this.height = _this.img.height;
+        }
         onLoad && onLoad.call(_this);
-        _this.width = _this.img.width;
-        _this.height = _this.img.height;
       } else if (_util2.default.isWeapp) {
         _util2.default.getImageInWx(img, function (result) {
           _this.img = result.img;
           if (!_this.rect) {
             _this.rect = [0, 0, result.width, result.height];
           }
+          _this.width = result.width;
+          _this.height = result.height;
+          onLoad && onLoad.call(_this);
+          Bitmap.cache[img] = result;
         });
       } else {
         _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
@@ -1127,7 +1148,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.getImageInWx = getImageInWx;
 function getImageInWx(img, callback) {
-  if (img.indexOf('wxfile://') === 0) {
+  if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1) {
     wx.getImageInfo({
       src: img,
       success: function success(info) {
@@ -1183,7 +1204,7 @@ exports.default = {
   isWeapp: typeof wx !== 'undefined' && !wx.createCanvas,
   isWegame: typeof wx !== 'undefined' && wx.createCanvas
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
 
 /***/ }),
 /* 10 */
@@ -1324,11 +1345,35 @@ TWEEN.Tween = function (object, group) {
   this._onStopCallback = null;
   this._group = group || TWEEN;
   this._id = TWEEN.nextId();
+
+  this._paused = false;
+  this._passTime = null;
 };
 
 TWEEN.Tween.prototype = {
   getId: function getId() {
     return this._id;
+  },
+
+  toggle: function toggle() {
+    if (this._paused) {
+      this.play();
+    } else {
+      this.pause();
+    }
+  },
+
+
+  pause: function pause() {
+    this._paused = true;
+    var pauseTime = TWEEN.now();
+    this._passTime = pauseTime - this._startTime;
+  },
+
+  play: function play() {
+    this._paused = false;
+    var nowTime = TWEEN.now();
+    this._startTime = nowTime - this._passTime;
   },
 
   isPlaying: function isPlaying() {
@@ -1473,6 +1518,7 @@ TWEEN.Tween.prototype = {
   },
 
   update: function update(time) {
+    if (this._paused) return true;
     var property;
     var elapsed;
     var value;
@@ -1945,10 +1991,321 @@ TWEEN.Interpolation = {
     root.TWEEN = TWEEN;
   }
 })(undefined);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ }),
 /* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _tween = __webpack_require__(10);
+
+var _tween2 = _interopRequireDefault(_tween);
+
+var _rafInterval = __webpack_require__(12);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var To = function () {
+  function To(element) {
+    _classCallCheck(this, To);
+
+    this.element = element;
+    this.cmds = [];
+    this.index = 0;
+    this.tweens = [];
+    this._pause = false;
+    this.loop = (0, _rafInterval.setRafInterval)(function () {
+      _tween2.default.update();
+    }, 15);
+    this.cycleCount = 0;
+  }
+
+  _createClass(To, [{
+    key: 'to',
+    value: function to(target, duration, easing) {
+      this.cmds.push(['to']);
+      if (arguments.length !== 0) {
+        for (var key in target) {
+          this.set(key, target[key], duration, easing);
+        }
+      }
+      return this;
+    }
+  }, {
+    key: 'set',
+    value: function set(prop, value, duration, easing) {
+      this.cmds[this.cmds.length - 1].push([prop, [value, duration, easing]]);
+      return this;
+    }
+  }, {
+    key: 'x',
+    value: function x() {
+      this.cmds[this.cmds.length - 1].push(['x', arguments]);
+      return this;
+    }
+  }, {
+    key: 'y',
+    value: function y() {
+      this.cmds[this.cmds.length - 1].push(['y', arguments]);
+      return this;
+    }
+  }, {
+    key: 'z',
+    value: function z() {
+      this.cmds[this.cmds.length - 1].push(['z', arguments]);
+      return this;
+    }
+  }, {
+    key: 'rotation',
+    value: function rotation() {
+      this.cmds[this.cmds.length - 1].push(['rotation', arguments]);
+      return this;
+    }
+  }, {
+    key: 'scaleX',
+    value: function scaleX() {
+      this.cmds[this.cmds.length - 1].push(['scaleX', arguments]);
+      return this;
+    }
+  }, {
+    key: 'scaleY',
+    value: function scaleY() {
+      this.cmds[this.cmds.length - 1].push(['scaleY', arguments]);
+      return this;
+    }
+  }, {
+    key: 'skewX',
+    value: function skewX() {
+      this.cmds[this.cmds.length - 1].push(['skewX', arguments]);
+      return this;
+    }
+  }, {
+    key: 'skewY',
+    value: function skewY() {
+      this.cmds[this.cmds.length - 1].push(['skewY', arguments]);
+      return this;
+    }
+  }, {
+    key: 'originX',
+    value: function originX() {
+      this.cmds[this.cmds.length - 1].push(['originX', arguments]);
+      return this;
+    }
+  }, {
+    key: 'originY',
+    value: function originY() {
+      this.cmds[this.cmds.length - 1].push(['originY', arguments]);
+      return this;
+    }
+  }, {
+    key: 'alpha',
+    value: function alpha() {
+      this.cmds[this.cmds.length - 1].push(['alpha', arguments]);
+      return this;
+    }
+  }, {
+    key: 'begin',
+    value: function begin(fn) {
+      this.cmds[this.cmds.length - 1].begin = fn;
+      return this;
+    }
+  }, {
+    key: 'progress',
+    value: function progress(fn) {
+      this.cmds[this.cmds.length - 1].progress = fn;
+      return this;
+    }
+  }, {
+    key: 'end',
+    value: function end(fn) {
+      this.cmds[this.cmds.length - 1].end = fn;
+      return this;
+    }
+  }, {
+    key: 'wait',
+    value: function wait() {
+      this.cmds.push(['wait', arguments]);
+      return this;
+    }
+  }, {
+    key: 'then',
+    value: function then() {
+      this.cmds.push(['then', arguments]);
+      return this;
+    }
+  }, {
+    key: 'cycle',
+    value: function cycle() {
+      this.cmds.push(['cycle', arguments]);
+      return this;
+    }
+  }, {
+    key: 'start',
+    value: function start() {
+      if (this._pause) return;
+      var len = this.cmds.length;
+      if (this.index < len) {
+        this.exec(this.cmds[this.index], this.index === len - 1);
+      } else {
+        (0, _rafInterval.clearRafInterval)(this.loop);
+      }
+      return this;
+    }
+  }, {
+    key: 'pause',
+    value: function pause() {
+      this._pause = true;
+      for (var i = 0, len = this.tweens.length; i < len; i++) {
+        this.tweens[i].pause();
+      }
+      if (this.currentTask === 'wait') {
+        this.timeout -= new Date() - this.currentTaskBegin;
+        this.currentTaskBegin = new Date();
+      }
+    }
+  }, {
+    key: 'toggle',
+    value: function toggle() {
+      if (this._pause) {
+        this.play();
+      } else {
+        this.pause();
+      }
+    }
+  }, {
+    key: 'play',
+    value: function play() {
+      this._pause = false;
+      for (var i = 0, len = this.tweens.length; i < len; i++) {
+        this.tweens[i].play();
+      }
+      var self = this;
+      if (this.currentTask === 'wait') {
+        setTimeout(function () {
+          if (self._pause) return;
+          self.index++;
+          self.start();
+          if (self.index === self.cmds.length && self.complete) self.complete();
+        }, this.timeout);
+      }
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      for (var i = 0, len = this.tweens.length; i < len; i++) {
+        this.tweens[i].stop();
+      }
+      this.cmds.length = 0;
+    }
+  }, {
+    key: 'animate',
+    value: function animate(name) {
+      this.cmds = this.cmds.concat(To.animationMap[name] || []);
+      return this;
+    }
+  }, {
+    key: 'exec',
+    value: function exec(cmd, last) {
+      var len = cmd.length,
+          self = this;
+      this.currentTask = cmd[0];
+      switch (this.currentTask) {
+        case 'to':
+          self.stepCompleteCount = 0;
+          for (var i = 1; i < len; i++) {
+            var task = cmd[i];
+            var ease = task[1][2];
+            var target = {};
+            var prop = task[0];
+            target[prop] = task[1][0];
+
+            var t = new _tween2.default.Tween(this.element).to(target, task[1][1]).onStart(function () {
+              if (cmd.begin) cmd.begin.call(self.element, self.element);
+            }).onUpdate(function () {
+              if (cmd.progress) cmd.progress.call(self.element, self.element);
+              // self.element[prop] = this[prop];
+            }).easing(ease || _tween2.default.Easing.Linear.None).onComplete(function () {
+              self.stepCompleteCount++;
+              if (self.stepCompleteCount === len - 1) {
+                if (cmd.end) cmd.end.call(self.element, self.element);
+                if (last && self.complete) self.complete();
+                self.index++;
+                self.start();
+              }
+            }).start();
+            this.tweens.push(t);
+          }
+          break;
+        case 'wait':
+          this.currentTaskBegin = new Date();
+          this.timeout = cmd[1][0];
+          setTimeout(function () {
+            if (self._pause) return;
+            self.index++;
+            self.start();
+            if (cmd.end) cmd.end.call(self.element, self.element);
+            if (last && self.complete) self.complete();
+          }, cmd[1][0]);
+          break;
+        case 'then':
+          var arg = cmd[1][0];
+          arg.index = 0;
+          arg.complete = function () {
+            self.index++;
+            self.start();
+            if (last && self.complete) self.complete();
+          };
+          arg.start();
+          break;
+        case 'cycle':
+          var count = cmd[1][1];
+          if (count === undefined) {
+            self.index = cmd[1][0] || 0;
+            self.start();
+          } else {
+            if (count && self.cycleCount === count) {
+              self.index++;
+              self.start();
+              if (last && self.complete) self.complete();
+            } else {
+              self.cycleCount++;
+              self.index = cmd[1][0];
+              self.start();
+            }
+          }
+          break;
+      }
+    }
+  }]);
+
+  return To;
+}();
+
+To.get = function (element) {
+  var to = new To(element);
+  return to;
+};
+
+To.animationMap = {};
+To.extend = function (animationName, cmds) {
+  To.animationMap[animationName] = cmds;
+};
+
+exports.default = To;
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2072,7 +2429,7 @@ function each(arr, fn) {
 }
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2084,7 +2441,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _canvasRender = __webpack_require__(23);
+var _canvasRender = __webpack_require__(24);
 
 var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
@@ -2220,7 +2577,7 @@ var Renderer = function () {
 exports.default = Renderer;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2236,11 +2593,11 @@ var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _renderer = __webpack_require__(12);
+var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _wxHitRender = __webpack_require__(26);
+var _wxHitRender = __webpack_require__(27);
 
 var _wxHitRender2 = _interopRequireDefault(_wxHitRender);
 
@@ -2278,6 +2635,9 @@ var WeStage = function (_Group) {
     _this._hitRender = new _wxHitRender2.default(hitCtx, component, canvasId);
     _this._overObject = null;
     _this.ctx = ctx;
+    _this.hitAABB = true;
+    _this.width = width;
+    _this.height = height;
     return _this;
   }
 
@@ -2384,8 +2744,12 @@ var WeStage = function (_Group) {
     key: '_getObjectUnderPoint',
     value: function _getObjectUnderPoint(evt, cb) {
       var list = this.renderer.getHitRenderList(this);
-      this._hitRender.clear();
-      this._hitRender.hit(list, evt, cb, list.length - 1);
+      if (this.hitAABB) {
+        return this._hitRender.hitAABB(list, evt, cb);
+      } else {
+        this._hitRender.clear();
+        this._hitRender.hit(list, evt, cb, list.length - 1);
+      }
     }
   }, {
     key: 'update',
@@ -2400,7 +2764,7 @@ var WeStage = function (_Group) {
 exports.default = WeStage;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2432,8 +2796,10 @@ var RoundedRect = function (_Shape) {
 
     var _this = _possibleConstructorReturn(this, (RoundedRect.__proto__ || Object.getPrototypeOf(RoundedRect)).call(this));
 
-    _this.option = option || {};
-    _this.r = r;
+    _this.option = Object.assign({
+      lineWidth: 1
+    }, option);
+    _this.r = r || 0;
     _this.width = width;
     _this.height = height;
     return _this;
@@ -2465,11 +2831,17 @@ var RoundedRect = function (_Shape) {
       this.arcTo(dx, dy, ex, ey, r);
       this.arcTo(ex, ey, ax, ay, r);
 
-      this.stroke();
+      if (this.option.fillStyle) {
+        this.closePath();
+        this.fillStyle(this.option.fillStyle);
+        this.fill();
+      }
 
-      this.closePath();
-      this.fillStyle('white');
-      this.fill();
+      if (this.option.strokeStyle) {
+        this.lineWidth(this.option.lineWidth);
+        this.strokeStyle(this.option.strokeStyle);
+        this.stroke();
+      }
     }
   }]);
 
@@ -2479,13 +2851,13 @@ var RoundedRect = function (_Shape) {
 exports.default = RoundedRect;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _index = __webpack_require__(16);
+var _index = __webpack_require__(17);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -2526,37 +2898,32 @@ _index2.default.To.get(clipPath).wait(900).to().scaleY(0.8, 450, sineInOut).skew
 
 _index2.default.To.get(clipPath).wait(1350).to().scaleY(1, 450, sineInOut).cycle().start();
 
-var speedX = 1,
-    speedY = 1;
-
 _index2.default.setInterval(function () {
     stage.update();
 }, 15);
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 var _tween = __webpack_require__(10);
 
 var _tween2 = _interopRequireDefault(_tween);
 
-var _to = __webpack_require__(18);
+var _to = __webpack_require__(11);
 
 var _to2 = _interopRequireDefault(_to);
 
-var _stage = __webpack_require__(19);
+__webpack_require__(19);
+
+var _stage = __webpack_require__(20);
 
 var _stage2 = _interopRequireDefault(_stage);
 
-var _weStage = __webpack_require__(13);
+var _weStage = __webpack_require__(14);
 
 var _weStage2 = _interopRequireDefault(_weStage);
 
@@ -2580,41 +2947,45 @@ var _sprite = __webpack_require__(5);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-var _roundedRect = __webpack_require__(14);
+var _roundedRect = __webpack_require__(15);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
-var _arrowPath = __webpack_require__(27);
+var _arrowPath = __webpack_require__(28);
 
 var _arrowPath2 = _interopRequireDefault(_arrowPath);
 
-var _ellipse = __webpack_require__(28);
+var _ellipse = __webpack_require__(29);
 
 var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _button = __webpack_require__(29);
+var _button = __webpack_require__(30);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _rect = __webpack_require__(30);
+var _rect = __webpack_require__(31);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _circle = __webpack_require__(31);
+var _circle = __webpack_require__(32);
 
 var _circle2 = _interopRequireDefault(_circle);
 
-var _polygon = __webpack_require__(32);
+var _polygon = __webpack_require__(33);
 
 var _polygon2 = _interopRequireDefault(_polygon);
 
-var _equilateralPolygon = __webpack_require__(33);
+var _equilateralPolygon = __webpack_require__(34);
 
 var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
-var _rafInterval = __webpack_require__(11);
+var _rafInterval = __webpack_require__(12);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_to2.default.easing = {
+  linear: _tween2.default.Easing.Linear.None
+};
 
 var cax = {
   easing: {
@@ -2657,12 +3028,16 @@ var cax = {
   cax.easing[itemLower + 'In'] = _tween2.default.Easing[item].In;
   cax.easing[itemLower + 'Out'] = _tween2.default.Easing[item].Out;
   cax.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
+
+  _to2.default.easing[itemLower + 'In'] = _tween2.default.Easing[item].In;
+  _to2.default.easing[itemLower + 'Out'] = _tween2.default.Easing[item].Out;
+  _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
 });
 
-exports.default = cax;
+module.exports = cax;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2855,428 +3230,124 @@ process.umask = function () {
 };
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+var _to = __webpack_require__(11);
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _tween = __webpack_require__(10);
-
-var _tween2 = _interopRequireDefault(_tween);
-
-var _rafInterval = __webpack_require__(11);
+var _to2 = _interopRequireDefault(_to);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+_to2.default.extend('rubber', [['to', ['scaleX', {
+  '0': 1.25,
+  '1': 300
+}], ['scaleY', {
+  '0': 0.75,
+  '1': 300
+}]], ['to', ['scaleX', {
+  '0': 0.75,
+  '1': 100
+}], ['scaleY', {
+  '0': 1.25,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1.15,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.85,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 0.95,
+  '1': 150
+}], ['scaleY', {
+  '0': 1.05,
+  '1': 150
+}]], ['to', ['scaleX', {
+  '0': 1.05,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.95,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1,
+  '1': 250
+}], ['scaleY', {
+  '0': 1,
+  '1': 250
+}]]]);
 
-var To = function () {
-  function To(element) {
-    _classCallCheck(this, To);
+_to2.default.extend('bounceIn', [['to', ['scaleX', {
+  '0': 0,
+  '1': 0
+}], ['scaleY', {
+  '0': 0,
+  '1': 0
+}]], ['to', ['scaleX', {
+  '0': 1.35,
+  '1': 200
+}], ['scaleY', {
+  '0': 1.35,
+  '1': 200
+}]], ['to', ['scaleX', {
+  '0': 0.9,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.9,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1.1,
+  '1': 100
+}], ['scaleY', {
+  '0': 1.1,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 0.95,
+  '1': 100
+}], ['scaleY', {
+  '0': 0.95,
+  '1': 100
+}]], ['to', ['scaleX', {
+  '0': 1,
+  '1': 100
+}], ['scaleY', {
+  '0': 1,
+  '1': 100
+}]]]);
 
-    this.element = element;
-    this.cmds = [];
-    this.index = 0;
-    this.tweens = [];
-    this._pause = false;
-    this.loop = (0, _rafInterval.setRafInterval)(function () {
-      _tween2.default.update();
-    }, 15);
-    this.cycleCount = 0;
-  }
+_to2.default.extend('flipInX', [['to', ['rotateX', {
+  '0': -90,
+  '1': 0
+}]], ['to', ['rotateX', {
+  '0': 20,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': -20,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': 10,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': -5,
+  '1': 300
+}]], ['to', ['rotateX', {
+  '0': 0,
+  '1': 300
+}]]]);
 
-  _createClass(To, [{
-    key: 'to',
-    value: function to(target, duration, easing) {
-      this.cmds.push(['to']);
-      if (arguments.length !== 0) {
-        for (var key in target) {
-          this.set(key, target[key], duration, easing);
-        }
-      }
-      return this;
-    }
-  }, {
-    key: 'set',
-    value: function set(prop, value, duration, easing) {
-      this.cmds[this.cmds.length - 1].push([prop, [value, duration, easing]]);
-      return this;
-    }
-  }, {
-    key: 'x',
-    value: function x() {
-      this.cmds[this.cmds.length - 1].push(['x', arguments]);
-      return this;
-    }
-  }, {
-    key: 'y',
-    value: function y() {
-      this.cmds[this.cmds.length - 1].push(['y', arguments]);
-      return this;
-    }
-  }, {
-    key: 'z',
-    value: function z() {
-      this.cmds[this.cmds.length - 1].push(['z', arguments]);
-      return this;
-    }
-  }, {
-    key: 'rotation',
-    value: function rotation() {
-      this.cmds[this.cmds.length - 1].push(['rotation', arguments]);
-      return this;
-    }
-  }, {
-    key: 'scaleX',
-    value: function scaleX() {
-      this.cmds[this.cmds.length - 1].push(['scaleX', arguments]);
-      return this;
-    }
-  }, {
-    key: 'scaleY',
-    value: function scaleY() {
-      this.cmds[this.cmds.length - 1].push(['scaleY', arguments]);
-      return this;
-    }
-  }, {
-    key: 'skewX',
-    value: function skewX() {
-      this.cmds[this.cmds.length - 1].push(['skewX', arguments]);
-      return this;
-    }
-  }, {
-    key: 'skewY',
-    value: function skewY() {
-      this.cmds[this.cmds.length - 1].push(['skewY', arguments]);
-      return this;
-    }
-  }, {
-    key: 'originX',
-    value: function originX() {
-      this.cmds[this.cmds.length - 1].push(['originX', arguments]);
-      return this;
-    }
-  }, {
-    key: 'originY',
-    value: function originY() {
-      this.cmds[this.cmds.length - 1].push(['originY', arguments]);
-      return this;
-    }
-  }, {
-    key: 'alpha',
-    value: function alpha() {
-      this.cmds[this.cmds.length - 1].push(['alpha', arguments]);
-      return this;
-    }
-  }, {
-    key: 'begin',
-    value: function begin(fn) {
-      this.cmds[this.cmds.length - 1].begin = fn;
-      return this;
-    }
-  }, {
-    key: 'progress',
-    value: function progress(fn) {
-      this.cmds[this.cmds.length - 1].progress = fn;
-      return this;
-    }
-  }, {
-    key: 'end',
-    value: function end(fn) {
-      this.cmds[this.cmds.length - 1].end = fn;
-      return this;
-    }
-  }, {
-    key: 'wait',
-    value: function wait() {
-      this.cmds.push(['wait', arguments]);
-      return this;
-    }
-  }, {
-    key: 'then',
-    value: function then() {
-      this.cmds.push(['then', arguments]);
-      return this;
-    }
-  }, {
-    key: 'cycle',
-    value: function cycle() {
-      this.cmds.push(['cycle', arguments]);
-      return this;
-    }
-  }, {
-    key: 'rubber',
-    value: function rubber() {
-      this.cmds = this.cmds.concat([['to', ['scaleX', {
-        '0': 1.25,
-        '1': 300
-      }], ['scaleY', {
-        '0': 0.75,
-        '1': 300
-      }]], ['to', ['scaleX', {
-        '0': 0.75,
-        '1': 100
-      }], ['scaleY', {
-        '0': 1.25,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 1.15,
-        '1': 100
-      }], ['scaleY', {
-        '0': 0.85,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 0.95,
-        '1': 150
-      }], ['scaleY', {
-        '0': 1.05,
-        '1': 150
-      }]], ['to', ['scaleX', {
-        '0': 1.05,
-        '1': 100
-      }], ['scaleY', {
-        '0': 0.95,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 1,
-        '1': 250
-      }], ['scaleY', {
-        '0': 1,
-        '1': 250
-      }]]]);
-      return this;
-    }
-  }, {
-    key: 'bounceIn',
-    value: function bounceIn() {
-      this.cmds = this.cmds.concat([['to', ['scaleX', {
-        '0': 0,
-        '1': 0
-      }], ['scaleY', {
-        '0': 0,
-        '1': 0
-      }]], ['to', ['scaleX', {
-        '0': 1.35,
-        '1': 200
-      }], ['scaleY', {
-        '0': 1.35,
-        '1': 200
-      }]], ['to', ['scaleX', {
-        '0': 0.9,
-        '1': 100
-      }], ['scaleY', {
-        '0': 0.9,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 1.1,
-        '1': 100
-      }], ['scaleY', {
-        '0': 1.1,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 0.95,
-        '1': 100
-      }], ['scaleY', {
-        '0': 0.95,
-        '1': 100
-      }]], ['to', ['scaleX', {
-        '0': 1,
-        '1': 100
-      }], ['scaleY', {
-        '0': 1,
-        '1': 100
-      }]]]);
-      return this;
-    }
-  }, {
-    key: 'flipInX',
-    value: function flipInX() {
-      this.cmds = this.cmds.concat([['to', ['rotateX', {
-        '0': -90,
-        '1': 0
-      }]], ['to', ['rotateX', {
-        '0': 20,
-        '1': 300
-      }]], ['to', ['rotateX', {
-        '0': -20,
-        '1': 300
-      }]], ['to', ['rotateX', {
-        '0': 10,
-        '1': 300
-      }]], ['to', ['rotateX', {
-        '0': -5,
-        '1': 300
-      }]], ['to', ['rotateX', {
-        '0': 0,
-        '1': 300
-      }]]]);
-      return this;
-    }
-  }, {
-    key: 'zoomOut',
-    value: function zoomOut() {
-      this.cmds = this.cmds.concat([['to', ['scaleX', {
-        '0': 0,
-        '1': 400
-      }], ['scaleY', {
-        '0': 0,
-        '1': 400
-      }]]]);
-      return this;
-    }
-  }, {
-    key: 'start',
-    value: function start() {
-      if (this._pause) return;
-      var len = this.cmds.length;
-      if (this.index < len) {
-        this.exec(this.cmds[this.index], this.index === len - 1);
-      } else {
-        (0, _rafInterval.clearRafInterval)(this.loop);
-      }
-      return this;
-    }
-  }, {
-    key: 'pause',
-    value: function pause() {
-      this._pause = true;
-      for (var i = 0, len = this.tweens.length; i < len; i++) {
-        this.tweens[i].pause();
-      }
-      if (this.currentTask === 'wait') {
-        this.timeout -= new Date() - this.currentTaskBegin;
-        this.currentTaskBegin = new Date();
-      }
-    }
-  }, {
-    key: 'toggle',
-    value: function toggle() {
-      if (this._pause) {
-        this.play();
-      } else {
-        this.pause();
-      }
-    }
-  }, {
-    key: 'play',
-    value: function play() {
-      this._pause = false;
-      for (var i = 0, len = this.tweens.length; i < len; i++) {
-        this.tweens[i].play();
-      }
-      var self = this;
-      if (this.currentTask === 'wait') {
-        setTimeout(function () {
-          if (self._pause) return;
-          self.index++;
-          self.start();
-          if (self.index === self.cmds.length && self.complete) self.complete();
-        }, this.timeout);
-      }
-    }
-  }, {
-    key: 'stop',
-    value: function stop() {
-      for (var i = 0, len = this.tweens.length; i < len; i++) {
-        this.tweens[i].pause();
-        _tween2.default.remove(this.tweens[i]);
-      }
-      this.cmds.length = 0;
-    }
-  }, {
-    key: 'exec',
-    value: function exec(cmd, last) {
-      var len = cmd.length,
-          self = this;
-      this.currentTask = cmd[0];
-      switch (this.currentTask) {
-        case 'to':
-          self.stepCompleteCount = 0;
-          for (var i = 1; i < len; i++) {
-            var task = cmd[i];
-            var ease = task[1][2];
-            var target = {};
-            var prop = task[0];
-            target[prop] = task[1][0];
-
-            var t = new _tween2.default.Tween(this.element).to(target, task[1][1]).onStart(function () {
-              if (cmd.begin) cmd.begin.call(self.element);
-            }).onUpdate(function () {
-              if (cmd.progress) cmd.progress.call(self.element);
-              // self.element[prop] = this[prop];
-            }).easing(ease || _tween2.default.Easing.Linear.None).onComplete(function () {
-              self.stepCompleteCount++;
-              if (self.stepCompleteCount === len - 1) {
-                if (cmd.end) cmd.end.call(self.element);
-                if (last && self.complete) self.complete();
-                self.index++;
-                self.start();
-              }
-            }).start();
-            this.tweens.push(t);
-          }
-          break;
-        case 'wait':
-          this.currentTaskBegin = new Date();
-          this.timeout = cmd[1][0];
-          setTimeout(function () {
-            if (self._pause) return;
-            self.index++;
-            self.start();
-            if (cmd.end) cmd.end.call(self.element);
-            if (last && self.complete) self.complete();
-          }, cmd[1][0]);
-          break;
-        case 'then':
-          var arg = cmd[1][0];
-          arg.index = 0;
-          arg.complete = function () {
-            self.index++;
-            self.start();
-            if (last && self.complete) self.complete();
-          };
-          arg.start();
-          break;
-        case 'cycle':
-          var count = cmd[1][1];
-          if (count === undefined) {
-            self.index = cmd[1][0] || 0;
-            self.start();
-          } else {
-            if (count && self.cycleCount === count) {
-              self.index++;
-              self.start();
-              if (last && self.complete) self.complete();
-            } else {
-              self.cycleCount++;
-              self.index = cmd[1][0];
-              self.start();
-            }
-          }
-          break;
-      }
-    }
-  }]);
-
-  return To;
-}();
-
-To.get = function (element) {
-  var to = new To(element);
-  return to;
-};
-
-exports.default = To;
+_to2.default.extend('zoomOut', [['to', ['scaleX', {
+  '0': 0,
+  '1': 400
+}], ['scaleY', {
+  '0': 0,
+  '1': 400
+}]]]);
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3292,11 +3363,11 @@ var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _renderer = __webpack_require__(12);
+var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _hitRender = __webpack_require__(25);
+var _hitRender = __webpack_require__(26);
 
 var _hitRender2 = _interopRequireDefault(_hitRender);
 
@@ -3304,7 +3375,7 @@ var _event = __webpack_require__(7);
 
 var _event2 = _interopRequireDefault(_event);
 
-var _weStage = __webpack_require__(13);
+var _weStage = __webpack_require__(14);
 
 var _weStage2 = _interopRequireDefault(_weStage);
 
@@ -3421,6 +3492,9 @@ var Stage = function (_Group) {
     _this.willDragObject = null;
     _this.preStageX = null;
     _this.preStageY = null;
+
+    _this.width = _this.canvas.width;
+    _this.height = _this.canvas.height;
     return _this;
   }
 
@@ -3622,7 +3696,7 @@ var Stage = function (_Group) {
 exports.default = Stage;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3751,7 +3825,7 @@ var Matrix2D = function () {
 exports.default = Matrix2D;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3856,6 +3930,7 @@ var EventDispatcher = function () {
     value: function _dispatchEvent(evt, type) {
       var _this = this;
 
+      evt.target = this;
       if (this._captureListeners && type === 0) {
         var cls = this._captureListeners[evt.type];
         cls && cls.forEach(function (fn) {
@@ -3878,7 +3953,7 @@ var EventDispatcher = function () {
 exports.default = EventDispatcher;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3898,7 +3973,7 @@ UID.get = function () {
 exports.default = UID;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3987,7 +4062,9 @@ var CanvasRender = function (_Render) {
         var bRect = obj.rect;
         ctx.drawImage(obj.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
       } else if (obj instanceof _text2.default) {
-        ctx.font = obj.font;
+        if (obj.font) {
+          ctx.font = obj.font;
+        }
         ctx.fillStyle = obj.color;
         ctx.textBaseline = obj.baseline;
         ctx.fillText(obj.text, 0, 0);
@@ -4007,7 +4084,7 @@ var CanvasRender = function (_Render) {
 exports.default = CanvasRender;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4037,7 +4114,7 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4273,7 +4350,7 @@ var HitRender = function (_Render) {
 exports.default = HitRender;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4338,6 +4415,33 @@ var WxHitRender = function (_Render) {
     key: 'clear',
     value: function clear() {
       this.ctx.clearRect(0, 0, 2, 2);
+    }
+  }, {
+    key: 'hitAABB',
+    value: function hitAABB(list, evt, cb) {
+      var len = list.length;
+      for (var i = len - 1; i >= 0; i--) {
+        var o = list[i];
+
+        if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
+          this._dispatchEvent(o, evt);
+          cb(o);
+          return o;
+        }
+      }
+    }
+  }, {
+    key: 'checkPointInAABB',
+    value: function checkPointInAABB(x, y, AABB) {
+      var minX = AABB[0];
+      if (x < minX) return false;
+      var minY = AABB[1];
+      if (y < minY) return false;
+      var maxX = minX + AABB[2];
+      if (x > maxX) return false;
+      var maxY = minY + AABB[3];
+      if (y > maxY) return false;
+      return true;
     }
   }, {
     key: 'hit',
@@ -4407,7 +4511,7 @@ var WxHitRender = function (_Render) {
 exports.default = WxHitRender;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4434,12 +4538,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ArrowPath = function (_Shape) {
   _inherits(ArrowPath, _Shape);
 
-  function ArrowPath(path) {
+  function ArrowPath(path, option) {
     _classCallCheck(this, ArrowPath);
 
     var _this = _possibleConstructorReturn(this, (ArrowPath.__proto__ || Object.getPrototypeOf(ArrowPath)).call(this));
 
     _this.path = path;
+    _this.option = Object.assign({
+      strokeStyle: 'black',
+      lineWidth: 1,
+      headSize: 10
+    }, option);
     return _this;
   }
 
@@ -4450,34 +4559,29 @@ var ArrowPath = function (_Shape) {
       this.beginPath();
       var len = path.length;
       if (len === 2) {
-        console.log(1);
-        this.drawArrow(path[0].x, path[0].y, path[1].x, path[1].y, 30, 10, 4, 'black');
+        this.drawArrow(path[0].x, path[0].y, path[1].x, path[1].y, 30);
       } else {
         this.moveTo(path[0].x, path[0].y);
         for (var i = 1; i < len - 1; i++) {
           this.lineTo(path[i].x, path[i].y);
         }
-        this.drawArrow(path[len - 2].x, path[len - 2].y, path[len - 1].x, path[len - 1].y, 30, 10, 4, 'black');
+        this.drawArrow(path[len - 2].x, path[len - 2].y, path[len - 1].x, path[len - 1].y, 30);
       }
 
       this.stroke();
     }
   }, {
     key: 'drawArrow',
-    value: function drawArrow(fromX, fromY, toX, toY, theta, headlen, width, color) {
-      theta = typeof theta !== 'undefined' ? theta : 30;
-      headlen = typeof theta !== 'undefined' ? headlen : 10;
-      width = typeof width !== 'undefined' ? width : 1;
-      color = color || '#000';
+    value: function drawArrow(fromX, fromY, toX, toY, theta) {
 
-      // 计算各角度和对应的P2,P3坐标, - 0.00001防止为0箭头少一半
-      var angle = Math.atan2(fromY - toY - 0.00001, fromX - toX) * 180 / Math.PI,
+      var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,
           angle1 = (angle + theta) * Math.PI / 180,
           angle2 = (angle - theta) * Math.PI / 180,
-          topX = headlen * Math.cos(angle1),
-          topY = headlen * Math.sin(angle1),
-          botX = headlen * Math.cos(angle2),
-          botY = headlen * Math.sin(angle2);
+          hs = this.option.headSize,
+          topX = hs * Math.cos(angle1),
+          topY = hs * Math.sin(angle1),
+          botX = hs * Math.cos(angle2),
+          botY = hs * Math.sin(angle2);
 
       var arrowX = fromX - topX,
           arrowY = fromY - topY;
@@ -4492,8 +4596,8 @@ var ArrowPath = function (_Shape) {
       arrowX = toX + botX;
       arrowY = toY + botY;
       this.lineTo(arrowX, arrowY);
-      this.strokeStyle = color;
-      this.lineWidth = width;
+      this.strokeStyle(this.option.strokeStyle);
+      this.lineWidth(this.option.lineWidth);
     }
   }]);
 
@@ -4503,7 +4607,7 @@ var ArrowPath = function (_Shape) {
 exports.default = ArrowPath;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4582,7 +4686,7 @@ var Ellipse = function (_Shape) {
 exports.default = Ellipse;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4600,7 +4704,7 @@ var _text = __webpack_require__(4);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _roundedRect = __webpack_require__(14);
+var _roundedRect = __webpack_require__(15);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
@@ -4621,7 +4725,10 @@ var Button = function (_Group) {
     var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this));
 
     _this.width = option.width;
-    _this.roundedRect = new _roundedRect2.default(option.width, option.height, option.r);
+    _this.roundedRect = new _roundedRect2.default(option.width, option.height, option.borderRadius, {
+      strokeStyle: option.borderColor || 'black',
+      fillStyle: option.backgroundColor || '#F5F5F5'
+    });
     _this.text = new _text2.default(option.text, {
       font: option.font,
       color: option.color
@@ -4639,7 +4746,7 @@ var Button = function (_Group) {
 exports.default = Button;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4698,7 +4805,7 @@ var Rect = function (_Shape) {
 exports.default = Rect;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4764,7 +4871,7 @@ var Circle = function (_Shape) {
 exports.default = Circle;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4838,7 +4945,7 @@ var Polygon = function (_Shape) {
 exports.default = Polygon;
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
