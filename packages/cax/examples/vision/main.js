@@ -2,14 +2,14 @@ import cax from '../../src/index.js'
 import Bitmap from '../../src/render/display/bitmap.js';
 
 
-const stage = new cax.Stage(300, 400, 'body')
+const stage = new cax.Stage(300, 400, '#canvasCtn')
 
 
 class Player extends cax.Group {
     constructor() {
         super()
 
-        const sprite = new cax.Sprite({
+        this.sprite = new cax.Sprite({
 
             framerate: 5,
             imgs: ['./hero-m.png'],
@@ -52,7 +52,7 @@ class Player extends cax.Group {
 
 
 
-        this.add(sprite)
+        this.add(this.sprite)
 
         this.visionGroup = new cax.Group()
 
@@ -62,6 +62,9 @@ class Player extends cax.Group {
     }
 
     update() {
+        if(!this.sprite.visible){
+            this.sprite.updateFrame()
+        }
         this.x--
         if (Date.now() - this.preTime > 100) {
             this.addVision()
@@ -76,12 +79,11 @@ class Player extends cax.Group {
 
     addVision() {
         const vision = new Bitmap('./hero-m.png')
-        vision.rect = [64, 64, 64, 64]
+        vision.rect = this.sprite.rect.slice(0)
         vision.alpha = 0.4
-        vision.x = this.x
+        vision.x = this.x + 5
         vision.y = this.y
         this.visionGroup.add(vision)
-
 
         cax.To.get(vision).to({ alpha: 0 }, 1000).end((obj) => {
             obj.destroy()
@@ -100,3 +102,12 @@ cax.setInterval(() => {
     player.update()
     stage.update()
 }, 16)
+
+
+let tag = false
+
+document.querySelector('#toggleBtn').addEventListener('click', () => { 
+    player.sprite.visible = tag
+    tag =!tag
+    stage.update()
+})

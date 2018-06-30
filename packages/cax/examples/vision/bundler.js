@@ -2875,7 +2875,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var stage = new _index2.default.Stage(300, 400, 'body');
+var stage = new _index2.default.Stage(300, 400, '#canvasCtn');
 
 var Player = function (_cax$Group) {
     _inherits(Player, _cax$Group);
@@ -2885,7 +2885,7 @@ var Player = function (_cax$Group) {
 
         var _this = _possibleConstructorReturn(this, (Player.__proto__ || Object.getPrototypeOf(Player)).call(this));
 
-        var sprite = new _index2.default.Sprite({
+        _this.sprite = new _index2.default.Sprite({
 
             framerate: 5,
             imgs: ['./hero-m.png'],
@@ -2909,7 +2909,7 @@ var Player = function (_cax$Group) {
             currentAnimation: "walk"
         });
 
-        _this.add(sprite);
+        _this.add(_this.sprite);
 
         _this.visionGroup = new _index2.default.Group();
 
@@ -2922,6 +2922,9 @@ var Player = function (_cax$Group) {
     _createClass(Player, [{
         key: 'update',
         value: function update() {
+            if (!this.sprite.visible) {
+                this.sprite.updateFrame();
+            }
             this.x--;
             if (Date.now() - this.preTime > 100) {
                 this.addVision();
@@ -2935,9 +2938,9 @@ var Player = function (_cax$Group) {
         key: 'addVision',
         value: function addVision() {
             var vision = new _bitmap2.default('./hero-m.png');
-            vision.rect = [64, 64, 64, 64];
+            vision.rect = this.sprite.rect.slice(0);
             vision.alpha = 0.4;
-            vision.x = this.x;
+            vision.x = this.x + 5;
             vision.y = this.y;
             this.visionGroup.add(vision);
 
@@ -2960,6 +2963,14 @@ _index2.default.setInterval(function () {
     player.update();
     stage.update();
 }, 16);
+
+var tag = false;
+
+document.querySelector('#toggleBtn').addEventListener('click', function () {
+    player.sprite.visible = tag;
+    tag = !tag;
+    stage.update();
+});
 
 /***/ }),
 /* 17 */
