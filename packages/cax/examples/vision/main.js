@@ -51,12 +51,9 @@ class Player extends cax.Group {
         })
 
 
-
-        this.add(this.sprite)
-
         this.visionGroup = new cax.Group()
-
-        stage.add(this.visionGroup)
+        this.visionGroup.grouping = false 
+        this.add(this.visionGroup, this.sprite)
 
         this.preTime = Date.now()
     }

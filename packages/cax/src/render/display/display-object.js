@@ -14,6 +14,7 @@ class DisplayObject extends EventDispatcher {
     this.id = UID.get()
     this.clipGraphics = null
     this.clipRuleNonzero = true
+    this.grouping = true
   }
 
   isVisible () {

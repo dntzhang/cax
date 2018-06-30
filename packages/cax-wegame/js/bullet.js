@@ -28,7 +28,7 @@ export default class Bullet extends cax.Group {
   }
 
   isCollideWith (sp) {
-    if (this.visible && sp.visible) {
+    if (this.visible && !sp.exploded) {
       let spX = sp.x
       let spY = sp.y
 

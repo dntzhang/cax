@@ -313,6 +313,7 @@ var DisplayObject = function (_EventDispatcher) {
     _this.id = _uid2.default.get();
     _this.clipGraphics = null;
     _this.clipRuleNonzero = true;
+    _this.grouping = true;
     return _this;
   }
 
@@ -2508,7 +2509,7 @@ var Renderer = function () {
       if (!o.isVisible()) {
         return;
       }
-      if (mtx) {
+      if (mtx && o.grouping) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -2909,11 +2910,9 @@ var Player = function (_cax$Group) {
             currentAnimation: "walk"
         });
 
-        _this.add(_this.sprite);
-
         _this.visionGroup = new _index2.default.Group();
-
-        stage.add(_this.visionGroup);
+        _this.visionGroup.grouping = false;
+        _this.add(_this.visionGroup, _this.sprite);
 
         _this.preTime = Date.now();
         return _this;

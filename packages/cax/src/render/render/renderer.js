@@ -48,14 +48,14 @@ class Renderer {
     if (!o.isVisible()) {
       return
     }
-    if (mtx) {
+    if (mtx && o.grouping) {
       o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
     } else {
       o._matrix.initialize(1, 0, 0, 1, 0, 0)
     }
-
+  
     o._matrix.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
-
+  
     if (o instanceof Group) {
       var list = o.children,
         len = list.length,

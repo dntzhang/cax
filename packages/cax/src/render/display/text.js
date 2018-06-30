@@ -5,9 +5,7 @@ let measureCtx
 
 if(util.isWeapp){
   measureCtx = wx.createCanvasContext('measure0')
-}else if(util.isWegame){
-  measureCtx = wx.createCanvas().getContext('2d')
-}else{
+} else {
   measureCtx = document.createElement('canvas').getContext('2d')
 }
 
@@ -24,6 +22,12 @@ class Text extends DisplayObject {
   }
 
   getWidth () {
+    if(!measureCtx){
+      if(util.isWegame){
+         measureCtx = wx.createCanvas().getContext('2d')
+       }
+    }
+     
     if(this.font){
       measureCtx.font = this.font
     }
