@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.18
+ *  cax v1.0.19
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
