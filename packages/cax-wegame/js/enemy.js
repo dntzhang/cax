@@ -72,16 +72,14 @@ export default class Enemy extends cax.Group {
           frames: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
         }
       },
-      playOnce: true,
       currentAnimation: 'explode',
-      onAnimationEnd: ()=>{
+      animationEnd: () => {
         this.destroy()
       }
     }
   }
 
   explode () {
-    //this.visible = false
     this.bitmap.visible = false
     this.exploded = true
     const es = new cax.Sprite(this.spriteOption)
@@ -94,7 +92,7 @@ export default class Enemy extends cax.Group {
 
   update () {
     if(this.es){
-      this.es.y += this.speed*2
+      this.es.y += this.speed * 2
     }
     this.y += this.speed
     if (this.y > screenHeight) {
