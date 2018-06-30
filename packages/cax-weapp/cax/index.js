@@ -1,5 +1,5 @@
 /*!
- *  cax v1.0.18
+ *  cax v1.0.19
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -329,6 +329,7 @@ var DisplayObject = function (_EventDispatcher) {
     _this.id = _uid2.default.get();
     _this.clipGraphics = null;
     _this.clipRuleNonzero = true;
+    _this.grouping = true;
     return _this;
   }
 
@@ -709,8 +710,6 @@ var measureCtx = void 0;
 
 if (_util2.default.isWeapp) {
   measureCtx = wx.createCanvasContext('measure0');
-} else if (_util2.default.isWegame) {
-  measureCtx = wx.createCanvas().getContext('2d');
 } else {
   measureCtx = document.createElement('canvas').getContext('2d');
 }
@@ -735,6 +734,12 @@ var Text = function (_DisplayObject) {
   _createClass(Text, [{
     key: 'getWidth',
     value: function getWidth() {
+      if (!measureCtx) {
+        if (_util2.default.isWegame) {
+          measureCtx = wx.createCanvas().getContext('2d');
+        }
+      }
+
       if (this.font) {
         measureCtx.font = this.font;
       }
@@ -2524,7 +2529,7 @@ var Renderer = function () {
       if (!o.isVisible()) {
         return;
       }
-      if (mtx) {
+      if (mtx && o.grouping) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
