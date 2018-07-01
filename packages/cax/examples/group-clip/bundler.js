@@ -2854,8 +2854,19 @@ group.add(bitmap, text);
 
 group.clip(clipPath);
 stage.add(group);
-
+group.cursor = 'move';
+group.on('drag', function (evt) {
+    evt.target.x += evt.dx;
+    evt.target.y += evt.dy;
+});
 var tag = true;
+group.on('click', function (evt) {
+    console.log(1);
+});
+
+_index2.default.setInterval(function () {
+    stage.update();
+}, 16);
 
 document.querySelector('#toggleBtn').addEventListener('click', function () {
     group.clip(tag ? null : clipPath);
@@ -4319,10 +4330,11 @@ var HitRender = function (_Render) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = l - 1; i >= 0; i--) {
-          ctx.save();
+          //这里不能 save 和 restore，不然把 clip 事件 跪了
+          //ctx.save()
           var target = this._hitPixel(list[i], evt, mtx, cb);
           if (target) return target;
-          ctx.restore();
+          //ctx.restore()
         }
       } else {
 

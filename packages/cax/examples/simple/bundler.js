@@ -4465,10 +4465,11 @@ var HitRender = function (_Render) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = l - 1; i >= 0; i--) {
-          ctx.save();
+          //这里不能 save 和 restore，不然把 clip 事件 跪了
+          //ctx.save()
           var target = this._hitPixel(list[i], evt, mtx, cb);
           if (target) return target;
-          ctx.restore();
+          //ctx.restore()
         }
       } else {
 

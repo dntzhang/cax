@@ -25,8 +25,19 @@ group.add(bitmap, text)
 
 group.clip(clipPath)
 stage.add(group)
-
+group.cursor = 'move'
+group.on('drag',(evt)=>{
+    evt.target.x+=evt.dx
+    evt.target.y+=evt.dy
+})
 let tag = true
+group.on('click',(evt)=>{
+   console.log(1)
+})
+
+cax.setInterval(()=>{
+    stage.update()
+},16)
 
 document.querySelector('#toggleBtn').addEventListener('click', () => {
     group.clip(tag ? null : clipPath)

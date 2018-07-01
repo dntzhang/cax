@@ -13,6 +13,17 @@ bitmap.on('click', () => {
     alert('微信支付')
 })
 
+bitmap.on('drag',(evt)=>{
+    evt.target.x+=evt.dx
+    evt.target.y+=evt.dy
+})
+
+
+
+cax.setInterval(()=>{
+    stage.update()
+},16)
+
 const clipPath = new cax.Graphics()
 clipPath.x = 40
 clipPath.y = 40

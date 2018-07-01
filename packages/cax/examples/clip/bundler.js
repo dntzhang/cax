@@ -2409,9 +2409,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _canvasRenderer = __webpack_require__(24);
+var _canvasRender = __webpack_require__(24);
 
-var _canvasRenderer2 = _interopRequireDefault(_canvasRenderer);
+var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
 var _group = __webpack_require__(0);
 
@@ -2427,11 +2427,11 @@ var Renderer = function () {
 
     this.renderList = [];
     if (arguments.length === 3) {
-      this.renderer = new _canvasRenderer2.default(canvasOrContext, width, height);
+      this.renderer = new _canvasRender2.default(canvasOrContext, width, height);
       this.width = width;
       this.height = height;
     } else {
-      this.renderer = new _canvasRenderer2.default(canvasOrContext);
+      this.renderer = new _canvasRender2.default(canvasOrContext);
       this.width = canvasOrContext.width;
       this.height = canvasOrContext.height;
     }
@@ -2841,6 +2841,15 @@ bitmap.cursor = 'pointer';
 bitmap.on('click', function () {
     alert('微信支付');
 });
+
+bitmap.on('drag', function (evt) {
+    evt.target.x += evt.dx;
+    evt.target.y += evt.dy;
+});
+
+_index2.default.setInterval(function () {
+    stage.update();
+}, 16);
 
 var clipPath = new _index2.default.Graphics();
 clipPath.x = 40;
@@ -3973,13 +3982,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CanvasRenderer = function (_Render) {
-  _inherits(CanvasRenderer, _Render);
+var CanvasRender = function (_Render) {
+  _inherits(CanvasRender, _Render);
 
-  function CanvasRenderer(canvasOrContext, width, height) {
-    _classCallCheck(this, CanvasRenderer);
+  function CanvasRender(canvasOrContext, width, height) {
+    _classCallCheck(this, CanvasRender);
 
-    var _this = _possibleConstructorReturn(this, (CanvasRenderer.__proto__ || Object.getPrototypeOf(CanvasRenderer)).call(this));
+    var _this = _possibleConstructorReturn(this, (CanvasRender.__proto__ || Object.getPrototypeOf(CanvasRender)).call(this));
 
     if (arguments.length === 3) {
       _this.ctx = canvasOrContext;
@@ -3993,7 +4002,7 @@ var CanvasRenderer = function (_Render) {
     return _this;
   }
 
-  _createClass(CanvasRenderer, [{
+  _createClass(CanvasRender, [{
     key: 'clear',
     value: function clear(ctx, width, height) {
       ctx.clearRect(0, 0, width, height);
@@ -4050,8 +4059,8 @@ var CanvasRenderer = function (_Render) {
       if (o._readyToCache) {
         o._readyToCache = false;
         this.render(o.cacheCtx, o, true);
-
-        document.body.appendChild(o.cacheCanvas);
+        //debug cacheCanvas
+        //document.body.appendChild(o.cacheCanvas)
         ctx.drawImage(o.cacheCanvas, 0, 0);
       } else if (o.cacheCanvas && !cacheRender) {
         ctx.drawImage(o.cacheCanvas, 0, 0);
@@ -4097,10 +4106,10 @@ var CanvasRenderer = function (_Render) {
     }
   }]);
 
-  return CanvasRenderer;
+  return CanvasRender;
 }(_render3.default);
 
-exports.default = CanvasRenderer;
+exports.default = CanvasRender;
 
 /***/ }),
 /* 25 */
@@ -4195,15 +4204,15 @@ var HitRender = function (_Render) {
       _this.canvas = document.createElement('canvas');
     }
 
-    _this.canvas.width = 1;
-    _this.canvas.height = 1;
-    _this.ctx = _this.canvas.getContext('2d');
+    // this.canvas.width = 1
+    // this.canvas.height = 1
+    // this.ctx = this.canvas.getContext('2d')
 
     // debug event
-    // this.canvas.width = 441
-    // this.canvas.height = 441
-    // this.ctx = this.canvas.getContext('2d')
-    // document.body.appendChild(this.canvas)
+    _this.canvas.width = 441;
+    _this.canvas.height = 441;
+    _this.ctx = _this.canvas.getContext('2d');
+    document.body.appendChild(_this.canvas);
 
     _this.disableEvents = ['mouseover', 'mouseout', 'mousemove', 'touchmove'];
     return _this;

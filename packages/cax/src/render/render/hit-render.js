@@ -125,10 +125,11 @@ class HitRender extends Render {
       let list = o.children.slice(0),
         l = list.length
       for (let i = l - 1; i >= 0; i--) {
-        ctx.save()
+        //这里不能 save 和 restore，不然把 clip 事件 跪了
+        //ctx.save()
         let target = this._hitPixel(list[i], evt, mtx, cb)
         if (target) return target
-        ctx.restore()
+        //ctx.restore()
       }
     } else {
       
