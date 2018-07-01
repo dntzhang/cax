@@ -76,8 +76,8 @@ class CanvasRenderer extends Render {
     if(o._readyToCache){
       o._readyToCache = false
       this.render(o.cacheCtx, o, true)
-      
-      document.body.appendChild(o.cacheCanvas)
+      //debug cacheCanvas
+      //document.body.appendChild(o.cacheCanvas)
       ctx.drawImage(o.cacheCanvas, 0, 0)
     } else if (o.cacheCanvas&&!cacheRender) {
       ctx.drawImage(o.cacheCanvas, 0, 0)
