@@ -2829,7 +2829,7 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stage = new _index2.default.Stage(400, 400, '#canvasCtn');
+var stage = new _index2.default.Stage(300, 400, '#canvasCtn');
 
 var circle = new _index2.default.Circle(40, { fillStyle: 'black' });
 

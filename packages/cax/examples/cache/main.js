@@ -1,7 +1,7 @@
 import cax from '../../src/index.js'
 
 
-const stage = new cax.Stage(400, 400, '#canvasCtn')
+const stage = new cax.Stage(300, 400, '#canvasCtn')
 
 const circle = new cax.Circle(40, { fillStyle: 'black' })
 
