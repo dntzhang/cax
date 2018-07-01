@@ -282,7 +282,7 @@ var DisplayObject = function (_EventDispatcher) {
     _this.id = _uid2.default.get();
     _this.clipGraphics = null;
     _this.clipRuleNonzero = true;
-    _this.grouping = true;
+    _this.fixed = false;
     return _this;
   }
 
@@ -397,16 +397,17 @@ var DisplayObject = function (_EventDispatcher) {
         scale: scale || 1,
         _cached: false
       };
-      if (typeof wx !== 'undefined' && wx.createCanvas) {
-        this.cacheCanvas = wx.createCanvas();
-      } else {
-        this.cacheCanvas = document.createElement('canvas');
+      if (!this.cacheCanvas) {
+        if (typeof wx !== 'undefined' && wx.createCanvas) {
+          this.cacheCanvas = wx.createCanvas();
+        } else {
+          this.cacheCanvas = document.createElement('canvas');
+        }
+        this.cacheCtx = this.cacheCanvas.getContext('2d');
       }
       this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale;
       this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale;
       this._readyToCache = true;
-      this.cacheCtx = this.cacheCanvas.getContext('2d');
-      // this.cacheCtx.setTransform(scale, 0, 0, scale, x, y)
     }
   }, {
     key: 'uncache',
@@ -691,7 +692,7 @@ var measureCtx = void 0;
 
 if (_util2.default.isWeapp) {
   measureCtx = wx.createCanvasContext('measure0');
-} else {
+} else if (typeof document !== 'undefined') {
   measureCtx = document.createElement('canvas').getContext('2d');
 }
 
@@ -705,8 +706,8 @@ var Text = function (_DisplayObject) {
 
     _this.text = text;
     option = option || {};
-    _this.font = option.font;
-    _this.color = option.color;
+    _this.font = option.font || '10px sans-serif';
+    _this.color = option.color || 'black';
 
     _this.baseline = option.baseline || 'top';
     return _this;
@@ -783,7 +784,7 @@ var Sprite = function (_DisplayObject) {
           count++;
           if (count === len) {
             _this.img = _this.imgMap[_this.option.imgs[0]];
-            _this.rect = [0, 0, result.width, result.height];
+            _this.rect = [0, 0, 0, 0];
           }
         });
       });
@@ -798,7 +799,7 @@ var Sprite = function (_DisplayObject) {
             loadedCount++;
             if (loadedCount === _len) {
               _this.img = _this.imgMap[_this.option.imgs[0]];
-              _this.rect = [0, 0, _this.img.width, _this.img.height];
+              _this.rect = [0, 0, 0, 0];
             }
           };
           img.src = src;
@@ -2409,9 +2410,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _canvasRenderer = __webpack_require__(24);
+var _canvasRender = __webpack_require__(24);
 
-var _canvasRenderer2 = _interopRequireDefault(_canvasRenderer);
+var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
 var _group = __webpack_require__(0);
 
@@ -2427,11 +2428,11 @@ var Renderer = function () {
 
     this.renderList = [];
     if (arguments.length === 3) {
-      this.renderer = new _canvasRenderer2.default(canvasOrContext, width, height);
+      this.renderer = new _canvasRender2.default(canvasOrContext, width, height);
       this.width = width;
       this.height = height;
     } else {
-      this.renderer = new _canvasRenderer2.default(canvasOrContext);
+      this.renderer = new _canvasRender2.default(canvasOrContext);
       this.width = canvasOrContext.width;
       this.height = canvasOrContext.height;
     }
@@ -2473,7 +2474,7 @@ var Renderer = function () {
       if (!o.isVisible()) {
         return;
       }
-      if (mtx && o.grouping) {
+      if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -2830,21 +2831,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var w = 576;
 var h = 360;
-var r = 170;
+var r = 700;
 var stage = new _index2.default.Stage(w, h, '#canvasCtn');
-var bitmap = new _index2.default.Bitmap('./wepay.png', function () {
-    stage.update();
-});
+var group = new _index2.default.Group();
+var bitmap = new _index2.default.Bitmap('./wepay.png');
+var payBmp = new _index2.default.Bitmap('./pay.png');
 
 var clipPath = new _index2.default.Graphics();
 clipPath.x = 280;
 clipPath.y = 180;
 clipPath.arc(0, 0, r, 0, Math.PI * 2);
-bitmap.clip(clipPath);
-
-stage.add(bitmap);
-
-var tag = true;
+group.clip(clipPath);
+bitmap.visible = false;
+group.add(bitmap, payBmp);
+stage.add(group);
 
 stage.on('click', function (evt) {
     var rt = 576 / (window.innerWidth > 800 ? 800 : window.innerWidth);
@@ -2852,17 +2852,13 @@ stage.on('click', function (evt) {
     clipPath.y = evt.stageY * rt;
 });
 
-function sineInOut(a) {
-    return 0.5 * (1 - Math.cos(Math.PI * a));
-}
+var flag = false;
 
-_index2.default.To.get(clipPath).to().scaleY(0.8, 450, sineInOut).skewX(20, 900, sineInOut).wait(900).cycle().start();
-
-_index2.default.To.get(clipPath).wait(450).to().scaleY(1, 450, sineInOut).wait(900).cycle().start();
-
-_index2.default.To.get(clipPath).wait(900).to().scaleY(0.8, 450, sineInOut).skewX(-20, 900, sineInOut).cycle().start();
-
-_index2.default.To.get(clipPath).wait(1350).to().scaleY(1, 450, sineInOut).cycle().start();
+_index2.default.To.get(clipPath).to().scaleY(0.0001, 1000).scaleX(0.0001, 1000).end(function () {
+    bitmap.visible = !flag;
+    payBmp.visible = flag;
+    flag = !flag;
+}).wait(100).to().scaleY(1, 1000).scaleX(1, 1000).wait(1900).cycle().start();
 
 _index2.default.setInterval(function () {
     stage.update();
@@ -3983,13 +3979,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CanvasRenderer = function (_Render) {
-  _inherits(CanvasRenderer, _Render);
+var CanvasRender = function (_Render) {
+  _inherits(CanvasRender, _Render);
 
-  function CanvasRenderer(canvasOrContext, width, height) {
-    _classCallCheck(this, CanvasRenderer);
+  function CanvasRender(canvasOrContext, width, height) {
+    _classCallCheck(this, CanvasRender);
 
-    var _this = _possibleConstructorReturn(this, (CanvasRenderer.__proto__ || Object.getPrototypeOf(CanvasRenderer)).call(this));
+    var _this = _possibleConstructorReturn(this, (CanvasRender.__proto__ || Object.getPrototypeOf(CanvasRender)).call(this));
 
     if (arguments.length === 3) {
       _this.ctx = canvasOrContext;
@@ -4003,7 +3999,7 @@ var CanvasRenderer = function (_Render) {
     return _this;
   }
 
-  _createClass(CanvasRenderer, [{
+  _createClass(CanvasRender, [{
     key: 'clear',
     value: function clear(ctx, width, height) {
       ctx.clearRect(0, 0, width, height);
@@ -4032,7 +4028,7 @@ var CanvasRenderer = function (_Render) {
     key: '_render',
     value: function _render(ctx, o, mtx, cacheRender) {
       if (!o.isVisible()) return;
-      if (mtx) {
+      if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -4059,9 +4055,10 @@ var CanvasRenderer = function (_Render) {
       }
       if (o._readyToCache) {
         o._readyToCache = false;
+        o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x, o._cacheData.y);
         this.render(o.cacheCtx, o, true);
-
-        document.body.appendChild(o.cacheCanvas);
+        //debug cacheCanvas
+        //document.body.appendChild(o.cacheCanvas)
         ctx.drawImage(o.cacheCanvas, 0, 0);
       } else if (o.cacheCanvas && !cacheRender) {
         ctx.drawImage(o.cacheCanvas, 0, 0);
@@ -4069,6 +4066,7 @@ var CanvasRenderer = function (_Render) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = 0; i < l; i++) {
+          //如果注释掉之后 group 内比如 fillStyle Graphics 和 Text存在项目污染，所有都要给默认值？
           ctx.save();
           var target = this._render(ctx, list[i], mtx);
           if (target) return target;
@@ -4107,10 +4105,10 @@ var CanvasRenderer = function (_Render) {
     }
   }]);
 
-  return CanvasRenderer;
+  return CanvasRender;
 }(_render3.default);
 
-exports.default = CanvasRenderer;
+exports.default = CanvasRender;
 
 /***/ }),
 /* 25 */
@@ -4226,19 +4224,19 @@ var HitRender = function (_Render) {
     }
   }, {
     key: 'hitAABB',
-    value: function hitAABB(o, evt, cb) {
+    value: function hitAABB(o, evt) {
       var list = o.children.slice(0),
           l = list.length;
       for (var i = l - 1; i >= 0; i--) {
         var child = list[i];
         // if (!this.isbindingEvent(child)) continue;
-        var target = this._hitAABB(child, evt, cb);
+        var target = this._hitAABB(child, evt);
         if (target) return target;
       }
     }
   }, {
     key: '_hitAABB',
-    value: function _hitAABB(o, evt, cb) {
+    value: function _hitAABB(o, evt) {
       if (!o.isVisible()) {
         return;
       }
@@ -4273,7 +4271,7 @@ var HitRender = function (_Render) {
     }
   }, {
     key: 'hitPixel',
-    value: function hitPixel(o, evt, cb) {
+    value: function hitPixel(o, evt) {
       var ctx = this.ctx;
       var mtx = o._hitMatrix;
       var list = o.children.slice(0),
@@ -4284,7 +4282,7 @@ var HitRender = function (_Render) {
         mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
         // if (!this.checkBoundEvent(child)) continue
         ctx.save();
-        var target = this._hitPixel(child, evt, mtx, cb);
+        var target = this._hitPixel(child, evt, mtx);
         ctx.restore();
         if (target) return target;
       }
@@ -4296,11 +4294,11 @@ var HitRender = function (_Render) {
 
   }, {
     key: '_hitPixel',
-    value: function _hitPixel(o, evt, mtx, cb) {
+    value: function _hitPixel(o, evt, mtx) {
       if (!o.isVisible()) return;
       var ctx = this.ctx;
       ctx.clearRect(0, 0, 2, 2);
-      if (mtx) {
+      if (mtx && !o.fixed) {
         o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
@@ -4324,10 +4322,11 @@ var HitRender = function (_Render) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = l - 1; i >= 0; i--) {
-          ctx.save();
-          var target = this._hitPixel(list[i], evt, mtx, cb);
+          //这里不能 save 和 restore，不然把 clip 事件 跪了
+          //ctx.save()
+          var target = this._hitPixel(list[i], evt, mtx);
           if (target) return target;
-          ctx.restore();
+          //ctx.restore()
         }
       } else {
 
