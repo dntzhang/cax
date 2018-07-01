@@ -16,6 +16,7 @@
   * [Pie Chart DEMO](http://dntzhang.github.io/cax/packages/cax/examples/pie/)
   * [To + Shape DEMO](http://dntzhang.github.io/cax/packages/cax/examples/to-shape/)
   * [Vision DEMO](http://dntzhang.github.io/cax/packages/cax/examples/vision/)
+  * [Cache DEMO](http://dntzhang.github.io/cax/packages/cax/examples/cache/)
 * 小程序 DEMO 正在审核中敬请期待
 * 小游戏 DEMO 正在审核中敬请期待
 

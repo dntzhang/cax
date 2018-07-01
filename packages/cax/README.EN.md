@@ -15,6 +15,7 @@ English | [简体中文](./README.md)
   * [Pie Chart DEMO](http://dntzhang.github.io/cax/packages/cax/examples/pie/)
   * [To + Shape DEMO](http://dntzhang.github.io/cax/packages/cax/examples/to-shape/)
   * [Vision DEMO](http://dntzhang.github.io/cax/packages/cax/examples/vision/)
+  * [Cache DEMO](http://dntzhang.github.io/cax/packages/cax/examples/cache/)
   
 ## Features
 
