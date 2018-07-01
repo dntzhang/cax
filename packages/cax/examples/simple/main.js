@@ -57,10 +57,9 @@ text.y = 40
 const bitmap = new cax.Bitmap('./wepay.png')
 bitmap.rect = [0, 0, 170, 140]
 bitmap.x = 150
-bitmap.alpha = 0
 
 group.add(rect, text)
-group.alpha = 0.5
+
 group.cursor = 'move'
 group.on('drag', (evt) => {
     group.x += evt.dx
