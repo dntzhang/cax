@@ -1,7 +1,7 @@
 import cax from '../../src/index.js'
 const { Stage, util, Graphics, To, Group, Text } = cax
 
-const stage = new Stage(320, 400, 'body')
+const stage = new Stage(640, 400, 'body')
 
 
 const defaultOption = {
@@ -19,6 +19,7 @@ function drawPie(data, option) {
     tooltip.style.height = 'auto'
     tooltip.style.padding = '4px 8px'
     tooltip.style.display = 'none'
+    tooltip.style.minWidth = '100px'
     tooltip.style.pointerEvents = 'none'
     tooltip.style.transition = 'all .6s'
     tooltip.style.backgroundColor = 'rgba(0,0,0,.5)'
@@ -63,11 +64,11 @@ function drawPie(data, option) {
                 tooltip.style.top = (evt.pureEvent.pageY + 5) + 'px'
                 tooltip.innerHTML = option.tooltip(data[index])
                 tooltip.style.display = 'block'
-            
+
             }, function (evt) {
                 bounceOut(sector, 1.1, 1)
                 tooltip.style.display = 'none'
-            
+
             }, function (evt) {
                 tooltip.style.left = (evt.pureEvent.pageX + 5) + 'px'
                 tooltip.style.top = (evt.pureEvent.pageY + 5) + 'px'
@@ -112,7 +113,7 @@ function drawPie(data, option) {
 
                 const currentColor = option.textColor(index)
                 const label = option.label(data[index])
-                const text = new Text(label,{color: currentColor})
+                const text = new Text(label, { color: currentColor, font: option.font })
 
                 const g = new Graphics()
 
@@ -123,7 +124,7 @@ function drawPie(data, option) {
                         .strokeStyle(currentColor)
                         .stroke()
 
-                    text.x = centerX + 20 * 0.7 + 20
+                    text.x = centerX + 20 * 0.7 + 20 + 3
                     text.y = centerY + 20 * 0.5 + option.textOffsetY
                 } else if (angle >= Math.PI / 2 && angle < Math.PI) {
                     g.beginPath().moveTo(centerX, centerY)
@@ -132,7 +133,7 @@ function drawPie(data, option) {
                         .strokeStyle(currentColor)
                         .stroke()
 
-                    text.x = centerX - 20 * 0.7 - 20 - stage.renderer.ctx.measureText(label).width - 3
+                    text.x = centerX - 20 * 0.7 - 20 - text.getWidth() - 3
                     text.y = centerY + 20 * 0.5 + option.textOffsetY
                 } else if (angle >= Math.PI && angle < Math.PI + Math.PI / 2) {
                     g.beginPath().moveTo(centerX, centerY)
@@ -141,7 +142,7 @@ function drawPie(data, option) {
                         .strokeStyle(currentColor)
                         .stroke()
 
-                    text.x = centerX - 20 * 0.7 - 20 - stage.renderer.ctx.measureText(label).width - 3
+                    text.x = centerX - 20 * 0.7 - 20 - text.getWidth() - 3
                     text.y = centerY - 20 * 0.5 + option.textOffsetY
                 } else if (angle >= Math.PI + Math.PI / 2 && angle <= Math.PI * 2) {
                     g.beginPath().moveTo(centerX, centerY)
@@ -192,7 +193,7 @@ drawPie([
 ], {
         x: stage.width / 2,
         y: stage.height / 2,
-        r: 80,
+        r: 160,
         color: (index) => {
             return ['#4BC0C0', '#FF6485', '#FFA07A', '#ADACB9', '#A37AC1'][index]
         },
@@ -202,18 +203,21 @@ drawPie([
             return item.name
         },
         easing: cax.easing.bounceOut,
-        textOffsetY: -8,
+        textOffsetY: -12,
+        font: '20px Arial',
         tooltip: (item) => {
             return item.name + '<br/>' + item.value
         },
-        textColor:(index) => {
+        textColor: (index) => {
             return ['#4BC0C0', '#FF6485', '#FFA07A', '#ADACB9', '#A37AC1'][index]
         }
     }
 )
 
 
-
+if(window.innerWidth <= 500){
+    stage.scaleEventPoint(0.5, 0.5)
+}
 
 cax.setInterval(() => {
     stage.update()

@@ -282,7 +282,7 @@ var DisplayObject = function (_EventDispatcher) {
     _this.id = _uid2.default.get();
     _this.clipGraphics = null;
     _this.clipRuleNonzero = true;
-    _this.grouping = true;
+    _this.fixed = false;
     return _this;
   }
 
@@ -397,16 +397,17 @@ var DisplayObject = function (_EventDispatcher) {
         scale: scale || 1,
         _cached: false
       };
-      if (typeof wx !== 'undefined' && wx.createCanvas) {
-        this.cacheCanvas = wx.createCanvas();
-      } else {
-        this.cacheCanvas = document.createElement('canvas');
+      if (!this.cacheCanvas) {
+        if (typeof wx !== 'undefined' && wx.createCanvas) {
+          this.cacheCanvas = wx.createCanvas();
+        } else {
+          this.cacheCanvas = document.createElement('canvas');
+        }
+        this.cacheCtx = this.cacheCanvas.getContext('2d');
       }
       this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale;
       this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale;
       this._readyToCache = true;
-      this.cacheCtx = this.cacheCanvas.getContext('2d');
-      // this.cacheCtx.setTransform(scale, 0, 0, scale, x, y)
     }
   }, {
     key: 'uncache',
@@ -691,7 +692,7 @@ var measureCtx = void 0;
 
 if (_util2.default.isWeapp) {
   measureCtx = wx.createCanvasContext('measure0');
-} else {
+} else if (typeof document !== 'undefined') {
   measureCtx = document.createElement('canvas').getContext('2d');
 }
 
@@ -705,8 +706,8 @@ var Text = function (_DisplayObject) {
 
     _this.text = text;
     option = option || {};
-    _this.font = option.font;
-    _this.color = option.color;
+    _this.font = option.font || '10px sans-serif';
+    _this.color = option.color || 'black';
 
     _this.baseline = option.baseline || 'top';
     return _this;
@@ -783,7 +784,7 @@ var Sprite = function (_DisplayObject) {
           count++;
           if (count === len) {
             _this.img = _this.imgMap[_this.option.imgs[0]];
-            _this.rect = [0, 0, result.width, result.height];
+            _this.rect = [0, 0, 0, 0];
           }
         });
       });
@@ -798,7 +799,7 @@ var Sprite = function (_DisplayObject) {
             loadedCount++;
             if (loadedCount === _len) {
               _this.img = _this.imgMap[_this.option.imgs[0]];
-              _this.rect = [0, 0, _this.img.width, _this.img.height];
+              _this.rect = [0, 0, 0, 0];
             }
           };
           img.src = src;
@@ -2473,7 +2474,7 @@ var Renderer = function () {
       if (!o.isVisible()) {
         return;
       }
-      if (mtx && o.grouping) {
+      if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -3613,7 +3614,6 @@ var Stage = function (_Group) {
   }, {
     key: '_handleClick',
     value: function _handleClick(evt) {
-      // this._computeStageXY(evt)
       if (Math.abs(this._mouseDownX - this._mouseUpX) < 20 && Math.abs(this._mouseDownY - this._mouseUpY) < 20) {
         this._getObjectUnderPoint(evt);
       }
@@ -3630,8 +3630,8 @@ var Stage = function (_Group) {
       this.preStageY = evt.stageY;
     }
   }, {
-    key: 'scaleStage',
-    value: function scaleStage(x, y) {
+    key: 'scaleEventPoint',
+    value: function scaleEventPoint(x, y) {
       this._scaleX = x;
       this._scaleY = y;
     }
@@ -3639,7 +3639,6 @@ var Stage = function (_Group) {
     key: '_handleMouseUp',
     value: function _handleMouseUp(evt) {
       var obj = this._getObjectUnderPoint(evt);
-      this._computeStageXY(evt);
       this._mouseUpX = evt.stageX;
       this._mouseUpY = evt.stageY;
 
@@ -3745,8 +3744,8 @@ var Stage = function (_Group) {
       if (evt.touches || evt.changedTouches) {
         var firstTouch = evt.touches[0] || evt.changedTouches[0];
         if (firstTouch) {
-          evt.stageX = firstTouch.pageX - this.offset[0];
-          evt.stageY = firstTouch.pageY - this.offset[1];
+          evt.stageX = (firstTouch.pageX - this.offset[0]) / this._scaleX;
+          evt.stageY = (firstTouch.pageY - this.offset[1]) / this._scaleY;
         }
       } else {
         evt.stageX = (evt.clientX - this._boundingClientRect.left - this.borderLeftWidth) / this._scaleX;
@@ -4173,7 +4172,7 @@ var CanvasRender = function (_Render) {
     key: '_render',
     value: function _render(ctx, o, mtx, cacheRender) {
       if (!o.isVisible()) return;
-      if (mtx) {
+      if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -4200,6 +4199,7 @@ var CanvasRender = function (_Render) {
       }
       if (o._readyToCache) {
         o._readyToCache = false;
+        o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x, o._cacheData.y);
         this.render(o.cacheCtx, o, true);
         //debug cacheCanvas
         //document.body.appendChild(o.cacheCanvas)
@@ -4210,10 +4210,11 @@ var CanvasRender = function (_Render) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = 0; i < l; i++) {
-          //ctx.save()
+          //如果注释掉之后 group 内比如 fillStyle Graphics 和 Text存在项目污染，所有都要给默认值？
+          ctx.save();
           var target = this._render(ctx, list[i], mtx);
           if (target) return target;
-          //ctx.restore()
+          ctx.restore();
         }
       } else if (o instanceof _graphics2.default) {
         o.render(ctx);
@@ -4367,19 +4368,19 @@ var HitRender = function (_Render) {
     }
   }, {
     key: 'hitAABB',
-    value: function hitAABB(o, evt, cb) {
+    value: function hitAABB(o, evt) {
       var list = o.children.slice(0),
           l = list.length;
       for (var i = l - 1; i >= 0; i--) {
         var child = list[i];
         // if (!this.isbindingEvent(child)) continue;
-        var target = this._hitAABB(child, evt, cb);
+        var target = this._hitAABB(child, evt);
         if (target) return target;
       }
     }
   }, {
     key: '_hitAABB',
-    value: function _hitAABB(o, evt, cb) {
+    value: function _hitAABB(o, evt) {
       if (!o.isVisible()) {
         return;
       }
@@ -4414,7 +4415,7 @@ var HitRender = function (_Render) {
     }
   }, {
     key: 'hitPixel',
-    value: function hitPixel(o, evt, cb) {
+    value: function hitPixel(o, evt) {
       var ctx = this.ctx;
       var mtx = o._hitMatrix;
       var list = o.children.slice(0),
@@ -4425,7 +4426,7 @@ var HitRender = function (_Render) {
         mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
         // if (!this.checkBoundEvent(child)) continue
         ctx.save();
-        var target = this._hitPixel(child, evt, mtx, cb);
+        var target = this._hitPixel(child, evt, mtx);
         ctx.restore();
         if (target) return target;
       }
@@ -4437,11 +4438,11 @@ var HitRender = function (_Render) {
 
   }, {
     key: '_hitPixel',
-    value: function _hitPixel(o, evt, mtx, cb) {
+    value: function _hitPixel(o, evt, mtx) {
       if (!o.isVisible()) return;
       var ctx = this.ctx;
       ctx.clearRect(0, 0, 2, 2);
-      if (mtx) {
+      if (mtx && !o.fixed) {
         o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
@@ -4467,7 +4468,7 @@ var HitRender = function (_Render) {
         for (var i = l - 1; i >= 0; i--) {
           //这里不能 save 和 restore，不然把 clip 事件 跪了
           //ctx.save()
-          var target = this._hitPixel(list[i], evt, mtx, cb);
+          var target = this._hitPixel(list[i], evt, mtx);
           if (target) return target;
           //ctx.restore()
         }

@@ -1,5 +1,5 @@
 /*!
- *  cax v1.1.0
+ *  cax v1.1.1
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -800,7 +800,7 @@ var Sprite = function (_DisplayObject) {
           count++;
           if (count === len) {
             _this.img = _this.imgMap[_this.option.imgs[0]];
-            _this.rect = [0, 0, result.width, result.height];
+            _this.rect = [0, 0, 0, 0];
           }
         });
       });
@@ -815,7 +815,7 @@ var Sprite = function (_DisplayObject) {
             loadedCount++;
             if (loadedCount === _len) {
               _this.img = _this.imgMap[_this.option.imgs[0]];
-              _this.rect = [0, 0, _this.img.width, _this.img.height];
+              _this.rect = [0, 0, 0, 0];
             }
           };
           img.src = src;
@@ -3433,7 +3433,6 @@ var Stage = function (_Group) {
   }, {
     key: '_handleClick',
     value: function _handleClick(evt) {
-      // this._computeStageXY(evt)
       if (Math.abs(this._mouseDownX - this._mouseUpX) < 20 && Math.abs(this._mouseDownY - this._mouseUpY) < 20) {
         this._getObjectUnderPoint(evt);
       }
@@ -3450,8 +3449,8 @@ var Stage = function (_Group) {
       this.preStageY = evt.stageY;
     }
   }, {
-    key: 'scaleStage',
-    value: function scaleStage(x, y) {
+    key: 'scaleEventPoint',
+    value: function scaleEventPoint(x, y) {
       this._scaleX = x;
       this._scaleY = y;
     }
@@ -3459,7 +3458,6 @@ var Stage = function (_Group) {
     key: '_handleMouseUp',
     value: function _handleMouseUp(evt) {
       var obj = this._getObjectUnderPoint(evt);
-      this._computeStageXY(evt);
       this._mouseUpX = evt.stageX;
       this._mouseUpY = evt.stageY;
 
@@ -3565,8 +3563,8 @@ var Stage = function (_Group) {
       if (evt.touches || evt.changedTouches) {
         var firstTouch = evt.touches[0] || evt.changedTouches[0];
         if (firstTouch) {
-          evt.stageX = firstTouch.pageX - this.offset[0];
-          evt.stageY = firstTouch.pageY - this.offset[1];
+          evt.stageX = (firstTouch.pageX - this.offset[0]) / this._scaleX;
+          evt.stageY = (firstTouch.pageY - this.offset[1]) / this._scaleY;
         }
       } else {
         evt.stageX = (evt.clientX - this._boundingClientRect.left - this.borderLeftWidth) / this._scaleX;

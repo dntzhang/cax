@@ -86,7 +86,6 @@ class Stage extends Group {
   }
 
   _handleClick (evt) {
-    // this._computeStageXY(evt)
     if (Math.abs(this._mouseDownX - this._mouseUpX) < 20 && Math.abs(this._mouseDownY - this._mouseUpY) < 20) {
       this._getObjectUnderPoint(evt)
     }
@@ -102,14 +101,13 @@ class Stage extends Group {
     this.preStageY = evt.stageY
   }
 
-  scaleStage (x, y) {
+  scaleEventPoint (x, y) {
     this._scaleX = x
     this._scaleY = y
   }
 
   _handleMouseUp (evt) {
     const obj = this._getObjectUnderPoint(evt)
-    this._computeStageXY(evt)
     this._mouseUpX = evt.stageX
     this._mouseUpY = evt.stageY
 
@@ -210,8 +208,8 @@ class Stage extends Group {
     if (evt.touches || evt.changedTouches) {
       const firstTouch = evt.touches[0] || evt.changedTouches[0]
       if (firstTouch) {
-        evt.stageX = firstTouch.pageX - this.offset[0]
-        evt.stageY = firstTouch.pageY - this.offset[1]
+        evt.stageX = (firstTouch.pageX - this.offset[0]) / this._scaleX
+        evt.stageY = (firstTouch.pageY - this.offset[1]) / this._scaleY
       }
     } else {
       evt.stageX = (evt.clientX - this._boundingClientRect.left - this.borderLeftWidth) / this._scaleX

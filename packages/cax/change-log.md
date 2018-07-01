@@ -1,3 +1,7 @@
+## Cax 1.1.1
+
+* 新增 scaleEventPoint 方法对事件发生点的坐标进行校正，通常用于 Web 里 Canvas 被 Style 缩放比例之后事件触发点不准的情况
+
 ## Cax 1.1.0
 
 * 重命名 grouping 为 fixed 
