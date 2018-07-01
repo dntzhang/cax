@@ -708,7 +708,7 @@ var measureCtx = void 0;
 
 if (_util2.default.isWeapp) {
   measureCtx = wx.createCanvasContext('measure0');
-} else {
+} else if (typeof document !== 'undefined') {
   measureCtx = document.createElement('canvas').getContext('2d');
 }
 

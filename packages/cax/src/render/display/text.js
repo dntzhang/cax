@@ -5,7 +5,7 @@ let measureCtx
 
 if(util.isWeapp){
   measureCtx = wx.createCanvasContext('measure0')
-} else {
+} else if(typeof document !== 'undefined'){
   measureCtx = document.createElement('canvas').getContext('2d')
 }
 
