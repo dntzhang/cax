@@ -52,7 +52,7 @@ class Player extends cax.Group {
 
 
         this.visionGroup = new cax.Group()
-        this.visionGroup.grouping = false 
+        this.visionGroup.fixed = true 
         this.add(this.visionGroup, this.sprite)
 
         this.preTime = Date.now()

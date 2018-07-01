@@ -57,7 +57,7 @@
   - [Alpha](#alpha)
   - [CompositeOperation](#compositeoperation)
   - [Cursor](#cursor)
-  - [Grouping](#grouping)
+  - [Fixed](#fixed)
 - [事件](#事件)
 	- [小程序事件](#小程序事件) 
   - [Web 事件](#web-事件) 
@@ -402,11 +402,11 @@ const button = new cax.Button({
 |---|---|
 | cursor | 鼠标移上去的形状 |
 
-### Grouping
+### Fixed
 
 |属性名      |描述   |
 |---|---|
-| grouping | 是否接受分组，默认是 true，设置成 false 不会叠加祖辈们的属性|
+| fixed | 是否固定定位，默认是 false 设置成 true 不会叠加祖辈们的 transform 属性|
 
 ## 事件
 

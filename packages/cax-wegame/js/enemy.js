@@ -83,7 +83,7 @@ export default class Enemy extends cax.Group {
     this.bitmap.visible = false
     this.exploded = true
     const es = new cax.Sprite(this.spriteOption)
-    es.grouping = false
+    es.fixed = true
     es.x = this.x - 32
     es.y = this.y - 24
     this.es = es

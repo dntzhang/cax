@@ -44,7 +44,7 @@ class CanvasRender extends Render {
 
   _render (ctx, o, mtx, cacheRender) {
     if (!o.isVisible()) return
-    if (mtx && o.grouping) {
+    if (mtx && !o.fixed) {
       o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
     } else {
       o._matrix.initialize(1, 0, 0, 1, 0, 0)

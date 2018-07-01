@@ -50,7 +50,7 @@ English | [简体中文](./README.md)
   - [Alpha](#alpha)
   - [CompositeOperation](#compositeoperation)
   - [Cursor](#cursor)
-  - [Grouping](#grouping)
+  - [Fixed](#fixed)
 - [Event](#event)
 - [Motion](#motion)
 - [Clip](#clip)
@@ -297,11 +297,11 @@ Notice that if you don't have a definition of compositeOperation to look up, fin
 |---|---|
 | cursor | The shape of the mouse |
 
-### Grouping
+### Fixed
 
 |Name      |Describe   |
 |---|---|
-| grouping | Whether to group or not, the default is true, and set to false will not overlay the attributes of ancestors. |
+| fixed | Whether to fixed or not, the default is false, and set to true will not overlay the transform of ancestors. |
 
 ## Event
 

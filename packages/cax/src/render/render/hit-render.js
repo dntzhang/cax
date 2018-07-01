@@ -101,7 +101,7 @@ class HitRender extends Render {
     if (!o.isVisible()) return
     let ctx = this.ctx
     ctx.clearRect(0, 0, 2, 2)
-    if (mtx && o.grouping) {
+    if (mtx && !o.fixed) {
       o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
     } else {
       o._hitMatrix.initialize(1, 0, 0, 1, 0, 0)

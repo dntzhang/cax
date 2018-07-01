@@ -298,7 +298,7 @@ var DisplayObject = function (_EventDispatcher) {
     _this.id = _uid2.default.get();
     _this.clipGraphics = null;
     _this.clipRuleNonzero = true;
-    _this.grouping = true;
+    _this.fixed = false;
     return _this;
   }
 
@@ -2490,7 +2490,7 @@ var Renderer = function () {
       if (!o.isVisible()) {
         return;
       }
-      if (mtx && o.grouping) {
+      if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -3993,7 +3993,7 @@ var CanvasRender = function (_Render) {
     key: '_render',
     value: function _render(ctx, o, mtx, cacheRender) {
       if (!o.isVisible()) return;
-      if (mtx && o.grouping) {
+      if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -4260,7 +4260,7 @@ var HitRender = function (_Render) {
       if (!o.isVisible()) return;
       var ctx = this.ctx;
       ctx.clearRect(0, 0, 2, 2);
-      if (mtx && o.grouping) {
+      if (mtx && !o.fixed) {
         o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
