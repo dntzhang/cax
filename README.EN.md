@@ -4,18 +4,18 @@ English | [简体中文](./README.md)
 
 > Cross platform 2d rendering engine
 
-  * [Simple DEMO](https://dntzhang.github.io/cax) 
-  * [Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
-  * [Clip DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
-  * [Clip Transform DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform/) 
-  * [Clip Transform Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform-to/) 
-  * [To2To Animate DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
-  * [Swing DEMO](https://dntzhang.github.io/cax/packages/to/examples/swing/) 
-  * [Cax + Matter DEMO](http://dntzhang.github.io/cax/packages/cax/examples/matter/) 
-  * [Pie Chart DEMO](http://dntzhang.github.io/cax/packages/cax/examples/pie/)
-  * [To + Shape DEMO](http://dntzhang.github.io/cax/packages/cax/examples/to-shape/)
-  * [Vision DEMO](http://dntzhang.github.io/cax/packages/cax/examples/vision/)
-  * [Cache DEMO](http://dntzhang.github.io/cax/packages/cax/examples/cache/)
+  * [Simple](https://dntzhang.github.io/cax) 
+  * [Animation](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
+  * [Clip](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
+  * [Clip Transform](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform/) 
+  * [Clip Transition](https://dntzhang.github.io/cax/packages/cax/examples/clip-transition/) 
+  * [To2To Animate](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
+  * [Swing](https://dntzhang.github.io/cax/packages/to/examples/swing/) 
+  * [Cax + Matter](http://dntzhang.github.io/cax/packages/cax/examples/matter/) 
+  * [Pie Chart](http://dntzhang.github.io/cax/packages/cax/examples/pie/)
+  * [To + Shape](http://dntzhang.github.io/cax/packages/cax/examples/to-shape/)
+  * [Vision](http://dntzhang.github.io/cax/packages/cax/examples/vision/)
+  * [Cache](http://dntzhang.github.io/cax/packages/cax/examples/cache/)
   
 ## Features
 

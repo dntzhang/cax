@@ -19,7 +19,7 @@
     "dag": "webpack -w",
     "vision": "webpack -w",
     "to-shape": "webpack -w",
-    "clip-transform-to": "webpack -w",
+    "clip-transition": "webpack -w",
     "cache": "webpack -w",
     "bar-x": "webpack -w",
     "bar": "webpack -w",
