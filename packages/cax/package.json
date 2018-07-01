@@ -13,6 +13,7 @@
     "to-animate": "webpack -w",
     "pie": "webpack -w",
     "clip": "webpack -w",
+    "group-clip": "webpack -w",
     "clip-transform": "webpack -w",
     "map": "webpack -w",
     "dag": "webpack -w",
