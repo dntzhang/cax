@@ -85,10 +85,10 @@ class CanvasRender extends Render {
       let list = o.children.slice(0),
         l = list.length
       for (let i = 0 ; i < l; i++) {
-        ctx.save()
+        //ctx.save()
         let target = this._render(ctx, list[i], mtx)
         if (target) return target
-        ctx.restore()
+        //ctx.restore()
       }
     } else if (o instanceof Graphics) {
       o.render(ctx)

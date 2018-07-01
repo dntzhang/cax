@@ -4210,10 +4210,10 @@ var CanvasRender = function (_Render) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = 0; i < l; i++) {
-          ctx.save();
+          //ctx.save()
           var target = this._render(ctx, list[i], mtx);
           if (target) return target;
-          ctx.restore();
+          //ctx.restore()
         }
       } else if (o instanceof _graphics2.default) {
         o.render(ctx);

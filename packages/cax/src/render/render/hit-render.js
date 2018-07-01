@@ -32,18 +32,18 @@ class HitRender extends Render {
     this.ctx.clearRect(0, 0, this.width, this.height)
   }
 
-  hitAABB (o, evt, cb) {
+  hitAABB (o, evt) {
     let list = o.children.slice(0),
       l = list.length
     for (let i = l - 1; i >= 0; i--) {
       let child = list[i]
       // if (!this.isbindingEvent(child)) continue;
-      let target = this._hitAABB(child, evt, cb)
+      let target = this._hitAABB(child, evt)
       if (target) return target
     }
   }
 
-  _hitAABB (o, evt, cb) {
+  _hitAABB (o, evt) {
     if (!o.isVisible()) {
       return
     }
@@ -76,7 +76,7 @@ class HitRender extends Render {
     return true
   }
 
-  hitPixel (o, evt, cb) {
+  hitPixel (o, evt) {
     let ctx = this.ctx
     let mtx = o._hitMatrix
     let list = o.children.slice(0),
@@ -87,7 +87,7 @@ class HitRender extends Render {
       mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
       // if (!this.checkBoundEvent(child)) continue
       ctx.save()
-      let target = this._hitPixel(child, evt, mtx, cb)
+      let target = this._hitPixel(child, evt, mtx)
       ctx.restore()
       if (target) return target
     }
@@ -97,7 +97,7 @@ class HitRender extends Render {
   //   return true
   // }
 
-  _hitPixel (o, evt, mtx, cb) {
+  _hitPixel (o, evt, mtx) {
     if (!o.isVisible()) return
     let ctx = this.ctx
     ctx.clearRect(0, 0, 2, 2)
@@ -127,7 +127,7 @@ class HitRender extends Render {
       for (let i = l - 1; i >= 0; i--) {
         //这里不能 save 和 restore，不然把 clip 事件 跪了
         //ctx.save()
-        let target = this._hitPixel(list[i], evt, mtx, cb)
+        let target = this._hitPixel(list[i], evt, mtx)
         if (target) return target
         //ctx.restore()
       }
