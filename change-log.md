@@ -1,3 +1,8 @@
+## Cax 1.1.0
+
+* 重命名 grouping 为 fixed 
+* 除了基础元素 ，group 也支持 cache 和 chip
+
 ## Cax 1.0.19
 
 * 增加 grouping 属性可以忽略祖先 group 属性的叠加
