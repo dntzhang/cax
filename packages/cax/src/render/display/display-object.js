@@ -120,16 +120,18 @@ class DisplayObject extends EventDispatcher {
       scale:scale||1,
       _cached: false
     }
-    if (typeof wx !== 'undefined' && wx.createCanvas) {
-      this.cacheCanvas = wx.createCanvas()
-    } else {
-      this.cacheCanvas = document.createElement('canvas')
+    if(!this.cacheCanvas){
+      if (typeof wx !== 'undefined' && wx.createCanvas) {
+        this.cacheCanvas = wx.createCanvas()
+      } else {
+        this.cacheCanvas = document.createElement('canvas')
+      }
+      this.cacheCtx = this.cacheCanvas.getContext('2d')
     }
     this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale
     this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale
     this._readyToCache = true
-    this.cacheCtx = this.cacheCanvas.getContext('2d')
-   // this.cacheCtx.setTransform(scale, 0, 0, scale, x, y)
+   
    
   }
 

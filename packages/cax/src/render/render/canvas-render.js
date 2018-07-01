@@ -64,17 +64,14 @@ class CanvasRender extends Render {
       ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd')
     }
     
-
-
-     
-    
     o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o)
     o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1)
     if(!cacheRender){
-    ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
+      ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
     }
     if(o._readyToCache){
       o._readyToCache = false
+      o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x, o._cacheData.y)
       this.render(o.cacheCtx, o, true)
       //debug cacheCanvas
       //document.body.appendChild(o.cacheCanvas)
@@ -85,10 +82,11 @@ class CanvasRender extends Render {
       let list = o.children.slice(0),
         l = list.length
       for (let i = 0 ; i < l; i++) {
-        //ctx.save()
+        //如果注释掉之后 group 内比如 fillStyle Graphics 和 Text存在项目污染，所有都要给默认值？
+        ctx.save() 
         let target = this._render(ctx, list[i], mtx)
         if (target) return target
-        //ctx.restore()
+        ctx.restore()
       }
     } else if (o instanceof Graphics) {
       o.render(ctx)

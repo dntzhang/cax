@@ -1,14 +1,14 @@
 import cax from '../../src/index.js'
 
 
-const stage = new cax.Stage(400, 400, 'body')
+const stage = new cax.Stage(400, 400, '#canvasCtn')
 
 const circle = new cax.Circle(40, { fillStyle: 'black' })
 
 circle.x = 200
-circle.y = 150
+circle.y = 250
 circle.rotation = 15
-circle.cache(0, 0, 40, 40,1)
+circle.cache(0, 0, 40, 40, 1)
 
 
 
@@ -37,11 +37,11 @@ const group = new cax.Group()
 group.x =130
 group.y =30
 
-const circle2 = new cax.Rect(140,40, { fillStyle: 'red' })
+const rect = new cax.Rect(140,40, { fillStyle: 'red' })
 
-group.cache(0,0,100,20 ,1)
+group.cache(-20,0,100,20 ,1)
 
-group.add(circle2,gt)
+group.add(rect, gt)
 stage.add(group)
 stage.update()
 
@@ -54,3 +54,18 @@ group.on('drag',(evt)=>{
 })
 text.cursor = 'move'
 circle.cursor = 'pointer'
+
+
+let tag = false
+
+document.querySelector('#toggleBtn').addEventListener('click', () => {
+    group[(tag ? 'cache' : 'uncache')](-20,0,100,20 ,1)
+    text[(tag ? 'cache' : 'uncache')](0, 0, 80, 60)
+    circle[(tag ? 'cache' : 'uncache')](0, 0, 40, 40, 1)
+    tag =!tag
+    stage.update()
+})
+
+// cax.setInterval(function(){
+//     stage.update()
+// },16)
