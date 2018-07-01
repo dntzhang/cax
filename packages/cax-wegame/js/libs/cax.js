@@ -722,7 +722,7 @@ var Text = function (_DisplayObject) {
 
     _this.text = text;
     option = option || {};
-    _this.font = option.font;
+    _this.font = option.font || '10px sans-serif';
     _this.color = option.color || 'black';
 
     _this.baseline = option.baseline || 'top';

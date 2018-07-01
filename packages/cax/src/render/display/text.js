@@ -15,7 +15,7 @@ class Text extends DisplayObject {
 
     this.text = text
     option = option || {}
-    this.font = option.font
+    this.font = option.font || '10px sans-serif'
     this.color = option.color || 'black'
 
     this.baseline = option.baseline || 'top'
