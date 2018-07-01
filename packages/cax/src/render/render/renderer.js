@@ -1,15 +1,15 @@
-import CanvasRenderer from '../render/canvas-renderer.js'
+import CanvasRender from '../render/canvas-render'
 import Group from '../display/group.js'
 
 class Renderer {
   constructor (canvasOrContext, width, height) {
     this.renderList = []
     if (arguments.length === 3) {
-      this.renderer = new CanvasRenderer(canvasOrContext, width, height)
+      this.renderer = new CanvasRender(canvasOrContext, width, height)
       this.width = width
       this.height = height
     } else {
-      this.renderer = new CanvasRenderer(canvasOrContext)
+      this.renderer = new CanvasRender(canvasOrContext)
       this.width = canvasOrContext.width
       this.height = canvasOrContext.height
     }

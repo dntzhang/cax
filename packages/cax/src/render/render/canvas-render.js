@@ -5,7 +5,7 @@ import Sprite from '../display/sprite.js'
 import Bitmap from '../display/bitmap.js'
 import Text from '../display/text.js'
 
-class CanvasRenderer extends Render {
+class CanvasRender extends Render {
   constructor (canvasOrContext, width, height) {
     super()
     if (arguments.length === 3) {
@@ -124,4 +124,4 @@ class CanvasRenderer extends Render {
 
 }
 
-export default CanvasRenderer
+export default CanvasRender

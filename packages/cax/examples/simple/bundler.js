@@ -2409,9 +2409,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _canvasRenderer = __webpack_require__(24);
+var _canvasRender = __webpack_require__(24);
 
-var _canvasRenderer2 = _interopRequireDefault(_canvasRenderer);
+var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
 var _group = __webpack_require__(0);
 
@@ -2427,11 +2427,11 @@ var Renderer = function () {
 
     this.renderList = [];
     if (arguments.length === 3) {
-      this.renderer = new _canvasRenderer2.default(canvasOrContext, width, height);
+      this.renderer = new _canvasRender2.default(canvasOrContext, width, height);
       this.width = width;
       this.height = height;
     } else {
-      this.renderer = new _canvasRenderer2.default(canvasOrContext);
+      this.renderer = new _canvasRender2.default(canvasOrContext);
       this.width = canvasOrContext.width;
       this.height = canvasOrContext.height;
     }
@@ -4124,13 +4124,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CanvasRenderer = function (_Render) {
-  _inherits(CanvasRenderer, _Render);
+var CanvasRender = function (_Render) {
+  _inherits(CanvasRender, _Render);
 
-  function CanvasRenderer(canvasOrContext, width, height) {
-    _classCallCheck(this, CanvasRenderer);
+  function CanvasRender(canvasOrContext, width, height) {
+    _classCallCheck(this, CanvasRender);
 
-    var _this = _possibleConstructorReturn(this, (CanvasRenderer.__proto__ || Object.getPrototypeOf(CanvasRenderer)).call(this));
+    var _this = _possibleConstructorReturn(this, (CanvasRender.__proto__ || Object.getPrototypeOf(CanvasRender)).call(this));
 
     if (arguments.length === 3) {
       _this.ctx = canvasOrContext;
@@ -4144,7 +4144,7 @@ var CanvasRenderer = function (_Render) {
     return _this;
   }
 
-  _createClass(CanvasRenderer, [{
+  _createClass(CanvasRender, [{
     key: 'clear',
     value: function clear(ctx, width, height) {
       ctx.clearRect(0, 0, width, height);
@@ -4248,10 +4248,10 @@ var CanvasRenderer = function (_Render) {
     }
   }]);
 
-  return CanvasRenderer;
+  return CanvasRender;
 }(_render3.default);
 
-exports.default = CanvasRenderer;
+exports.default = CanvasRender;
 
 /***/ }),
 /* 25 */
