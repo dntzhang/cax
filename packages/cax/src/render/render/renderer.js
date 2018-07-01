@@ -1,28 +1,25 @@
-import CanvasRender from '../render/canvas-render.js'
+import CanvasRenderer from '../render/canvas-renderer.js'
 import Group from '../display/group.js'
 
 class Renderer {
   constructor (canvasOrContext, width, height) {
     this.renderList = []
     if (arguments.length === 3) {
-      this.renderer = new CanvasRender(canvasOrContext, width, height)
+      this.renderer = new CanvasRenderer(canvasOrContext, width, height)
+      this.width = width
+      this.height = height
     } else {
-      this.renderer = new CanvasRender(canvasOrContext)
+      this.renderer = new CanvasRenderer(canvasOrContext)
+      this.width = canvasOrContext.width
+      this.height = canvasOrContext.height
     }
-
     this.ctx = this.renderer.ctx
   }
 
   update (stage) {
-    let objs = this.renderList,
-      engine = this.renderer
-    objs.length = 0
-    this.computeMatrix(stage)
-    engine.clear()
-    objs.forEach(obj => {
-      engine.render(obj)
-    })
 
+    this.renderer.clear(this.ctx, this.width,this.height)
+    this.renderer.render(this.ctx, stage)
     this.ctx.draw && this.ctx.draw()
   }
 

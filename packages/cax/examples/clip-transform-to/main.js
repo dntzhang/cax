@@ -20,8 +20,9 @@ stage.add(bitmap)
 let tag = true
 
 stage.on('click', (evt) => {
-    clipPath.x = evt.stageX * 576 / window.innerWidth
-    clipPath.y = evt.stageY * 576 / window.innerWidth
+    const rt = 576 / (window.innerWidth>800?800:window.innerWidth)
+    clipPath.x = evt.stageX * rt
+    clipPath.y = evt.stageY * rt
 })
 
 function sineInOut(a) {

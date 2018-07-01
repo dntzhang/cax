@@ -107,6 +107,35 @@ class DisplayObject extends EventDispatcher {
   unclip () {
     this.clipGraphics = null
   }
+
+  cache(x, y, width, height, scale, debug){
+  
+   
+
+    this._cacheData = {
+      x:x||0,
+      y:y||0,
+      width:width||this.width,
+      height:height||this.height,
+      scale:scale||1,
+      _cached: false
+    }
+    if (typeof wx !== 'undefined' && wx.createCanvas) {
+      this.cacheCanvas = wx.createCanvas()
+    } else {
+      this.cacheCanvas = document.createElement('canvas')
+    }
+    this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale
+    this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale
+    this._readyToCache = true
+    this.cacheCtx = this.cacheCanvas.getContext('2d')
+   // this.cacheCtx.setTransform(scale, 0, 0, scale, x, y)
+   
+  }
+
+  uncache(){
+    this.cacheCanvas = null
+  }
 }
 
 export default DisplayObject

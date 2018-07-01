@@ -78,95 +78,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _graphics = __webpack_require__(3);
-
-var _graphics2 = _interopRequireDefault(_graphics);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Shape = function (_Graphics) {
-  _inherits(Shape, _Graphics);
-
-  function Shape() {
-    _classCallCheck(this, Shape);
-
-    return _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).apply(this, arguments));
-  }
-
-  _createClass(Shape, [{
-    key: 'draw',
-
-    // constructor() {
-    //     super()
-    // }
-
-    value: function draw() {}
-  }, {
-    key: 'render',
-    value: function render(ctx) {
-      this.clear();
-      this.draw();
-      _get(Shape.prototype.__proto__ || Object.getPrototypeOf(Shape.prototype), 'render', this).call(this, ctx);
-    }
-  }, {
-    key: 'cache',
-    value: function cache(x, y, width, height, debug) {
-      x = x || 0;
-      y = y || 0;
-      width = width || this.width;
-      height = height || this.height;
-      if (typeof wx !== 'undefined' && wx.createCanvas) {
-        this.cacheCanvas = wx.createCanvas();
-      } else {
-        this.cacheCanvas = document.createElement('canvas');
-      }
-      this.cacheCanvas.width = width;
-      this.cacheCanvas.height = height;
-      this.cacheCtx = this.cacheCanvas.getContext('2d');
-      this.cacheCtx.setTransform(1, 0, 0, 1, x, y);
-
-      if (debug) {
-        this.cacheCtx.save();
-        this.cacheCtx.fillStyle = 'red';
-        this.cacheCtx.fillRect(0, 0, width, height);
-        this.cacheCtx.restore();
-      }
-
-      this.render(this.cacheCtx);
-    }
-  }, {
-    key: 'uncache',
-    value: function uncache() {
-      this.cacheCanvas = null;
-    }
-  }]);
-
-  return Shape;
-}(_graphics2.default);
-
-exports.default = Shape;
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 var _displayObject = __webpack_require__(2);
 
 var _displayObject2 = _interopRequireDefault(_displayObject);
@@ -264,6 +175,64 @@ var Group = function (_DisplayObject) {
 exports.default = Group;
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _graphics = __webpack_require__(3);
+
+var _graphics2 = _interopRequireDefault(_graphics);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Shape = function (_Graphics) {
+  _inherits(Shape, _Graphics);
+
+  function Shape() {
+    _classCallCheck(this, Shape);
+
+    return _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).apply(this, arguments));
+  }
+
+  _createClass(Shape, [{
+    key: 'draw',
+
+    // constructor() {
+    //     super()
+    // }
+
+    value: function draw() {}
+  }, {
+    key: 'render',
+    value: function render(ctx) {
+      this.clear();
+      this.draw();
+      _get(Shape.prototype.__proto__ || Object.getPrototypeOf(Shape.prototype), 'render', this).call(this, ctx);
+    }
+  }]);
+
+  return Shape;
+}(_graphics2.default);
+
+exports.default = Shape;
+
+/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -313,6 +282,7 @@ var DisplayObject = function (_EventDispatcher) {
     _this.id = _uid2.default.get();
     _this.clipGraphics = null;
     _this.clipRuleNonzero = true;
+    _this.grouping = true;
     return _this;
   }
 
@@ -414,6 +384,34 @@ var DisplayObject = function (_EventDispatcher) {
     key: 'unclip',
     value: function unclip() {
       this.clipGraphics = null;
+    }
+  }, {
+    key: 'cache',
+    value: function cache(x, y, width, height, scale, debug) {
+
+      this._cacheData = {
+        x: x || 0,
+        y: y || 0,
+        width: width || this.width,
+        height: height || this.height,
+        scale: scale || 1,
+        _cached: false
+      };
+      if (typeof wx !== 'undefined' && wx.createCanvas) {
+        this.cacheCanvas = wx.createCanvas();
+      } else {
+        this.cacheCanvas = document.createElement('canvas');
+      }
+      this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale;
+      this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale;
+      this._readyToCache = true;
+      this.cacheCtx = this.cacheCanvas.getContext('2d');
+      // this.cacheCtx.setTransform(scale, 0, 0, scale, x, y)
+    }
+  }, {
+    key: 'uncache',
+    value: function uncache() {
+      this.cacheCanvas = null;
     }
   }]);
 
@@ -693,8 +691,6 @@ var measureCtx = void 0;
 
 if (_util2.default.isWeapp) {
   measureCtx = wx.createCanvasContext('measure0');
-} else if (_util2.default.isWegame) {
-  measureCtx = wx.createCanvas().getContext('2d');
 } else {
   measureCtx = document.createElement('canvas').getContext('2d');
 }
@@ -719,44 +715,16 @@ var Text = function (_DisplayObject) {
   _createClass(Text, [{
     key: 'getWidth',
     value: function getWidth() {
+      if (!measureCtx) {
+        if (_util2.default.isWegame) {
+          measureCtx = wx.createCanvas().getContext('2d');
+        }
+      }
+
       if (this.font) {
         measureCtx.font = this.font;
       }
       return measureCtx.measureText(this.text).width;
-    }
-  }, {
-    key: 'cache',
-    value: function cache(x, y, width, height, debug) {
-      x = x || 0;
-      y = y || 0;
-      width = width || this.width;
-      height = height || this.height;
-      if (typeof wx !== 'undefined' && wx.createCanvas) {
-        this.cacheCanvas = wx.createCanvas();
-      } else {
-        this.cacheCanvas = document.createElement('canvas');
-      }
-      this.cacheCanvas.width = width;
-      this.cacheCanvas.height = height;
-      this.cacheCtx = this.cacheCanvas.getContext('2d');
-      this.cacheCtx.setTransform(1, 0, 0, 1, x, y);
-      this.cacheCtx.fillStyle = this.color;
-      this.cacheCtx.font = this.font;
-      this.cacheCtx.textBaseline = this.baseline;
-
-      if (debug) {
-        this.cacheCtx.save();
-        this.cacheCtx.fillStyle = 'red';
-        this.cacheCtx.fillRect(0, 0, width, height);
-        this.cacheCtx.restore();
-      }
-
-      this.cacheCtx.fillText(this.text, 0, 0);
-    }
-  }, {
-    key: 'uncache',
-    value: function uncache() {
-      this.cacheCanvas = null;
     }
   }]);
 
@@ -2441,11 +2409,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _canvasRender = __webpack_require__(24);
+var _canvasRenderer = __webpack_require__(24);
 
-var _canvasRender2 = _interopRequireDefault(_canvasRender);
+var _canvasRenderer2 = _interopRequireDefault(_canvasRenderer);
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -2459,26 +2427,23 @@ var Renderer = function () {
 
     this.renderList = [];
     if (arguments.length === 3) {
-      this.renderer = new _canvasRender2.default(canvasOrContext, width, height);
+      this.renderer = new _canvasRenderer2.default(canvasOrContext, width, height);
+      this.width = width;
+      this.height = height;
     } else {
-      this.renderer = new _canvasRender2.default(canvasOrContext);
+      this.renderer = new _canvasRenderer2.default(canvasOrContext);
+      this.width = canvasOrContext.width;
+      this.height = canvasOrContext.height;
     }
-
     this.ctx = this.renderer.ctx;
   }
 
   _createClass(Renderer, [{
     key: 'update',
     value: function update(stage) {
-      var objs = this.renderList,
-          engine = this.renderer;
-      objs.length = 0;
-      this.computeMatrix(stage);
-      engine.clear();
-      objs.forEach(function (obj) {
-        engine.render(obj);
-      });
 
+      this.renderer.clear(this.ctx, this.width, this.height);
+      this.renderer.render(this.ctx, stage);
       this.ctx.draw && this.ctx.draw();
     }
   }, {
@@ -2508,7 +2473,7 @@ var Renderer = function () {
       if (!o.isVisible()) {
         return;
       }
-      if (mtx) {
+      if (mtx && o.grouping) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -2589,7 +2554,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -2776,7 +2741,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(0);
+var _shape = __webpack_require__(1);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -2882,8 +2847,9 @@ stage.add(bitmap);
 var tag = true;
 
 stage.on('click', function (evt) {
-    clipPath.x = evt.stageX * 576 / window.innerWidth;
-    clipPath.y = evt.stageY * 576 / window.innerWidth;
+    var rt = 576 / (window.innerWidth > 800 ? 800 : window.innerWidth);
+    clipPath.x = evt.stageX * rt;
+    clipPath.y = evt.stageY * rt;
 });
 
 function sineInOut(a) {
@@ -2939,7 +2905,7 @@ var _text = __webpack_require__(4);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -3359,7 +3325,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -3985,13 +3951,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _group = __webpack_require__(0);
+
+var _group2 = _interopRequireDefault(_group);
+
 var _graphics = __webpack_require__(3);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
-var _render = __webpack_require__(8);
+var _render2 = __webpack_require__(8);
 
-var _render2 = _interopRequireDefault(_render);
+var _render3 = _interopRequireDefault(_render2);
 
 var _sprite = __webpack_require__(5);
 
@@ -4013,13 +3983,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CanvasRender = function (_Render) {
-  _inherits(CanvasRender, _Render);
+var CanvasRenderer = function (_Render) {
+  _inherits(CanvasRenderer, _Render);
 
-  function CanvasRender(canvasOrContext, width, height) {
-    _classCallCheck(this, CanvasRender);
+  function CanvasRenderer(canvasOrContext, width, height) {
+    _classCallCheck(this, CanvasRenderer);
 
-    var _this = _possibleConstructorReturn(this, (CanvasRender.__proto__ || Object.getPrototypeOf(CanvasRender)).call(this));
+    var _this = _possibleConstructorReturn(this, (CanvasRenderer.__proto__ || Object.getPrototypeOf(CanvasRenderer)).call(this));
 
     if (arguments.length === 3) {
       _this.ctx = canvasOrContext;
@@ -4033,55 +4003,114 @@ var CanvasRender = function (_Render) {
     return _this;
   }
 
-  _createClass(CanvasRender, [{
+  _createClass(CanvasRenderer, [{
+    key: 'clear',
+    value: function clear(ctx, width, height) {
+      ctx.clearRect(0, 0, width, height);
+    }
+  }, {
     key: 'render',
-    value: function render(obj) {
-      var ctx = this.ctx;
-      var ocg = obj.clipGraphics;
-      ctx.save();
-      ctx.globalCompositeOperation = obj.complexCompositeOperation;
-      ctx.globalAlpha = obj.complexAlpha;
+    value: function render(ctx, o, cacheRender) {
+      var mtx = o._matrix;
+      if (o.children) {
+        var list = o.children.slice(0),
+            l = list.length;
+        for (var i = 0; i < l; i++) {
+          var child = list[i];
+          mtx.initialize(1, 0, 0, 1, 0, 0);
+          mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
+          // if (!this.checkBoundEvent(child)) continue
+          ctx.save();
+          this._render(ctx, child, cacheRender ? null : mtx, cacheRender);
+          ctx.restore();
+        }
+      } else {
+        this._render(ctx, o, mtx, cacheRender);
+      }
+    }
+  }, {
+    key: '_render',
+    value: function _render(ctx, o, mtx, cacheRender) {
+      if (!o.isVisible()) return;
+      if (mtx) {
+        o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+      } else {
+        o._matrix.initialize(1, 0, 0, 1, 0, 0);
+      }
+      mtx = o._matrix;
+
+      if (!cacheRender) {
+        mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
+      }
+      var ocg = o.clipGraphics;
       if (ocg) {
         ctx.beginPath();
-        ocg._matrix.copy(obj._matrix);
+        ocg._matrix.copy(mtx);
         ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY);
         ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty);
         ocg.render(ctx);
-        ctx.clip(obj.clipRuleNonzero ? 'nonzero' : 'evenodd');
+        ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
       }
-      ctx.setTransform(obj._matrix.a, obj._matrix.b, obj._matrix.c, obj._matrix.d, obj._matrix.tx, obj._matrix.ty);
-      if (obj.cacheCanvas) {
-        ctx.drawImage(obj.cacheCanvas, 0, 0);
-      } else if (obj instanceof _graphics2.default) {
-        obj.render(ctx);
-      } else if (obj instanceof _sprite2.default && obj.rect) {
-        obj.updateFrame();
-        var rect = obj.rect;
-        ctx.drawImage(obj.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
-      } else if (obj instanceof _bitmap2.default && obj.rect) {
-        var bRect = obj.rect;
-        ctx.drawImage(obj.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
-      } else if (obj instanceof _text2.default) {
-        if (obj.font) {
-          ctx.font = obj.font;
+
+      o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
+      o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
+      if (!cacheRender) {
+        ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+      }
+      if (o._readyToCache) {
+        o._readyToCache = false;
+        this.render(o.cacheCtx, o, true);
+
+        document.body.appendChild(o.cacheCanvas);
+        ctx.drawImage(o.cacheCanvas, 0, 0);
+      } else if (o.cacheCanvas && !cacheRender) {
+        ctx.drawImage(o.cacheCanvas, 0, 0);
+      } else if (o instanceof _group2.default) {
+        var list = o.children.slice(0),
+            l = list.length;
+        for (var i = 0; i < l; i++) {
+          ctx.save();
+          var target = this._render(ctx, list[i], mtx);
+          if (target) return target;
+          ctx.restore();
         }
-        ctx.fillStyle = obj.color;
-        ctx.textBaseline = obj.baseline;
-        ctx.fillText(obj.text, 0, 0);
+      } else if (o instanceof _graphics2.default) {
+        o.render(ctx);
+      } else if (o instanceof _sprite2.default && o.rect) {
+        o.updateFrame();
+        var rect = o.rect;
+        ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
+      } else if (o instanceof _bitmap2.default && o.rect) {
+        var bRect = o.rect;
+        ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
+      } else if (o instanceof _text2.default) {
+        ctx.font = o.font;
+        ctx.fillStyle = o.color;
+        ctx.textBaseline = o.baseline;
+        ctx.fillText(o.text, 0, 0);
       }
-      ctx.restore();
     }
   }, {
-    key: 'clear',
-    value: function clear() {
-      this.ctx.clearRect(0, 0, this.width, this.height);
+    key: 'getCompositeOperation',
+    value: function getCompositeOperation(o) {
+      if (o.compositeOperation) return o.compositeOperation;
+      if (o.parent) return this.getCompositeOperation(o.parent);
+    }
+  }, {
+    key: 'getAlpha',
+    value: function getAlpha(o, alpha) {
+      var result = o.alpha * alpha;
+      if (o.parent) {
+        return this.getAlpha(o.parent, result);
+      }
+      return result;
     }
   }]);
 
-  return CanvasRender;
-}(_render2.default);
+  return CanvasRenderer;
+}(_render3.default);
 
-exports.default = CanvasRender;
+exports.default = CanvasRenderer;
 
 /***/ }),
 /* 25 */
@@ -4126,7 +4155,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -4278,7 +4307,20 @@ var HitRender = function (_Render) {
       }
       mtx = o._hitMatrix;
       mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
-      if (o instanceof _group2.default) {
+
+      var ocg = o.clipGraphics;
+      if (ocg) {
+        ctx.beginPath();
+        ocg._matrix.copy(mtx);
+        ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY);
+        ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty);
+        ocg.render(ctx);
+        ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
+      }
+      if (o.cacheCanvas) {
+        ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+        ctx.drawImage(o.cacheCanvas, 0, 0);
+      } else if (o instanceof _group2.default) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = l - 1; i >= 0; i--) {
@@ -4288,19 +4330,9 @@ var HitRender = function (_Render) {
           ctx.restore();
         }
       } else {
-        var ocg = o.clipGraphics;
-        if (ocg) {
-          ctx.beginPath();
-          ocg._matrix.copy(mtx);
-          ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY);
-          ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty);
-          ocg.render(ctx);
-          ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
-        }
+
         ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-        if (o.cacheCanvas) {
-          ctx.drawImage(o.cacheCanvas, 0, 0);
-        } else if (o instanceof _graphics2.default) {
+        if (o instanceof _graphics2.default) {
           ctx.globalCompositeOperation = o.complexCompositeOperation;
           ctx.globalAlpha = o.complexAlpha;
           o.render(ctx);
@@ -4523,7 +4555,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(0);
+var _shape = __webpack_require__(1);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -4619,7 +4651,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(0);
+var _shape = __webpack_require__(1);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -4696,7 +4728,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _group = __webpack_require__(1);
+var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -4758,7 +4790,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(0);
+var _shape = __webpack_require__(1);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -4817,7 +4849,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(0);
+var _shape = __webpack_require__(1);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -4883,7 +4915,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(0);
+var _shape = __webpack_require__(1);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -4957,7 +4989,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(0);
+var _shape = __webpack_require__(1);
 
 var _shape2 = _interopRequireDefault(_shape);
 

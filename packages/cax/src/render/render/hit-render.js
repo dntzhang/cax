@@ -108,7 +108,20 @@ class HitRender extends Render {
     }
     mtx = o._hitMatrix
     mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
-    if (o instanceof Group) {
+    
+    const ocg = o.clipGraphics
+      if (ocg) {
+        ctx.beginPath()
+        ocg._matrix.copy(mtx)
+        ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY)
+        ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty)
+        ocg.render(ctx)
+        ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd')
+      }
+    if (o.cacheCanvas) {
+      ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
+      ctx.drawImage(o.cacheCanvas, 0, 0)
+    } else if (o instanceof Group) {
       let list = o.children.slice(0),
         l = list.length
       for (let i = l - 1; i >= 0; i--) {
@@ -118,19 +131,9 @@ class HitRender extends Render {
         ctx.restore()
       }
     } else {
-      const ocg = o.clipGraphics
-      if (ocg) {
-        ctx.beginPath()
-        ocg._matrix.copy(mtx)
-        ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY)
-        ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty)
-        ocg.render(ctx)
-        ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd')
-      }
+      
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
-      if (o.cacheCanvas) {
-        ctx.drawImage(o.cacheCanvas, 0, 0)
-      } else if (o instanceof Graphics) {
+      if (o instanceof Graphics) {
         ctx.globalCompositeOperation = o.complexCompositeOperation
         ctx.globalAlpha = o.complexAlpha
         o.render(ctx)
