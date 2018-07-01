@@ -17,7 +17,7 @@ class Sprite extends DisplayObject {
           count++
           if (count === len) {
             this.img = this.imgMap[this.option.imgs[0]]
-            this.rect = [0, 0, result.width, result.height]
+            this.rect = [0, 0, 0, 0]
           }
         })
       }
@@ -33,7 +33,7 @@ class Sprite extends DisplayObject {
             loadedCount++
             if (loadedCount === len) {
               this.img = this.imgMap[this.option.imgs[0]]
-              this.rect = [0, 0, this.img.width, this.img.height]
+              this.rect = [0, 0, 0, 0]
             }
           }
           img.src = src
