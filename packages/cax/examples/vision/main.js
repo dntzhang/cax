@@ -75,16 +75,18 @@ class Player extends cax.Group {
     }
 
     addVision() {
-        const vision = new Bitmap('./hero-m.png')
-        vision.rect = this.sprite.rect.slice(0)
-        vision.alpha = 0.4
-        vision.x = this.x + 5
-        vision.y = this.y
-        this.visionGroup.add(vision)
+        if(this.sprite.rect){
+            const vision = new Bitmap('./hero-m.png')
+            vision.rect = this.sprite.rect.slice(0)
+            vision.alpha = 0.4
+            vision.x = this.x + 5
+            vision.y = this.y
+            this.visionGroup.add(vision)
 
-        cax.To.get(vision).to({ alpha: 0 }, 1000).end((obj) => {
-            obj.destroy()
-        }).start()
+            cax.To.get(vision).to({ alpha: 0 }, 1000).end((obj) => {
+                obj.destroy()
+            }).start()
+        }
     }
 
 }
