@@ -4,13 +4,18 @@ import HitRender from '../render/hit-render.js'
 import Event from '../base/event.js'
 import WeStage from './we-stage'
 
+let wegameCanvas = null
+if(typeof wx !== 'undefined' && wx.createCanvas){
+  wegameCanvas = wx.createCanvas()
+}
+
 class Stage extends Group {
   constructor (width, height, renderTo) {
     super()
     const len = arguments.length
     this.isWegame = typeof wx !== 'undefined' && wx.createCanvas
     if (len === 0) { // wegame
-      this.canvas = wx.createCanvas()
+      this.canvas = wegameCanvas
       this.disableMoveDetection = true
     } else if (len === 4) { // weapp
       return new WeStage(arguments[0], arguments[1], arguments[2], arguments[3])

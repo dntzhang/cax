@@ -108,19 +108,17 @@ class DisplayObject extends EventDispatcher {
     this.clipGraphics = null
   }
 
-  cache(x, y, width, height, scale, debug){
-  
-   
+  cache(x, y, width, height, scale) {
 
     this._cacheData = {
-      x:x||0,
-      y:y||0,
-      width:width||this.width,
-      height:height||this.height,
-      scale:scale||1,
+      x: x || 0,
+      y: y || 0,
+      width: width || this.width,
+      height: height || this.height,
+      scale: scale || 1,
       _cached: false
     }
-    if(!this.cacheCanvas){
+    if (!this.cacheCanvas) {
       if (typeof wx !== 'undefined' && wx.createCanvas) {
         this.cacheCanvas = wx.createCanvas()
       } else {
@@ -132,11 +130,15 @@ class DisplayObject extends EventDispatcher {
     this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale
     this._readyToCache = true
    
-   
   }
 
   uncache(){
     this.cacheCanvas = null
+  }
+
+
+  filter(filter){
+    
   }
 }
 
