@@ -245,15 +245,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _matrix2d = __webpack_require__(21);
+var _matrix2d = __webpack_require__(22);
 
 var _matrix2d2 = _interopRequireDefault(_matrix2d);
 
-var _eventDispatcher = __webpack_require__(22);
+var _eventDispatcher = __webpack_require__(23);
 
 var _eventDispatcher2 = _interopRequireDefault(_eventDispatcher);
 
-var _uid = __webpack_require__(23);
+var _uid = __webpack_require__(24);
 
 var _uid2 = _interopRequireDefault(_uid);
 
@@ -282,7 +282,7 @@ var DisplayObject = function (_EventDispatcher) {
     _this.id = _uid2.default.get();
     _this.clipGraphics = null;
     _this.clipRuleNonzero = true;
-    _this.grouping = true;
+    _this.fixed = false;
     return _this;
   }
 
@@ -387,31 +387,38 @@ var DisplayObject = function (_EventDispatcher) {
     }
   }, {
     key: 'cache',
-    value: function cache(x, y, width, height, scale, debug) {
+    value: function cache(x, y, width, height, scale) {
 
       this._cacheData = {
         x: x || 0,
         y: y || 0,
         width: width || this.width,
         height: height || this.height,
-        scale: scale || 1,
-        _cached: false
+        scale: scale || 1
       };
-      if (typeof wx !== 'undefined' && wx.createCanvas) {
-        this.cacheCanvas = wx.createCanvas();
-      } else {
-        this.cacheCanvas = document.createElement('canvas');
+      if (!this.cacheCanvas) {
+        if (typeof wx !== 'undefined' && wx.createCanvas) {
+          this.cacheCanvas = wx.createCanvas();
+        } else {
+          this.cacheCanvas = document.createElement('canvas');
+        }
+        this.cacheCtx = this.cacheCanvas.getContext('2d');
       }
       this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale;
       this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale;
       this._readyToCache = true;
-      this.cacheCtx = this.cacheCanvas.getContext('2d');
-      // this.cacheCtx.setTransform(scale, 0, 0, scale, x, y)
     }
   }, {
     key: 'uncache',
     value: function uncache() {
       this.cacheCanvas = null;
+    }
+  }, {
+    key: 'filter',
+    value: function filter(filterName, filterBox) {
+      this.cache(filterBox.x || 0, filterBox.y || 0, filterBox.width || this.width, filterBox.height || this.height);
+      this._readyToFilter = true;
+      this._filterName = filterName;
     }
   }]);
 
@@ -691,7 +698,7 @@ var measureCtx = void 0;
 
 if (_util2.default.isWeapp) {
   measureCtx = wx.createCanvasContext('measure0');
-} else {
+} else if (typeof document !== 'undefined') {
   measureCtx = document.createElement('canvas').getContext('2d');
 }
 
@@ -705,8 +712,8 @@ var Text = function (_DisplayObject) {
 
     _this.text = text;
     option = option || {};
-    _this.font = option.font;
-    _this.color = option.color;
+    _this.font = option.font || '10px sans-serif';
+    _this.color = option.color || 'black';
 
     _this.baseline = option.baseline || 'top';
     return _this;
@@ -783,7 +790,7 @@ var Sprite = function (_DisplayObject) {
           count++;
           if (count === len) {
             _this.img = _this.imgMap[_this.option.imgs[0]];
-            _this.rect = [0, 0, result.width, result.height];
+            _this.rect = [0, 0, 0, 0];
           }
         });
       });
@@ -798,7 +805,7 @@ var Sprite = function (_DisplayObject) {
             loadedCount++;
             if (loadedCount === _len) {
               _this.img = _this.imgMap[_this.option.imgs[0]];
-              _this.rect = [0, 0, _this.img.width, _this.img.height];
+              _this.rect = [0, 0, 0, 0];
             }
           };
           img.src = src;
@@ -1172,7 +1179,7 @@ exports.default = {
   isWeapp: typeof wx !== 'undefined' && !wx.createCanvas,
   isWegame: typeof wx !== 'undefined' && wx.createCanvas
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
 
 /***/ }),
 /* 10 */
@@ -2409,7 +2416,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _canvasRender = __webpack_require__(24);
+var _canvasRender = __webpack_require__(25);
 
 var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
@@ -2473,7 +2480,7 @@ var Renderer = function () {
       if (!o.isVisible()) {
         return;
       }
-      if (mtx && o.grouping) {
+      if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -2562,7 +2569,7 @@ var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _wxHitRender = __webpack_require__(27);
+var _wxHitRender = __webpack_require__(30);
 
 var _wxHitRender2 = _interopRequireDefault(_wxHitRender);
 
@@ -2923,31 +2930,31 @@ var _roundedRect = __webpack_require__(15);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
-var _arrowPath = __webpack_require__(28);
+var _arrowPath = __webpack_require__(31);
 
 var _arrowPath2 = _interopRequireDefault(_arrowPath);
 
-var _ellipse = __webpack_require__(29);
+var _ellipse = __webpack_require__(32);
 
 var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _button = __webpack_require__(30);
+var _button = __webpack_require__(33);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _rect = __webpack_require__(31);
+var _rect = __webpack_require__(34);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _circle = __webpack_require__(32);
+var _circle = __webpack_require__(35);
 
 var _circle2 = _interopRequireDefault(_circle);
 
-var _polygon = __webpack_require__(33);
+var _polygon = __webpack_require__(36);
 
 var _polygon2 = _interopRequireDefault(_polygon);
 
-var _equilateralPolygon = __webpack_require__(34);
+var _equilateralPolygon = __webpack_require__(37);
 
 var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
@@ -3331,6 +3338,10 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _wegameCanvas = __webpack_require__(21);
+
+var _wegameCanvas2 = _interopRequireDefault(_wegameCanvas);
+
 var _group = __webpack_require__(0);
 
 var _group2 = _interopRequireDefault(_group);
@@ -3339,7 +3350,7 @@ var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _hitRender = __webpack_require__(26);
+var _hitRender = __webpack_require__(29);
 
 var _hitRender2 = _interopRequireDefault(_hitRender);
 
@@ -3371,7 +3382,7 @@ var Stage = function (_Group) {
     _this.isWegame = typeof wx !== 'undefined' && wx.createCanvas;
     if (len === 0) {
       // wegame
-      _this.canvas = wx.createCanvas();
+      _this.canvas = _wegameCanvas2.default;
       _this.disableMoveDetection = true;
     } else if (len === 4) {
       var _ret;
@@ -3478,7 +3489,6 @@ var Stage = function (_Group) {
   }, {
     key: '_handleClick',
     value: function _handleClick(evt) {
-      // this._computeStageXY(evt)
       if (Math.abs(this._mouseDownX - this._mouseUpX) < 20 && Math.abs(this._mouseDownY - this._mouseUpY) < 20) {
         this._getObjectUnderPoint(evt);
       }
@@ -3495,8 +3505,8 @@ var Stage = function (_Group) {
       this.preStageY = evt.stageY;
     }
   }, {
-    key: 'scaleStage',
-    value: function scaleStage(x, y) {
+    key: 'scaleEventPoint',
+    value: function scaleEventPoint(x, y) {
       this._scaleX = x;
       this._scaleY = y;
     }
@@ -3504,7 +3514,6 @@ var Stage = function (_Group) {
     key: '_handleMouseUp',
     value: function _handleMouseUp(evt) {
       var obj = this._getObjectUnderPoint(evt);
-      this._computeStageXY(evt);
       this._mouseUpX = evt.stageX;
       this._mouseUpY = evt.stageY;
 
@@ -3610,8 +3619,8 @@ var Stage = function (_Group) {
       if (evt.touches || evt.changedTouches) {
         var firstTouch = evt.touches[0] || evt.changedTouches[0];
         if (firstTouch) {
-          evt.stageX = firstTouch.pageX - this.offset[0];
-          evt.stageY = firstTouch.pageY - this.offset[1];
+          evt.stageX = (firstTouch.pageX - this.offset[0]) / this._scaleX;
+          evt.stageY = (firstTouch.pageY - this.offset[1]) / this._scaleY;
         }
       } else {
         evt.stageX = (evt.clientX - this._boundingClientRect.left - this.borderLeftWidth) / this._scaleX;
@@ -3669,6 +3678,23 @@ exports.default = Stage;
 
 /***/ }),
 /* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var wegameCanvas = null;
+if (typeof wx !== 'undefined' && wx.createCanvas) {
+  wegameCanvas = wx.createCanvas();
+}
+
+exports.default = wegameCanvas;
+
+/***/ }),
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3797,7 +3823,7 @@ var Matrix2D = function () {
 exports.default = Matrix2D;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3925,7 +3951,7 @@ var EventDispatcher = function () {
 exports.default = EventDispatcher;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3945,7 +3971,7 @@ UID.get = function () {
 exports.default = UID;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3980,6 +4006,8 @@ var _bitmap2 = _interopRequireDefault(_bitmap);
 var _text = __webpack_require__(4);
 
 var _text2 = _interopRequireDefault(_text);
+
+var _index = __webpack_require__(27);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4038,7 +4066,7 @@ var CanvasRender = function (_Render) {
     key: '_render',
     value: function _render(ctx, o, mtx, cacheRender) {
       if (!o.isVisible()) return;
-      if (mtx) {
+      if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -4065,12 +4093,18 @@ var CanvasRender = function (_Render) {
       }
       if (o._readyToCache) {
         o._readyToCache = false;
+        o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1);
         this.render(o.cacheCtx, o, true);
         //debug cacheCanvas
         //document.body.appendChild(o.cacheCanvas)
-        ctx.drawImage(o.cacheCanvas, 0, 0);
+        if (o._readyToFilter) {
+          o.cacheCtx.putImageData((0, _index.filter)(o.cacheCtx.getImageData(0, 0, o.cacheCanvas.width, o.cacheCanvas.height), o._filterName), 0, 0);
+          this._readyToFilter = false;
+        }
+
+        ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
       } else if (o.cacheCanvas && !cacheRender) {
-        ctx.drawImage(o.cacheCanvas, 0, 0);
+        ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
       } else if (o instanceof _group2.default) {
         var list = o.children.slice(0),
             l = list.length;
@@ -4119,7 +4153,7 @@ var CanvasRender = function (_Render) {
 exports.default = CanvasRender;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4149,7 +4183,52 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 26 */
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.filter = filter;
+
+var _invert = __webpack_require__(28);
+
+function filter(pixels, name) {
+
+    if (name.indexOf('invert(') === 0) {
+        return (0, _invert.invert)(pixels, Number(name.replace('invert(', '').replace('%)', '')) / 100);
+    }
+}
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.invert = invert;
+function invert(pixels, ratio) {
+
+    var d = pixels.data;
+    ratio = ratio === undefined ? 1 : ratio;
+    for (var i = 0; i < d.length; i += 4) {
+        d[i] = d[i] + ratio * (255 - 2 * d[i]);
+        d[i + 1] = d[i + 1] + ratio * (255 - 2 * d[i + 1]);
+        d[i + 2] = d[i + 2] + ratio * (255 - 2 * d[i + 2]);
+        d[i + 3] = d[i + 3];
+    }
+    return pixels;
+}
+
+/***/ }),
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4232,19 +4311,19 @@ var HitRender = function (_Render) {
     }
   }, {
     key: 'hitAABB',
-    value: function hitAABB(o, evt, cb) {
+    value: function hitAABB(o, evt) {
       var list = o.children.slice(0),
           l = list.length;
       for (var i = l - 1; i >= 0; i--) {
         var child = list[i];
         // if (!this.isbindingEvent(child)) continue;
-        var target = this._hitAABB(child, evt, cb);
+        var target = this._hitAABB(child, evt);
         if (target) return target;
       }
     }
   }, {
     key: '_hitAABB',
-    value: function _hitAABB(o, evt, cb) {
+    value: function _hitAABB(o, evt) {
       if (!o.isVisible()) {
         return;
       }
@@ -4279,8 +4358,12 @@ var HitRender = function (_Render) {
     }
   }, {
     key: 'hitPixel',
-    value: function hitPixel(o, evt, cb) {
+    value: function hitPixel(o, evt) {
       var ctx = this.ctx;
+      //CanvasRenderingContext2D.restore() 是 Canvas 2D API 通过在绘图状态栈中弹出顶端的状态，将 canvas 恢复到最近的保存状态的方法。 如果没有保存状态，此方法不做任何改变。
+      ////避免 save restore嵌套导致的 clip 区域影响 clearRect 擦除的区域
+      ctx.restore();
+      ctx.clearRect(0, 0, 2, 2);
       var mtx = o._hitMatrix;
       var list = o.children.slice(0),
           l = list.length;
@@ -4290,23 +4373,17 @@ var HitRender = function (_Render) {
         mtx.appendTransform(o.x - evt.stageX, o.y - evt.stageY, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
         // if (!this.checkBoundEvent(child)) continue
         ctx.save();
-        var target = this._hitPixel(child, evt, mtx, cb);
+        var target = this._hitPixel(child, evt, mtx);
         ctx.restore();
         if (target) return target;
       }
     }
-
-    // checkBoundEvent () {
-    //   return true
-    // }
-
   }, {
     key: '_hitPixel',
-    value: function _hitPixel(o, evt, mtx, cb) {
+    value: function _hitPixel(o, evt, mtx) {
       if (!o.isVisible()) return;
       var ctx = this.ctx;
-      ctx.clearRect(0, 0, 2, 2);
-      if (mtx) {
+      if (mtx && !o.fixed) {
         o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
         o._hitMatrix.initialize(1, 0, 0, 1, 0, 0);
@@ -4323,18 +4400,18 @@ var HitRender = function (_Render) {
         ocg.render(ctx);
         ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
       }
+
       if (o.cacheCanvas) {
         ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-        ctx.drawImage(o.cacheCanvas, 0, 0);
+        ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
       } else if (o instanceof _group2.default) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = l - 1; i >= 0; i--) {
-          //这里不能 save 和 restore，不然把 clip 事件 跪了
-          //ctx.save()
-          var target = this._hitPixel(list[i], evt, mtx, cb);
+          ctx.save();
+          var target = this._hitPixel(list[i], evt, mtx);
           if (target) return target;
-          //ctx.restore()
+          ctx.restore();
         }
       } else {
 
@@ -4389,7 +4466,7 @@ var HitRender = function (_Render) {
 exports.default = HitRender;
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4550,7 +4627,7 @@ var WxHitRender = function (_Render) {
 exports.default = WxHitRender;
 
 /***/ }),
-/* 28 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4646,7 +4723,7 @@ var ArrowPath = function (_Shape) {
 exports.default = ArrowPath;
 
 /***/ }),
-/* 29 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4725,7 +4802,7 @@ var Ellipse = function (_Shape) {
 exports.default = Ellipse;
 
 /***/ }),
-/* 30 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4785,7 +4862,7 @@ var Button = function (_Group) {
 exports.default = Button;
 
 /***/ }),
-/* 31 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4844,7 +4921,7 @@ var Rect = function (_Shape) {
 exports.default = Rect;
 
 /***/ }),
-/* 32 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4910,7 +4987,7 @@ var Circle = function (_Shape) {
 exports.default = Circle;
 
 /***/ }),
-/* 33 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4984,7 +5061,7 @@ var Polygon = function (_Shape) {
 exports.default = Polygon;
 
 /***/ }),
-/* 34 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
