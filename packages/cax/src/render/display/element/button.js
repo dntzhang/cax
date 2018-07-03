@@ -15,8 +15,8 @@ class Button extends Group {
       color: option.color
     })
 
-    this.text.x = option.width / 2 - this.text.getWidth() / 2 * this.text.scaleX
-    this.text.y = option.height / 2 - 10 + 5 * this.text.scaleY
+    this.text.x = option.width / 2 - this.text.getWidth() / 2 * this.text.scaleX + (option.textX || 0)
+    this.text.y = option.height / 2 - 10 + 5 * this.text.scaleY + (option.textY  || 0)
     this.add(this.roundedRect, this.text)
   }
 }
