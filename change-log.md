@@ -1,3 +1,9 @@
+## Cax 1.1.2
+
+* 修复了 cache 坐标体系的问题
+* 新加了 filter 骨架，目前只支持 invert 反色
+* 修复了 clip 导致事件触发坐标不准确的问题，clip 影响了下一次的 clearRect 
+
 ## Cax 1.1.1
 
 * 新增 scaleEventPoint 方法对事件发生点的坐标进行校正，通常用于 Web 里 Canvas 被 Style 缩放比例之后事件触发点不准的情况
