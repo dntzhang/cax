@@ -4,6 +4,7 @@ import Render from './render.js'
 import Sprite from '../display/sprite.js'
 import Bitmap from '../display/bitmap.js'
 import Text from '../display/text.js'
+import { filter } from '../filter/index.js'
 
 class CanvasRender extends Render {
   constructor (canvasOrContext, width, height) {
@@ -69,24 +70,30 @@ class CanvasRender extends Render {
     if(!cacheRender){
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
     }
-    if(o._readyToCache){
+    if (o._readyToCache) {
       o._readyToCache = false
-      o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x, o._cacheData.y)
+      o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1)
       this.render(o.cacheCtx, o, true)
       //debug cacheCanvas
       //document.body.appendChild(o.cacheCanvas)
-      ctx.drawImage(o.cacheCanvas, 0, 0)
+      if (o._readyToFilter) {
+        o.cacheCtx.putImageData(filter(o.cacheCtx.getImageData(0, 0, o.cacheCanvas.width, o.cacheCanvas.height), o._filterName), 0, 0)
+        this._readyToFilter = false
+      }
+
+      ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y)
     } else if (o.cacheCanvas&&!cacheRender) {
-      ctx.drawImage(o.cacheCanvas, 0, 0)
+      ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y)
     } else if (o instanceof Group) {
       let list = o.children.slice(0),
         l = list.length
       for (let i = 0 ; i < l; i++) {
-        //如果注释掉之后 group 内比如 fillStyle Graphics 和 Text存在项目污染，所有都要给默认值？
+        ctx.restore()
         ctx.save() 
         let target = this._render(ctx, list[i], mtx)
         if (target) return target
         ctx.restore()
+        ctx.save() 
       }
     } else if (o instanceof Graphics) {
       o.render(ctx)

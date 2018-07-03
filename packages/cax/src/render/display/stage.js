@@ -1,13 +1,9 @@
+import wegameCanvas from  './wegame-canvas'
 import Group from './group.js'
 import Renderer from '../render/renderer.js'
 import HitRender from '../render/hit-render.js'
 import Event from '../base/event.js'
 import WeStage from './we-stage'
-
-let wegameCanvas = null
-if(typeof wx !== 'undefined' && wx.createCanvas){
-  wegameCanvas = wx.createCanvas()
-}
 
 class Stage extends Group {
   constructor (width, height, renderTo) {

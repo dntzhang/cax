@@ -1,14 +1,15 @@
-import { createImageData } from './create-image-data'
 
-export function invert(pixels) {
-    const output = createImageData(pixels.width, pixels.height);
-    const d = pixels.data;
-    const od = output.data;
+
+export function invert(pixels, ratio) {
+
+    const d = pixels.data
+    ratio = ratio === undefined ? 1 : ratio
     for (var i = 0; i < d.length; i += 4) {
-        od[i] = 255 - d[i];
-        od[i + 1] = 255 - d[i + 1];
-        od[i + 2] = 255 - d[i + 2];
-        od[i + 3] = d[i + 3];
+        d[i] = d[i] + ratio * (255 - 2 * d[i])
+        d[i + 1] = d[i + 1] + ratio * (255 - 2 * d[i + 1])
+        d[i + 2] = d[i + 2] + ratio * (255 - 2 * d[i + 2])
+        d[i + 3] = d[i + 3]
     }
-    return output;
+    return pixels
 }
+

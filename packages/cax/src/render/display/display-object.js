@@ -115,8 +115,7 @@ class DisplayObject extends EventDispatcher {
       y: y || 0,
       width: width || this.width,
       height: height || this.height,
-      scale: scale || 1,
-      _cached: false
+      scale: scale || 1
     }
     if (!this.cacheCanvas) {
       if (typeof wx !== 'undefined' && wx.createCanvas) {
@@ -132,13 +131,15 @@ class DisplayObject extends EventDispatcher {
    
   }
 
-  uncache(){
+  uncache() {
     this.cacheCanvas = null
   }
 
 
-  filter(filter){
-    
+  filter(filterName, filterBox) {
+    this.cache(filterBox.x || 0, filterBox.y || 0, filterBox.width || this.width, filterBox.height || this.height)
+    this._readyToFilter = true
+    this._filterName = filterName
   }
 }
 

@@ -16,6 +16,7 @@
     "group-clip": "webpack -w",
     "clip-transform": "webpack -w",
     "map": "webpack -w",
+    "filter": "webpack -w",
     "dag": "webpack -w",
     "vision": "webpack -w",
     "to-shape": "webpack -w",

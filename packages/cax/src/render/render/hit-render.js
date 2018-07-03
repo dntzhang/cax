@@ -78,6 +78,7 @@ class HitRender extends Render {
 
   hitPixel (o, evt) {
     let ctx = this.ctx
+    ctx.clearRect(0, 0, 2, 2)
     let mtx = o._hitMatrix
     let list = o.children.slice(0),
       l = list.length
@@ -93,14 +94,9 @@ class HitRender extends Render {
     }
   }
 
-  // checkBoundEvent () {
-  //   return true
-  // }
-
   _hitPixel (o, evt, mtx) {
     if (!o.isVisible()) return
     let ctx = this.ctx
-    ctx.clearRect(0, 0, 2, 2)
     if (mtx && !o.fixed) {
       o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
     } else {
@@ -110,26 +106,30 @@ class HitRender extends Render {
     mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
     
     const ocg = o.clipGraphics
-      if (ocg) {
-        ctx.beginPath()
-        ocg._matrix.copy(mtx)
-        ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY)
-        ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty)
-        ocg.render(ctx)
-        ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd')
-      }
+    if (ocg) {
+      ctx.beginPath()
+      ocg._matrix.copy(mtx)
+      ocg._matrix.appendTransform(ocg.x, ocg.y, ocg.scaleX, ocg.scaleY, ocg.rotation, ocg.skewX, ocg.skewY, ocg.originX, ocg.originY)
+      ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty)
+      ocg.render(ctx)
+      ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd')
+    }
+
     if (o.cacheCanvas) {
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
-      ctx.drawImage(o.cacheCanvas, 0, 0)
+      ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y)
     } else if (o instanceof Group) {
       let list = o.children.slice(0),
         l = list.length
       for (let i = l - 1; i >= 0; i--) {
-        //这里不能 save 和 restore，不然把 clip 事件 跪了
-        //ctx.save()
+        //CanvasRenderingContext2D.restore() 是 Canvas 2D API 通过在绘图状态栈中弹出顶端的状态，将 canvas 恢复到最近的保存状态的方法。 如果没有保存状态，此方法不做任何改变。
+        //避免 save restore嵌套导致的 clip 区域影响 clearRect 擦除的区域
+        ctx.restore()
+        ctx.save()
         let target = this._hitPixel(list[i], evt, mtx)
         if (target) return target
-        //ctx.restore()
+        ctx.restore()
+        ctx.save()
       }
     } else {
       
