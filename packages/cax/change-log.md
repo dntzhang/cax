@@ -1,3 +1,11 @@
+## Cax 1.1.3
+
+* 修复了有 cache canvas 并且设置了 transform 时 clearRect 坐标体系的问题
+* 新增 blur filter 
+* 新增 unfilter 方法
+* 增加 cax.tick 和 cax.untick 
+* Buttom 文字偏移可设置
+
 ## Cax 1.1.2
 
 * 修复了 cache 坐标体系的问题
