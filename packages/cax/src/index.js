@@ -56,6 +56,12 @@ const cax = {
 
   setInterval: setRafInterval,
   clearInterval: clearRafInterval,
+  tick: function(fn){
+    return setRafInterval(fn, 16)
+  },
+  untick: function(tickId){
+    clearRafInterval(tickId)
+  },
 
   caxCanvasId: 0,
   TWEEN,

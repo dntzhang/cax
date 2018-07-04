@@ -21,6 +21,9 @@ class CanvasRender extends Render {
   }
 
   clear (ctx, width, height) {
+    //restore cache cavans transform
+    ctx.restore()
+
     ctx.clearRect(0, 0, width, height)
   }
 
