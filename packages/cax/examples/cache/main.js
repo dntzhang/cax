@@ -1,71 +1,61 @@
 import cax from '../../src/index.js'
 
 
-const stage = new cax.Stage(300, 400, '#canvasCtn')
 
-const circle = new cax.Circle(40, { fillStyle: 'black' })
+const stage = new cax.Stage(600, 400, '#canvasCtn')
 
-circle.x = 200
-circle.y = 250
-circle.rotation = 15
-circle.cache(0, 0, 40, 40, 1)
+const radius = 50
+const rings = 40
+
+const colors = ["#828b20", "#b0ac31", "#cbc53d", "#fad779", "#f9e4ad", "#faf2db", "#563512", "#9b4a0b", "#d36600", "#fe8a00", "#f9a71f"]
+
+for (let i = 0; i < 200; i++) {
+
+    const shape = new cax.Graphics()
+    for (var j = rings; j > 0; j--) {
+        shape.beginPath().fillStyle(colors[Math.random() * colors.length | 0]).arc(0,0,radius * j / rings,0,Math.PI*2).fill()
+    }
+    shape.x = Math.random() * 600
+    shape.y = Math.random() * 400
+    shape.velX = Math.random() * 10 - 5
+    shape.velY = Math.random() * 10 - 5
+
+
+    stage.add(shape);
+}
 
 
 
 
-const text = new cax.Text("abc", {
-    font: '60px Arial'
+cax.tick(function () {
+
+    var w = 600 + radius * 2;
+    var h = 400 + radius * 2;
+
+    for (var i = 0; i < 200; i++) {
+        var shape = stage.children[i];
+        shape.x = (shape.x + radius + shape.velX + w) % w - radius;
+        shape.y = (shape.y + radius + shape.velY + h) % h - radius;
+    }
+
+    stage.update();
 })
 
-text.x = 100
-text.y = 100
-//text.scaleX = 0.5
-text.cache(0, 0, 80, 60)
-stage.add(text,circle)
-
-stage.update()
-
-setInterval(()=>{
-    stage.update()
-},16)
-
-const gt = new cax.Text("Group Cache", {
-    font: '20px Arial'
-})
-const group = new cax.Group()
-
-group.x =130
-group.y =30
-
-const rect = new cax.Rect(140,40, { fillStyle: 'red' })
-
-group.cache(-20,0,100,20 ,1)
-
-group.add(rect, gt)
-stage.add(group)
-stage.update()
 
 
-group.cursor = 'move'
-
-group.on('drag',(evt)=>{
-    evt.target.x +=evt.dx
-    evt.target.y+=evt.dy
-})
-text.cursor = 'move'
-circle.cursor = 'pointer'
-
-
-let tag = false
+let tag = true
 
 document.querySelector('#toggleBtn').addEventListener('click', () => {
-    group[(tag ? 'cache' : 'uncache')](-20,0,100,20 ,1)
-    text[(tag ? 'cache' : 'uncache')](0, 0, 80, 60)
-    circle[(tag ? 'cache' : 'uncache')](0, 0, 40, 40, 1)
-    tag =!tag
-    stage.update()
-})
 
-// cax.setInterval(function(){
-//     stage.update()
-// },16)
+    for (var i = 0; i < 200; i++) {
+        var shape = stage.children[i];
+        if (tag) {
+            shape.cache(-radius, -radius, radius * 2, radius * 2)
+        } else {
+            shape.uncache()
+        }
+    }
+
+    tag =!tag
+
+})

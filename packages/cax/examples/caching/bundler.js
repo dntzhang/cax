@@ -420,11 +420,6 @@ var DisplayObject = function (_EventDispatcher) {
       this._readyToFilter = true;
       this._filterName = filterName;
     }
-  }, {
-    key: 'unfilter',
-    value: function unfilter() {
-      this.uncache();
-    }
   }]);
 
   return DisplayObject;
@@ -2574,7 +2569,7 @@ var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _wxHitRender = __webpack_require__(32);
+var _wxHitRender = __webpack_require__(30);
 
 var _wxHitRender2 = _interopRequireDefault(_wxHitRender);
 
@@ -2840,56 +2835,69 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stage = new _index2.default.Stage(600, 400, '#canvasCtn');
+var stage = new _index2.default.Stage(300, 400, '#canvasCtn');
 
-var radius = 50;
-var rings = 40;
+var circle = new _index2.default.Circle(40, { fillStyle: 'black' });
 
-var colors = ["#828b20", "#b0ac31", "#cbc53d", "#fad779", "#f9e4ad", "#faf2db", "#563512", "#9b4a0b", "#d36600", "#fe8a00", "#f9a71f"];
+circle.x = 200;
+circle.y = 250;
+circle.rotation = 15;
+circle.cache(0, 0, 40, 40, 1);
 
-for (var i = 0; i < 200; i++) {
+var text = new _index2.default.Text("abc", {
+    font: '60px Arial'
+});
 
-    var shape = new _index2.default.Graphics();
-    for (var j = rings; j > 0; j--) {
-        shape.beginPath().fillStyle(colors[Math.random() * colors.length | 0]).arc(0, 0, radius * j / rings, 0, Math.PI * 2).fill();
-    }
-    shape.x = Math.random() * 600;
-    shape.y = Math.random() * 400;
-    shape.velX = Math.random() * 10 - 5;
-    shape.velY = Math.random() * 10 - 5;
+text.x = 100;
+text.y = 100;
+//text.scaleX = 0.5
+text.cache(0, 0, 80, 60);
+stage.add(text, circle);
 
-    stage.add(shape);
-}
+stage.update();
 
-_index2.default.tick(function () {
+setInterval(function () {
+    stage.update();
+}, 16);
 
-    var w = 600 + radius * 2;
-    var h = 400 + radius * 2;
+var gt = new _index2.default.Text("Group Cache", {
+    font: '20px Arial'
+});
+var group = new _index2.default.Group();
 
-    for (var i = 0; i < 200; i++) {
-        var shape = stage.children[i];
-        shape.x = (shape.x + radius + shape.velX + w) % w - radius;
-        shape.y = (shape.y + radius + shape.velY + h) % h - radius;
-    }
+group.x = 130;
+group.y = 30;
 
+var rect = new _index2.default.Rect(140, 40, { fillStyle: 'red' });
+
+group.cache(-20, 0, 100, 20, 1);
+
+group.add(rect, gt);
+stage.add(group);
+stage.update();
+
+group.cursor = 'move';
+
+group.on('drag', function (evt) {
+    evt.target.x += evt.dx;
+    evt.target.y += evt.dy;
+});
+text.cursor = 'move';
+circle.cursor = 'pointer';
+
+var tag = false;
+
+document.querySelector('#toggleBtn').addEventListener('click', function () {
+    group[tag ? 'cache' : 'uncache'](-20, 0, 100, 20, 1);
+    text[tag ? 'cache' : 'uncache'](0, 0, 80, 60);
+    circle[tag ? 'cache' : 'uncache'](0, 0, 40, 40, 1);
+    tag = !tag;
     stage.update();
 });
 
-var tag = true;
-
-document.querySelector('#toggleBtn').addEventListener('click', function () {
-
-    for (var i = 0; i < 200; i++) {
-        var shape = stage.children[i];
-        if (tag) {
-            shape.cache(-radius, -radius, radius * 2, radius * 2);
-        } else {
-            shape.uncache();
-        }
-    }
-
-    tag = !tag;
-});
+// cax.setInterval(function(){
+//     stage.update()
+// },16)
 
 /***/ }),
 /* 17 */
@@ -2940,31 +2948,31 @@ var _roundedRect = __webpack_require__(15);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
-var _arrowPath = __webpack_require__(33);
+var _arrowPath = __webpack_require__(31);
 
 var _arrowPath2 = _interopRequireDefault(_arrowPath);
 
-var _ellipse = __webpack_require__(34);
+var _ellipse = __webpack_require__(32);
 
 var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _button = __webpack_require__(35);
+var _button = __webpack_require__(33);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _rect = __webpack_require__(36);
+var _rect = __webpack_require__(34);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _circle = __webpack_require__(37);
+var _circle = __webpack_require__(35);
 
 var _circle2 = _interopRequireDefault(_circle);
 
-var _polygon = __webpack_require__(38);
+var _polygon = __webpack_require__(36);
 
 var _polygon2 = _interopRequireDefault(_polygon);
 
-var _equilateralPolygon = __webpack_require__(39);
+var _equilateralPolygon = __webpack_require__(37);
 
 var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
@@ -3006,12 +3014,6 @@ var cax = {
 
   setInterval: _rafInterval.setRafInterval,
   clearInterval: _rafInterval.clearRafInterval,
-  tick: function tick(fn) {
-    return (0, _rafInterval.setRafInterval)(fn, 16);
-  },
-  untick: function untick(tickId) {
-    (0, _rafInterval.clearRafInterval)(tickId);
-  },
 
   caxCanvasId: 0,
   TWEEN: _tween2.default,
@@ -3366,7 +3368,7 @@ var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _hitRender = __webpack_require__(31);
+var _hitRender = __webpack_require__(29);
 
 var _hitRender2 = _interopRequireDefault(_hitRender);
 
@@ -4056,9 +4058,6 @@ var CanvasRender = function (_Render) {
   _createClass(CanvasRender, [{
     key: 'clear',
     value: function clear(ctx, width, height) {
-      //restore cache cavans transform
-      ctx.restore();
-
       ctx.clearRect(0, 0, width, height);
     }
   }, {
@@ -4215,14 +4214,10 @@ exports.filter = filter;
 
 var _invert = __webpack_require__(28);
 
-var _blur = __webpack_require__(29);
-
 function filter(pixels, name) {
 
     if (name.indexOf('invert(') === 0) {
         return (0, _invert.invert)(pixels, Number(name.replace('invert(', '').replace('%)', '')) / 100);
-    } else if (name.indexOf('blur(') === 0) {
-        return (0, _blur.blur)(pixels, Number(name.replace('blur(', '').replace('px)', '')));
     }
 }
 
@@ -4252,157 +4247,6 @@ function invert(pixels, ratio) {
 
 /***/ }),
 /* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.blur = blur;
-
-var _createImageData = __webpack_require__(30);
-
-function blur(pixels, diameter) {
-  diameter = Math.abs(diameter);
-  if (diameter <= 1) return pixels;
-  var radius = diameter / 2;
-  var len = Math.ceil(diameter) + (1 - Math.ceil(diameter) % 2);
-  var weights = new Float32Array(len);
-  var rho = (radius + 0.5) / 3;
-  var rhoSq = rho * rho;
-  var gaussianFactor = 1 / Math.sqrt(2 * Math.PI * rhoSq);
-  var rhoFactor = -1 / (2 * rho * rho);
-  var wsum = 0;
-  var middle = Math.floor(len / 2);
-  for (var i = 0; i < len; i++) {
-    var x = i - middle;
-    var gx = gaussianFactor * Math.exp(x * x * rhoFactor);
-    weights[i] = gx;
-    wsum += gx;
-  }
-  for (var i = 0; i < weights.length; i++) {
-    weights[i] /= wsum;
-  }
-  return separableConvolve(pixels, weights, weights, false);
-}
-
-function separableConvolve(pixels, horizWeights, vertWeights, opaque) {
-  return horizontalConvolve(verticalConvolve(pixels, vertWeights, opaque), horizWeights, opaque);
-}
-
-function horizontalConvolve(pixels, weightsVector, opaque) {
-  var side = weightsVector.length;
-  var halfSide = Math.floor(side / 2);
-
-  var src = pixels.data;
-  var sw = pixels.width;
-  var sh = pixels.height;
-
-  var w = sw;
-  var h = sh;
-  var output = (0, _createImageData.createImageData)(w, h);
-  var dst = output.data;
-
-  var alphaFac = opaque ? 1 : 0;
-
-  for (var y = 0; y < h; y++) {
-    for (var x = 0; x < w; x++) {
-      var sy = y;
-      var sx = x;
-      var dstOff = (y * w + x) * 4;
-      var r = 0,
-          g = 0,
-          b = 0,
-          a = 0;
-      for (var cx = 0; cx < side; cx++) {
-        var scy = sy;
-        var scx = Math.min(sw - 1, Math.max(0, sx + cx - halfSide));
-        var srcOff = (scy * sw + scx) * 4;
-        var wt = weightsVector[cx];
-        r += src[srcOff] * wt;
-        g += src[srcOff + 1] * wt;
-        b += src[srcOff + 2] * wt;
-        a += src[srcOff + 3] * wt;
-      }
-      dst[dstOff] = r;
-      dst[dstOff + 1] = g;
-      dst[dstOff + 2] = b;
-      dst[dstOff + 3] = a + alphaFac * (255 - a);
-    }
-  }
-  return output;
-}
-
-function verticalConvolve(pixels, weightsVector, opaque) {
-  var side = weightsVector.length;
-  var halfSide = Math.floor(side / 2);
-
-  var src = pixels.data;
-  var sw = pixels.width;
-  var sh = pixels.height;
-
-  var w = sw;
-  var h = sh;
-  var output = (0, _createImageData.createImageData)(w, h);
-  var dst = output.data;
-
-  var alphaFac = opaque ? 1 : 0;
-
-  for (var y = 0; y < h; y++) {
-    for (var x = 0; x < w; x++) {
-      var sy = y;
-      var sx = x;
-      var dstOff = (y * w + x) * 4;
-      var r = 0,
-          g = 0,
-          b = 0,
-          a = 0;
-      for (var cy = 0; cy < side; cy++) {
-        var scy = Math.min(sh - 1, Math.max(0, sy + cy - halfSide));
-        var scx = sx;
-        var srcOff = (scy * sw + scx) * 4;
-        var wt = weightsVector[cy];
-        r += src[srcOff] * wt;
-        g += src[srcOff + 1] * wt;
-        b += src[srcOff + 2] * wt;
-        a += src[srcOff + 3] * wt;
-      }
-      dst[dstOff] = r;
-      dst[dstOff + 1] = g;
-      dst[dstOff + 2] = b;
-      dst[dstOff + 3] = a + alphaFac * (255 - a);
-    }
-  }
-  return output;
-};
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.createImageData = createImageData;
-var tmpCtx = null;
-
-if (typeof document != 'undefined') {
-    tmpCtx = document.createElement('canvas').getContext('2d');
-} else if (typeof wx !== 'undefined' && wx.createCanvas) {
-    tmpCtx = wx.createCanvas().getContext('2d');
-}
-
-function createImageData(w, h) {
-    return tmpCtx.createImageData(w, h);
-}
-
-/***/ }),
-/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4535,7 +4379,7 @@ var HitRender = function (_Render) {
     value: function hitPixel(o, evt) {
       var ctx = this.ctx;
       //CanvasRenderingContext2D.restore() 是 Canvas 2D API 通过在绘图状态栈中弹出顶端的状态，将 canvas 恢复到最近的保存状态的方法。 如果没有保存状态，此方法不做任何改变。
-      //避免 save restore嵌套导致的 clip 区域影响 clearRect 擦除的区域
+      ////避免 save restore嵌套导致的 clip 区域影响 clearRect 擦除的区域
       ctx.restore();
       ctx.clearRect(0, 0, 2, 2);
       var mtx = o._hitMatrix;
@@ -4640,7 +4484,7 @@ var HitRender = function (_Render) {
 exports.default = HitRender;
 
 /***/ }),
-/* 32 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4801,7 +4645,7 @@ var WxHitRender = function (_Render) {
 exports.default = WxHitRender;
 
 /***/ }),
-/* 33 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4897,7 +4741,7 @@ var ArrowPath = function (_Shape) {
 exports.default = ArrowPath;
 
 /***/ }),
-/* 34 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4976,7 +4820,7 @@ var Ellipse = function (_Shape) {
 exports.default = Ellipse;
 
 /***/ }),
-/* 35 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5024,8 +4868,8 @@ var Button = function (_Group) {
       color: option.color
     });
 
-    _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
-    _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
+    _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX;
+    _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY;
     _this.add(_this.roundedRect, _this.text);
     return _this;
   }
@@ -5036,7 +4880,7 @@ var Button = function (_Group) {
 exports.default = Button;
 
 /***/ }),
-/* 36 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5095,7 +4939,7 @@ var Rect = function (_Shape) {
 exports.default = Rect;
 
 /***/ }),
-/* 37 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5161,7 +5005,7 @@ var Circle = function (_Shape) {
 exports.default = Circle;
 
 /***/ }),
-/* 38 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5235,7 +5079,7 @@ var Polygon = function (_Shape) {
 exports.default = Polygon;
 
 /***/ }),
-/* 39 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
