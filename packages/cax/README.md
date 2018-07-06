@@ -35,6 +35,7 @@
 * 内置 [to2to](https://github.com/dntzhang/cax/tree/master/packages/to) 的跨平台运动引擎
 * 支持可以变形的 clip 裁剪体系
 * 内置文本、位图、序列帧、绘图对象和多种矢量绘制对象
+* 支持 SVG Path 渲染
 
 ---
 
