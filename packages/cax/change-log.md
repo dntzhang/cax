@@ -1,3 +1,11 @@
+## Cax 1.1.4
+
+* cax 下挂载了强大的 Path , 用于绘制 SVG。如:
+
+```js
+const path = new cax.Path('M412.032,413.183l-0.96,1.752c0,0,0.889,0.883,3.98,1.086s5.995-0.493,5.995-0.493L410.032,420.183z')
+```
+
 ## Cax 1.1.3
 
 * 修复了有 cache canvas 并且设置了 transform 时 clearRect 坐标体系的问题
@@ -71,7 +79,7 @@
 
 ## Cax 1.0.8
 
-* 支持 to2to 的 自定义动画的用法
+* 支持 to2to 的自定义动画的用法
 
 ```js
 To.get(bitmap).animate('rubber').start()
