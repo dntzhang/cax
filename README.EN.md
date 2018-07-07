@@ -4,6 +4,7 @@ English | [简体中文](./README.md)
 
 > Cross platform 2d rendering engine
 
+  * [Wechart by Cax](https://github.com/dntzhang/wechart)
   * [Simple](https://dntzhang.github.io/cax) 
   * [Animation](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
   * [Clip](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
@@ -12,7 +13,7 @@ English | [简体中文](./README.md)
   * [To2To Animate](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
   * [Swing](https://dntzhang.github.io/cax/packages/to/examples/swing/) 
   * [Cax + Matter](https://dntzhang.github.io/cax/packages/cax/examples/matter/) 
-  * [Pie Chart](https://dntzhang.github.io/wechart/packages/pie/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/examples/simple/main.js) | [Pie Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js) | [Tutorial](https://github.com/dntzhang/wechart/blob/master/packages/pie/README.md)
+  * [Pie Chart](https://dntzhang.github.io/wechart/packages/pie/examples/simple/)
   * [To + Shape](https://dntzhang.github.io/cax/packages/cax/examples/to-shape/)
   * [Vision](https://dntzhang.github.io/cax/packages/cax/examples/vision/)
   * [Cache](https://dntzhang.github.io/cax/packages/cax/examples/cache/)

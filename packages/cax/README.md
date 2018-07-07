@@ -4,6 +4,7 @@
 
 > 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
 
+* [Wechart by Cax](https://github.com/dntzhang/wechart)
 * Web DEMO
   * [Simple](https://dntzhang.github.io/cax) 
   * [Animation](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
@@ -13,7 +14,7 @@
   * [To2To Animate](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
   * [Swing](https://dntzhang.github.io/cax/packages/to/examples/swing/) 
   * [Cax + Matter](https://dntzhang.github.io/cax/packages/cax/examples/matter/) 
-  * [Pie Chart](https://dntzhang.github.io/wechart/packages/pie/examples/simple/) | [Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/examples/simple/main.js) | [Pie Source](https://github.com/dntzhang/wechart/blob/master/packages/pie/src/index.js) | [Tutorial](https://github.com/dntzhang/wechart/blob/master/packages/pie/README.md)
+  * [Pie Chart](https://dntzhang.github.io/wechart/packages/pie/examples/simple/)
   * [To + Shape](https://dntzhang.github.io/cax/packages/cax/examples/to-shape/)
   * [Vision](https://dntzhang.github.io/cax/packages/cax/examples/vision/)
   * [Cache](https://dntzhang.github.io/cax/packages/cax/examples/cache/)
@@ -408,7 +409,7 @@ const button = new cax.Button({
 
 |属性名      |描述   |
 |---|---|
-| fixed | 是否接受分组，默认是 false，设置成 true 不会叠加祖辈们的 transform 属性|
+| fixed | 是否固定定位，默认是 false 设置成 true 不会叠加祖辈们的 transform 属性|
 
 ## 事件
 
