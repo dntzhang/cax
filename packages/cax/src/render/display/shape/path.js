@@ -3,24 +3,21 @@ import Shape from './shape'
 import arcToBezier from '../../base/arc-to-bezier'
 
 class Path extends Shape {
-  constructor (d, option) {
+  constructor(d, option) {
     super()
-    this.type = 'path'
     this.d = d
-    this.fillColor = 'black'
-    this.strokeColor = 'white'
-    this.strokeWidth = 1
 
-    option && Object.keys(option).forEach((key) => {
-      this[key] = option[key]
-    })
+    option = Object.assign({
+      fillStyle: 'black',
+      strokeStyle: 'black',
+      lineWidth: 1
+    }, option)
+    this.option = option
   }
 
-  draw () {
+  draw() {
     const cmds = parse(this.d)
-    this.lineWidth(this.strokeWidth)
-    this.strokeStyle(this.strokeColor)
-    this.fillStyle(this.fillColor)
+
     this.beginPath()
     // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
     // M = moveto
@@ -35,10 +32,10 @@ class Path extends Shape {
     // Z = closepath
     // 以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
     let preX,
-        preY,
-        curves,
-        lastCurve
-      
+      preY,
+      curves,
+      lastCurve
+
 
     // 参考我的 pasition https://github.com/AlloyTeam/pasition/blob/master/src/index.js
     for (let j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
@@ -227,9 +224,16 @@ class Path extends Shape {
           break
       }
     }
+    if (this.option.fillStyle) {
+      this.fillStyle(this.option.fillStyle)
+      this.fill()
+    }
 
-    this.fill()
-    this.stroke()
+    if (this.option.strokeStyle) {
+      this.lineWidth(this.option.lineWidth)
+      this.strokeStyle(this.option.strokeStyle)
+      this.stroke()
+    }
   }
 }
 

@@ -4967,15 +4967,14 @@ var Path = function (_Shape) {
 
     var _this = _possibleConstructorReturn(this, (Path.__proto__ || Object.getPrototypeOf(Path)).call(this));
 
-    _this.type = 'path';
     _this.d = d;
-    _this.fillColor = 'black';
-    _this.strokeColor = 'white';
-    _this.strokeWidth = 1;
 
-    option && Object.keys(option).forEach(function (key) {
-      _this[key] = option[key];
-    });
+    option = Object.assign({
+      fillStyle: 'black',
+      strokeStyle: 'black',
+      lineWidth: 1
+    }, option);
+    _this.option = option;
     return _this;
   }
 
@@ -4985,9 +4984,7 @@ var Path = function (_Shape) {
       var _this2 = this;
 
       var cmds = (0, _pathParser2.default)(this.d);
-      this.lineWidth(this.strokeWidth);
-      this.strokeStyle(this.strokeColor);
-      this.fillStyle(this.fillColor);
+
       this.beginPath();
       // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
       // M = moveto
@@ -5186,9 +5183,16 @@ var Path = function (_Shape) {
             break;
         }
       }
+      if (this.option.fillStyle) {
+        this.fillStyle(this.option.fillStyle);
+        this.fill();
+      }
 
-      this.fill();
-      this.stroke();
+      if (this.option.strokeStyle) {
+        this.lineWidth(this.option.lineWidth);
+        this.strokeStyle(this.option.strokeStyle);
+        this.stroke();
+      }
     }
   }]);
 
