@@ -1,5 +1,6 @@
 import parse from '../../base/path-parser.js'
 import Shape from './shape'
+import arcToBezier from '../../base/arc-to-bezier'
 
 class Path extends Shape {
   constructor (d, option) {
@@ -34,9 +35,12 @@ class Path extends Shape {
     // Z = closepath
     // 以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
     let preX,
-      preY
+        preY,
+        curves,
+        lastCurve
+      
 
-    // 缺少t T 和 a A,以后可以参考我写的 pasition https://github.com/AlloyTeam/pasition/blob/master/src/index.js
+    // 参考我的 pasition https://github.com/AlloyTeam/pasition/blob/master/src/index.js
     for (let j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
       let item = cmds[j]
       let action = item[0]
@@ -122,19 +126,104 @@ class Path extends Shape {
           preX += item[3]
           preY += item[4]
           break
-        // case 't':
-
-        //   this.quadraticCurveTo(preX + preX + preX - preItem[1], preY + preY + preY - preItem[2], preX + item[1], preY + item[2])
-        //   preX += item[1]
-        //   preY += item[2]
-        //   break
-        // case 'T':
-        //   this.quadraticCurveTo(preX + preX - preItem[1], preY + preY - preItem[2], item[1], item[2])
-        //   preX = item[1]
-        //   preY = item[2]
-        //   break
         case 'Z':
           this.closePath()
+          break
+        case 'z':
+          this.closePath()
+          break
+
+        case 'a':
+          curves = arcToBezier({
+            rx: item[1],
+            ry: item[2],
+            px: preX,
+            py: preY,
+            xAxisRotation: item[3],
+            largeArcFlag: item[4],
+            sweepFlag: item[5],
+            cx: preX + item[6],
+            cy: preX + item[7]
+          })
+          lastCurve = curves[curves.length - 1]
+
+
+          curves.forEach((curve, index) => {
+            if (index === 0) {
+              this.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y)
+            } else {
+              this.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y)
+            }
+          })
+
+          preX = lastCurve.x
+          preY = lastCurve.y
+
+          break
+
+        case 'A':
+
+          curves = arcToBezier({
+            rx: item[1],
+            ry: item[2],
+            px: preX,
+            py: preY,
+            xAxisRotation: item[3],
+            largeArcFlag: item[4],
+            sweepFlag: item[5],
+            cx: item[6],
+            cy: item[7]
+          })
+          lastCurve = curves[curves.length - 1]
+
+
+          curves.forEach((curve, index) => {
+            if (index === 0) {
+              this.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y)
+            } else {
+              this.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y)
+            }
+          })
+
+          preX = lastCurve.x
+          preY = lastCurve.y
+
+          break
+
+        case 'T':
+
+          if (preItem[0] === 'Q' || preItem[0] === 'q') {
+            preCX = preX + preItem[3] - preItem[1]
+            preCY = preY + preItem[4] - preItem[2]
+            this.quadraticCurveTo(preX, preY, preCX, preCY, item[1], item[2])
+
+
+          } else if (preItem[0] === 'T' || preItem[0] === 't') {
+            this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, item[1], item[2])
+            preCX = preX + preX - preCX
+            preCY = preY + preY - preCY
+          }
+
+          preX = item[1]
+          preY = item[2]
+          break
+
+
+        case 't':
+          if (preItem[0] === 'Q' || preItem[0] === 'q') {
+            preCX = preX + preItem[3] - preItem[1]
+            preCY = preY + preItem[4] - preItem[2]
+            this.quadraticCurveTo(preX, preY, preCX, preCY, preX + item[1], preY + item[2])
+
+
+          } else if (preItem[0] === 'T' || preItem[0] === 't') {
+            this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, preX + item[1], preY + item[2])
+            preCX = preX + preX - preCX
+            preCY = preY + preY - preCY
+          }
+
+          preX += item[1]
+          preY += item[2]
           break
       }
     }
