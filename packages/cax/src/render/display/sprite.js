@@ -1,5 +1,6 @@
-import DisplayObject from './display-object.js'
+import DisplayObject from './display-object'
 import util from '../../common/util'
+import Bitmap from './bitmap'
 
 class Sprite extends DisplayObject {
   constructor (option) {
@@ -7,7 +8,7 @@ class Sprite extends DisplayObject {
     this.option = option
     const len = this.option.imgs.length
     let count = 0
-
+    const firstImg = this.option.imgs[0] 
     this.imgMap = {}
 
     if (util.isWeapp) {
@@ -16,31 +17,44 @@ class Sprite extends DisplayObject {
           this.imgMap[img] = result.img
           count++
           if (count === len) {
-            this.img = this.imgMap[this.option.imgs[0]]
+            this.img = this.imgMap[firstImg]
             this.rect = [0, 0, 0, 0]
           }
         })
       }
       )
     } else {
-      if (typeof this.option.imgs[0] === 'string') {
+      if (typeof firstImg === 'string') {
         const len = this.option.imgs.length
         let loadedCount = 0
         this.option.imgs.forEach(src => {
-          const img = util.isWegame ? wx.createImage() : new window.Image()
-          img.onload = () => {
-            this.imgMap[src] = img
+          if(Bitmap.cache[src]){
+            this.imgMap[src] = Bitmap.cache[src]
             loadedCount++
             if (loadedCount === len) {
-              this.img = this.imgMap[this.option.imgs[0]]
+              this.img = this.imgMap[firstImg]
               this.rect = [0, 0, 0, 0]
             }
+          }else{
+            const img = util.isWegame ? wx.createImage() : new window.Image()
+            img.onload = () => {
+              this.imgMap[src] = img
+              loadedCount++
+              if (loadedCount === len) {
+                this.img = this.imgMap[firstImg]
+                this.rect = [0, 0, 0, 0]
+              }
+              Bitmap.cache[src] = img
+            }
+            img.src = src
           }
-          img.src = src
         })
+      } else if(firstImg instanceof Bitmap){ 
+        this.rect = [0, 0, 0, 0]
+        this.img = firstImg.img
       } else {
         this.rect = [0, 0, 0, 0]
-        this.img = this.option.imgs[0]
+        this.img = firstImg
       }
     }
 

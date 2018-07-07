@@ -715,6 +715,121 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var Bitmap = function (_DisplayObject) {
+  _inherits(Bitmap, _DisplayObject);
+
+  function Bitmap(img, onLoad) {
+    _classCallCheck(this, Bitmap);
+
+    var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
+
+    if (typeof img === 'string') {
+      if (Bitmap.cache[img]) {
+        if (_util2.default.isWeapp) {
+          _this.img = Bitmap.cache[img].img;
+          _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+          _this.width = _this.rect[2];
+          _this.height = _this.rect[3];
+        } else {
+          _this.img = Bitmap.cache[img];
+          _this.rect = [0, 0, _this.img.width, _this.img.height];
+          _this.width = _this.img.width;
+          _this.height = _this.img.height;
+        }
+        onLoad && onLoad.call(_this);
+      } else if (_util2.default.isWeapp) {
+        _util2.default.getImageInWx(img, function (result) {
+          _this.img = result.img;
+          if (!_this.rect) {
+            _this.rect = [0, 0, result.width, result.height];
+          }
+          _this.width = result.width;
+          _this.height = result.height;
+          onLoad && onLoad.call(_this);
+          Bitmap.cache[img] = result;
+        });
+      } else {
+        _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+        _this.visible = false;
+        _this.img.onload = function () {
+          _this.visible = true;
+          if (!_this.rect) {
+            _this.rect = [0, 0, _this.img.width, _this.img.height];
+          }
+          _this.width = _this.img.width;
+          _this.height = _this.img.height;
+          onLoad && onLoad.call(_this);
+          Bitmap.cache[img] = _this.img;
+        };
+        _this.img.src = img;
+      }
+    } else {
+      _this.img = img;
+      _this.rect = [0, 0, img.width, img.height];
+      _this.width = img.width;
+      _this.height = img.height;
+      Bitmap.cache[img.src] = img;
+    }
+    return _this;
+  }
+
+  _createClass(Bitmap, [{
+    key: 'clone',
+    value: function clone() {
+      var bitmap = new Bitmap(this.img);
+      bitmap.x = this.x;
+      bitmap.y = this.y;
+
+      bitmap.scaleX = this.scaleX;
+      bitmap.scaleY = this.scaleY;
+      bitmap.rotation = this.rotation;
+      bitmap.skewX = this.skewX;
+      bitmap.skewY = this.skewY;
+      bitmap.originX = this.originX;
+      bitmap.originY = this.originY;
+      bitmap.width = this.width;
+      bitmap.height = this.height;
+
+      return bitmap;
+    }
+  }]);
+
+  return Bitmap;
+}(_displayObject2.default);
+
+Bitmap.cache = {};
+
+exports.default = Bitmap;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _displayObject = __webpack_require__(2);
+
+var _displayObject2 = _interopRequireDefault(_displayObject);
+
+var _util = __webpack_require__(9);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var measureCtx = void 0;
 
 if (_util2.default.isWeapp) {
@@ -762,7 +877,7 @@ var Text = function (_DisplayObject) {
 exports.default = Text;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -781,6 +896,10 @@ var _displayObject2 = _interopRequireDefault(_displayObject);
 var _util = __webpack_require__(9);
 
 var _util2 = _interopRequireDefault(_util);
+
+var _bitmap = __webpack_require__(4);
+
+var _bitmap2 = _interopRequireDefault(_bitmap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -801,7 +920,7 @@ var Sprite = function (_DisplayObject) {
     _this.option = option;
     var len = _this.option.imgs.length;
     var count = 0;
-
+    var firstImg = _this.option.imgs[0];
     _this.imgMap = {};
 
     if (_util2.default.isWeapp) {
@@ -810,30 +929,43 @@ var Sprite = function (_DisplayObject) {
           _this.imgMap[img] = result.img;
           count++;
           if (count === len) {
-            _this.img = _this.imgMap[_this.option.imgs[0]];
+            _this.img = _this.imgMap[firstImg];
             _this.rect = [0, 0, 0, 0];
           }
         });
       });
     } else {
-      if (typeof _this.option.imgs[0] === 'string') {
+      if (typeof firstImg === 'string') {
         var _len = _this.option.imgs.length;
         var loadedCount = 0;
         _this.option.imgs.forEach(function (src) {
-          var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-          img.onload = function () {
-            _this.imgMap[src] = img;
+          if (_bitmap2.default.cache[src]) {
+            _this.imgMap[src] = _bitmap2.default.cache[src];
             loadedCount++;
             if (loadedCount === _len) {
-              _this.img = _this.imgMap[_this.option.imgs[0]];
+              _this.img = _this.imgMap[firstImg];
               _this.rect = [0, 0, 0, 0];
             }
-          };
-          img.src = src;
+          } else {
+            var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+            img.onload = function () {
+              _this.imgMap[src] = img;
+              loadedCount++;
+              if (loadedCount === _len) {
+                _this.img = _this.imgMap[firstImg];
+                _this.rect = [0, 0, 0, 0];
+              }
+              _bitmap2.default.cache[src] = img;
+            };
+            img.src = src;
+          }
         });
+      } else if (firstImg instanceof _bitmap2.default) {
+        _this.rect = [0, 0, 0, 0];
+        _this.img = firstImg.img;
       } else {
         _this.rect = [0, 0, 0, 0];
-        _this.img = _this.option.imgs[0];
+        _this.img = firstImg;
       }
     }
 
@@ -935,121 +1067,6 @@ var Sprite = function (_DisplayObject) {
 }(_displayObject2.default);
 
 exports.default = Sprite;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _displayObject = __webpack_require__(2);
-
-var _displayObject2 = _interopRequireDefault(_displayObject);
-
-var _util = __webpack_require__(9);
-
-var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Bitmap = function (_DisplayObject) {
-  _inherits(Bitmap, _DisplayObject);
-
-  function Bitmap(img, onLoad) {
-    _classCallCheck(this, Bitmap);
-
-    var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
-
-    if (typeof img === 'string') {
-      if (Bitmap.cache[img]) {
-        if (_util2.default.isWeapp) {
-          _this.img = Bitmap.cache[img].img;
-          _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
-          _this.width = _this.rect[2];
-          _this.height = _this.rect[3];
-        } else {
-          _this.img = Bitmap.cache[img];
-          _this.rect = [0, 0, _this.img.width, _this.img.height];
-          _this.width = _this.img.width;
-          _this.height = _this.img.height;
-        }
-        onLoad && onLoad.call(_this);
-      } else if (_util2.default.isWeapp) {
-        _util2.default.getImageInWx(img, function (result) {
-          _this.img = result.img;
-          if (!_this.rect) {
-            _this.rect = [0, 0, result.width, result.height];
-          }
-          _this.width = result.width;
-          _this.height = result.height;
-          onLoad && onLoad.call(_this);
-          Bitmap.cache[img] = result;
-        });
-      } else {
-        _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-        _this.visible = false;
-        _this.img.onload = function () {
-          _this.visible = true;
-          if (!_this.rect) {
-            _this.rect = [0, 0, _this.img.width, _this.img.height];
-          }
-          _this.width = _this.img.width;
-          _this.height = _this.img.height;
-          onLoad && onLoad.call(_this);
-          Bitmap.cache[img] = _this.img;
-        };
-        _this.img.src = img;
-      }
-    } else {
-      _this.img = img;
-      _this.rect = [0, 0, img.width, img.height];
-      _this.width = img.width;
-      _this.height = img.height;
-      Bitmap.cache[img.src] = img;
-    }
-    return _this;
-  }
-
-  _createClass(Bitmap, [{
-    key: 'clone',
-    value: function clone() {
-      var bitmap = new Bitmap(this.img);
-      bitmap.x = this.x;
-      bitmap.y = this.y;
-
-      bitmap.scaleX = this.scaleX;
-      bitmap.scaleY = this.scaleY;
-      bitmap.rotation = this.rotation;
-      bitmap.skewX = this.skewX;
-      bitmap.skewY = this.skewY;
-      bitmap.originX = this.originX;
-      bitmap.originY = this.originY;
-      bitmap.width = this.width;
-      bitmap.height = this.height;
-
-      return bitmap;
-    }
-  }]);
-
-  return Bitmap;
-}(_displayObject2.default);
-
-Bitmap.cache = {};
-
-exports.default = Bitmap;
 
 /***/ }),
 /* 7 */
@@ -2872,11 +2889,11 @@ var _graphics = __webpack_require__(3);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
-var _bitmap = __webpack_require__(6);
+var _bitmap = __webpack_require__(4);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
-var _text = __webpack_require__(4);
+var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
 
@@ -2884,7 +2901,7 @@ var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _sprite = __webpack_require__(5);
+var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
@@ -3965,15 +3982,15 @@ var _render2 = __webpack_require__(8);
 
 var _render3 = _interopRequireDefault(_render2);
 
-var _sprite = __webpack_require__(5);
+var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-var _bitmap = __webpack_require__(6);
+var _bitmap = __webpack_require__(4);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
-var _text = __webpack_require__(4);
+var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
 
@@ -4381,15 +4398,15 @@ var _event = __webpack_require__(7);
 
 var _event2 = _interopRequireDefault(_event);
 
-var _sprite = __webpack_require__(5);
+var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-var _bitmap = __webpack_require__(6);
+var _bitmap = __webpack_require__(4);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
-var _text = __webpack_require__(4);
+var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
 
@@ -4615,15 +4632,15 @@ var _event = __webpack_require__(7);
 
 var _event2 = _interopRequireDefault(_event);
 
-var _sprite = __webpack_require__(5);
+var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-var _bitmap = __webpack_require__(6);
+var _bitmap = __webpack_require__(4);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
-var _text = __webpack_require__(4);
+var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
 
@@ -5471,7 +5488,7 @@ var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _text = __webpack_require__(4);
+var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
 
