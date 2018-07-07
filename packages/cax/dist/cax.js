@@ -1,5 +1,5 @@
 /*!
- *  cax v1.1.3
+ *  cax v1.1.4
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -81,6 +81,64 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _graphics = __webpack_require__(3);
+
+var _graphics2 = _interopRequireDefault(_graphics);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Shape = function (_Graphics) {
+  _inherits(Shape, _Graphics);
+
+  function Shape() {
+    _classCallCheck(this, Shape);
+
+    return _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).apply(this, arguments));
+  }
+
+  _createClass(Shape, [{
+    key: 'draw',
+
+    // constructor() {
+    //     super()
+    // }
+
+    value: function draw() {}
+  }, {
+    key: 'render',
+    value: function render(ctx) {
+      this.clear();
+      this.draw();
+      _get(Shape.prototype.__proto__ || Object.getPrototypeOf(Shape.prototype), 'render', this).call(this, ctx);
+    }
+  }]);
+
+  return Shape;
+}(_graphics2.default);
+
+exports.default = Shape;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -189,64 +247,6 @@ var Group = function (_DisplayObject) {
 }(_displayObject2.default);
 
 exports.default = Group;
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _graphics = __webpack_require__(3);
-
-var _graphics2 = _interopRequireDefault(_graphics);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Shape = function (_Graphics) {
-  _inherits(Shape, _Graphics);
-
-  function Shape() {
-    _classCallCheck(this, Shape);
-
-    return _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).apply(this, arguments));
-  }
-
-  _createClass(Shape, [{
-    key: 'draw',
-
-    // constructor() {
-    //     super()
-    // }
-
-    value: function draw() {}
-  }, {
-    key: 'render',
-    value: function render(ctx) {
-      this.clear();
-      this.draw();
-      _get(Shape.prototype.__proto__ || Object.getPrototypeOf(Shape.prototype), 'render', this).call(this, ctx);
-    }
-  }]);
-
-  return Shape;
-}(_graphics2.default);
-
-exports.default = Shape;
 
 /***/ }),
 /* 2 */
@@ -2441,7 +2441,7 @@ var _canvasRender = __webpack_require__(24);
 
 var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
-var _group = __webpack_require__(0);
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -2582,7 +2582,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(0);
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -2769,7 +2769,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -2880,7 +2880,7 @@ var _text = __webpack_require__(4);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _group = __webpack_require__(0);
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -2900,23 +2900,27 @@ var _ellipse = __webpack_require__(33);
 
 var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _button = __webpack_require__(34);
+var _path = __webpack_require__(34);
+
+var _path2 = _interopRequireDefault(_path);
+
+var _button = __webpack_require__(37);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _rect = __webpack_require__(35);
+var _rect = __webpack_require__(38);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _circle = __webpack_require__(36);
+var _circle = __webpack_require__(39);
 
 var _circle2 = _interopRequireDefault(_circle);
 
-var _polygon = __webpack_require__(37);
+var _polygon = __webpack_require__(40);
 
 var _polygon2 = _interopRequireDefault(_polygon);
 
-var _equilateralPolygon = __webpack_require__(38);
+var _equilateralPolygon = __webpack_require__(41);
 
 var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
@@ -2947,6 +2951,7 @@ var cax = {
   Sprite: _sprite2.default,
   ArrowPath: _arrowPath2.default,
   Ellipse: _ellipse2.default,
+  Path: _path2.default,
 
   Button: _button2.default,
 
@@ -3307,7 +3312,7 @@ var _wegameCanvas = __webpack_require__(20);
 
 var _wegameCanvas2 = _interopRequireDefault(_wegameCanvas);
 
-var _group = __webpack_require__(0);
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -3948,7 +3953,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(0);
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -4360,7 +4365,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(0);
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -4759,7 +4764,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -4855,7 +4860,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -4932,7 +4937,533 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _group = __webpack_require__(0);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _pathParser = __webpack_require__(35);
+
+var _pathParser2 = _interopRequireDefault(_pathParser);
+
+var _shape = __webpack_require__(0);
+
+var _shape2 = _interopRequireDefault(_shape);
+
+var _arcToBezier = __webpack_require__(36);
+
+var _arcToBezier2 = _interopRequireDefault(_arcToBezier);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Path = function (_Shape) {
+  _inherits(Path, _Shape);
+
+  function Path(d, option) {
+    _classCallCheck(this, Path);
+
+    var _this = _possibleConstructorReturn(this, (Path.__proto__ || Object.getPrototypeOf(Path)).call(this));
+
+    _this.type = 'path';
+    _this.d = d;
+    _this.fillColor = 'black';
+    _this.strokeColor = 'white';
+    _this.strokeWidth = 1;
+
+    option && Object.keys(option).forEach(function (key) {
+      _this[key] = option[key];
+    });
+    return _this;
+  }
+
+  _createClass(Path, [{
+    key: 'draw',
+    value: function draw() {
+      var _this2 = this;
+
+      var cmds = (0, _pathParser2.default)(this.d);
+      this.lineWidth(this.strokeWidth);
+      this.strokeStyle(this.strokeColor);
+      this.fillStyle(this.fillColor);
+      this.beginPath();
+      // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
+      // M = moveto
+      // L = lineto
+      // H = horizontal lineto
+      // V = vertical lineto
+      // C = curveto
+      // S = smooth curveto
+      // Q = quadratic Belzier curve
+      // T = smooth quadratic Belzier curveto
+      // A = elliptical Arc  暂时未实现，用贝塞尔拟合椭圆
+      // Z = closepath
+      // 以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
+      var preX = void 0,
+          preY = void 0,
+          curves = void 0,
+          lastCurve = void 0;
+
+      // 参考我的 pasition https://github.com/AlloyTeam/pasition/blob/master/src/index.js
+      for (var j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
+        var item = cmds[j];
+        var action = item[0];
+        var preItem = cmds[j - 1];
+
+        switch (action) {
+          case 'M':
+            preX = item[1];
+            preY = item[2];
+            this.moveTo(preX, preY);
+            break;
+          case 'L':
+            preX = item[1];
+            preY = item[2];
+            this.lineTo(preX, preY);
+            break;
+          case 'H':
+            preX = item[1];
+            this.lineTo(preX, preY);
+            break;
+          case 'V':
+            preY = item[1];
+            this.lineTo(preX, preY);
+            break;
+          case 'C':
+            preX = item[5];
+            preY = item[6];
+            this.bezierCurveTo(item[1], item[2], item[3], item[4], preX, preY);
+            break;
+          case 'S':
+
+            if (preItem[0] === 'C' || preItem[0] === 'c') {
+              this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
+            } else if (preItem[0] === 'S' || preItem[0] === 's') {
+              this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]);
+            }
+            preX = item[3];
+            preY = item[4];
+            break;
+
+          case 'Q':
+            preX = item[3];
+            preY = item[4];
+            this.quadraticCurveTo(item[1], item[2], preX, preY);
+            break;
+
+          case 'm':
+            preX += item[1];
+            preY += item[2];
+            this.moveTo(preX, preY);
+            break;
+          case 'l':
+            preX += item[1];
+            preY += item[2];
+            this.lineTo(preX, preY);
+            break;
+          case 'h':
+            preX += item[1];
+            this.lineTo(preX, preY);
+            break;
+          case 'v':
+            preY += item[1];
+            this.lineTo(preX, preY);
+            break;
+          case 'c':
+            this.bezierCurveTo(preX + item[1], preY + item[2], preX + item[3], preY + item[4], preX + item[5], preY + item[6]);
+            preX = preX + item[5];
+            preY = preY + item[6];
+            break;
+          case 's':
+            if (preItem[0] === 'C' || preItem[0] === 'c') {
+              this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+            } else if (preItem[0] === 'S' || preItem[0] === 's') {
+              this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+            }
+
+            preX += item[3];
+            preY += item[4];
+            break;
+          case 'q':
+
+            this.quadraticCurveTo(preX + item[1], preY + item[2], item[3] + preX, item[4] + preY);
+            preX += item[3];
+            preY += item[4];
+            break;
+          case 'Z':
+            this.closePath();
+            break;
+          case 'z':
+            this.closePath();
+            break;
+
+          case 'a':
+            curves = (0, _arcToBezier2.default)({
+              rx: item[1],
+              ry: item[2],
+              px: preX,
+              py: preY,
+              xAxisRotation: item[3],
+              largeArcFlag: item[4],
+              sweepFlag: item[5],
+              cx: preX + item[6],
+              cy: preX + item[7]
+            });
+            lastCurve = curves[curves.length - 1];
+
+            curves.forEach(function (curve, index) {
+              if (index === 0) {
+                _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+              } else {
+                _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+              }
+            });
+
+            preX = lastCurve.x;
+            preY = lastCurve.y;
+
+            break;
+
+          case 'A':
+
+            curves = (0, _arcToBezier2.default)({
+              rx: item[1],
+              ry: item[2],
+              px: preX,
+              py: preY,
+              xAxisRotation: item[3],
+              largeArcFlag: item[4],
+              sweepFlag: item[5],
+              cx: item[6],
+              cy: item[7]
+            });
+            lastCurve = curves[curves.length - 1];
+
+            curves.forEach(function (curve, index) {
+              if (index === 0) {
+                _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+              } else {
+                _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+              }
+            });
+
+            preX = lastCurve.x;
+            preY = lastCurve.y;
+
+            break;
+
+          case 'T':
+
+            if (preItem[0] === 'Q' || preItem[0] === 'q') {
+              preCX = preX + preItem[3] - preItem[1];
+              preCY = preY + preItem[4] - preItem[2];
+              this.quadraticCurveTo(preX, preY, preCX, preCY, item[1], item[2]);
+            } else if (preItem[0] === 'T' || preItem[0] === 't') {
+              this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, item[1], item[2]);
+              preCX = preX + preX - preCX;
+              preCY = preY + preY - preCY;
+            }
+
+            preX = item[1];
+            preY = item[2];
+            break;
+
+          case 't':
+            if (preItem[0] === 'Q' || preItem[0] === 'q') {
+              preCX = preX + preItem[3] - preItem[1];
+              preCY = preY + preItem[4] - preItem[2];
+              this.quadraticCurveTo(preX, preY, preCX, preCY, preX + item[1], preY + item[2]);
+            } else if (preItem[0] === 'T' || preItem[0] === 't') {
+              this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, preX + item[1], preY + item[2]);
+              preCX = preX + preX - preCX;
+              preCY = preY + preY - preCY;
+            }
+
+            preX += item[1];
+            preY += item[2];
+            break;
+        }
+      }
+
+      this.fill();
+      this.stroke();
+    }
+  }]);
+
+  return Path;
+}(_shape2.default);
+
+exports.default = Path;
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+// https://github.com/jkroso/parse-svg-path/blob/master/index.js
+/**
+ * expected argument lengths
+ * @type {Object}
+ */
+
+var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0
+
+  /**
+   * segment pattern
+   * @type {RegExp}
+   */
+
+};var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
+
+/**
+ * parse an svg path data string. Generates an Array
+ * of commands where each command is an Array of the
+ * form `[command, arg1, arg2, ...]`
+ *
+ * @param {String} path
+ * @return {Array}
+ */
+
+function parse(path) {
+  var data = [];
+  path.replace(segment, function (_, command, args) {
+    var type = command.toLowerCase();
+    args = parseValues(args);
+
+    // overloaded moveTo
+    if (type === 'm' && args.length > 2) {
+      data.push([command].concat(args.splice(0, 2)));
+      type = 'l';
+      command = command === 'm' ? 'l' : 'L';
+    }
+
+    while (true) {
+      if (args.length === length[type]) {
+        args.unshift(command);
+        return data.push(args);
+      }
+      if (args.length < length[type]) throw new Error('malformed path data');
+      data.push([command].concat(args.splice(0, length[type])));
+    }
+  });
+  return data;
+}
+
+var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
+
+function parseValues(args) {
+  var numbers = args.match(number);
+  return numbers ? numbers.map(Number) : [];
+}
+
+exports.default = parse;
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+//https://github.com/colinmeinke/svg-arc-to-cubic-bezier
+
+var TAU = Math.PI * 2;
+
+var mapToEllipse = function mapToEllipse(_ref, rx, ry, cosphi, sinphi, centerx, centery) {
+    var x = _ref.x,
+        y = _ref.y;
+
+    x *= rx;
+    y *= ry;
+
+    var xp = cosphi * x - sinphi * y;
+    var yp = sinphi * x + cosphi * y;
+
+    return {
+        x: xp + centerx,
+        y: yp + centery
+    };
+};
+
+var approxUnitArc = function approxUnitArc(ang1, ang2) {
+    var a = 4 / 3 * Math.tan(ang2 / 4);
+
+    var x1 = Math.cos(ang1);
+    var y1 = Math.sin(ang1);
+    var x2 = Math.cos(ang1 + ang2);
+    var y2 = Math.sin(ang1 + ang2);
+
+    return [{
+        x: x1 - y1 * a,
+        y: y1 + x1 * a
+    }, {
+        x: x2 + y2 * a,
+        y: y2 - x2 * a
+    }, {
+        x: x2,
+        y: y2
+    }];
+};
+
+var vectorAngle = function vectorAngle(ux, uy, vx, vy) {
+    var sign = ux * vy - uy * vx < 0 ? -1 : 1;
+    var umag = Math.sqrt(ux * ux + uy * uy);
+    var vmag = Math.sqrt(ux * ux + uy * uy);
+    var dot = ux * vx + uy * vy;
+
+    var div = dot / (umag * vmag);
+
+    if (div > 1) {
+        div = 1;
+    }
+
+    if (div < -1) {
+        div = -1;
+    }
+
+    return sign * Math.acos(div);
+};
+
+var getArcCenter = function getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp) {
+    var rxsq = Math.pow(rx, 2);
+    var rysq = Math.pow(ry, 2);
+    var pxpsq = Math.pow(pxp, 2);
+    var pypsq = Math.pow(pyp, 2);
+
+    var radicant = rxsq * rysq - rxsq * pypsq - rysq * pxpsq;
+
+    if (radicant < 0) {
+        radicant = 0;
+    }
+
+    radicant /= rxsq * pypsq + rysq * pxpsq;
+    radicant = Math.sqrt(radicant) * (largeArcFlag === sweepFlag ? -1 : 1);
+
+    var centerxp = radicant * rx / ry * pyp;
+    var centeryp = radicant * -ry / rx * pxp;
+
+    var centerx = cosphi * centerxp - sinphi * centeryp + (px + cx) / 2;
+    var centery = sinphi * centerxp + cosphi * centeryp + (py + cy) / 2;
+
+    var vx1 = (pxp - centerxp) / rx;
+    var vy1 = (pyp - centeryp) / ry;
+    var vx2 = (-pxp - centerxp) / rx;
+    var vy2 = (-pyp - centeryp) / ry;
+
+    var ang1 = vectorAngle(1, 0, vx1, vy1);
+    var ang2 = vectorAngle(vx1, vy1, vx2, vy2);
+
+    if (sweepFlag === 0 && ang2 > 0) {
+        ang2 -= TAU;
+    }
+
+    if (sweepFlag === 1 && ang2 < 0) {
+        ang2 += TAU;
+    }
+
+    return [centerx, centery, ang1, ang2];
+};
+
+var arcToBezier = function arcToBezier(_ref2) {
+    var px = _ref2.px,
+        py = _ref2.py,
+        cx = _ref2.cx,
+        cy = _ref2.cy,
+        rx = _ref2.rx,
+        ry = _ref2.ry,
+        _ref2$xAxisRotation = _ref2.xAxisRotation,
+        xAxisRotation = _ref2$xAxisRotation === undefined ? 0 : _ref2$xAxisRotation,
+        _ref2$largeArcFlag = _ref2.largeArcFlag,
+        largeArcFlag = _ref2$largeArcFlag === undefined ? 0 : _ref2$largeArcFlag,
+        _ref2$sweepFlag = _ref2.sweepFlag,
+        sweepFlag = _ref2$sweepFlag === undefined ? 0 : _ref2$sweepFlag;
+
+    var curves = [];
+
+    if (rx === 0 || ry === 0) {
+        return [];
+    }
+
+    var sinphi = Math.sin(xAxisRotation * TAU / 360);
+    var cosphi = Math.cos(xAxisRotation * TAU / 360);
+
+    var pxp = cosphi * (px - cx) / 2 + sinphi * (py - cy) / 2;
+    var pyp = -sinphi * (px - cx) / 2 + cosphi * (py - cy) / 2;
+
+    if (pxp === 0 && pyp === 0) {
+        return [];
+    }
+
+    rx = Math.abs(rx);
+    ry = Math.abs(ry);
+
+    var lambda = Math.pow(pxp, 2) / Math.pow(rx, 2) + Math.pow(pyp, 2) / Math.pow(ry, 2);
+
+    if (lambda > 1) {
+        rx *= Math.sqrt(lambda);
+        ry *= Math.sqrt(lambda);
+    }
+
+    var _getArcCenter = getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp),
+        _getArcCenter2 = _slicedToArray(_getArcCenter, 4),
+        centerx = _getArcCenter2[0],
+        centery = _getArcCenter2[1],
+        ang1 = _getArcCenter2[2],
+        ang2 = _getArcCenter2[3];
+
+    var segments = Math.max(Math.ceil(Math.abs(ang2) / (TAU / 4)), 1);
+
+    ang2 /= segments;
+
+    for (var i = 0; i < segments; i++) {
+        curves.push(approxUnitArc(ang1, ang2));
+        ang1 += ang2;
+    }
+
+    return curves.map(function (curve) {
+        var _mapToEllipse = mapToEllipse(curve[0], rx, ry, cosphi, sinphi, centerx, centery),
+            x1 = _mapToEllipse.x,
+            y1 = _mapToEllipse.y;
+
+        var _mapToEllipse2 = mapToEllipse(curve[1], rx, ry, cosphi, sinphi, centerx, centery),
+            x2 = _mapToEllipse2.x,
+            y2 = _mapToEllipse2.y;
+
+        var _mapToEllipse3 = mapToEllipse(curve[2], rx, ry, cosphi, sinphi, centerx, centery),
+            x = _mapToEllipse3.x,
+            y = _mapToEllipse3.y;
+
+        return { x1: x1, y1: y1, x2: x2, y2: y2, x: x, y: y };
+    });
+};
+
+exports.default = arcToBezier;
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -4982,7 +5513,7 @@ var Button = function (_Group) {
 exports.default = Button;
 
 /***/ }),
-/* 35 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4994,7 +5525,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -5041,7 +5572,7 @@ var Rect = function (_Shape) {
 exports.default = Rect;
 
 /***/ }),
-/* 36 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5053,7 +5584,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -5107,7 +5638,7 @@ var Circle = function (_Shape) {
 exports.default = Circle;
 
 /***/ }),
-/* 37 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5119,7 +5650,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -5181,7 +5712,7 @@ var Polygon = function (_Shape) {
 exports.default = Polygon;
 
 /***/ }),
-/* 38 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5193,7 +5724,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 

@@ -12,6 +12,7 @@ import Sprite from './render/display/sprite'
 import RoundedRect from './render/display/shape/rounded-rect'
 import ArrowPath from './render/display/shape/arrow-path'
 import Ellipse from './render/display/shape/ellipse'
+import Path from './render/display/shape/path'
 
 import Button from './render/display/element/button'
 
@@ -45,6 +46,7 @@ const cax = {
   Sprite,
   ArrowPath,
   Ellipse,
+  Path,
 
   Button,
 
