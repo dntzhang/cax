@@ -53,8 +53,10 @@ class Stage extends Group {
       this.canvas.addEventListener('touchmove', evt => this._handleMouseMove(evt))
       this.canvas.addEventListener('touchend', evt => this._handleMouseUp(evt))
 
-      this.canvas.addEventListener('dblclick', evt => this._handlDblClick(evt))
+      this.canvas.addEventListener('dblclick', evt => this._handleDblClick(evt))
       // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+
+      document.addEventListener('contextmenu', evt => this._handleContextmenu(evt))
     }
 
     this.borderTopWidth = 0
@@ -82,7 +84,11 @@ class Stage extends Group {
     this.height = this.canvas.height
   }
 
-  _handlDblClick (evt) {
+  _handleContextmenu (evt) {
+    this._getObjectUnderPoint(evt)
+  }
+  
+  _handleDblClick (evt) {
     this._getObjectUnderPoint(evt)
   }
 
