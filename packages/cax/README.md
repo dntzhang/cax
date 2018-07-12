@@ -52,7 +52,7 @@
   - [Graphics](#graphics)
   - [Shape](#shape)
 	- [Rect](#rect)
-	- [Circel](#circel)
+	- [Circle](#circle)
 	- [Ellipse](#ellipse)
   - [Element](#element)
 	- [Button](#button)
@@ -340,10 +340,10 @@ const rect = new cax.Rect(200, 100, {
 })
 ```
 
-#### Circel
+#### Circle
 
 ``` js
-const circel = new cax.Circel(10)
+const circle = new cax.Circle(10)
 ```
 
 #### Ellipse
