@@ -618,9 +618,9 @@ const button = new cax.Button({
 
 ![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
 
-## 微信交流群
+## 微信交流 2 群
 
-![](./asset/cax0712.png)
+![](https://github.com/dntzhang/wechart/raw/master/asset/g2.png)
 
 ## License
 
