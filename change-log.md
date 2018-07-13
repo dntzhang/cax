@@ -3,6 +3,11 @@
 * bitmap 支持 flipX 和 flipY
 * sprite 可以直接使用 bitmap.flipX 和 bitmap.flopY 播放序列帧
 
+## Cax 1.1.5
+
+* 修了小游戏的 canvas 的事件没返回 type 导致 touchstart touchend touchmove 不触发的问题
+* 支持了鼠标右键事件
+
 ## Cax 1.1.4
 
 * cax 下挂载了强大的 Path , 用于绘制 SVG。如:
