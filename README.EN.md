@@ -4,6 +4,7 @@ English | [简体中文](./README.md)
 
 > Cross platform 2d rendering engine
 
+* Web DEMO & [→ Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples])
   * [Wechart by Cax](https://github.com/dntzhang/wechart)
   * [Simple](https://dntzhang.github.io/cax) 
   * [Animation](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
