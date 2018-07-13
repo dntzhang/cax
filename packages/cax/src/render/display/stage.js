@@ -99,6 +99,9 @@ class Stage extends Group {
   }
 
   _handleMouseDown (evt) {
+    if(this.isWegame){
+      evt.type = 'touchstart'
+    }
     this.offset = this._getOffset(this.canvas)
     let obj = this._getObjectUnderPoint(evt)
     this.willDragObject = obj
@@ -114,6 +117,9 @@ class Stage extends Group {
   }
 
   _handleMouseUp (evt) {
+    if(this.isWegame){
+      evt.type = 'touchend'
+    }
     const obj = this._getObjectUnderPoint(evt)
     this._mouseUpX = evt.stageX
     this._mouseUpY = evt.stageY
@@ -144,6 +150,9 @@ class Stage extends Group {
   }
 
   _handleMouseMove (evt) {
+    if(this.isWegame){
+      evt.type = 'touchmove'
+    }
     if (this.disableMoveDetection) return
     let obj = this._getObjectUnderPoint(evt)
     let mockEvt = new Event()

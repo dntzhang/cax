@@ -1,5 +1,5 @@
 /*!
- *  cax v1.1.4
+ *  cax v1.1.5
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -3437,9 +3437,13 @@ var Stage = function (_Group) {
       });
 
       _this.canvas.addEventListener('dblclick', function (evt) {
-        return _this._handlDblClick(evt);
+        return _this._handleDblClick(evt);
       });
       // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+
+      document.addEventListener('contextmenu', function (evt) {
+        return _this._handleContextmenu(evt);
+      });
     }
 
     _this.borderTopWidth = 0;
@@ -3469,8 +3473,13 @@ var Stage = function (_Group) {
   }
 
   _createClass(Stage, [{
-    key: '_handlDblClick',
-    value: function _handlDblClick(evt) {
+    key: '_handleContextmenu',
+    value: function _handleContextmenu(evt) {
+      this._getObjectUnderPoint(evt);
+    }
+  }, {
+    key: '_handleDblClick',
+    value: function _handleDblClick(evt) {
       this._getObjectUnderPoint(evt);
     }
   }, {
@@ -3483,6 +3492,9 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseDown',
     value: function _handleMouseDown(evt) {
+      if (this.isWegame) {
+        evt.type = 'touchstart';
+      }
       this.offset = this._getOffset(this.canvas);
       var obj = this._getObjectUnderPoint(evt);
       this.willDragObject = obj;
@@ -3500,6 +3512,9 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseUp',
     value: function _handleMouseUp(evt) {
+      if (this.isWegame) {
+        evt.type = 'touchend';
+      }
       var obj = this._getObjectUnderPoint(evt);
       this._mouseUpX = evt.stageX;
       this._mouseUpY = evt.stageY;
@@ -3532,6 +3547,9 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseMove',
     value: function _handleMouseMove(evt) {
+      if (this.isWegame) {
+        evt.type = 'touchmove';
+      }
       if (this.disableMoveDetection) return;
       var obj = this._getObjectUnderPoint(evt);
       var mockEvt = new _event2.default();
