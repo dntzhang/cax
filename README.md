@@ -46,9 +46,21 @@
 - [一分钟入门 Web cax 使用](#一分钟入门-web-cax-使用)
 - [内置对象](#内置对象)
   - [Group](#group)
+    - [Group 方法](#group-方法)
+      - [add](#add)
+      - [remove](#remove)
+      - [empty](#empty)
+      - [replace](#replace)
+  - [Stage](#stage)
   - [Bitmap](#bitmap)
   - [Sprite](#sprite)
+      - [Sprite 方法](#sprite-方法)
+        - [gotoAndPlay](#gotoandplay)
+        - [gotoAndStop](#gotoandstop)
+        - [gotoAndPlayOnce](#gotoandplayonce)
   - [Text](#text)
+        - [Text 方法](#text-方法)
+          - [getWidth](#getwidth)
   - [Graphics](#graphics)
   - [Shape](#shape)
 	- [Rect](#rect)
@@ -62,6 +74,8 @@
   - [CompositeOperation](#compositeoperation)
   - [Cursor](#cursor)
   - [Fixed](#fixed)
+- [方法](#方法)  
+  - [destroy](#destroy)
 - [事件](#事件)
 	- [小程序事件](#小程序事件) 
   - [Web 事件](#web-事件) 
@@ -212,6 +226,44 @@ stage.update()
 
 group 拥有常用的 add 和 remove 方法进行元素的增加和删除。先 add 的会先绘制，所有后 add 的会盖在先 add 的上面。
 
+#### Group 方法
+
+##### add
+
+添加对象
+
+``` js
+groupObj.add (child) 
+```
+
+##### remove
+
+移除对象
+
+``` js
+groupObj.remove (child)
+``` 
+
+##### empty
+
+清空子对象
+
+``` js
+groupObj.empty ()
+``` 
+
+##### replace
+
+使用一个对象替代子对象
+
+```js
+groupObj.replace (current, pre)
+```
+
+### Stage
+
+最大的顶层容器，继承自 Group，所以 Group 拥有的方法它全都有。
+
 ### Bitmap
 
 ```js
@@ -283,6 +335,32 @@ const sprite = new cax.Sprite({
 });
 ```
 
+#### Sprite 方法
+
+##### gotoAndPlay
+
+跳到当前 animationName 并开始播放
+
+```js
+spriteObj.gotoAndPlay(animationName)
+```
+
+##### gotoAndStop
+
+跳到当前 animationName 并开始停止
+
+```js
+spriteObj.gotoAndStop(animationName)
+```
+
+##### gotoAndPlayOnce
+
+跳到当前 animationName 并开始播放，播完一轮销毁自己。常用于爆炸
+
+```js
+spriteObj.gotoAndPlayOnce(animationName)
+```
+
 ### Text
 
 文本对象
@@ -293,6 +371,16 @@ const text = new cax.Text('Hello World', {
   color: '#ff7700',
   baseline: 'top'
 })
+```
+
+#### Text 方法
+
+##### getWidth
+
+获取文本宽度
+
+```js
+textObj.getWidth()
 ```
 
 ### Graphics
@@ -411,6 +499,16 @@ const button = new cax.Button({
 |属性名      |描述   |
 |---|---|
 | fixed | 是否固定定位，默认是 false 设置成 true 不会叠加祖辈们的 transform 属性|
+
+## 方法
+
+### destroy
+
+销毁自己
+
+``` js
+obj.destroy()
+```
 
 ## 事件
 
