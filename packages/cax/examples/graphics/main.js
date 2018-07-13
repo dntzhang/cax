@@ -37,6 +37,7 @@ document.querySelector('#addScaleBtn').addEventListener('click', () => {
 document.querySelector('#subScaleBtn').addEventListener('click', () => {
 
     ball.scaleX -= 0.1
+    ball.scaleY -= 0.1
 
     if (ball.scaleX < 0.1) {
         ball.scaleX = ball.scaleY = 0.1
