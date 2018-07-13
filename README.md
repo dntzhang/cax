@@ -717,7 +717,7 @@ const button = new cax.Button({
 
 ![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
 
-## 微信交流 2 群
+## 微信交流群【2】
 
 ![](https://github.com/dntzhang/wechart/raw/master/asset/g2.png)
 
