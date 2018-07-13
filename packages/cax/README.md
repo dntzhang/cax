@@ -20,6 +20,7 @@
   * [Cache](https://dntzhang.github.io/cax/packages/cax/examples/cache/)
   * [Filter](https://dntzhang.github.io/cax/packages/cax/examples/filter/)
   * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
+  * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
 * 小程序 DEMO 正在审核中敬请期待
 * 小游戏 DEMO 正在审核中敬请期待
 
