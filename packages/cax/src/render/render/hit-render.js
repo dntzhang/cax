@@ -115,6 +115,16 @@ class HitRender extends Render {
       ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd')
     }
 
+    const oacg = o.absClipGraphics
+    if (oacg) {
+      ctx.beginPath()
+      oacg._matrix.initialize(1, 0, 0, 1, 0, 0)
+      oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY)
+      ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty)
+      oacg.render(ctx)
+      ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd')
+    }
+
     if (o.cacheCanvas) {
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
       ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y)

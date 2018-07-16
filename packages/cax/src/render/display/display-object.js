@@ -15,6 +15,9 @@ class DisplayObject extends EventDispatcher {
     this.clipGraphics = null
     this.clipRuleNonzero = true
     this.fixed = false
+
+    this.absClipGraphics = null
+    this.absClipRuleNonzero = true
   }
 
   isVisible () {
@@ -106,6 +109,15 @@ class DisplayObject extends EventDispatcher {
 
   unclip () {
     this.clipGraphics = null
+  }
+
+  absClip (graphics, notClipRuleNonzero) {
+    this.absClipGraphics = graphics
+    this.absClipRuleNonzero = !notClipRuleNonzero
+  }
+
+  unAbsClip () {
+    this.absClipGraphics = null
   }
 
   cache(x, y, width, height, scale) {
