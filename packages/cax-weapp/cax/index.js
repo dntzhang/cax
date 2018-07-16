@@ -1,5 +1,5 @@
 /*!
- *  cax v1.1.6
+ *  cax v1.1.7
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -299,6 +299,9 @@ var DisplayObject = function (_EventDispatcher) {
     _this.clipGraphics = null;
     _this.clipRuleNonzero = true;
     _this.fixed = false;
+
+    _this.absClipGraphics = null;
+    _this.absClipRuleNonzero = true;
     return _this;
   }
 
@@ -400,6 +403,17 @@ var DisplayObject = function (_EventDispatcher) {
     key: 'unclip',
     value: function unclip() {
       this.clipGraphics = null;
+    }
+  }, {
+    key: 'absClip',
+    value: function absClip(graphics, notClipRuleNonzero) {
+      this.absClipGraphics = graphics;
+      this.absClipRuleNonzero = !notClipRuleNonzero;
+    }
+  }, {
+    key: 'unAbsClip',
+    value: function unAbsClip() {
+      this.absClipGraphics = null;
     }
   }, {
     key: 'cache',
@@ -4091,6 +4105,16 @@ var CanvasRender = function (_Render) {
         ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
       }
 
+      var oacg = o.absClipGraphics;
+      if (oacg) {
+        ctx.beginPath();
+        oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+        oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+        ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+        oacg.render(ctx);
+        ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+      }
+
       o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
       o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
       if (!cacheRender) {
@@ -4552,6 +4576,16 @@ var HitRender = function (_Render) {
         ctx.setTransform(ocg._matrix.a, ocg._matrix.b, ocg._matrix.c, ocg._matrix.d, ocg._matrix.tx, ocg._matrix.ty);
         ocg.render(ctx);
         ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
+      }
+
+      var oacg = o.absClipGraphics;
+      if (oacg) {
+        ctx.beginPath();
+        oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+        oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+        ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+        oacg.render(ctx);
+        ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
       }
 
       if (o.cacheCanvas) {

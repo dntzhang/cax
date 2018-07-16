@@ -3,6 +3,10 @@
 * bitmap 支持 flipX 和 flipY
 * sprite 可以直接使用 bitmap.flipX 和 bitmap.flopY 播放序列帧
 
+## Cax 1.1.7
+
+* 新增了 absClip 和 unAbsClip 裁剪，与 clip 的区别是 absClip 无视对象自身的坐标系
+
 ## Cax 1.1.6
 
 * 修了小程序开发者工具临时图片地址不显示的问题，因为开发者工具临时图片地址也是 http 开头
