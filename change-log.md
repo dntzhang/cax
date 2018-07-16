@@ -3,6 +3,11 @@
 * bitmap 支持 flipX 和 flipY
 * sprite 可以直接使用 bitmap.flipX 和 bitmap.flopY 播放序列帧
 
+## Cax 1.1.6
+
+* 修了小程序开发者工具临时图片地址不显示的问题，因为开发者工具临时图片地址也是 http 开头
+* restore 放在 return 后面的 bug
+
 ## Cax 1.1.5
 
 * 修了小游戏的 canvas 的事件没返回 type 导致 touchstart touchend touchmove 不触发的问题

@@ -1,5 +1,5 @@
 /*!
- *  cax v1.1.5
+ *  cax v1.1.6
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -1161,7 +1161,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.getImageInWx = getImageInWx;
 function getImageInWx(img, callback) {
-  if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1) {
+  if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1 || img.indexOf('http://tmp/') === 0) {
     wx.getImageInfo({
       src: img,
       success: function success(info) {
@@ -4045,9 +4045,6 @@ var CanvasRender = function (_Render) {
   _createClass(CanvasRender, [{
     key: 'clear',
     value: function clear(ctx, width, height) {
-      //restore cache cavans transform
-      ctx.restore();
-
       ctx.clearRect(0, 0, width, height);
     }
   }, {
@@ -4118,8 +4115,7 @@ var CanvasRender = function (_Render) {
             l = list.length;
         for (var i = 0; i < l; i++) {
           ctx.save();
-          var target = this._render(ctx, list[i], mtx);
-          if (target) return target;
+          this._render(ctx, list[i], mtx);
           ctx.restore();
         }
       } else if (o instanceof _graphics2.default) {
@@ -4520,9 +4516,6 @@ var HitRender = function (_Render) {
     key: 'hitPixel',
     value: function hitPixel(o, evt) {
       var ctx = this.ctx;
-      //CanvasRenderingContext2D.restore() 是 Canvas 2D API 通过在绘图状态栈中弹出顶端的状态，将 canvas 恢复到最近的保存状态的方法。 如果没有保存状态，此方法不做任何改变。
-      //避免 save restore嵌套导致的 clip 区域影响 clearRect 擦除的区域
-      ctx.restore();
       ctx.clearRect(0, 0, 2, 2);
       var mtx = o._hitMatrix;
       var list = o.children.slice(0),
@@ -4570,8 +4563,8 @@ var HitRender = function (_Render) {
         for (var i = l - 1; i >= 0; i--) {
           ctx.save();
           var target = this._hitPixel(list[i], evt, mtx);
-          if (target) return target;
           ctx.restore();
+          if (target) return target;
         }
       } else {
 
