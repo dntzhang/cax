@@ -77,10 +77,7 @@ class HitRender extends Render {
   }
 
   hitPixel (o, evt) {
-    let ctx = this.ctx
-    //CanvasRenderingContext2D.restore() 是 Canvas 2D API 通过在绘图状态栈中弹出顶端的状态，将 canvas 恢复到最近的保存状态的方法。 如果没有保存状态，此方法不做任何改变。
-    //避免 save restore嵌套导致的 clip 区域影响 clearRect 擦除的区域
-    ctx.restore()
+    const ctx = this.ctx
     ctx.clearRect(0, 0, 2, 2)
     let mtx = o._hitMatrix
     let list = o.children.slice(0),
@@ -127,8 +124,8 @@ class HitRender extends Render {
       for (let i = l - 1; i >= 0; i--) {
         ctx.save()
         let target = this._hitPixel(list[i], evt, mtx)
-        if (target) return target
         ctx.restore()
+        if (target) return target
       }
     } else {
       

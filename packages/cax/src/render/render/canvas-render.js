@@ -21,9 +21,6 @@ class CanvasRender extends Render {
   }
 
   clear (ctx, width, height) {
-    //restore cache cavans transform
-    ctx.restore()
-
     ctx.clearRect(0, 0, width, height)
   }
 
@@ -92,8 +89,7 @@ class CanvasRender extends Render {
         l = list.length
       for (let i = 0 ; i < l; i++) {
         ctx.save() 
-        let target = this._render(ctx, list[i], mtx)
-        if (target) return target
+        this._render(ctx, list[i], mtx)
         ctx.restore()
       }
     } else if (o instanceof Graphics) {
