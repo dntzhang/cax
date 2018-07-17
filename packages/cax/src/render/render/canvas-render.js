@@ -75,12 +75,11 @@ class CanvasRender extends Render {
       ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd')
     }
 
-    o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o)
-    o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1)
     if(!cacheRender){
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
     }
     if (o._readyToCache) {
+      this.setComplexProps(ctx, o)
       o._readyToCache = false
       o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1)
       this.render(o.cacheCtx, o, true)
@@ -93,6 +92,7 @@ class CanvasRender extends Render {
 
       ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y)
     } else if (o.cacheCanvas&&!cacheRender) {
+      this.setComplexProps(ctx, o)
       ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y)
     } else if (o instanceof Group) {
       let list = o.children.slice(0),
@@ -103,15 +103,19 @@ class CanvasRender extends Render {
         ctx.restore()
       }
     } else if (o instanceof Graphics) {
+      this.setComplexProps(ctx, o)
       o.render(ctx)
     } else if (o instanceof Sprite && o.rect) {
+      this.setComplexProps(ctx, o)
       o.updateFrame()
       let rect = o.rect
       ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3])
     } else if (o instanceof Bitmap && o.rect) {
+      this.setComplexProps(ctx, o)
       let bRect = o.rect
       ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3])
     } else if (o instanceof Text) {
+      this.setComplexProps(ctx, o)
       ctx.font = o.font
       ctx.fillStyle = o.color
       ctx.textBaseline = o.baseline
@@ -119,7 +123,18 @@ class CanvasRender extends Render {
     }
   }
 
+  setComplexProps(ctx, o){
+    o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o)
+    o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1)
 
+    o.complexShadow = this.getShadow(o)
+    if(o.complexShadow){
+      ctx.shadowColor = o.complexShadow.color
+      ctx.shadowOffsetX = o.complexShadow.offsetX
+      ctx.shadowOffsetY = o.complexShadow.offsetY
+      ctx.shadowBlur = o.complexShadow.blur
+    }
+  }
 
   getCompositeOperation(o) {
     if (o.compositeOperation) return o.compositeOperation
@@ -133,6 +148,12 @@ class CanvasRender extends Render {
     }
     return result
   }
+
+  getShadow(o) {
+    if (o.shadow) return o.shadow
+    if (o.parent) return this.getShadow(o.parent)
+  }
+
 
 }
 

@@ -3,6 +3,19 @@
 * bitmap 支持 flipX 和 flipY
 * sprite 可以直接使用 bitmap.flipX 和 bitmap.flopY 播放序列帧
 
+## Cax 1.1.8
+
+* 新增 shadow ，使用方式如下:
+
+``` js
+obj.shadow = {
+    color: 'red',
+    offsetX : -5,
+    offsetY :5,
+    blur:10
+}
+```
+
 ## Cax 1.1.7
 
 * 新增了 absClip 和 unAbsClip 裁剪，与 clip 的区别是 absClip 无视对象自身的坐标系

@@ -1,5 +1,5 @@
 /*!
- *  cax v1.1.7
+ *  cax v1.1.8
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -299,6 +299,7 @@ var DisplayObject = function (_EventDispatcher) {
     _this.clipGraphics = null;
     _this.clipRuleNonzero = true;
     _this.fixed = false;
+    _this.shadow = null;
 
     _this.absClipGraphics = null;
     _this.absClipRuleNonzero = true;
@@ -4115,12 +4116,11 @@ var CanvasRender = function (_Render) {
         ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
       }
 
-      o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
-      o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
       if (!cacheRender) {
         ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       }
       if (o._readyToCache) {
+        this.setComplexProps(ctx, o);
         o._readyToCache = false;
         o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1);
         this.render(o.cacheCtx, o, true);
@@ -4133,6 +4133,7 @@ var CanvasRender = function (_Render) {
 
         ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
       } else if (o.cacheCanvas && !cacheRender) {
+        this.setComplexProps(ctx, o);
         ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
       } else if (o instanceof _group2.default) {
         var list = o.children.slice(0),
@@ -4143,19 +4144,37 @@ var CanvasRender = function (_Render) {
           ctx.restore();
         }
       } else if (o instanceof _graphics2.default) {
+        this.setComplexProps(ctx, o);
         o.render(ctx);
       } else if (o instanceof _sprite2.default && o.rect) {
+        this.setComplexProps(ctx, o);
         o.updateFrame();
         var rect = o.rect;
         ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
       } else if (o instanceof _bitmap2.default && o.rect) {
+        this.setComplexProps(ctx, o);
         var bRect = o.rect;
         ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
       } else if (o instanceof _text2.default) {
+        this.setComplexProps(ctx, o);
         ctx.font = o.font;
         ctx.fillStyle = o.color;
         ctx.textBaseline = o.baseline;
         ctx.fillText(o.text, 0, 0);
+      }
+    }
+  }, {
+    key: 'setComplexProps',
+    value: function setComplexProps(ctx, o) {
+      o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
+      o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
+
+      o.complexShadow = this.getShadow(o);
+      if (o.complexShadow) {
+        ctx.shadowColor = o.complexShadow.color;
+        ctx.shadowOffsetX = o.complexShadow.offsetX;
+        ctx.shadowOffsetY = o.complexShadow.offsetY;
+        ctx.shadowBlur = o.complexShadow.blur;
       }
     }
   }, {
@@ -4172,6 +4191,12 @@ var CanvasRender = function (_Render) {
         return this.getAlpha(o.parent, result);
       }
       return result;
+    }
+  }, {
+    key: 'getShadow',
+    value: function getShadow(o) {
+      if (o.shadow) return o.shadow;
+      if (o.parent) return this.getShadow(o.parent);
     }
   }]);
 
@@ -4604,23 +4629,22 @@ var HitRender = function (_Render) {
 
         ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
         if (o instanceof _graphics2.default) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
+
           o.render(ctx);
         } else if (o instanceof _sprite2.default && o.rect) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
+
           o.updateFrame();
           var rect = o.rect;
           ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         } else if (o instanceof _bitmap2.default && o.rect) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
+
           var bRect = o.rect;
           ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
         } else if (o instanceof _text2.default) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
 
           ctx.font = o.font;
           ctx.fillStyle = o.color;
@@ -4633,6 +4657,19 @@ var HitRender = function (_Render) {
         this._dispatchEvent(o, evt);
         return o;
       }
+    }
+  }, {
+    key: 'setComplexProps',
+    value: function setComplexProps(ctx, o) {
+      ctx.globalCompositeOperation = o.complexCompositeOperation;
+      ctx.globalAlpha = o.complexAlpha;
+      //The shadow does not trigger the event, so remove it
+      // if(o.complexShadow){
+      //   ctx.shadowColor = o.complexShadow.color
+      //   ctx.shadowOffsetX = o.complexShadow.offsetX
+      //   ctx.shadowOffsetY = o.complexShadow.offsetY
+      //   ctx.shadowBlur = o.complexShadow.blur
+      // }
     }
   }, {
     key: '_dispatchEvent',

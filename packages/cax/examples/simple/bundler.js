@@ -283,6 +283,10 @@ var DisplayObject = function (_EventDispatcher) {
     _this.clipGraphics = null;
     _this.clipRuleNonzero = true;
     _this.fixed = false;
+    _this.shadow = null;
+
+    _this.absClipGraphics = null;
+    _this.absClipRuleNonzero = true;
     return _this;
   }
 
@@ -384,6 +388,17 @@ var DisplayObject = function (_EventDispatcher) {
     key: 'unclip',
     value: function unclip() {
       this.clipGraphics = null;
+    }
+  }, {
+    key: 'absClip',
+    value: function absClip(graphics, notClipRuleNonzero) {
+      this.absClipGraphics = graphics;
+      this.absClipRuleNonzero = !notClipRuleNonzero;
+    }
+  }, {
+    key: 'unAbsClip',
+    value: function unAbsClip() {
+      this.absClipGraphics = null;
     }
   }, {
     key: 'cache',
@@ -1145,7 +1160,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.getImageInWx = getImageInWx;
 function getImageInWx(img, callback) {
-  if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1) {
+  if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1 || img.indexOf('http://tmp/') === 0) {
     wx.getImageInfo({
       src: img,
       success: function success(info) {
@@ -2995,6 +3010,13 @@ var caxText = new _index2.default.Text('Hello Cax!', {
     font: '30px Arial'
 });
 
+caxText.shadow = {
+    color: 'red',
+    offsetX: -5,
+    offsetY: 5,
+    blur: 10
+};
+
 caxText.x = 100;
 caxText.y = 200;
 
@@ -3618,9 +3640,13 @@ var Stage = function (_Group) {
       });
 
       _this.canvas.addEventListener('dblclick', function (evt) {
-        return _this._handlDblClick(evt);
+        return _this._handleDblClick(evt);
       });
       // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+
+      document.addEventListener('contextmenu', function (evt) {
+        return _this._handleContextmenu(evt);
+      });
     }
 
     _this.borderTopWidth = 0;
@@ -3650,8 +3676,13 @@ var Stage = function (_Group) {
   }
 
   _createClass(Stage, [{
-    key: '_handlDblClick',
-    value: function _handlDblClick(evt) {
+    key: '_handleContextmenu',
+    value: function _handleContextmenu(evt) {
+      this._getObjectUnderPoint(evt);
+    }
+  }, {
+    key: '_handleDblClick',
+    value: function _handleDblClick(evt) {
       this._getObjectUnderPoint(evt);
     }
   }, {
@@ -3664,6 +3695,9 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseDown',
     value: function _handleMouseDown(evt) {
+      if (this.isWegame) {
+        evt.type = 'touchstart';
+      }
       this.offset = this._getOffset(this.canvas);
       var obj = this._getObjectUnderPoint(evt);
       this.willDragObject = obj;
@@ -3681,6 +3715,9 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseUp',
     value: function _handleMouseUp(evt) {
+      if (this.isWegame) {
+        evt.type = 'touchend';
+      }
       var obj = this._getObjectUnderPoint(evt);
       this._mouseUpX = evt.stageX;
       this._mouseUpY = evt.stageY;
@@ -3713,6 +3750,9 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseMove',
     value: function _handleMouseMove(evt) {
+      if (this.isWegame) {
+        evt.type = 'touchmove';
+      }
       if (this.disableMoveDetection) return;
       var obj = this._getObjectUnderPoint(evt);
       var mockEvt = new _event2.default();
@@ -4208,9 +4248,6 @@ var CanvasRender = function (_Render) {
   _createClass(CanvasRender, [{
     key: 'clear',
     value: function clear(ctx, width, height) {
-      //restore cache cavans transform
-      ctx.restore();
-
       ctx.clearRect(0, 0, width, height);
     }
   }, {
@@ -4257,12 +4294,21 @@ var CanvasRender = function (_Render) {
         ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
       }
 
-      o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
-      o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
+      var oacg = o.absClipGraphics;
+      if (oacg) {
+        ctx.beginPath();
+        oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+        oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+        ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+        oacg.render(ctx);
+        ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+      }
+
       if (!cacheRender) {
         ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       }
       if (o._readyToCache) {
+        this.setComplexProps(ctx, o);
         o._readyToCache = false;
         o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1);
         this.render(o.cacheCtx, o, true);
@@ -4275,30 +4321,48 @@ var CanvasRender = function (_Render) {
 
         ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
       } else if (o.cacheCanvas && !cacheRender) {
+        this.setComplexProps(ctx, o);
         ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
       } else if (o instanceof _group2.default) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = 0; i < l; i++) {
           ctx.save();
-          var target = this._render(ctx, list[i], mtx);
-          if (target) return target;
+          this._render(ctx, list[i], mtx);
           ctx.restore();
         }
       } else if (o instanceof _graphics2.default) {
+        this.setComplexProps(ctx, o);
         o.render(ctx);
       } else if (o instanceof _sprite2.default && o.rect) {
+        this.setComplexProps(ctx, o);
         o.updateFrame();
         var rect = o.rect;
         ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
       } else if (o instanceof _bitmap2.default && o.rect) {
+        this.setComplexProps(ctx, o);
         var bRect = o.rect;
         ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
       } else if (o instanceof _text2.default) {
+        this.setComplexProps(ctx, o);
         ctx.font = o.font;
         ctx.fillStyle = o.color;
         ctx.textBaseline = o.baseline;
         ctx.fillText(o.text, 0, 0);
+      }
+    }
+  }, {
+    key: 'setComplexProps',
+    value: function setComplexProps(ctx, o) {
+      o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
+      o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
+
+      o.complexShadow = this.getShadow(o);
+      if (o.complexShadow) {
+        ctx.shadowColor = o.complexShadow.color;
+        ctx.shadowOffsetX = o.complexShadow.offsetX;
+        ctx.shadowOffsetY = o.complexShadow.offsetY;
+        ctx.shadowBlur = o.complexShadow.blur;
       }
     }
   }, {
@@ -4315,6 +4379,12 @@ var CanvasRender = function (_Render) {
         return this.getAlpha(o.parent, result);
       }
       return result;
+    }
+  }, {
+    key: 'getShadow',
+    value: function getShadow(o) {
+      if (o.shadow) return o.shadow;
+      if (o.parent) return this.getShadow(o.parent);
     }
   }]);
 
@@ -4686,9 +4756,6 @@ var HitRender = function (_Render) {
     key: 'hitPixel',
     value: function hitPixel(o, evt) {
       var ctx = this.ctx;
-      //CanvasRenderingContext2D.restore() 是 Canvas 2D API 通过在绘图状态栈中弹出顶端的状态，将 canvas 恢复到最近的保存状态的方法。 如果没有保存状态，此方法不做任何改变。
-      //避免 save restore嵌套导致的 clip 区域影响 clearRect 擦除的区域
-      ctx.restore();
       ctx.clearRect(0, 0, 2, 2);
       var mtx = o._hitMatrix;
       var list = o.children.slice(0),
@@ -4727,6 +4794,16 @@ var HitRender = function (_Render) {
         ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
       }
 
+      var oacg = o.absClipGraphics;
+      if (oacg) {
+        ctx.beginPath();
+        oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+        oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+        ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+        oacg.render(ctx);
+        ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+      }
+
       if (o.cacheCanvas) {
         ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
         ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
@@ -4736,30 +4813,29 @@ var HitRender = function (_Render) {
         for (var i = l - 1; i >= 0; i--) {
           ctx.save();
           var target = this._hitPixel(list[i], evt, mtx);
-          if (target) return target;
           ctx.restore();
+          if (target) return target;
         }
       } else {
 
         ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
         if (o instanceof _graphics2.default) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
+
           o.render(ctx);
         } else if (o instanceof _sprite2.default && o.rect) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
+
           o.updateFrame();
           var rect = o.rect;
           ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         } else if (o instanceof _bitmap2.default && o.rect) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
+
           var bRect = o.rect;
           ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
         } else if (o instanceof _text2.default) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
 
           ctx.font = o.font;
           ctx.fillStyle = o.color;
@@ -4772,6 +4848,19 @@ var HitRender = function (_Render) {
         this._dispatchEvent(o, evt);
         return o;
       }
+    }
+  }, {
+    key: 'setComplexProps',
+    value: function setComplexProps(ctx, o) {
+      ctx.globalCompositeOperation = o.complexCompositeOperation;
+      ctx.globalAlpha = o.complexAlpha;
+      //The shadow does not trigger the event, so remove it
+      // if(o.complexShadow){
+      //   ctx.shadowColor = o.complexShadow.color
+      //   ctx.shadowOffsetX = o.complexShadow.offsetX
+      //   ctx.shadowOffsetY = o.complexShadow.offsetY
+      //   ctx.shadowBlur = o.complexShadow.blur
+      // }
     }
   }, {
     key: '_dispatchEvent',

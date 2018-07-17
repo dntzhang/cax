@@ -141,23 +141,22 @@ class HitRender extends Render {
       
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
       if (o instanceof Graphics) {
-        ctx.globalCompositeOperation = o.complexCompositeOperation
-        ctx.globalAlpha = o.complexAlpha
+        this.setComplexProps(ctx, o)
+        
         o.render(ctx)
       } else if (o instanceof Sprite && o.rect) {
-        ctx.globalCompositeOperation = o.complexCompositeOperation
-        ctx.globalAlpha = o.complexAlpha
+        this.setComplexProps(ctx, o)
+
         o.updateFrame()
         let rect = o.rect
         ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3])
       } else if (o instanceof Bitmap && o.rect) {
-        ctx.globalCompositeOperation = o.complexCompositeOperation
-        ctx.globalAlpha = o.complexAlpha
+        this.setComplexProps(ctx, o)
+
         let bRect = o.rect
         ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3])
       } else if (o instanceof Text) {
-        ctx.globalCompositeOperation = o.complexCompositeOperation
-        ctx.globalAlpha = o.complexAlpha
+        this.setComplexProps(ctx, o)
 
         ctx.font = o.font
         ctx.fillStyle = o.color
@@ -170,6 +169,18 @@ class HitRender extends Render {
       this._dispatchEvent(o, evt)
       return o
     }
+  }
+
+  setComplexProps(ctx, o){
+    ctx.globalCompositeOperation = o.complexCompositeOperation
+    ctx.globalAlpha = o.complexAlpha
+    //The shadow does not trigger the event, so remove it
+    // if(o.complexShadow){
+    //   ctx.shadowColor = o.complexShadow.color
+    //   ctx.shadowOffsetX = o.complexShadow.offsetX
+    //   ctx.shadowOffsetY = o.complexShadow.offsetY
+    //   ctx.shadowBlur = o.complexShadow.blur
+    // }
   }
 
   _dispatchEvent (obj, evt) {

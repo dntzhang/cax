@@ -15,6 +15,7 @@ class DisplayObject extends EventDispatcher {
     this.clipGraphics = null
     this.clipRuleNonzero = true
     this.fixed = false
+    this.shadow = null
 
     this.absClipGraphics = null
     this.absClipRuleNonzero = true

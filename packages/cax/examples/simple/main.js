@@ -182,6 +182,13 @@ const caxText = new cax.Text('Hello Cax!', {
     font: '30px Arial'
 })
 
+caxText.shadow = {
+    color: 'red',
+    offsetX : -5,
+    offsetY :5,
+    blur:10
+}
+
 caxText.x = 100
 caxText.y = 200
 
