@@ -1,5 +1,5 @@
 /*!
- *  cax v1.1.8
+ *  cax v1.1.9
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -239,7 +239,8 @@ var Group = function (_DisplayObject) {
     key: 'destroy',
     value: function destroy() {
       this.empty();
-      _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
+      //Stage does not have a parent 
+      this.parent && _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
     }
   }]);
 
@@ -5566,6 +5567,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
@@ -5595,20 +5598,68 @@ var Button = function (_Group) {
     var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this));
 
     _this.width = option.width;
-    _this.roundedRect = new _roundedRect2.default(option.width, option.height, option.borderRadius, {
-      strokeStyle: option.borderColor || 'black',
-      fillStyle: option.backgroundColor || '#F5F5F5'
-    });
+
+    var textHeight = 0;
     _this.text = new _text2.default(option.text, {
       font: option.font,
       color: option.color
     });
+    var textWidth = _this.text.getWidth();
+    var textGroup = new _group2.default();
 
-    _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
-    _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
-    _this.add(_this.roundedRect, _this.text);
+    if (textWidth > option.width) {
+      var step = Math.round(option.text.length * option.width / textWidth / 2);
+
+      var textList = _this.stringSplit(option.text, step);
+      var lineHeight = option.lineHeight || 12;
+      textHeight = textList.length * lineHeight + 6;
+
+      textList.forEach(function (text, index) {
+        _this.text = new _text2.default(text, {
+          font: option.font,
+          color: option.color
+        });
+
+        _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+        _this.text.y = Math.max(textHeight, option.height) / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0) + index * 12 - textHeight / 2 + lineHeight / 2;
+        textGroup.add(_this.text);
+      });
+    } else {
+
+      _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+      _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
+      textGroup.add(_this.text);
+    }
+
+    _this.roundedRect = new _roundedRect2.default(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
+      strokeStyle: option.borderColor || 'black',
+      fillStyle: option.backgroundColor || '#F5F5F5'
+    });
+
+    _this.add(_this.roundedRect);
+    _this.add(textGroup);
     return _this;
   }
+
+  _createClass(Button, [{
+    key: 'stringSplit',
+    value: function stringSplit(str, len) {
+      var arr = [],
+          offset = 0,
+          char_length = 0;
+      for (var i = 0; i < str.length; i++) {
+        var son_str = str.charAt(i);
+        encodeURI(son_str).length > 2 ? char_length += 1 : char_length += 0.5;
+        if (char_length >= len || char_length < len && i === str.length - 1) {
+          var sub_len = char_length == len ? i + 1 : i;
+          arr.push(str.substr(offset, sub_len - offset + (char_length < len && i === str.length - 1 ? 1 : 0)));
+          offset = i + 1;
+          char_length = 0;
+        }
+      }
+      return arr;
+    }
+  }]);
 
   return Button;
 }(_group2.default);

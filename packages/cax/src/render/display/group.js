@@ -59,7 +59,8 @@ class Group extends DisplayObject {
 
   destroy () {
     this.empty()
-    super.destroy()
+    //Stage does not have a parent 
+    this.parent && super.destroy()
   }
 }
 
