@@ -35,7 +35,7 @@ class CanvasRender extends Render {
         mtx.appendTransform(o.x , o.y , o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
         // if (!this.checkBoundEvent(child)) continue
         ctx.save()
-        this._render(ctx, child, cacheData?null:mtx, cacheData)
+        this._render(ctx, child, cacheData?null:mtx, cacheData, true)
         ctx.restore()
       }
     } else {
@@ -43,7 +43,7 @@ class CanvasRender extends Render {
     }
   }
 
-  _render (ctx, o, mtx, cacheData) {
+  _render (ctx, o, mtx, cacheData, inGroup) {
     if (!o.isVisible()) return
     if (mtx && !o.fixed) {
       o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
@@ -54,7 +54,9 @@ class CanvasRender extends Render {
     }
     mtx = o._matrix
 
-    if(!cacheData){
+    //group 进行 cache canvas 内部的子元素需要进行appendTransform
+    //cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
+    if(inGroup || !cacheData){
       mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
     }
     const ocg = o.clipGraphics
