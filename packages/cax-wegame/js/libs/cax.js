@@ -1,5 +1,5 @@
 /*!
- *  cax v1.1.9
+ *  cax v1.1.10
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -304,6 +304,7 @@ var DisplayObject = function (_EventDispatcher) {
     _this.compositeOperation = null;
     _this.absClipGraphics = null;
     _this.absClipRuleNonzero = true;
+    _this.cacheUpdating = false;
     return _this;
   }
 
@@ -419,7 +420,7 @@ var DisplayObject = function (_EventDispatcher) {
     }
   }, {
     key: 'cache',
-    value: function cache(x, y, width, height, scale) {
+    value: function cache(x, y, width, height, scale, cacheUpdating) {
 
       this._cacheData = {
         x: x || 0,
@@ -428,6 +429,7 @@ var DisplayObject = function (_EventDispatcher) {
         height: height || this.height,
         scale: scale || 1
       };
+      this.cacheUpdating = cacheUpdating;
       if (!this.cacheCanvas) {
         if (typeof wx !== 'undefined' && wx.createCanvas) {
           this.cacheCanvas = wx.createCanvas();
@@ -4081,7 +4083,7 @@ var CanvasRender = function (_Render) {
           mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
           // if (!this.checkBoundEvent(child)) continue
           ctx.save();
-          this._render(ctx, child, cacheData ? null : mtx, cacheData);
+          this._render(ctx, child, cacheData ? null : mtx, cacheData, true);
           ctx.restore();
         }
       } else {
@@ -4090,7 +4092,7 @@ var CanvasRender = function (_Render) {
     }
   }, {
     key: '_render',
-    value: function _render(ctx, o, mtx, cacheData) {
+    value: function _render(ctx, o, mtx, cacheData, inGroup) {
       if (!o.isVisible()) return;
       if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
@@ -4101,7 +4103,9 @@ var CanvasRender = function (_Render) {
       }
       mtx = o._matrix;
 
-      if (!cacheData) {
+      //group 进行 cache canvas 内部的子元素需要进行appendTransform
+      //cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
+      if (inGroup || !cacheData) {
         mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
       }
       var ocg = o.clipGraphics;
@@ -4127,10 +4131,13 @@ var CanvasRender = function (_Render) {
       //if(!cacheData){
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       //}
-      if (o._readyToCache) {
+      if (o._readyToCache || o.cacheUpdating) {
         this.setComplexProps(ctx, o);
         o._readyToCache = false;
+        o.cacheCtx.clearRect(0, 0, o.cacheCanvas.width, o.cacheCanvas.height);
+        o.cacheCtx.save();
         this.render(o.cacheCtx, o, o._cacheData);
+        o.cacheCtx.restore();
         //debug cacheCanvas
         //document.body.appendChild(o.cacheCanvas)
         if (o._readyToFilter) {
