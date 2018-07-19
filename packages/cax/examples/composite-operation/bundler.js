@@ -2876,38 +2876,35 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var stage = new _index2.default.Stage(600, 400, '#canvasCtn');
+var stage = new _index2.default.Stage(260, 200, '#canvasCtn');
+var group = new _index2.default.Group();
+group.x = 90;
+group.y = 60;
+var bitmap = new _index2.default.Bitmap('./wepay-diy.jpg', function () {
+    group.cache(0, 0, 100, 100, 1);
+    stage.update();
+});
 
-var radius = 50;
-var rings = 40;
+group.cursor = 'pointer';
+group.on('click', function () {
+    alert('微信支付');
+});
 
-var colors = ["#828b20", "#b0ac31", "#cbc53d", "#fad779", "#f9e4ad", "#faf2db", "#563512", "#9b4a0b", "#d36600", "#fe8a00", "#f9a71f"];
+group.on('drag', function (evt) {
+    evt.target.x += evt.dx;
+    evt.target.y += evt.dy;
+});
+var bg = new _index2.default.Rect(11200, 1180, { fillStyle: '#DE5347' });
+//bg.cursor = 'default'
 
-for (var i = 0; i < 200; i++) {
+var rect = new _index2.default.Rect(80, 20, { fillStyle: 'black' });
+rect.compositeOperation = 'source-atop';
 
-    var shape = new _index2.default.Graphics();
-    for (var j = rings; j > 0; j--) {
-        shape.beginPath().fillStyle(colors[Math.random() * colors.length | 0]).arc(0, 0, radius * j / rings, 0, Math.PI * 2).fill();
-    }
-    shape.x = Math.random() * 600;
-    shape.y = Math.random() * 400;
-    shape.velX = Math.random() * 10 - 5;
-    shape.velY = Math.random() * 10 - 5;
+group.add(bitmap, rect);
 
-    stage.add(shape);
-}
+stage.add(bg, group);
 
 _index2.default.tick(function () {
-
-    var w = 600 + radius * 2;
-    var h = 400 + radius * 2;
-
-    for (var i = 0; i < 200; i++) {
-        var shape = stage.children[i];
-        shape.x = (shape.x + radius + shape.velX + w) % w - radius;
-        shape.y = (shape.y + radius + shape.velY + h) % h - radius;
-    }
-
     stage.update();
 });
 
@@ -2915,13 +2912,11 @@ var tag = true;
 
 document.querySelector('#toggleBtn').addEventListener('click', function () {
 
-    for (var i = 0; i < 200; i++) {
-        var shape = stage.children[i];
-        if (tag) {
-            shape.cache(-radius, -radius, radius * 2, radius * 2);
-        } else {
-            shape.uncache();
-        }
+    if (tag) {
+
+        group.uncache();
+    } else {
+        group.cache(0, 0, 100, 100);
     }
 
     tag = !tag;
@@ -4146,6 +4141,7 @@ var CanvasRender = function (_Render) {
       if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else if (cacheData && !o.fixed) {
+        console.log(cacheData.scale, 0, 0, cacheData.scale, cacheData.x * -1, cacheData.y * -1);
         o._matrix.initialize(cacheData.scale, 0, 0, cacheData.scale, cacheData.x * -1, cacheData.y * -1);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -4153,6 +4149,7 @@ var CanvasRender = function (_Render) {
       mtx = o._matrix;
 
       if (!cacheData) {
+
         mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
       }
       var ocg = o.clipGraphics;
@@ -4174,14 +4171,15 @@ var CanvasRender = function (_Render) {
         oacg.render(ctx);
         ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
       }
+      // if(!cacheData){
 
-      //if(!cacheData){
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       //}
       if (o._readyToCache) {
         this.setComplexProps(ctx, o);
         o._readyToCache = false;
-        this.render(o.cacheCtx, o, o._cacheData);
+        //o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1)
+        this.render(o.cacheCtx, o, true, o._cacheData);
         //debug cacheCanvas
         //document.body.appendChild(o.cacheCanvas)
         if (o._readyToFilter) {
@@ -4556,15 +4554,15 @@ var HitRender = function (_Render) {
       _this.canvas = document.createElement('canvas');
     }
 
-    _this.canvas.width = 1;
-    _this.canvas.height = 1;
-    _this.ctx = _this.canvas.getContext('2d');
-
-    // debug event
-    // this.canvas.width = 441
-    // this.canvas.height = 441
+    // this.canvas.width = 1
+    // this.canvas.height = 1
     // this.ctx = this.canvas.getContext('2d')
-    // document.body.appendChild(this.canvas)
+
+    //debug event
+    _this.canvas.width = 441;
+    _this.canvas.height = 441;
+    _this.ctx = _this.canvas.getContext('2d');
+    document.body.appendChild(_this.canvas);
 
     _this.disableEvents = ['mouseover', 'mouseout', 'mousemove', 'touchmove'];
     return _this;

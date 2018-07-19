@@ -16,7 +16,7 @@ class DisplayObject extends EventDispatcher {
     this.clipRuleNonzero = true
     this.fixed = false
     this.shadow = null
-
+    this.compositeOperation = null
     this.absClipGraphics = null
     this.absClipRuleNonzero = true
   }
@@ -140,6 +140,9 @@ class DisplayObject extends EventDispatcher {
     }
     this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale
     this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale
+    
+    //debug cache canvas
+    //this.cacheCtx.fillRect(0,0,1000,1000)
     this._readyToCache = true
    
   }

@@ -24,7 +24,7 @@ class CanvasRender extends Render {
     ctx.clearRect(0, 0, width, height)
   }
 
-  render (ctx, o, cacheRender) {
+  render (ctx, o, cacheData) {
     let mtx = o._matrix
     if(o.children){
       let list = o.children.slice(0),
@@ -35,26 +35,28 @@ class CanvasRender extends Render {
         mtx.appendTransform(o.x , o.y , o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
         // if (!this.checkBoundEvent(child)) continue
         ctx.save()
-        this._render(ctx, child, cacheRender?null:mtx, cacheRender)
+        this._render(ctx, child, cacheData?null:mtx, cacheData)
         ctx.restore()
       }
     } else {
-      this._render(ctx, o, mtx,cacheRender)
+      this._render(ctx, o, cacheData?null:mtx, cacheData)
     }
   }
 
-  _render (ctx, o, mtx, cacheRender) {
+  _render (ctx, o, mtx, cacheData) {
     if (!o.isVisible()) return
     if (mtx && !o.fixed) {
       o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
+    } else if (cacheData && !o.fixed){
+      o._matrix.initialize(cacheData.scale, 0, 0, cacheData.scale, cacheData.x * -1, cacheData.y * -1)
     } else {
       o._matrix.initialize(1, 0, 0, 1, 0, 0)
     }
     mtx = o._matrix
 
-    if(!cacheRender){
-      mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
-    }
+    if(!cacheData){
+    mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
+  }
     const ocg = o.clipGraphics
     if (ocg) {
       ctx.beginPath()
@@ -75,14 +77,13 @@ class CanvasRender extends Render {
       ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd')
     }
 
-    if(!cacheRender){
-      ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
-    }
+    //if(!cacheData){
+    ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
+    //}
     if (o._readyToCache) {
       this.setComplexProps(ctx, o)
       o._readyToCache = false
-      o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1)
-      this.render(o.cacheCtx, o, true)
+      this.render(o.cacheCtx, o, o._cacheData)
       //debug cacheCanvas
       //document.body.appendChild(o.cacheCanvas)
       if (o._readyToFilter) {
@@ -91,7 +92,7 @@ class CanvasRender extends Render {
       }
 
       ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y)
-    } else if (o.cacheCanvas&&!cacheRender) {
+    } else if (o.cacheCanvas && !cacheData) {
       this.setComplexProps(ctx, o)
       ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y)
     } else if (o instanceof Group) {

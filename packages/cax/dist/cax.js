@@ -301,7 +301,7 @@ var DisplayObject = function (_EventDispatcher) {
     _this.clipRuleNonzero = true;
     _this.fixed = false;
     _this.shadow = null;
-
+    _this.compositeOperation = null;
     _this.absClipGraphics = null;
     _this.absClipRuleNonzero = true;
     return _this;
@@ -438,6 +438,9 @@ var DisplayObject = function (_EventDispatcher) {
       }
       this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale;
       this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale;
+
+      //debug cache canvas
+      //this.cacheCtx.fillRect(0,0,1000,1000)
       this._readyToCache = true;
     }
   }, {
@@ -3621,6 +3624,8 @@ var Stage = function (_Group) {
         this.canvas.style.cursor = obj.cursor;
       } else if (obj.parent) {
         this._setCursor(obj.parent);
+      } else {
+        this._setCursor({ cursor: 'default' });
       }
     }
   }, {
@@ -4065,7 +4070,7 @@ var CanvasRender = function (_Render) {
     }
   }, {
     key: 'render',
-    value: function render(ctx, o, cacheRender) {
+    value: function render(ctx, o, cacheData) {
       var mtx = o._matrix;
       if (o.children) {
         var list = o.children.slice(0),
@@ -4076,25 +4081,27 @@ var CanvasRender = function (_Render) {
           mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
           // if (!this.checkBoundEvent(child)) continue
           ctx.save();
-          this._render(ctx, child, cacheRender ? null : mtx, cacheRender);
+          this._render(ctx, child, cacheData ? null : mtx, cacheData);
           ctx.restore();
         }
       } else {
-        this._render(ctx, o, mtx, cacheRender);
+        this._render(ctx, o, cacheData ? null : mtx, cacheData);
       }
     }
   }, {
     key: '_render',
-    value: function _render(ctx, o, mtx, cacheRender) {
+    value: function _render(ctx, o, mtx, cacheData) {
       if (!o.isVisible()) return;
       if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+      } else if (cacheData && !o.fixed) {
+        o._matrix.initialize(cacheData.scale, 0, 0, cacheData.scale, cacheData.x * -1, cacheData.y * -1);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
       }
       mtx = o._matrix;
 
-      if (!cacheRender) {
+      if (!cacheData) {
         mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
       }
       var ocg = o.clipGraphics;
@@ -4117,14 +4124,13 @@ var CanvasRender = function (_Render) {
         ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
       }
 
-      if (!cacheRender) {
-        ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-      }
+      //if(!cacheData){
+      ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+      //}
       if (o._readyToCache) {
         this.setComplexProps(ctx, o);
         o._readyToCache = false;
-        o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1);
-        this.render(o.cacheCtx, o, true);
+        this.render(o.cacheCtx, o, o._cacheData);
         //debug cacheCanvas
         //document.body.appendChild(o.cacheCanvas)
         if (o._readyToFilter) {
@@ -4133,7 +4139,7 @@ var CanvasRender = function (_Render) {
         }
 
         ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
-      } else if (o.cacheCanvas && !cacheRender) {
+      } else if (o.cacheCanvas && !cacheData) {
         this.setComplexProps(ctx, o);
         ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
       } else if (o instanceof _group2.default) {
