@@ -55,8 +55,8 @@ class CanvasRender extends Render {
     mtx = o._matrix
 
     if(!cacheData){
-    mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
-  }
+      mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
+    }
     const ocg = o.clipGraphics
     if (ocg) {
       ctx.beginPath()
@@ -80,10 +80,13 @@ class CanvasRender extends Render {
     //if(!cacheData){
     ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
     //}
-    if (o._readyToCache) {
+    if (o._readyToCache || o.cacheUpdating) {
       this.setComplexProps(ctx, o)
       o._readyToCache = false
+      o.cacheCtx.clearRect(0, 0, o.cacheCanvas.width, o.cacheCanvas.height)
+      o.cacheCtx.save()
       this.render(o.cacheCtx, o, o._cacheData)
+      o.cacheCtx.restore()
       //debug cacheCanvas
       //document.body.appendChild(o.cacheCanvas)
       if (o._readyToFilter) {

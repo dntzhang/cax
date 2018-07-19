@@ -3,6 +3,16 @@
 * bitmap 支持 flipX 和 flipY
 * sprite 可以直接使用 bitmap.flipX 和 bitmap.flopY 播放序列帧
 
+## Cax 1.1.10
+
+* cache 方法支持持续走 cache canvas 渲染,也支持`cacheUpdating`属性设置持续走 cache canvas 渲染：
+
+ ```js
+ obj.cacheUpdating = true
+ // or
+ obj.cache(0, 0, 100, 100, 1, true)
+ ```
+
 ## Cax 1.1.9
 
 * fix 鼠标形状的问题

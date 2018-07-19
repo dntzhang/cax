@@ -19,6 +19,7 @@ class DisplayObject extends EventDispatcher {
     this.compositeOperation = null
     this.absClipGraphics = null
     this.absClipRuleNonzero = true
+    this.cacheUpdating = false
   }
 
   isVisible () {
@@ -121,7 +122,7 @@ class DisplayObject extends EventDispatcher {
     this.absClipGraphics = null
   }
 
-  cache(x, y, width, height, scale) {
+  cache(x, y, width, height, scale, cacheUpdating) {
 
     this._cacheData = {
       x: x || 0,
@@ -130,6 +131,7 @@ class DisplayObject extends EventDispatcher {
       height: height || this.height,
       scale: scale || 1
     }
+    this.cacheUpdating = cacheUpdating
     if (!this.cacheCanvas) {
       if (typeof wx !== 'undefined' && wx.createCanvas) {
         this.cacheCanvas = wx.createCanvas()
