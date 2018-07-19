@@ -21,6 +21,7 @@
   * [Filter](https://dntzhang.github.io/cax/packages/cax/examples/filter/)
   * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
+  * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
 * 小程序 DEMO 正在审核中敬请期待
 * 小游戏 DEMO 正在审核中敬请期待
 

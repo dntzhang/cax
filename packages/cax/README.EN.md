@@ -21,6 +21,7 @@ English | [简体中文](./README.md)
   * [Filter](https://dntzhang.github.io/cax/packages/cax/examples/filter/)
   * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
+  * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
   
 ## Features
 

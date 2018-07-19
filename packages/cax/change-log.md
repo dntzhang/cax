@@ -3,6 +3,13 @@
 * bitmap 支持 flipX 和 flipY
 * sprite 可以直接使用 bitmap.flipX 和 bitmap.flopY 播放序列帧
 
+## Cax 1.1.9
+
+* fix 鼠标形状的问题
+* fix group cache 的问题，所以才能制作这个效果:
+  * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
+
+
 ## Cax 1.1.8
 
 * 新增 shadow ，使用方式如下:

@@ -21,6 +21,7 @@
   * [Filter](https://dntzhang.github.io/cax/packages/cax/examples/filter/)
   * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
+  * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
 * 小程序 DEMO 正在审核中敬请期待
 * 小游戏 DEMO 正在审核中敬请期待
 
@@ -711,13 +712,14 @@ const button = new cax.Button({
 ```
 
 一般情况下，稍微复杂组合体都建议使用继承自 Group，这样利于扩展也方便管理自身内部的元件。
-可以看到小游戏的 DEMO 里的 [Player、Bullet、Enemy、Background](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame/js) 全都是继承自 Group。
+小游戏的 DEMO 里的 [Player、Bullet、Enemy、Background](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame/js) 全都是继承自 Group。
+[Wechart 的所有图表](https://github.com/dntzhang/wechart/tree/master/packages)全都是继承自 Group。
 
 ## 谁在使用？
 
 ![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
 
-## 微信交流 2 群
+## 微信交流群【2】
 
 ![](https://github.com/dntzhang/wechart/raw/master/asset/g2.png)
 
