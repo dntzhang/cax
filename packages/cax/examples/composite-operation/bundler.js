@@ -4141,7 +4141,6 @@ var CanvasRender = function (_Render) {
       if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else if (cacheData && !o.fixed) {
-        console.log(cacheData.scale, 0, 0, cacheData.scale, cacheData.x * -1, cacheData.y * -1);
         o._matrix.initialize(cacheData.scale, 0, 0, cacheData.scale, cacheData.x * -1, cacheData.y * -1);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
@@ -4149,7 +4148,6 @@ var CanvasRender = function (_Render) {
       mtx = o._matrix;
 
       if (!cacheData) {
-
         mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
       }
       var ocg = o.clipGraphics;
@@ -4171,15 +4169,14 @@ var CanvasRender = function (_Render) {
         oacg.render(ctx);
         ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
       }
-      // if(!cacheData){
 
+      //if(!cacheData){
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       //}
       if (o._readyToCache) {
         this.setComplexProps(ctx, o);
         o._readyToCache = false;
-        //o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x * -1, o._cacheData.y * -1)
-        this.render(o.cacheCtx, o, true, o._cacheData);
+        this.render(o.cacheCtx, o, o._cacheData);
         //debug cacheCanvas
         //document.body.appendChild(o.cacheCanvas)
         if (o._readyToFilter) {
@@ -4554,15 +4551,15 @@ var HitRender = function (_Render) {
       _this.canvas = document.createElement('canvas');
     }
 
-    // this.canvas.width = 1
-    // this.canvas.height = 1
-    // this.ctx = this.canvas.getContext('2d')
-
-    //debug event
-    _this.canvas.width = 441;
-    _this.canvas.height = 441;
+    _this.canvas.width = 1;
+    _this.canvas.height = 1;
     _this.ctx = _this.canvas.getContext('2d');
-    document.body.appendChild(_this.canvas);
+
+    // debug event
+    // this.canvas.width = 441
+    // this.canvas.height = 441
+    // this.ctx = this.canvas.getContext('2d')
+    // document.body.appendChild(this.canvas)
 
     _this.disableEvents = ['mouseover', 'mouseout', 'mousemove', 'touchmove'];
     return _this;
