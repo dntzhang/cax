@@ -54,6 +54,8 @@
       - [empty](#empty)
       - [replace](#replace)
   - [Stage](#stage)
+    - [Stage 方法](#stage-方法)
+      - [scaleEventPoint](#scaleeventpoint)
   - [Bitmap](#bitmap)
   - [Sprite](#sprite)
       - [Sprite 方法](#sprite-方法)
@@ -265,6 +267,19 @@ groupObj.replace (current, pre)
 ### Stage
 
 最大的顶层容器，继承自 Group，所以 Group 拥有的方法它全都有。
+
+#### Stage 方法
+
+##### scaleEventPoint
+
+当 canvas 的宽高 和 canvas 的像素不对应的时候，事件触发位置是不准确的，你可以使用 scaleEventPoint 方法使事件校正准确。
+
+```js
+//canvas 宽高是像素的一半
+stage.scaleEventPoint(0.5, 0.5)
+```
+
+例子: https://github.com/dntzhang/cax/blob/master/packages/cax/examples/pie/main.js#L218-L220
 
 ### Bitmap
 
