@@ -4,7 +4,7 @@
 
 > 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
 
-* [Wechart by Cax](https://github.com/dntzhang/wechart)
+* [Wechart by Cax![](./asset/hot.png)](https://github.com/dntzhang/wechart)
 * Web DEMO & [→ Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)
   * [Simple](https://dntzhang.github.io/cax) 
   * [Animation](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
