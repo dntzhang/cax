@@ -14,6 +14,7 @@
     "pie": "webpack -w",
     "clip": "webpack -w",
     "graphics": "webpack -w",
+    "sprite": "webpack -w",
     "group-clip": "webpack -w",
     "clip-transform": "webpack -w",
     "map": "webpack -w",
