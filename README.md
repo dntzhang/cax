@@ -55,6 +55,7 @@
       - [replace](#replace)
   - [Stage](#stage)
     - [Stage 方法](#stage-方法)
+      - [update](#update)
       - [scaleEventPoint](#scaleeventpoint)
   - [Bitmap](#bitmap)
   - [Sprite](#sprite)
@@ -269,6 +270,20 @@ groupObj.replace (current, pre)
 最大的顶层容器，继承自 Group，所以 Group 拥有的方法它全都有。
 
 #### Stage 方法
+
+##### update
+
+所以元素添加到舞台上是看不到的，你必须执行 update 方法。
+
+```js
+stage.update()
+```
+
+任何元素属性的修改请执行 stage.update() 来更新舞台，或者放在定时器里:
+
+```js
+cax.tick(stage.update.bind(stage))
+```
 
 ##### scaleEventPoint
 
