@@ -17,8 +17,7 @@ class Renderer {
   }
 
   update (stage) {
-
-    this.renderer.clear(this.ctx, this.width,this.height)
+    this.renderer.clear(this.ctx, this.width, this.height)
     this.renderer.render(this.ctx, stage)
     this.ctx.draw && this.ctx.draw()
   }
@@ -50,9 +49,9 @@ class Renderer {
     } else {
       o._matrix.initialize(1, 0, 0, 1, 0, 0)
     }
-  
+
     o._matrix.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
-  
+
     if (o instanceof Group) {
       var list = o.children,
         len = list.length,

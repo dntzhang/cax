@@ -122,8 +122,7 @@ class DisplayObject extends EventDispatcher {
     this.absClipGraphics = null
   }
 
-  cache(x, y, width, height, scale, cacheUpdating) {
-
+  cache (x, y, width, height, scale, cacheUpdating) {
     this._cacheData = {
       x: x || 0,
       y: y || 0,
@@ -142,24 +141,23 @@ class DisplayObject extends EventDispatcher {
     }
     this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale
     this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale
-    
-    //debug cache canvas
-    //this.cacheCtx.fillRect(0,0,1000,1000)
+
+    // debug cache canvas
+    // this.cacheCtx.fillRect(0,0,1000,1000)
     this._readyToCache = true
-   
   }
 
-  uncache() {
+  uncache () {
     this.cacheCanvas = null
   }
 
-  filter(filterName, filterBox) {
+  filter (filterName, filterBox) {
     this.cache(filterBox.x || 0, filterBox.y || 0, filterBox.width || this.width, filterBox.height || this.height)
     this._readyToFilter = true
     this._filterName = filterName
   }
 
-  unfilter(){
+  unfilter () {
     this.uncache()
   }
 }

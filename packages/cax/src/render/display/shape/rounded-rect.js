@@ -6,7 +6,7 @@ class RoundedRect extends Shape {
     this.option = Object.assign({
       lineWidth: 1
     }, option)
-    this.r = r || 0 
+    this.r = r || 0
     this.width = width
     this.height = height
   }
@@ -35,13 +35,13 @@ class RoundedRect extends Shape {
     this.arcTo(dx, dy, ex, ey, r)
     this.arcTo(ex, ey, ax, ay, r)
 
-    if(this.option.fillStyle){
+    if (this.option.fillStyle) {
       this.closePath()
       this.fillStyle(this.option.fillStyle)
       this.fill()
     }
 
-    if(this.option.strokeStyle){
+    if (this.option.strokeStyle) {
       this.lineWidth(this.option.lineWidth)
       this.strokeStyle(this.option.strokeStyle)
       this.stroke()

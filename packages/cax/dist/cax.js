@@ -1,5 +1,5 @@
 /*!
- *  cax v1.1.10
+ *  cax v1.2.0
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -239,7 +239,7 @@ var Group = function (_DisplayObject) {
     key: 'destroy',
     value: function destroy() {
       this.empty();
-      //Stage does not have a parent 
+      // Stage does not have a parent
       this.parent && _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
     }
   }]);
@@ -421,7 +421,6 @@ var DisplayObject = function (_EventDispatcher) {
   }, {
     key: 'cache',
     value: function cache(x, y, width, height, scale, cacheUpdating) {
-
       this._cacheData = {
         x: x || 0,
         y: y || 0,
@@ -441,8 +440,8 @@ var DisplayObject = function (_EventDispatcher) {
       this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale;
       this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale;
 
-      //debug cache canvas
-      //this.cacheCtx.fillRect(0,0,1000,1000)
+      // debug cache canvas
+      // this.cacheCtx.fillRect(0,0,1000,1000)
       this._readyToCache = true;
     }
   }, {
@@ -797,10 +796,10 @@ var Bitmap = function (_DisplayObject) {
   _createClass(Bitmap, [{
     key: 'clone',
     value: function clone() {
-      var bitmap = new Bitmap(this.img);
+      // 复制完img宽度0？？所以直接传字符串
+      var bitmap = new Bitmap(typeof this.img === 'string' ? this.img : this.img.src);
       bitmap.x = this.x;
       bitmap.y = this.y;
-
       bitmap.scaleX = this.scaleX;
       bitmap.scaleY = this.scaleY;
       bitmap.rotation = this.rotation;
@@ -810,6 +809,7 @@ var Bitmap = function (_DisplayObject) {
       bitmap.originY = this.originY;
       bitmap.width = this.width;
       bitmap.height = this.height;
+      bitmap.cursor = this.cursor;
 
       return bitmap;
     }
@@ -2507,7 +2507,6 @@ var Renderer = function () {
   _createClass(Renderer, [{
     key: 'update',
     value: function update(stage) {
-
       this.renderer.clear(this.ctx, this.width, this.height);
       this.renderer.render(this.ctx, stage);
       this.ctx.draw && this.ctx.draw();
@@ -2628,7 +2627,7 @@ var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _wxHitRender = __webpack_require__(31);
+var _wxHitRender = __webpack_require__(38);
 
 var _wxHitRender2 = _interopRequireDefault(_wxHitRender);
 
@@ -2930,35 +2929,35 @@ var _roundedRect = __webpack_require__(15);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
-var _arrowPath = __webpack_require__(32);
+var _arrowPath = __webpack_require__(39);
 
 var _arrowPath2 = _interopRequireDefault(_arrowPath);
 
-var _ellipse = __webpack_require__(33);
+var _ellipse = __webpack_require__(40);
 
 var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _path = __webpack_require__(34);
+var _path = __webpack_require__(41);
 
 var _path2 = _interopRequireDefault(_path);
 
-var _button = __webpack_require__(37);
+var _button = __webpack_require__(44);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _rect = __webpack_require__(38);
+var _rect = __webpack_require__(45);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _circle = __webpack_require__(39);
+var _circle = __webpack_require__(46);
 
 var _circle2 = _interopRequireDefault(_circle);
 
-var _polygon = __webpack_require__(40);
+var _polygon = __webpack_require__(47);
 
 var _polygon2 = _interopRequireDefault(_polygon);
 
-var _equilateralPolygon = __webpack_require__(41);
+var _equilateralPolygon = __webpack_require__(48);
 
 var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
@@ -3358,7 +3357,7 @@ var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _hitRender = __webpack_require__(30);
+var _hitRender = __webpack_require__(37);
 
 var _hitRender2 = _interopRequireDefault(_hitRender);
 
@@ -4103,8 +4102,8 @@ var CanvasRender = function (_Render) {
       }
       mtx = o._matrix;
 
-      //group 进行 cache canvas 内部的子元素需要进行appendTransform
-      //cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
+      // group 进行 cache canvas 内部的子元素需要进行appendTransform
+      // cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
       if (inGroup || !cacheData) {
         mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
       }
@@ -4128,9 +4127,9 @@ var CanvasRender = function (_Render) {
         ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
       }
 
-      //if(!cacheData){
+      // if(!cacheData){
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-      //}
+      // }
       if (o._readyToCache || o.cacheUpdating) {
         this.setComplexProps(ctx, o);
         o._readyToCache = false;
@@ -4138,8 +4137,8 @@ var CanvasRender = function (_Render) {
         o.cacheCtx.save();
         this.render(o.cacheCtx, o, o._cacheData);
         o.cacheCtx.restore();
-        //debug cacheCanvas
-        //document.body.appendChild(o.cacheCanvas)
+        // debug cacheCanvas
+        // document.body.appendChild(o.cacheCanvas)
         if (o._readyToFilter) {
           o.cacheCtx.putImageData((0, _index.filter)(o.cacheCtx.getImageData(0, 0, o.cacheCanvas.width, o.cacheCanvas.height), o._filterName), 0, 0);
           this._readyToFilter = false;
@@ -4254,7 +4253,7 @@ module.exports = g;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.filter = filter;
 
@@ -4262,13 +4261,59 @@ var _invert = __webpack_require__(27);
 
 var _blur = __webpack_require__(28);
 
-function filter(pixels, name) {
+var _brightness = __webpack_require__(30);
 
-    if (name.indexOf('invert(') === 0) {
-        return (0, _invert.invert)(pixels, Number(name.replace('invert(', '').replace('%)', '')) / 100);
-    } else if (name.indexOf('blur(') === 0) {
-        return (0, _blur.blur)(pixels, Number(name.replace('blur(', '').replace('px)', '')));
+var _contrast = __webpack_require__(31);
+
+var _grayscale = __webpack_require__(32);
+
+var _sepia = __webpack_require__(33);
+
+var _threshold = __webpack_require__(34);
+
+var _gamma = __webpack_require__(35);
+
+var _colorize = __webpack_require__(36);
+
+function filter(pixels, name) {
+  if (typeof name === 'string') {
+    var type = name.split('(')[0];
+    var num = getNumber(name);
+    switch (type) {
+      case 'invert':
+        return (0, _invert.invert)(pixels, num);
+      case 'brightness':
+        return (0, _brightness.brightness)(pixels, -255 + num * 255);
+      case 'blur':
+        return (0, _blur.blur)(pixels, num);
+      case 'contrast':
+        return (0, _contrast.contrast)(pixels, -255 + num * 255);
+      case 'grayscale':
+        return (0, _grayscale.grayscale)(pixels, num);
+      case 'sepia':
+        return (0, _sepia.sepia)(pixels, num);
+      case 'threshold':
+        return (0, _threshold.threshold)(pixels, num);
+      case 'gamma':
+        return (0, _gamma.gamma)(pixels, num);
     }
+  } else {
+    switch (name.type) {
+      case 'colorize':
+        return (0, _colorize.colorize)(pixels, name);
+    }
+  }
+}
+
+function getNumber(str) {
+  str = str.replace(/(invert)|(brightness)|(blur)|(contrast)|(grayscale)|(sepia)|(threshold)|(gamma)?\(/g, '').replace(')', '');
+  if (str.indexOf('%') !== -1) {
+    return Number(str.replace('%', '')) / 100;
+  } else if (str.indexOf('px') !== -1) {
+    return Number(str.replace('px', ''));
+  } else {
+    return Number(str);
+  }
 }
 
 /***/ }),
@@ -4279,20 +4324,19 @@ function filter(pixels, name) {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.invert = invert;
 function invert(pixels, ratio) {
-
-    var d = pixels.data;
-    ratio = ratio === undefined ? 1 : ratio;
-    for (var i = 0; i < d.length; i += 4) {
-        d[i] = d[i] + ratio * (255 - 2 * d[i]);
-        d[i + 1] = d[i + 1] + ratio * (255 - 2 * d[i + 1]);
-        d[i + 2] = d[i + 2] + ratio * (255 - 2 * d[i + 2]);
-        d[i + 3] = d[i + 3];
-    }
-    return pixels;
+  var d = pixels.data;
+  ratio = ratio === undefined ? 1 : ratio;
+  for (var i = 0; i < d.length; i += 4) {
+    d[i] = d[i] + ratio * (255 - 2 * d[i]);
+    d[i + 1] = d[i + 1] + ratio * (255 - 2 * d[i + 1]);
+    d[i + 2] = d[i + 2] + ratio * (255 - 2 * d[i + 2]);
+    d[i + 3] = d[i + 3];
+  }
+  return pixels;
 }
 
 /***/ }),
@@ -4431,23 +4475,206 @@ function verticalConvolve(pixels, weightsVector, opaque) {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.createImageData = createImageData;
 var tmpCtx = null;
 
-if (typeof document != 'undefined') {
-    tmpCtx = document.createElement('canvas').getContext('2d');
+if (typeof document !== 'undefined') {
+  tmpCtx = document.createElement('canvas').getContext('2d');
 } else if (typeof wx !== 'undefined' && wx.createCanvas) {
-    tmpCtx = wx.createCanvas().getContext('2d');
+  tmpCtx = wx.createCanvas().getContext('2d');
 }
 
 function createImageData(w, h) {
-    return tmpCtx.createImageData(w, h);
+  return tmpCtx.createImageData(w, h);
 }
 
 /***/ }),
 /* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.brightness = brightness;
+function brightness(pixels, adjustment) {
+  var data = pixels.data;
+  var length = data.length;
+  for (var i = 0; i < length; i += 4) {
+    data[i] += adjustment;
+    data[i + 1] += adjustment;
+    data[i + 2] += adjustment;
+  }
+  return pixels;
+}
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.contrast = contrast;
+function contrast(pixels, contrast) {
+  var data = pixels.data;
+  var length = data.length;
+  var factor = 259 * (contrast + 255) / (255 * (259 - contrast));
+
+  for (var i = 0; i < length; i += 4) {
+    data[i] = factor * (data[i] - 128) + 128;
+    data[i + 1] = factor * (data[i + 1] - 128) + 128;
+    data[i + 2] = factor * (data[i + 2] - 128) + 128;
+  }
+
+  return pixels;
+};
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.grayscale = grayscale;
+function grayscale(pixels, adjustment) {
+  var data = pixels.data;
+  var length = data.length;
+  for (var i = 0; i < length; i += 4) {
+    var r = data[i];
+    var g = data[i + 1];
+    var b = data[i + 2];
+
+    // CIE luminance for the RGB
+    // The human eye is bad at seeing red and blue, so we de-emphasize them.
+    var v = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    data[i] = r + (v - r) * adjustment;
+    data[i + 1] = g + (v - g) * adjustment;
+    data[i + 2] = b + (v - b) * adjustment;
+  }
+  return pixels;
+};
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.sepia = sepia;
+function sepia(pixels, adjustment) {
+  var data = pixels.data;
+  var length = data.length;
+  for (var i = 0; i < length; i += 4) {
+    var r = data[i];
+    var g = data[i + 1];
+    var b = data[i + 2];
+
+    var sr = r * 0.393 + g * 0.769 + b * 0.189;
+    var sg = r * 0.349 + g * 0.686 + b * 0.168;
+    var sb = r * 0.272 + g * 0.534 + b * 0.131;
+
+    data[i] = r + (sr - r) * adjustment;
+    data[i + 1] = g + (sg - g) * adjustment;
+    data[i + 2] = b + (sb - b) * adjustment;
+  }
+
+  return pixels;
+};
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.threshold = threshold;
+function threshold(pixels, threshold) {
+  var data = pixels.data;
+  var length = data.length;
+  for (var i = 0; i < length; i += 4) {
+    var r = data[i];
+    var g = data[i + 1];
+    var b = data[i + 2];
+    var v = 0.2126 * r + 0.7152 * g + 0.0722 * b >= threshold ? 255 : 0;
+    data[i] = data[i + 1] = data[i + 2] = v;
+  }
+  return pixels;
+};
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.gamma = gamma;
+function gamma(pixels, adjustment) {
+  var data = pixels.data;
+  var length = data.length;
+  for (var i = 0; i < length; i += 4) {
+    data[i] = Math.pow(data[i] / 255, adjustment) * 255;
+    data[i + 1] = Math.pow(data[i + 1] / 255, adjustment) * 255;
+    data[i + 2] = Math.pow(data[i + 2] / 255, adjustment) * 255;
+  }
+  return pixels;
+};
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.colorize = colorize;
+function colorize(pixels, option) {
+  var data = pixels.data;
+  var length = data.length;
+  var hex = option.color.charAt(0) === '#' ? option.color.substr(1) : option.color;
+  var colorRGB = {
+    r: parseInt(hex.substr(0, 2), 16),
+    g: parseInt(hex.substr(2, 2), 16),
+    b: parseInt(hex.substr(4, 2), 16)
+  };
+
+  for (var i = 0; i < length; i += 4) {
+    data[i] -= (data[i] - colorRGB.r) * option.amount;
+    data[i + 1] -= (data[i + 1] - colorRGB.g) * option.amount;
+    data[i + 2] -= (data[i + 2] - colorRGB.b) * option.amount;
+  }
+
+  return pixels;
+};
+
+/***/ }),
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4640,7 +4867,6 @@ var HitRender = function (_Render) {
           if (target) return target;
         }
       } else {
-
         ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
         if (o instanceof _graphics2.default) {
           this.setComplexProps(ctx, o);
@@ -4677,7 +4903,7 @@ var HitRender = function (_Render) {
     value: function setComplexProps(ctx, o) {
       ctx.globalCompositeOperation = o.complexCompositeOperation;
       ctx.globalAlpha = o.complexAlpha;
-      //The shadow does not trigger the event, so remove it
+      // The shadow does not trigger the event, so remove it
       // if(o.complexShadow){
       //   ctx.shadowColor = o.complexShadow.color
       //   ctx.shadowOffsetX = o.complexShadow.offsetX
@@ -4704,7 +4930,7 @@ var HitRender = function (_Render) {
 exports.default = HitRender;
 
 /***/ }),
-/* 31 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4865,7 +5091,7 @@ var WxHitRender = function (_Render) {
 exports.default = WxHitRender;
 
 /***/ }),
-/* 32 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4927,7 +5153,6 @@ var ArrowPath = function (_Shape) {
   }, {
     key: 'drawArrow',
     value: function drawArrow(fromX, fromY, toX, toY, theta) {
-
       var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,
           angle1 = (angle + theta) * Math.PI / 180,
           angle2 = (angle - theta) * Math.PI / 180,
@@ -4961,7 +5186,7 @@ var ArrowPath = function (_Shape) {
 exports.default = ArrowPath;
 
 /***/ }),
-/* 33 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5040,7 +5265,7 @@ var Ellipse = function (_Shape) {
 exports.default = Ellipse;
 
 /***/ }),
-/* 34 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5052,7 +5277,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _pathParser = __webpack_require__(35);
+var _pathParser = __webpack_require__(42);
 
 var _pathParser2 = _interopRequireDefault(_pathParser);
 
@@ -5060,7 +5285,7 @@ var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
-var _arcToBezier = __webpack_require__(36);
+var _arcToBezier = __webpack_require__(43);
 
 var _arcToBezier2 = _interopRequireDefault(_arcToBezier);
 
@@ -5315,7 +5540,7 @@ var Path = function (_Shape) {
 exports.default = Path;
 
 /***/ }),
-/* 35 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5383,194 +5608,194 @@ function parseValues(args) {
 exports.default = parse;
 
 /***/ }),
-/* 36 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-//https://github.com/colinmeinke/svg-arc-to-cubic-bezier
+// https://github.com/colinmeinke/svg-arc-to-cubic-bezier
 
 var TAU = Math.PI * 2;
 
 var mapToEllipse = function mapToEllipse(_ref, rx, ry, cosphi, sinphi, centerx, centery) {
-    var x = _ref.x,
-        y = _ref.y;
+  var x = _ref.x,
+      y = _ref.y;
 
-    x *= rx;
-    y *= ry;
+  x *= rx;
+  y *= ry;
 
-    var xp = cosphi * x - sinphi * y;
-    var yp = sinphi * x + cosphi * y;
+  var xp = cosphi * x - sinphi * y;
+  var yp = sinphi * x + cosphi * y;
 
-    return {
-        x: xp + centerx,
-        y: yp + centery
-    };
+  return {
+    x: xp + centerx,
+    y: yp + centery
+  };
 };
 
 var approxUnitArc = function approxUnitArc(ang1, ang2) {
-    var a = 4 / 3 * Math.tan(ang2 / 4);
+  var a = 4 / 3 * Math.tan(ang2 / 4);
 
-    var x1 = Math.cos(ang1);
-    var y1 = Math.sin(ang1);
-    var x2 = Math.cos(ang1 + ang2);
-    var y2 = Math.sin(ang1 + ang2);
+  var x1 = Math.cos(ang1);
+  var y1 = Math.sin(ang1);
+  var x2 = Math.cos(ang1 + ang2);
+  var y2 = Math.sin(ang1 + ang2);
 
-    return [{
-        x: x1 - y1 * a,
-        y: y1 + x1 * a
-    }, {
-        x: x2 + y2 * a,
-        y: y2 - x2 * a
-    }, {
-        x: x2,
-        y: y2
-    }];
+  return [{
+    x: x1 - y1 * a,
+    y: y1 + x1 * a
+  }, {
+    x: x2 + y2 * a,
+    y: y2 - x2 * a
+  }, {
+    x: x2,
+    y: y2
+  }];
 };
 
 var vectorAngle = function vectorAngle(ux, uy, vx, vy) {
-    var sign = ux * vy - uy * vx < 0 ? -1 : 1;
-    var umag = Math.sqrt(ux * ux + uy * uy);
-    var vmag = Math.sqrt(ux * ux + uy * uy);
-    var dot = ux * vx + uy * vy;
+  var sign = ux * vy - uy * vx < 0 ? -1 : 1;
+  var umag = Math.sqrt(ux * ux + uy * uy);
+  var vmag = Math.sqrt(ux * ux + uy * uy);
+  var dot = ux * vx + uy * vy;
 
-    var div = dot / (umag * vmag);
+  var div = dot / (umag * vmag);
 
-    if (div > 1) {
-        div = 1;
-    }
+  if (div > 1) {
+    div = 1;
+  }
 
-    if (div < -1) {
-        div = -1;
-    }
+  if (div < -1) {
+    div = -1;
+  }
 
-    return sign * Math.acos(div);
+  return sign * Math.acos(div);
 };
 
 var getArcCenter = function getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp) {
-    var rxsq = Math.pow(rx, 2);
-    var rysq = Math.pow(ry, 2);
-    var pxpsq = Math.pow(pxp, 2);
-    var pypsq = Math.pow(pyp, 2);
+  var rxsq = Math.pow(rx, 2);
+  var rysq = Math.pow(ry, 2);
+  var pxpsq = Math.pow(pxp, 2);
+  var pypsq = Math.pow(pyp, 2);
 
-    var radicant = rxsq * rysq - rxsq * pypsq - rysq * pxpsq;
+  var radicant = rxsq * rysq - rxsq * pypsq - rysq * pxpsq;
 
-    if (radicant < 0) {
-        radicant = 0;
-    }
+  if (radicant < 0) {
+    radicant = 0;
+  }
 
-    radicant /= rxsq * pypsq + rysq * pxpsq;
-    radicant = Math.sqrt(radicant) * (largeArcFlag === sweepFlag ? -1 : 1);
+  radicant /= rxsq * pypsq + rysq * pxpsq;
+  radicant = Math.sqrt(radicant) * (largeArcFlag === sweepFlag ? -1 : 1);
 
-    var centerxp = radicant * rx / ry * pyp;
-    var centeryp = radicant * -ry / rx * pxp;
+  var centerxp = radicant * rx / ry * pyp;
+  var centeryp = radicant * -ry / rx * pxp;
 
-    var centerx = cosphi * centerxp - sinphi * centeryp + (px + cx) / 2;
-    var centery = sinphi * centerxp + cosphi * centeryp + (py + cy) / 2;
+  var centerx = cosphi * centerxp - sinphi * centeryp + (px + cx) / 2;
+  var centery = sinphi * centerxp + cosphi * centeryp + (py + cy) / 2;
 
-    var vx1 = (pxp - centerxp) / rx;
-    var vy1 = (pyp - centeryp) / ry;
-    var vx2 = (-pxp - centerxp) / rx;
-    var vy2 = (-pyp - centeryp) / ry;
+  var vx1 = (pxp - centerxp) / rx;
+  var vy1 = (pyp - centeryp) / ry;
+  var vx2 = (-pxp - centerxp) / rx;
+  var vy2 = (-pyp - centeryp) / ry;
 
-    var ang1 = vectorAngle(1, 0, vx1, vy1);
-    var ang2 = vectorAngle(vx1, vy1, vx2, vy2);
+  var ang1 = vectorAngle(1, 0, vx1, vy1);
+  var ang2 = vectorAngle(vx1, vy1, vx2, vy2);
 
-    if (sweepFlag === 0 && ang2 > 0) {
-        ang2 -= TAU;
-    }
+  if (sweepFlag === 0 && ang2 > 0) {
+    ang2 -= TAU;
+  }
 
-    if (sweepFlag === 1 && ang2 < 0) {
-        ang2 += TAU;
-    }
+  if (sweepFlag === 1 && ang2 < 0) {
+    ang2 += TAU;
+  }
 
-    return [centerx, centery, ang1, ang2];
+  return [centerx, centery, ang1, ang2];
 };
 
 var arcToBezier = function arcToBezier(_ref2) {
-    var px = _ref2.px,
-        py = _ref2.py,
-        cx = _ref2.cx,
-        cy = _ref2.cy,
-        rx = _ref2.rx,
-        ry = _ref2.ry,
-        _ref2$xAxisRotation = _ref2.xAxisRotation,
-        xAxisRotation = _ref2$xAxisRotation === undefined ? 0 : _ref2$xAxisRotation,
-        _ref2$largeArcFlag = _ref2.largeArcFlag,
-        largeArcFlag = _ref2$largeArcFlag === undefined ? 0 : _ref2$largeArcFlag,
-        _ref2$sweepFlag = _ref2.sweepFlag,
-        sweepFlag = _ref2$sweepFlag === undefined ? 0 : _ref2$sweepFlag;
+  var px = _ref2.px,
+      py = _ref2.py,
+      cx = _ref2.cx,
+      cy = _ref2.cy,
+      rx = _ref2.rx,
+      ry = _ref2.ry,
+      _ref2$xAxisRotation = _ref2.xAxisRotation,
+      xAxisRotation = _ref2$xAxisRotation === undefined ? 0 : _ref2$xAxisRotation,
+      _ref2$largeArcFlag = _ref2.largeArcFlag,
+      largeArcFlag = _ref2$largeArcFlag === undefined ? 0 : _ref2$largeArcFlag,
+      _ref2$sweepFlag = _ref2.sweepFlag,
+      sweepFlag = _ref2$sweepFlag === undefined ? 0 : _ref2$sweepFlag;
 
-    var curves = [];
+  var curves = [];
 
-    if (rx === 0 || ry === 0) {
-        return [];
-    }
+  if (rx === 0 || ry === 0) {
+    return [];
+  }
 
-    var sinphi = Math.sin(xAxisRotation * TAU / 360);
-    var cosphi = Math.cos(xAxisRotation * TAU / 360);
+  var sinphi = Math.sin(xAxisRotation * TAU / 360);
+  var cosphi = Math.cos(xAxisRotation * TAU / 360);
 
-    var pxp = cosphi * (px - cx) / 2 + sinphi * (py - cy) / 2;
-    var pyp = -sinphi * (px - cx) / 2 + cosphi * (py - cy) / 2;
+  var pxp = cosphi * (px - cx) / 2 + sinphi * (py - cy) / 2;
+  var pyp = -sinphi * (px - cx) / 2 + cosphi * (py - cy) / 2;
 
-    if (pxp === 0 && pyp === 0) {
-        return [];
-    }
+  if (pxp === 0 && pyp === 0) {
+    return [];
+  }
 
-    rx = Math.abs(rx);
-    ry = Math.abs(ry);
+  rx = Math.abs(rx);
+  ry = Math.abs(ry);
 
-    var lambda = Math.pow(pxp, 2) / Math.pow(rx, 2) + Math.pow(pyp, 2) / Math.pow(ry, 2);
+  var lambda = Math.pow(pxp, 2) / Math.pow(rx, 2) + Math.pow(pyp, 2) / Math.pow(ry, 2);
 
-    if (lambda > 1) {
-        rx *= Math.sqrt(lambda);
-        ry *= Math.sqrt(lambda);
-    }
+  if (lambda > 1) {
+    rx *= Math.sqrt(lambda);
+    ry *= Math.sqrt(lambda);
+  }
 
-    var _getArcCenter = getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp),
-        _getArcCenter2 = _slicedToArray(_getArcCenter, 4),
-        centerx = _getArcCenter2[0],
-        centery = _getArcCenter2[1],
-        ang1 = _getArcCenter2[2],
-        ang2 = _getArcCenter2[3];
+  var _getArcCenter = getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp),
+      _getArcCenter2 = _slicedToArray(_getArcCenter, 4),
+      centerx = _getArcCenter2[0],
+      centery = _getArcCenter2[1],
+      ang1 = _getArcCenter2[2],
+      ang2 = _getArcCenter2[3];
 
-    var segments = Math.max(Math.ceil(Math.abs(ang2) / (TAU / 4)), 1);
+  var segments = Math.max(Math.ceil(Math.abs(ang2) / (TAU / 4)), 1);
 
-    ang2 /= segments;
+  ang2 /= segments;
 
-    for (var i = 0; i < segments; i++) {
-        curves.push(approxUnitArc(ang1, ang2));
-        ang1 += ang2;
-    }
+  for (var i = 0; i < segments; i++) {
+    curves.push(approxUnitArc(ang1, ang2));
+    ang1 += ang2;
+  }
 
-    return curves.map(function (curve) {
-        var _mapToEllipse = mapToEllipse(curve[0], rx, ry, cosphi, sinphi, centerx, centery),
-            x1 = _mapToEllipse.x,
-            y1 = _mapToEllipse.y;
+  return curves.map(function (curve) {
+    var _mapToEllipse = mapToEllipse(curve[0], rx, ry, cosphi, sinphi, centerx, centery),
+        x1 = _mapToEllipse.x,
+        y1 = _mapToEllipse.y;
 
-        var _mapToEllipse2 = mapToEllipse(curve[1], rx, ry, cosphi, sinphi, centerx, centery),
-            x2 = _mapToEllipse2.x,
-            y2 = _mapToEllipse2.y;
+    var _mapToEllipse2 = mapToEllipse(curve[1], rx, ry, cosphi, sinphi, centerx, centery),
+        x2 = _mapToEllipse2.x,
+        y2 = _mapToEllipse2.y;
 
-        var _mapToEllipse3 = mapToEllipse(curve[2], rx, ry, cosphi, sinphi, centerx, centery),
-            x = _mapToEllipse3.x,
-            y = _mapToEllipse3.y;
+    var _mapToEllipse3 = mapToEllipse(curve[2], rx, ry, cosphi, sinphi, centerx, centery),
+        x = _mapToEllipse3.x,
+        y = _mapToEllipse3.y;
 
-        return { x1: x1, y1: y1, x2: x2, y2: y2, x: x, y: y };
-    });
+    return { x1: x1, y1: y1, x2: x2, y2: y2, x: x, y: y };
+  });
 };
 
 exports.default = arcToBezier;
 
 /***/ }),
-/* 37 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5638,7 +5863,6 @@ var Button = function (_Group) {
         textGroup.add(_this.text);
       });
     } else {
-
       _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
       _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
       textGroup.add(_this.text);
@@ -5680,7 +5904,7 @@ var Button = function (_Group) {
 exports.default = Button;
 
 /***/ }),
-/* 38 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5739,7 +5963,7 @@ var Rect = function (_Shape) {
 exports.default = Rect;
 
 /***/ }),
-/* 39 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5805,7 +6029,7 @@ var Circle = function (_Shape) {
 exports.default = Circle;
 
 /***/ }),
-/* 40 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5879,7 +6103,7 @@ var Polygon = function (_Shape) {
 exports.default = Polygon;
 
 /***/ }),
-/* 41 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -3,7 +3,7 @@ import Text from '../text'
 import RoundedRect from '../shape/rounded-rect'
 
 class Button extends Group {
-  constructor(option) {
+  constructor (option) {
     super()
     this.width = option.width
 
@@ -33,24 +33,21 @@ class Button extends Group {
         textGroup.add(this.text)
       })
     } else {
-
-
       this.text.x = option.width / 2 - this.text.getWidth() / 2 * this.text.scaleX + (option.textX || 0)
       this.text.y = option.height / 2 - 10 + 5 * this.text.scaleY + (option.textY || 0)
       textGroup.add(this.text)
     }
 
-
     this.roundedRect = new RoundedRect(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
       strokeStyle: option.borderColor || 'black',
-      fillStyle: option.backgroundColor || '#F5F5F5',
+      fillStyle: option.backgroundColor || '#F5F5F5'
     })
 
     this.add(this.roundedRect)
     this.add(textGroup)
   }
 
-  stringSplit(str, len) {
+  stringSplit (str, len) {
     let arr = [],
       offset = 0,
       char_length = 0

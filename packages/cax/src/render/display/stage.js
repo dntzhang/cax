@@ -1,4 +1,4 @@
-import wegameCanvas from  './wegame-canvas'
+import wegameCanvas from './wegame-canvas'
 import Group from './group.js'
 import Renderer from '../render/renderer.js'
 import HitRender from '../render/hit-render.js'
@@ -87,7 +87,7 @@ class Stage extends Group {
   _handleContextmenu (evt) {
     this._getObjectUnderPoint(evt)
   }
-  
+
   _handleDblClick (evt) {
     this._getObjectUnderPoint(evt)
   }
@@ -99,7 +99,7 @@ class Stage extends Group {
   }
 
   _handleMouseDown (evt) {
-    if(this.isWegame){
+    if (this.isWegame) {
       evt.type = 'touchstart'
     }
     this.offset = this._getOffset(this.canvas)
@@ -117,7 +117,7 @@ class Stage extends Group {
   }
 
   _handleMouseUp (evt) {
-    if(this.isWegame){
+    if (this.isWegame) {
       evt.type = 'touchend'
     }
     const obj = this._getObjectUnderPoint(evt)
@@ -150,7 +150,7 @@ class Stage extends Group {
   }
 
   _handleMouseMove (evt) {
-    if(this.isWegame){
+    if (this.isWegame) {
       evt.type = 'touchmove'
     }
     if (this.disableMoveDetection) return

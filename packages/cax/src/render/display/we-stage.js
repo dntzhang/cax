@@ -123,7 +123,6 @@ class WeStage extends Group {
       this._hitRender.clear()
       this._hitRender.hit(list, evt, cb, list.length - 1)
     }
-    
   }
 
   update () {

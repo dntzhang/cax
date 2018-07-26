@@ -3,9 +3,9 @@ import util from '../../common/util'
 
 let measureCtx
 
-if(util.isWeapp){
+if (util.isWeapp) {
   measureCtx = wx.createCanvasContext('measure0')
-} else if(typeof document !== 'undefined'){
+} else if (typeof document !== 'undefined') {
   measureCtx = document.createElement('canvas').getContext('2d')
 }
 
@@ -22,18 +22,17 @@ class Text extends DisplayObject {
   }
 
   getWidth () {
-    if(!measureCtx){
-      if(util.isWegame){
-         measureCtx = wx.createCanvas().getContext('2d')
-       }
+    if (!measureCtx) {
+      if (util.isWegame) {
+        measureCtx = wx.createCanvas().getContext('2d')
+      }
     }
-     
-    if(this.font){
+
+    if (this.font) {
       measureCtx.font = this.font
     }
     return measureCtx.measureText(this.text).width
   }
-
 }
 
 export default Text

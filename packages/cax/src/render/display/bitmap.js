@@ -6,12 +6,12 @@ class Bitmap extends DisplayObject {
     super()
     if (typeof img === 'string') {
       if (Bitmap.cache[img]) {
-        if(util.isWeapp){
+        if (util.isWeapp) {
           this.img = Bitmap.cache[img].img
           this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height]
           this.width = this.rect[2]
           this.height = this.rect[3]
-        }else{
+        } else {
           this.img = Bitmap.cache[img]
           this.rect = [0, 0, this.img.width, this.img.height]
           this.width = this.img.width
@@ -54,10 +54,10 @@ class Bitmap extends DisplayObject {
   }
 
   clone () {
-    let bitmap = new Bitmap(this.img)
+    // 复制完img宽度0？？所以直接传字符串
+    const bitmap = new Bitmap(typeof this.img === 'string' ? this.img : this.img.src)
     bitmap.x = this.x
     bitmap.y = this.y
-
     bitmap.scaleX = this.scaleX
     bitmap.scaleY = this.scaleY
     bitmap.rotation = this.rotation
@@ -67,6 +67,7 @@ class Bitmap extends DisplayObject {
     bitmap.originY = this.originY
     bitmap.width = this.width
     bitmap.height = this.height
+    bitmap.cursor = this.cursor
 
     return bitmap
   }

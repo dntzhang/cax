@@ -22,11 +22,11 @@ class WxHitRender extends Render {
     this.ctx.clearRect(0, 0, 2, 2)
   }
 
-  hitAABB (list, evt, cb){
+  hitAABB (list, evt, cb) {
     const len = list.length
     for (let i = len - 1; i >= 0; i--) {
       let o = list[i]
-      
+
       if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
         this._dispatchEvent(o, evt)
         cb(o)

@@ -1,5 +1,5 @@
 let wegameCanvas = null
-if(typeof wx !== 'undefined' && wx.createCanvas){
+if (typeof wx !== 'undefined' && wx.createCanvas) {
   wegameCanvas = wx.createCanvas()
 }
 

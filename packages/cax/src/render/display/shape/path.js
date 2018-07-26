@@ -3,7 +3,7 @@ import Shape from './shape'
 import arcToBezier from '../../base/arc-to-bezier'
 
 class Path extends Shape {
-  constructor(d, option) {
+  constructor (d, option) {
     super()
     this.d = d
 
@@ -15,7 +15,7 @@ class Path extends Shape {
     this.option = option
   }
 
-  draw() {
+  draw () {
     const cmds = parse(this.d)
 
     this.beginPath()
@@ -35,7 +35,6 @@ class Path extends Shape {
       preY,
       curves,
       lastCurve
-
 
     // 参考我的 pasition https://github.com/AlloyTeam/pasition/blob/master/src/index.js
     for (let j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
@@ -144,7 +143,6 @@ class Path extends Shape {
           })
           lastCurve = curves[curves.length - 1]
 
-
           curves.forEach((curve, index) => {
             if (index === 0) {
               this.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y)
@@ -173,7 +171,6 @@ class Path extends Shape {
           })
           lastCurve = curves[curves.length - 1]
 
-
           curves.forEach((curve, index) => {
             if (index === 0) {
               this.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y)
@@ -193,8 +190,6 @@ class Path extends Shape {
             preCX = preX + preItem[3] - preItem[1]
             preCY = preY + preItem[4] - preItem[2]
             this.quadraticCurveTo(preX, preY, preCX, preCY, item[1], item[2])
-
-
           } else if (preItem[0] === 'T' || preItem[0] === 't') {
             this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, item[1], item[2])
             preCX = preX + preX - preCX
@@ -205,14 +200,11 @@ class Path extends Shape {
           preY = item[2]
           break
 
-
         case 't':
           if (preItem[0] === 'Q' || preItem[0] === 'q') {
             preCX = preX + preItem[3] - preItem[1]
             preCY = preY + preItem[4] - preItem[2]
             this.quadraticCurveTo(preX, preY, preCX, preCY, preX + item[1], preY + item[2])
-
-
           } else if (preItem[0] === 'T' || preItem[0] === 't') {
             this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, preX + item[1], preY + item[2])
             preCX = preX + preX - preCX

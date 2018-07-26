@@ -38,7 +38,6 @@ To.extend('rubber', [['to', ['scaleX', {
   '1': 250
 }]]])
 
-
 To.extend('bounceIn', [['to', ['scaleX', {
   '0': 0,
   '1': 0
@@ -97,11 +96,10 @@ To.extend('flipInX', [['to', ['rotateX', {
   '1': 300
 }]]])
 
-
 To.extend('zoomOut', [['to', ['scaleX', {
   '0': 0,
   '1': 400
 }], ['scaleY', {
   '0': 0,
   '1': 400
-}]]])  
+}]]])

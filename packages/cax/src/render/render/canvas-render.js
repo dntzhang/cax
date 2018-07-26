@@ -26,20 +26,20 @@ class CanvasRender extends Render {
 
   render (ctx, o, cacheData) {
     let mtx = o._matrix
-    if(o.children){
+    if (o.children) {
       let list = o.children.slice(0),
         l = list.length
       for (let i = 0; i < l; i++) {
         let child = list[i]
         mtx.initialize(1, 0, 0, 1, 0, 0)
-        mtx.appendTransform(o.x , o.y , o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
+        mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
         // if (!this.checkBoundEvent(child)) continue
         ctx.save()
-        this._render(ctx, child, cacheData?null:mtx, cacheData, true)
+        this._render(ctx, child, cacheData ? null : mtx, cacheData, true)
         ctx.restore()
       }
     } else {
-      this._render(ctx, o, cacheData?null:mtx, cacheData)
+      this._render(ctx, o, cacheData ? null : mtx, cacheData)
     }
   }
 
@@ -47,16 +47,16 @@ class CanvasRender extends Render {
     if (!o.isVisible()) return
     if (mtx && !o.fixed) {
       o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
-    } else if (cacheData && !o.fixed){
+    } else if (cacheData && !o.fixed) {
       o._matrix.initialize(cacheData.scale, 0, 0, cacheData.scale, cacheData.x * -1, cacheData.y * -1)
     } else {
       o._matrix.initialize(1, 0, 0, 1, 0, 0)
     }
     mtx = o._matrix
 
-    //group 进行 cache canvas 内部的子元素需要进行appendTransform
-    //cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
-    if(inGroup || !cacheData){
+    // group 进行 cache canvas 内部的子元素需要进行appendTransform
+    // cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
+    if (inGroup || !cacheData) {
       mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
     }
     const ocg = o.clipGraphics
@@ -79,9 +79,9 @@ class CanvasRender extends Render {
       ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd')
     }
 
-    //if(!cacheData){
+    // if(!cacheData){
     ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
-    //}
+    // }
     if (o._readyToCache || o.cacheUpdating) {
       this.setComplexProps(ctx, o)
       o._readyToCache = false
@@ -89,8 +89,8 @@ class CanvasRender extends Render {
       o.cacheCtx.save()
       this.render(o.cacheCtx, o, o._cacheData)
       o.cacheCtx.restore()
-      //debug cacheCanvas
-      //document.body.appendChild(o.cacheCanvas)
+      // debug cacheCanvas
+      // document.body.appendChild(o.cacheCanvas)
       if (o._readyToFilter) {
         o.cacheCtx.putImageData(filter(o.cacheCtx.getImageData(0, 0, o.cacheCanvas.width, o.cacheCanvas.height), o._filterName), 0, 0)
         this._readyToFilter = false
@@ -103,8 +103,8 @@ class CanvasRender extends Render {
     } else if (o instanceof Group) {
       let list = o.children.slice(0),
         l = list.length
-      for (let i = 0 ; i < l; i++) {
-        ctx.save() 
+      for (let i = 0; i < l; i++) {
+        ctx.save()
         this._render(ctx, list[i], mtx)
         ctx.restore()
       }
@@ -129,12 +129,12 @@ class CanvasRender extends Render {
     }
   }
 
-  setComplexProps(ctx, o){
+  setComplexProps (ctx, o) {
     o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o)
     o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1)
 
     o.complexShadow = this.getShadow(o)
-    if(o.complexShadow){
+    if (o.complexShadow) {
       ctx.shadowColor = o.complexShadow.color
       ctx.shadowOffsetX = o.complexShadow.offsetX
       ctx.shadowOffsetY = o.complexShadow.offsetY
@@ -142,12 +142,12 @@ class CanvasRender extends Render {
     }
   }
 
-  getCompositeOperation(o) {
+  getCompositeOperation (o) {
     if (o.compositeOperation) return o.compositeOperation
     if (o.parent) return this.getCompositeOperation(o.parent)
   }
 
-  getAlpha(o, alpha) {
+  getAlpha (o, alpha) {
     var result = o.alpha * alpha
     if (o.parent) {
       return this.getAlpha(o.parent, result)
@@ -155,12 +155,10 @@ class CanvasRender extends Render {
     return result
   }
 
-  getShadow(o) {
+  getShadow (o) {
     if (o.shadow) return o.shadow
     if (o.parent) return this.getShadow(o.parent)
   }
-
-
 }
 
 export default CanvasRender

@@ -30,8 +30,7 @@ class ArrowPath extends Shape {
   }
 
   drawArrow (fromX, fromY, toX, toY, theta) {
-
-    let angle = Math.atan2(fromY - toY , fromX - toX) * 180 / Math.PI,
+    let angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,
       angle1 = (angle + theta) * Math.PI / 180,
       angle2 = (angle - theta) * Math.PI / 180,
       hs = this.option.headSize,
@@ -54,7 +53,7 @@ class ArrowPath extends Shape {
     arrowY = toY + botY
     this.lineTo(arrowX, arrowY)
     this.strokeStyle(this.option.strokeStyle)
-    this.lineWidth(this.option.lineWidth) 
+    this.lineWidth(this.option.lineWidth)
   }
 }
 

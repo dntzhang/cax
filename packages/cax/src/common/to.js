@@ -232,10 +232,10 @@ class To {
         break
       case 'cycle':
         var count = cmd[1][1]
-        if(count === undefined){
-          self.index = cmd[1][0]||0
+        if (count === undefined) {
+          self.index = cmd[1][0] || 0
           self.start()
-        }else{
+        } else {
           if (count && self.cycleCount === count) {
             self.index++
             self.start()
@@ -257,7 +257,7 @@ To.get = function (element) {
 }
 
 To.animationMap = {}
-To.extend = function(animationName, cmds){
+To.extend = function (animationName, cmds) {
   To.animationMap[animationName] = cmds
 }
 

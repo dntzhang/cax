@@ -14,7 +14,6 @@ class Shape extends Graphics {
     this.draw()
     super.render(ctx)
   }
-
 }
 
 export default Shape

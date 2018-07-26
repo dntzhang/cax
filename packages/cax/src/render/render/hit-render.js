@@ -104,7 +104,7 @@ class HitRender extends Render {
     }
     mtx = o._hitMatrix
     mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY)
-    
+
     const ocg = o.clipGraphics
     if (ocg) {
       ctx.beginPath()
@@ -138,11 +138,10 @@ class HitRender extends Render {
         if (target) return target
       }
     } else {
-      
       ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
       if (o instanceof Graphics) {
         this.setComplexProps(ctx, o)
-        
+
         o.render(ctx)
       } else if (o instanceof Sprite && o.rect) {
         this.setComplexProps(ctx, o)
@@ -171,10 +170,10 @@ class HitRender extends Render {
     }
   }
 
-  setComplexProps(ctx, o){
+  setComplexProps (ctx, o) {
     ctx.globalCompositeOperation = o.complexCompositeOperation
     ctx.globalAlpha = o.complexAlpha
-    //The shadow does not trigger the event, so remove it
+    // The shadow does not trigger the event, so remove it
     // if(o.complexShadow){
     //   ctx.shadowColor = o.complexShadow.color
     //   ctx.shadowOffsetX = o.complexShadow.offsetX
