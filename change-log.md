@@ -3,6 +3,28 @@
 * bitmap 支持 flipX 和 flipY
 * sprite 可以直接使用 bitmap.flipX 和 bitmap.flopY 播放序列帧
 
+## Cax 1.2.0
+
+* CSS 全滤镜支持
+
+```js
+bitmapA.filter('invert(1)', { x: 0, y: 0, width: 80, height: 80 })
+bitmapB.filter('brightness(1.3)', { x: 0, y: 0, width: 80, height: 80 })
+bitmapC.filter('blur(15px)', { x: 0, y: 0, width: 80, height: 80 })
+bitmapD.filter('contrast(1.3)', { x: 0, y: 0, width: 80, height: 80 })
+bitmapE.filter('brightness(0.5)', { x: 0, y: 0, width: 80, height: 80 })
+bitmapF.filter('contrast(0.3)', { x: 0, y: 0, width: 80, height: 80 })
+bitmapG.filter('grayscale(1)', { x: 0, y: 0, width: 80, height: 80 })
+bitmapH.filter('sepia(1)', { x: 0, y: 0, width: 80, height: 80 })
+bitmapI.filter('threshold(168)', { x: 0, y: 0, width: 80, height: 80 })
+bitmapJ.filter('gamma(10)', { x: 0, y: 0, width: 80, height: 80 })
+bitmapK.filter({
+    type:'colorize',
+    color:'#FF0000',
+    amount: 0.6
+}, { x: 0, y: 0, width: 80, height: 80 })
+```
+
 ## Cax 1.1.10
 
 * cache 方法支持持续走 cache canvas 渲染,也支持`cacheUpdating`属性设置持续走 cache canvas 渲染：

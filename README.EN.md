@@ -36,7 +36,7 @@ English | [简体中文](./README.md)
 * Support clip and clip transformation
 * Built-in Text, Bitmap, Sprite, Graphics and Shape
 * Support SVG Path rendering
-
+* Support CSS filter
 ---
 
 - [Getting Started](#getting-started)
