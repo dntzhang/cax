@@ -537,7 +537,7 @@ const button = new cax.Button({
 
 |属性名      |描述   |
 |---|---|
-| shadow | 引用|
+| shadow | 阴影|
 
 使用方式:
 
