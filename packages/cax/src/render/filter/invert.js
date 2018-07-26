@@ -6,7 +6,6 @@ export function invert (pixels, ratio) {
     d[i] = d[i] + ratio * (255 - 2 * d[i])
     d[i + 1] = d[i + 1] + ratio * (255 - 2 * d[i + 1])
     d[i + 2] = d[i + 2] + ratio * (255 - 2 * d[i + 2])
-    d[i + 3] = d[i + 3]
   }
   return pixels
 }

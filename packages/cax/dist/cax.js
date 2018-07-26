@@ -1,5 +1,5 @@
 /*!
- *  cax v1.2.0
+ *  cax v1.2.1
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -4334,7 +4334,6 @@ function invert(pixels, ratio) {
     d[i] = d[i] + ratio * (255 - 2 * d[i]);
     d[i + 1] = d[i + 1] + ratio * (255 - 2 * d[i + 1]);
     d[i + 2] = d[i + 2] + ratio * (255 - 2 * d[i + 2]);
-    d[i + 3] = d[i + 3];
   }
   return pixels;
 }
