@@ -79,6 +79,7 @@
   - [CompositeOperation](#compositeoperation)
   - [Cursor](#cursor)
   - [Fixed](#fixed)
+  - [Shadow](#shadow)
 - [方法](#方法)  
   - [destroy](#destroy)
 - [事件](#事件)
@@ -531,6 +532,23 @@ const button = new cax.Button({
 |属性名      |描述   |
 |---|---|
 | fixed | 是否固定定位，默认是 false 设置成 true 不会叠加祖辈们的 transform 属性|
+
+### Shadow
+
+|属性名      |描述   |
+|---|---|
+| shadow | 引用|
+
+使用方式:
+
+```js
+obj.shadow = {
+    color: '#42B035',
+    offsetX: -5,
+    offsetY: 5,
+    blur: 10
+}
+```
 
 ## 方法
 
