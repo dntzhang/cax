@@ -6,7 +6,7 @@
 
 * [Simple DEMO](http://dntzhang.github.io/cax/packages/to/examples/simple/) 
 * [Animation DEMO](https://dntzhang.github.io/cax/packages/to/examples/to/) 
-* [Clip Transform Animation DEMO](https://dntzhang.github.io/cax/packages/cax/examples/clip-transform-to/) 
+* [To + Shape](https://dntzhang.github.io/cax/packages/cax/examples/to-shape/) 
 * [Animate DEMO](https://dntzhang.github.io/cax/packages/cax/examples/to-animate/) 
 * [Swing DEMO](https://dntzhang.github.io/cax/packages/to/examples/swing/) 
 
