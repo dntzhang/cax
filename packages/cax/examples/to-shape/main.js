@@ -2,7 +2,7 @@
 import cax from '../../src/index.js'
 
 
-const stage = new cax.Stage(300, 400, 'body');
+const stage = new cax.Stage(300, 400, '#canvasCtn');
 
 for (var i = 0; i < 25; i++) {
 	var circle = new cax.Circle((i + 1) * 4, {
@@ -26,6 +26,6 @@ stage.on('click', function (evt) {
 	})
 })
 
-cax.setInterval(function () {
+cax.tick(function () {
 	stage.update()
-}, 15)
+})
