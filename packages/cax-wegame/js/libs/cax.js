@@ -2925,6 +2925,10 @@ var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
+var _shape = __webpack_require__(0);
+
+var _shape2 = _interopRequireDefault(_shape);
+
 var _roundedRect = __webpack_require__(15);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
@@ -2986,6 +2990,8 @@ var cax = {
   Text: _text2.default,
   Group: _group2.default,
   Sprite: _sprite2.default,
+  Shape: _shape2.default,
+
   ArrowPath: _arrowPath2.default,
   Ellipse: _ellipse2.default,
   Path: _path2.default,
