@@ -9,6 +9,8 @@ import Bitmap from './render/display/bitmap'
 import Text from './render/display/text'
 import Group from './render/display/group'
 import Sprite from './render/display/sprite'
+import Shape from './render/display/shape/shape'
+
 import RoundedRect from './render/display/shape/rounded-rect'
 import ArrowPath from './render/display/shape/arrow-path'
 import Ellipse from './render/display/shape/ellipse'
@@ -44,6 +46,8 @@ const cax = {
   Text,
   Group,
   Sprite,
+  Shape,
+
   ArrowPath,
   Ellipse,
   Path,

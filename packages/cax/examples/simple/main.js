@@ -53,7 +53,6 @@ stage.add(group, bitmap, caxText)
 
 cax.tick(() => {
     stage.update()
-    sprite.x += 0.8
 })
 
 
