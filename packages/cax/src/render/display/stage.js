@@ -203,6 +203,9 @@ class Stage extends Group {
   }
 
   _setCursor (obj) {
+    if(!this.canvas.style){
+      return
+    }
     if (obj.cursor) {
       this.canvas.style.cursor = obj.cursor
     } else if (obj.parent) {

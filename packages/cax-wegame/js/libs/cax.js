@@ -1,5 +1,5 @@
 /*!
- *  cax v1.2.1
+ *  cax v1.2.2
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -3627,6 +3627,9 @@ var Stage = function (_Group) {
   }, {
     key: '_setCursor',
     value: function _setCursor(obj) {
+      if (!this.canvas.style) {
+        return;
+      }
       if (obj.cursor) {
         this.canvas.style.cursor = obj.cursor;
       } else if (obj.parent) {
