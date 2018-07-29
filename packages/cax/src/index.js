@@ -94,4 +94,32 @@ const cax = {
   To.easing[itemLower + 'InOut'] = TWEEN.Easing[item].InOut
 })
 
+cax.loadImg = function (option) {
+  const img = new Image()
+  img.onload = function () {
+    option.complete(this)
+  }
+  img.src = option.img
+}
+
+cax.loadImgs = function (option) {
+  const result = []
+  let loaded = 0
+  const len = option.imgs.length
+  option.imgs.forEach((src, index) => {
+    const img = new Image()
+    img.onload = (function (i, img) {
+      return function(){
+        result[i] = img
+        loaded++
+        option.progress && option.progress(i, img, loaded, result)
+        if (loaded === len) {
+          option.complete && option.complete(result)
+        }
+      }
+    })(index,img)
+    img.src = src
+  })
+}
+
 module.exports = cax
