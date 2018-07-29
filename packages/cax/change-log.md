@@ -3,6 +3,10 @@
 * bitmap 支持 flipX 和 flipY
 * sprite 可以直接使用 bitmap.flipX 和 bitmap.flopY 播放序列帧
 
+## Cax 1.2.2
+
+* 修复微信小游戏里设置了鼠标形状导致的 bug 
+
 ## Cax 1.2.1
 
 * 移除了滤镜 dead code
