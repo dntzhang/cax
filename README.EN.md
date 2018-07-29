@@ -37,6 +37,7 @@ English | [简体中文](./README.md)
 * Built-in Text, Bitmap, Sprite, Graphics and Shape
 * Support SVG Path rendering
 * Support CSS filter
+* Built-in images loader
 ---
 
 - [Getting Started](#getting-started)

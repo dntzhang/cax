@@ -41,6 +41,7 @@
 * 内置文本、位图、序列帧、绘图对象和多种矢量绘制对象
 * 支持 SVG Path 渲染
 * 支持几乎全部的 CSS 滤镜和其他常用滤镜
+* 内置图片加载器
 ---
 
 - [一分钟入门小程序 cax 使用](#一分钟入门小程序-cax-使用)
@@ -92,6 +93,7 @@
 - [自定义对象](#自定义对象)
 	- [自定义 Shape](#自定义-shape) 
   - [自定义 Element](#自定义-element) 
+- [图片加载器](#图片加载器)
 - [谁在使用？](#谁在使用)
 - [微信交流群](#微信交流群2)
 - [License](#license)
@@ -780,6 +782,32 @@ const button = new cax.Button({
 一般情况下，稍微复杂组合体都建议使用继承自 Group，这样利于扩展也方便管理自身内部的元件。
 小游戏的 DEMO 里的 [Player、Bullet、Enemy、Background](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame/js) 全都是继承自 Group。
 [Wechart 的所有图表](https://github.com/dntzhang/wechart/tree/master/packages)全都是继承自 Group。
+
+## 图片加载器
+
+``` js
+cax.loadImg({
+  img: './a.png',
+  complete: function(img){
+
+  }
+})
+```
+
+加载多张图片：
+
+```js
+cax.loadImgs({
+  img: ['./a.png','./b.png'],
+  progress: function(progress){
+    console.log(progress) //0.5 and then 1
+  },
+  complete: function(imgs){
+    console.log(imgs[0]) //Image(a.png)
+    console.log(imgs[1]) //Image(b.png)
+  }
+})
+```
 
 ## 谁在使用？
 

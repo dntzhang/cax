@@ -3089,7 +3089,7 @@ cax.loadImgs = function (option) {
       return function () {
         result[i] = img;
         loaded++;
-        option.progress && option.progress(i, img, loaded, result);
+        option.progress && option.progress(loaded / len, loaded, i, img, result);
         if (loaded === len) {
           option.complete && option.complete(result);
         }
