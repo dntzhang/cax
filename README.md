@@ -57,6 +57,8 @@
     - [Stage 方法](#stage-方法)
       - [update](#update)
       - [scaleEventPoint](#scaleeventpoint)
+    - [Stage 属性](#stage-属性)  
+      - [disableMoveDetection](#disablemovedetection)
   - [Bitmap](#bitmap)
   - [Sprite](#sprite)
       - [Sprite 方法](#sprite-方法)
@@ -296,6 +298,22 @@ stage.scaleEventPoint(0.5, 0.5)
 ```
 
 例子: https://github.com/dntzhang/cax/blob/master/packages/cax/examples/pie/main.js#L218-L220
+
+#### Stage 属性
+
+##### disableMoveDetection
+
+是否禁用鼠标或触摸移动的事件检测。
+
+```js
+stage.disableMoveDetection = true
+```
+
+这里需要注意，Web 的 disableMoveDetection 默认是 false，微信小游戏默认是 true。所以微信小游戏想要监听 touchmove 和 drag 事件的话需要在创建完 Stage 之后执行下面代码开启监听:
+
+```js
+stage.disableMoveDetection = false
+```
 
 ### Bitmap
 
