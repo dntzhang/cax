@@ -64,6 +64,8 @@ English | [简体中文](./README.CN.md)
       - [gotoAndStop](#gotoandstop)
       - [gotoAndPlayOnce](#gotoandplayonce)
   - [Text](#text)
+    - [Method](#text-method)
+      - [getWidth](#getwidth)  
   - [Graphics](#graphics)
   - [Shape](#shape)
     - [Rect](#rect-1)
@@ -77,6 +79,9 @@ English | [简体中文](./README.CN.md)
   - [CompositeOperation](#compositeoperation)
   - [Cursor](#cursor)
   - [Fixed](#fixed)
+  - [Shadow](#shadow)
+- [Method](#method)  
+  - [destroy](#destroy)
 - [Event](#event)
 - [Motion](#motion)
 - [Clip](#clip)
@@ -335,6 +340,16 @@ const text = new cax.Text('Hello World', {
 })
 ```
 
+#### Method
+
+##### getWidth
+
+Get text width
+
+```js
+textObj.getWidth()
+```
+
 ### Graphics
 
 The drawing object is used to draw graphics with Canvas instructions in the basic way of linking.
@@ -449,6 +464,33 @@ Notice that if you don't have a definition of compositeOperation to look up, fin
 |Name      |Describe   |
 |---|---|
 | fixed | Whether to fixed or not, the default is false, and set to true will not overlay the transform of ancestors. |
+
+### Shadow
+
+|Name      |Describe   |
+|---|---|
+| shadow | shadow|
+
+Usage:
+
+```js
+obj.shadow = {
+    color: '#42B035',
+    offsetX: -5,
+    offsetY: 5,
+    blur: 10
+}
+```
+
+## Method
+
+### destroy
+
+Destroy self
+
+``` js
+obj.destroy()
+```
 
 ## Event
 
