@@ -25,19 +25,16 @@ English | [简体中文](./README.CN.md)
   
 ## Features
 
-* Learn Once, Write Anywhere(PC Web,Mobile Web,Wegame,Weapp)
-* Write Once, Run Anywhere
-* Simple API and lightweight 
-* High performance and low degree of coupling rendering architecture
-* Support element of canvas management
-* Support event of element like DOM
+* Simple API, Lightweight and High performance
+* Support PC and Mobile Canvas 2D Rendering and Mouse and Touch Event
+* Support event of element and element management like DOM
 * Turing complete group nesting system
-* Built-in cross platform motion library [→ to2to](https://github.com/dntzhang/cax/tree/master/packages/to)
 * Support clip and clip transformation
 * Built-in Text, Bitmap, Sprite, Graphics and Shape
-* Support SVG Path rendering
-* Support CSS filter
+* Support [SVG Path](https://github.com/dntzhang/cax/blob/master/packages/cax/src/render/display/shape/path.js) rendering
+* Support [CSS filter](https://github.com/dntzhang/cax/tree/master/packages/cax/src/render/filter)
 * Built-in images loader
+* Built-in cross platform motion library [→ to2to](https://github.com/dntzhang/cax/tree/master/packages/to)
 ---
 
 - [Getting Started](#getting-started)
