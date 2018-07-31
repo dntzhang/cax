@@ -44,19 +44,25 @@ English | [简体中文](./README.CN.md)
 - [Getting Started](#getting-started)
 - [Built-in Object](#built-in-object)
   - [Group](#group)
-    - [Group Method](#group-method)
+    - [Method](#group-method)
       - [add](#add)
       - [remove](#remove)
       - [empty](#empty)
       - [replace](#replace)
   - [Stage](#stage)
-    - [Stage Method](#stage-method)
+    - [Method](#stage-method)
       - [update](#update)
       - [scaleEventPoint](#scaleeventpoint)
-    - [Stage Prop](#stage-prop)  
+    - [Prop](#stage-prop)  
       - [disableMoveDetection](#disablemovedetection)      
   - [Bitmap](#bitmap)
+    - [Prop](#bitmap-prop)  
+      - [rect](#rect)       
   - [Sprite](#sprite)
+    - [Method](#sprite-method)
+      - [gotoAndPlay](#gotoandplay)
+      - [gotoAndStop](#gotoandstop)
+      - [gotoAndPlayOnce](#gotoandplayonce)
   - [Text](#text)
   - [Graphics](#graphics)
   - [Shape](#shape)
@@ -234,6 +240,10 @@ const bitmap = new cax.Bitmap('./wepay.png', ()=>{
 stage.add(bitmap)
 ```
 
+#### bitmap-prop
+
+##### rect  
+
 You can set the picture clipping display area, and other transform attributes:
 
 ```js
@@ -285,6 +295,32 @@ const sprite = new cax.Sprite({
 
     }
 });
+```
+
+#### Sprite Method
+
+##### gotoAndPlay
+
+Jump to the current animationName and start playing
+
+```js
+spriteObj.gotoAndPlay(animationName)
+```
+
+##### gotoAndStop
+
+Jump to the current animationName and stop
+
+```js
+spriteObj.gotoAndStop(animationName)
+```
+
+##### gotoAndPlayOnce
+
+Jump to the current animationName and start playing, then destroy yourself after animation. Often used in explosions
+
+```js
+spriteObj.gotoAndPlayOnce(animationName)
 ```
 
 ### Text
