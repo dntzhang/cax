@@ -3,8 +3,22 @@ English | [简体中文](./README.CN.md)
 # Cax [![](https://img.shields.io/npm/v/cax.svg)](https://www.npmjs.com/package/cax) 
 
 > HTML5 Canvas 2D Rendering Engine
+  
+## Features
 
-* DEMO & [→ Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)
+* Simple API, Lightweight and High performance
+* Support PC and Mobile Canvas 2D Rendering and Mouse and Touch Event
+* Support event of element and element management like DOM
+* Turing complete group nesting system
+* Support clip and clip transformation
+* Built-in Text, Bitmap, Sprite, Graphics and Shape
+* Support [SVG Path](https://github.com/dntzhang/cax/blob/master/packages/cax/src/render/display/shape/path.js) rendering
+* Support [CSS filter](https://github.com/dntzhang/cax/tree/master/packages/cax/src/render/filter)
+* Built-in images loader
+* Built-in cross platform motion library [→ to2to](https://github.com/dntzhang/cax/tree/master/packages/to)
+
+
+## DEMO 
   * [Wechart by Cax![](./asset/hot.png)](https://github.com/dntzhang/wechart)
   * [Simple](https://dntzhang.github.io/cax) 
   * [Animation](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
@@ -22,19 +36,8 @@ English | [简体中文](./README.CN.md)
   * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
   * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
-  
-## Features
 
-* Simple API, Lightweight and High performance
-* Support PC and Mobile Canvas 2D Rendering and Mouse and Touch Event
-* Support event of element and element management like DOM
-* Turing complete group nesting system
-* Support clip and clip transformation
-* Built-in Text, Bitmap, Sprite, Graphics and Shape
-* Support [SVG Path](https://github.com/dntzhang/cax/blob/master/packages/cax/src/render/display/shape/path.js) rendering
-* Support [CSS filter](https://github.com/dntzhang/cax/tree/master/packages/cax/src/render/filter)
-* Built-in images loader
-* Built-in cross platform motion library [→ to2to](https://github.com/dntzhang/cax/tree/master/packages/to)
+[→ DEMO Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)  
 ---
 
 - [Getting Started](#getting-started)
