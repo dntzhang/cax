@@ -278,7 +278,7 @@ groupObj.replace (current, pre)
 
 ##### update
 
-所以元素添加到舞台上是看不到的，你必须执行 update 方法。
+任何元素添加到舞台上是看不到的，你必须执行 update 方法。
 
 ```js
 stage.update()

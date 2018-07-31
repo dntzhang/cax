@@ -40,6 +40,17 @@ English | [简体中文](./README.CN.md)
 - [Getting Started](#getting-started)
 - [Built-in Object](#built-in-object)
   - [Group](#group)
+    - [Group Method](#group-method)
+      - [add](#add)
+      - [remove](#remove)
+      - [empty](#empty)
+      - [replace](#replace)
+  - [Stage](#stage)
+    - [Stage Method](#stage-method)
+      - [update](#update)
+      - [scaleEventPoint](#scaleeventpoint)
+    - [Stage Prop](#stage-prop)  
+      - [disableMoveDetection](#disablemovedetection)      
   - [Bitmap](#bitmap)
   - [Sprite](#sprite)
   - [Text](#text)
@@ -126,6 +137,81 @@ stage.update()
 ```
 
 Group has commonly used `add` and `remove` methods to add and delete elements. The first add will be drawn first, and all subsequent add will be covered above the top add.
+
+#### Group Method
+
+##### add
+
+add child to group
+
+``` js
+groupObj.add(child) 
+```
+
+##### remove
+
+remove child from group
+
+``` js
+groupObj.remove(child)
+``` 
+
+##### empty
+
+remove all the children from group
+
+``` js
+groupObj.empty()
+``` 
+
+##### replace
+
+replace child by another obj
+
+```js
+groupObj.replace (current, pre)
+```
+
+### Stage
+
+Stage is the largest top container inherited from Group, so have all the methods and props of Group.
+
+#### Stage Method
+
+##### update
+
+Any element can't be seen on the stage. You must execute the update method.
+
+```js
+stage.update()
+```
+
+Any element property is modified. Please perform stage.update() to update the stage, or put it in the timer.
+
+```js
+cax.tick(stage.update.bind(stage))
+```
+
+##### scaleEventPoint
+
+When the height of the canvas and the pixels of the canvas are not one-to-one, the event triggering position is inaccurate, and you can use the scaleEventPoint method to make the event correct.
+
+```js
+//The width of the canvas is half the canvas pixel
+stage.scaleEventPoint(0.5, 0.5)
+```
+
+Example: https://github.com/dntzhang/cax/blob/master/packages/cax/examples/pie/main.js#L218-L220
+
+#### Stage Prop
+
+##### disableMoveDetection
+
+Disable event detection for mouse or touch mobile. Default value in the web is false. You can change it:
+
+```js
+stage.disableMoveDetection = true
+```
 
 ### Bitmap
 
