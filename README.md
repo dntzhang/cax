@@ -18,7 +18,7 @@ English | [简体中文](./README.CN.md)
 * Built-in cross platform motion library [→ to2to](https://github.com/dntzhang/cax/tree/master/packages/to)
 
 
-## DEMO 
+## Demo
   * [Wechart by Cax![](./asset/hot.png)](https://github.com/dntzhang/wechart)
   * [Simple](https://dntzhang.github.io/cax) 
   * [Animation](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
@@ -37,8 +37,9 @@ English | [简体中文](./README.CN.md)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
   * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
 
-[→ DEMO Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)  
----
+[→ Demo Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)  
+
+## Docs
 
 - [Getting Started](#getting-started)
 - [Built-in Object](#built-in-object)
