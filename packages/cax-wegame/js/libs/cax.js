@@ -1,5 +1,5 @@
 /*!
- *  cax v1.2.3
+ *  cax v1.2.4
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -452,7 +452,13 @@ var DisplayObject = function (_EventDispatcher) {
   }, {
     key: 'filter',
     value: function filter(filterName, filterBox) {
-      this.cache(filterBox.x || 0, filterBox.y || 0, filterBox.width || this.width, filterBox.height || this.height);
+      filterBox = Object.assign({}, {
+        x: 0,
+        y: 0,
+        width: this.width,
+        height: this.height
+      }, filterBox);
+      this.cache(filterBox.x, filterBox.y, filterBox.width, filterBox.height);
       this._readyToFilter = true;
       this._filterName = filterName;
     }

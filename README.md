@@ -81,14 +81,30 @@ Usage:
 ``` js
 import cax from 'cax'
 
-const stage = new cax.Stage(200, 200, '#renderTo')
-const rect = new cax.Rect(100, 100, {
-  fillStyle: 'black'
-})
+const stage = new cax.Stage(200, 200, 'body')
 
-stage.add(rect)
-stage.update()
+cax.loadImgs({
+  imgs: ['./wepay-diy.jpg'],
+  complete: (imgs) => {
+    const img = imgs[0]
+    const bitmap = new cax.Bitmap(img)
+
+    bitmap.x = stage.width / 2
+    bitmap.y = stage.height / 2
+    bitmap.rotation = -10
+    bitmap.originX = img.width / 2
+    bitmap.originY = img.height / 2
+    bitmap.filter('blur(10px)')
+
+    stage.add(bitmap)
+    stage.update()
+  }
+})
 ```
+
+You will see the following effect:
+
+![](./asset/getting-start.png)
 
 ## Built-in Object
 

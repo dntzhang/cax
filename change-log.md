@@ -3,6 +3,10 @@
 * bitmap 支持 flipX 和 flipY
 * sprite 可以直接使用 bitmap.flipX 和 bitmap.flopY 播放序列帧
 
+## Cax 1.2.4
+
+* filter 方法不需要传递第二个参数
+
 ## Cax 1.2.3
 
 * 新增 cax.loadImg 和 cax.loadImgs

@@ -1,6 +1,6 @@
 {
   "name": "cax",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "小程序、小游戏和 Web 通用 Canvas 渲染引擎",
   "main": "dist/cax.js",
   "scripts": {
@@ -19,6 +19,7 @@
     "clip-transform": "webpack -w",
     "map": "webpack -w",
     "filter": "webpack -w",
+    "getting-start": "webpack -w",
     "dag": "webpack -w",
     "vision": "webpack -w",
     "to-shape": "webpack -w",

@@ -151,8 +151,14 @@ class DisplayObject extends EventDispatcher {
     this.cacheCanvas = null
   }
 
-  filter (filterName, filterBox) {
-    this.cache(filterBox.x || 0, filterBox.y || 0, filterBox.width || this.width, filterBox.height || this.height)
+  filter(filterName, filterBox) {
+    filterBox = Object.assign({}, {
+      x: 0,
+      y: 0,
+      width: this.width,
+      height: this.height
+    }, filterBox)
+    this.cache(filterBox.x, filterBox.y, filterBox.width, filterBox.height)
     this._readyToFilter = true
     this._filterName = filterName
   }
