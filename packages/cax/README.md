@@ -1,8 +1,22 @@
 # Cax [![](https://img.shields.io/npm/v/cax.svg)](https://www.npmjs.com/package/cax) 
 
 > HTML5 Canvas 2D Rendering Engine
+  
+## Features
 
-* DEMO & [→ Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)
+* Simple API, Lightweight and High performance
+* Support PC and Mobile Canvas 2D Rendering and Mouse and Touch Event
+* Support event of element and element management like DOM
+* Turing complete group nesting system
+* Support clip and clip transformation
+* Built-in Text, Bitmap, Sprite, Graphics and Shape
+* Support [SVG Path](https://github.com/dntzhang/cax/blob/master/packages/cax/src/render/display/shape/path.js) rendering
+* Support [CSS filter](https://github.com/dntzhang/cax/tree/master/packages/cax/src/render/filter)
+* Built-in images loader
+* Built-in cross platform motion library [→ to2to](https://github.com/dntzhang/cax/tree/master/packages/to)
+
+
+## Demo
   * [Wechart by Cax![](./asset/hot.png)](https://github.com/dntzhang/wechart)
   * [Simple](https://dntzhang.github.io/cax) 
   * [Animation](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
@@ -20,32 +34,41 @@
   * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
   * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
-  
-## Features
 
-* Simple API, Lightweight and High performance
-* Support PC and Mobile Canvas 2D Rendering and Mouse and Touch Event
-* Support event of element and element management like DOM
-* Turing complete group nesting system
-* Support clip and clip transformation
-* Built-in Text, Bitmap, Sprite, Graphics and Shape
-* Support [SVG Path](https://github.com/dntzhang/cax/blob/master/packages/cax/src/render/display/shape/path.js) rendering
-* Support [CSS filter](https://github.com/dntzhang/cax/tree/master/packages/cax/src/render/filter)
-* Built-in images loader
-* Built-in cross platform motion library [→ to2to](https://github.com/dntzhang/cax/tree/master/packages/to)
----
+[→ Demo Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)  
+
+## Docs
 
 - [Getting Started](#getting-started)
 - [Built-in Object](#built-in-object)
   - [Group](#group)
+    - [Method](#group-method)
+      - [add](#add)
+      - [remove](#remove)
+      - [empty](#empty)
+      - [replace](#replace)
+  - [Stage](#stage)
+    - [Method](#stage-method)
+      - [update](#update)
+      - [scaleEventPoint](#scaleeventpoint)
+    - [Prop](#stage-prop)  
+      - [disableMoveDetection](#disablemovedetection)      
   - [Bitmap](#bitmap)
+    - [Prop](#bitmap-prop)  
+      - [rect](#rect)       
   - [Sprite](#sprite)
+    - [Method](#sprite-method)
+      - [gotoAndPlay](#gotoandplay)
+      - [gotoAndStop](#gotoandstop)
+      - [gotoAndPlayOnce](#gotoandplayonce)
   - [Text](#text)
+    - [Method](#text-method)
+      - [getWidth](#getwidth)  
   - [Graphics](#graphics)
   - [Shape](#shape)
-	- [Rect](#rect)
-	- [Circle](#circle)
-	- [Ellipse](#ellipse)
+    - [Rect](#rect-1)
+    - [Circle](#circle)
+    - [Ellipse](#ellipse)
   - [Element](#element)
 	- [Button](#button)
 - [Property](#property)
@@ -54,6 +77,9 @@
   - [CompositeOperation](#compositeoperation)
   - [Cursor](#cursor)
   - [Fixed](#fixed)
+  - [Shadow](#shadow)
+- [Method](#method)  
+  - [destroy](#destroy)
 - [Event](#event)
 - [Motion](#motion)
 - [Clip](#clip)
@@ -125,6 +151,81 @@ stage.update()
 
 Group has commonly used `add` and `remove` methods to add and delete elements. The first add will be drawn first, and all subsequent add will be covered above the top add.
 
+#### Group Method
+
+##### add
+
+add child to group
+
+``` js
+groupObj.add(child) 
+```
+
+##### remove
+
+remove child from group
+
+``` js
+groupObj.remove(child)
+``` 
+
+##### empty
+
+remove all the children from group
+
+``` js
+groupObj.empty()
+``` 
+
+##### replace
+
+replace child by another obj
+
+```js
+groupObj.replace (current, pre)
+```
+
+### Stage
+
+Stage is the largest top container inherited from Group, so have all the methods and props of Group.
+
+#### Stage Method
+
+##### update
+
+Any element can't be seen on the stage. You must execute the update method.
+
+```js
+stage.update()
+```
+
+Any element property is modified. Please perform stage.update() to update the stage, or put it in the timer.
+
+```js
+cax.tick(stage.update.bind(stage))
+```
+
+##### scaleEventPoint
+
+When the height of the canvas and the pixels of the canvas are not one-to-one, the event triggering position is inaccurate, and you can use the scaleEventPoint method to make the event correct.
+
+```js
+//The width of the canvas is half the canvas pixel
+stage.scaleEventPoint(0.5, 0.5)
+```
+
+Example: https://github.com/dntzhang/cax/blob/master/packages/cax/examples/pie/main.js#L218-L220
+
+#### Stage Prop
+
+##### disableMoveDetection
+
+Disable event detection for mouse or touch mobile. Default value in the web is false. You can change it:
+
+```js
+stage.disableMoveDetection = true
+```
+
 ### Bitmap
 
 ```js
@@ -141,6 +242,10 @@ const bitmap = new cax.Bitmap('./wepay.png', ()=>{
 })
 stage.add(bitmap)
 ```
+
+#### bitmap-prop
+
+##### rect  
 
 You can set the picture clipping display area, and other transform attributes:
 
@@ -195,6 +300,32 @@ const sprite = new cax.Sprite({
 });
 ```
 
+#### Sprite Method
+
+##### gotoAndPlay
+
+Jump to the current animationName and start playing
+
+```js
+spriteObj.gotoAndPlay(animationName)
+```
+
+##### gotoAndStop
+
+Jump to the current animationName and stop
+
+```js
+spriteObj.gotoAndStop(animationName)
+```
+
+##### gotoAndPlayOnce
+
+Jump to the current animationName and start playing, then destroy yourself after animation. Often used in explosions
+
+```js
+spriteObj.gotoAndPlayOnce(animationName)
+```
+
 ### Text
 
 Text object
@@ -205,6 +336,16 @@ const text = new cax.Text('Hello World', {
   color: '#ff7700',
   baseline: 'top'
 })
+```
+
+#### Method
+
+##### getWidth
+
+Get text width
+
+```js
+textObj.getWidth()
 ```
 
 ### Graphics
@@ -321,6 +462,33 @@ Notice that if you don't have a definition of compositeOperation to look up, fin
 |Name      |Describe   |
 |---|---|
 | fixed | Whether to fixed or not, the default is false, and set to true will not overlay the transform of ancestors. |
+
+### Shadow
+
+|Name      |Describe   |
+|---|---|
+| shadow | shadow|
+
+Usage:
+
+```js
+obj.shadow = {
+    color: '#42B035',
+    offsetX: -5,
+    offsetY: 5,
+    blur: 10
+}
+```
+
+## Method
+
+### destroy
+
+Destroy self
+
+``` js
+obj.destroy()
+```
 
 ## Event
 
