@@ -1,11 +1,11 @@
-简体中文 | [English](./README.EN.md) 
+English | [简体中文](./README.CN.md) 
 
 # Cax [![](https://img.shields.io/npm/v/cax.svg)](https://www.npmjs.com/package/cax) 
 
-> 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
+> HTML5 Canvas 2D Rendering Engine
 
-* [Wechart by Cax![](./asset/hot.png)](https://github.com/dntzhang/wechart)
-* Web DEMO & [→ Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)
+* DEMO & [→ Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)
+  * [Wechart by Cax![](./asset/hot.png)](https://github.com/dntzhang/wechart)
   * [Simple](https://dntzhang.github.io/cax) 
   * [Animation](https://dntzhang.github.io/cax/packages/cax/examples/to/) 
   * [Clip](https://dntzhang.github.io/cax/packages/cax/examples/clip/) 
@@ -22,53 +22,30 @@
   * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
   * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
-* 小程序 DEMO 正在审核中敬请期待
-* 小游戏 DEMO 正在审核中敬请期待
+  
+## Features
 
-## 特性
-
-* Learn Once, Write Anywhere(小程序、小游戏、PC Web、Mobile Web)
-* Write Once, Run Anywhere(小程序、小游戏、Web只需要修改`new Stage`传入参数即可)
-* 支持小程序、小游戏以及 Web 浏览器渲染
-* 小程序、小游戏和 Web 拥有相同简洁轻巧的 API
-* 高性能且松耦合的渲染架构
-* 超轻量级的代码体积
-* 支持 Canvas 元素管理
-* 支持 Canvas 元素事件体系
-* 图灵完备的 group 嵌套体系
-* 内置 [to2to](https://github.com/dntzhang/cax/tree/master/packages/to) 的跨平台运动引擎
-* 支持可以变形的 clip 裁剪体系
-* 内置文本、位图、序列帧、绘图对象和多种矢量绘制对象
-* 支持 SVG Path 渲染
-* 支持几乎全部的 CSS 滤镜和其他常用滤镜
-* 内置图片加载器
+* Learn Once, Write Anywhere(PC Web,Mobile Web,Wegame,Weapp)
+* Write Once, Run Anywhere
+* Simple API and lightweight 
+* High performance and low degree of coupling rendering architecture
+* Support element of canvas management
+* Support event of element like DOM
+* Turing complete group nesting system
+* Built-in cross platform motion library [→ to2to](https://github.com/dntzhang/cax/tree/master/packages/to)
+* Support clip and clip transformation
+* Built-in Text, Bitmap, Sprite, Graphics and Shape
+* Support SVG Path rendering
+* Support CSS filter
+* Built-in images loader
 ---
 
-- [一分钟入门小程序 cax 使用](#一分钟入门小程序-cax-使用)
-- [一分钟入门小游戏 cax 使用](#一分钟入门小游戏-cax-使用)
-- [一分钟入门 Web cax 使用](#一分钟入门-web-cax-使用)
-- [内置对象](#内置对象)
+- [Getting Started](#getting-started)
+- [Built-in Object](#built-in-object)
   - [Group](#group)
-    - [Group 方法](#group-方法)
-      - [add](#add)
-      - [remove](#remove)
-      - [empty](#empty)
-      - [replace](#replace)
-  - [Stage](#stage)
-    - [Stage 方法](#stage-方法)
-      - [update](#update)
-      - [scaleEventPoint](#scaleeventpoint)
-    - [Stage 属性](#stage-属性)  
-      - [disableMoveDetection](#disablemovedetection)
   - [Bitmap](#bitmap)
   - [Sprite](#sprite)
-      - [Sprite 方法](#sprite-方法)
-        - [gotoAndPlay](#gotoandplay)
-        - [gotoAndStop](#gotoandstop)
-        - [gotoAndPlayOnce](#gotoandplayonce)
   - [Text](#text)
-      - [Text 方法](#text-方法)
-        - [getWidth](#getwidth)
   - [Graphics](#graphics)
   - [Shape](#shape)
 	- [Rect](#rect)
@@ -76,122 +53,24 @@
 	- [Ellipse](#ellipse)
   - [Element](#element)
 	- [Button](#button)
-- [属性](#属性)
+- [Property](#property)
   - [Transform](#transform)
   - [Alpha](#alpha)
   - [CompositeOperation](#compositeoperation)
   - [Cursor](#cursor)
   - [Fixed](#fixed)
-  - [Shadow](#shadow)
-- [方法](#方法)  
-  - [destroy](#destroy)
-- [事件](#事件)
-	- [小程序事件](#小程序事件) 
-  - [Web 事件](#web-事件) 
-- [运动](#运动)
-- [裁剪](#裁剪)
-- [自定义对象](#自定义对象)
-	- [自定义 Shape](#自定义-shape) 
-  - [自定义 Element](#自定义-element) 
-- [图片加载器](#图片加载器)
-- [谁在使用？](#谁在使用)
-- [微信交流群](#微信交流群2)
+- [Event](#event)
+- [Motion](#motion)
+- [Clip](#clip)
+- [Custom Object](#custom-object)
+	- [Custom Shape](#custom-shape) 
+  - [Custom Element](#custom-element) 
+- [Who is using cax?](#who-is-using-cax)
 - [License](#license)
 
+## Getting Started
 
-
-## 一分钟入门小程序 cax 使用
-
-到 GitHub [下载 cax 自定义组件](https://github.com/dntzhang/cax/tree/master/packages/cax-weapp)，然后小程序引入 cax 自定义组件:
-
-```
-└── cax
-    ├── cax.js
-    ├── cax.json  
-    ├── cax.wxml  
-    ├── cax.wxss
-    └── index.js
-```
-
-在 page 或者 component 里声明依赖:
-
-```json
-{
-  "usingComponents": {
-    "cax":"../cax/cax"
-  }
-}
-```
-
-在的 wxml 里引入 cax 标签:
-
-```html 
-<cax id="myCanvas"></cax>
-```
-
-在 js 里渲染逻辑:
-
-```js
-import cax from '../cax/index'
-
-Page({
-  onLoad: function () {
-    //比 web 里使用 cax 多传递 this，this 代表 Page 或 Component 的实例
-    const stage = new cax.Stage(200, 200, 'myCanvas', this)
-    const rect = new cax.Rect(100, 100, {
-      fillStyle: 'black'
-    })
-    
-    rect.originX = 50
-    rect.originY = 50
-    rect.x = 100
-    rect.y = 100
-    rect.rotation = 30
-
-    rect.on('tap', () => {
-      console.log('tap')
-    })
-
-    stage.add(rect)
-    stage.update()
-  }
-})
-```
-
-效果如下所示:
-
-![](./asset/demo.jpg)
-
-除了 tap 事件，也可以帮 rect 绑定其他触摸事件：
-
-```js
-rect.on('touchstart', () => {
-  console.log('touchstart')
-})
-
-rect.on('touchmove', () => {
-  console.log('touchmove')
-})
-
-rect.on('touchend', () => {
-  console.log('touchend')
-})
-```
-## 一分钟入门小游戏 cax 使用
-
-到 GitHub [下载 cax 小游戏示例](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame)，目录结构和运行效果如下:
-
-![](./asset/cax-wegame.png)
-
-``` js
-const stage = new cax.Stage()
-```
-
-和小程序以及 Web 不同的是，小游戏创建 Stage 不需要传任何参数。
-
-## 一分钟入门 Web cax 使用
-
-通过 npm 或者 CDN 获取:
+Get cax through npm or cdn:
 
 ``` bash
 npm i cax
@@ -200,6 +79,7 @@ npm i cax
 * [https://unpkg.com/cax@latest/dist/cax.min.js](https://unpkg.com/cax@latest/dist/cax.min.js)
 * [https://unpkg.com/cax@latest/dist/cax.js](https://unpkg.com/cax@latest/dist/cax.js)
 
+Usage:
 
 ``` js
 import cax from 'cax'
@@ -213,16 +93,14 @@ stage.add(rect)
 stage.update()
 ```
 
-除了 Stage 构造函数比小程序第四个参数 `this`，其他使用方式都一样。
-
-## 内置对象
+## Built-in Object
 
 ### Group
 
-用于分组， group 也可以嵌套 group，父容器的属性会叠加在子属性上, 比如：
+For grouping, group can also nested group, and the parent container's properties will be superimposed on child properties, such as:
 
-* group 的 x 是 100, group 里的 bitmap 的 x 是 200， 最后 bitmap 渲染到 stage 上的 x 是 300
-* group 的 alpha 是 0.7, group 里的 bitmap 的 alpha 是 0.6, 最后 bitmap 渲染到 stage 上的 alpha 是 0.42
+* the x of group is 100, the x of bitmap in group is 200, and the x of the bitmap rendered to stage is 300.
+* the alpha of group is 0.7, the alpha of bitmap in group is 0.6, and the alpha of the bitmap rendered to stage is 0.42.
 
 ```js
 const group = new cax.Group()
@@ -234,88 +112,7 @@ stage.add(group)
 stage.update()
 ```
 
-group 拥有常用的 add 和 remove 方法进行元素的增加和删除。先 add 的会先绘制，所有后 add 的会盖在先 add 的上面。
-
-#### Group 方法
-
-##### add
-
-添加对象
-
-``` js
-groupObj.add (child) 
-```
-
-##### remove
-
-移除对象
-
-``` js
-groupObj.remove (child)
-``` 
-
-##### empty
-
-清空子对象
-
-``` js
-groupObj.empty ()
-``` 
-
-##### replace
-
-使用一个对象替代子对象
-
-```js
-groupObj.replace (current, pre)
-```
-
-### Stage
-
-最大的顶层容器，继承自 Group，所以 Group 拥有的方法它全都有。
-
-#### Stage 方法
-
-##### update
-
-所以元素添加到舞台上是看不到的，你必须执行 update 方法。
-
-```js
-stage.update()
-```
-
-任何元素属性的修改请执行 stage.update() 来更新舞台，或者放在定时器里:
-
-```js
-cax.tick(stage.update.bind(stage))
-```
-
-##### scaleEventPoint
-
-当 canvas 的宽高 和 canvas 的像素不对应的时候，事件触发位置是不准确的，你可以使用 scaleEventPoint 方法使事件校正准确。
-
-```js
-//canvas 宽高是像素的一半
-stage.scaleEventPoint(0.5, 0.5)
-```
-
-例子: https://github.com/dntzhang/cax/blob/master/packages/cax/examples/pie/main.js#L218-L220
-
-#### Stage 属性
-
-##### disableMoveDetection
-
-是否禁用鼠标或触摸移动的事件检测。
-
-```js
-stage.disableMoveDetection = true
-```
-
-这里需要注意，Web 的 disableMoveDetection 默认是 false，微信小游戏默认是 true。所以微信小游戏想要监听 touchmove 和 drag 事件的话需要在创建完 Stage 之后执行下面代码开启监听:
-
-```js
-stage.disableMoveDetection = false
-```
+Group has commonly used `add` and `remove` methods to add and delete elements. The first add will be drawn first, and all subsequent add will be covered above the top add.
 
 ### Bitmap
 
@@ -325,7 +122,7 @@ stage.add(bitmap)
 stage.update()
 ```
 
-如果只传 url 而不是 Image 对象的实例，需要这样:
+If you only transmit URL instead of the instance of the Image object, you need to do this:
 
 ```js
 const bitmap = new cax.Bitmap('./wepay.png', ()=>{
@@ -334,18 +131,17 @@ const bitmap = new cax.Bitmap('./wepay.png', ()=>{
 stage.add(bitmap)
 ```
 
-这里需要注意小程序需要配置 downloadFile 需要配置合法域名才能正常加载到图片。
-
-可以设置图片裁剪显示区域，和其他 transform 属性:
+You can set the picture clipping display area, and other transform attributes:
 
 ```js
 bitmap.rect = [0, 0, 170, 140]
 bitmap.x = 200
+bitmap.rotation = 30
 ```
 
 ### Sprite
 
-序列帧动画组件，可以把任意图片的任意区域组合成一串动画。
+The sequence frame animation component can combine any region of any picture into a series of animations.
 
 ```js
 const sprite = new cax.Sprite({
@@ -388,35 +184,9 @@ const sprite = new cax.Sprite({
 });
 ```
 
-#### Sprite 方法
-
-##### gotoAndPlay
-
-跳到当前 animationName 并开始播放
-
-```js
-spriteObj.gotoAndPlay(animationName)
-```
-
-##### gotoAndStop
-
-跳到当前 animationName 并开始停止
-
-```js
-spriteObj.gotoAndStop(animationName)
-```
-
-##### gotoAndPlayOnce
-
-跳到当前 animationName 并开始播放，播完一轮销毁自己。常用于爆炸
-
-```js
-spriteObj.gotoAndPlayOnce(animationName)
-```
-
 ### Text
 
-文本对象
+Text object
 
 ``` js
 const text = new cax.Text('Hello World', {
@@ -426,19 +196,9 @@ const text = new cax.Text('Hello World', {
 })
 ```
 
-#### Text 方法
-
-##### getWidth
-
-获取文本宽度
-
-```js
-textObj.getWidth()
-```
-
 ### Graphics
 
-绘图对象，用于使用基本的连缀方式的 Canvas 指令绘制图形。
+The drawing object is used to draw graphics with Canvas instructions in the basic way of linking.
 
 ``` js
 const graphics = new cax.Graphics()
@@ -457,7 +217,7 @@ graphics.y = 200
 stage.add(graphics)
 ```
 
-特别注意，如果你在某个循环中执行 graphics 连缀绘制操作，请务必加上 clear() 方法，不然路径叠加到你的浏览器不堪重负:
+In particular, if you perform a graphics connection rendering operation in a loop, be sure to add the clear () method, or the path will be overloaded to your browser:
 
 ```js
 cax.setInterval(function(){
@@ -471,7 +231,7 @@ cax.setInterval(function(){
 
 ### Shape
 
-与 Graphics 不同的是， Shape 一般拥有有限的宽高，所以可以使用离屏 Canvas 进行缓存。下面这些属于 Shape。
+Unlike Graphics, Shape usually has limited width height, so it can be buffered with off screen Canvas. The following are Shape.
 
 #### Rect
 
@@ -493,11 +253,9 @@ const circle = new cax.Circle(10)
 const ellipse = new cax.Ellipse(120, 20)
 ```
 
-注意：从技术上小游戏和 Web 可以离屏 Canvas，小程序不行，因为小程序不支持动态创建离屏 Canvas。
-
 ### Element
 
-Element 是多种元素的组合，如 Bitmap、Group、 Text、 Shape 等混合起来的图像。
+Element is a combination of multiple elements, such as Bitmap, Group, Text, Shape and other mixed images.
 
 #### Button
 
@@ -509,108 +267,69 @@ const button = new cax.Button({
 })
 ```
 
-## 属性
+## Property
 
 ### Transform
 
-|属性名      |描述   |
+|name      |Describe   |
 |---|---|
-| x | 水平偏移 |
-| y | 竖直偏移 |
-| scaleX | 水平缩放 |
-| scaleY | 竖直缩放 |
-| rotation | 旋转 |
-| skewX | 歪斜 X |
-| skewY | 歪斜 Y |
-| originX | 旋转基点 X |
-| originY | 旋转基点 Y |
+| x | Horizontal offset |
+| y | Vertical offset |
+| scaleX | Horizontal scaling |
+| scaleY | Vertical scaling |
+| rotation | rotation |
+| skewX | skewX |
+| skewY | skewY |
+| originX |Rotation base point X |
+| originY | Rotation base point Y |
 
 ### Alpha
 
-|属性名      |描述   |
+|Name      |Describe   |
 |---|---|
-| alpha | 元素的透明度 |
+| alpha | The transparency of the element |
 
-注意这里父子都设置了 alpha 会进行乘法叠加。
+Notice that the father and son have set up alpha to do multiplicative stacking.
 
 ### compositeOperation 
 
-|属性名      |描述   |
+|Name      |Describe   |
 |---|---|
-| compositeOperation | 源图像绘制到目标图像上的叠加模式 |
+| compositeOperation | The superposition pattern drawn from the source image to the target image |
 
-注意这里如果自身没有定义 compositeOperation 会进行向上查找，找到最近的定义了 compositeOperation 的父容器作为自己的 compositeOperation。
+Notice that if you don't have a definition of compositeOperation to look up, find the nearest compositeOperation's parent container as its own compositeOperation.
 
 ### Cursor
 
-|属性名      |描述   |
+|Name      |Describe   |
 |---|---|
-| cursor | 鼠标移上去的形状 |
+| cursor | The shape of the mouse |
 
 ### Fixed
 
-|属性名      |描述   |
+|Name      |Describe   |
 |---|---|
-| fixed | 是否固定定位，默认是 false 设置成 true 不会叠加祖辈们的 transform 属性|
+| fixed | Whether to fixed or not, the default is false, and set to true will not overlay the transform of ancestors. |
 
-### Shadow
+## Event
 
-|属性名      |描述   |
+|Name      |Describe   |
 |---|---|
-| shadow | 阴影|
+| click | Click time trigger on the element |
+| mousedown | Triggers when the mouse button is pressed on the element |
+| mousemove | Trigger when the mouse pointer moves to the element |
+| mouseup | Trigger when the mouse button is released on the element |
+| mouseover | Trigger when the mouse pointer moves to the element |
+| mouseout | Trigger when the mouse pointer moves out of the element |
+| tap | Leave the finger and leave immediately |
+| touchstart | The start of finger touch action |
+| touchmove | Move the finger after touch |
+| touchend | End of finger touch action |
+| drag | Drag and drop |
 
-使用方式:
+## Motion
 
-```js
-obj.shadow = {
-    color: '#42B035',
-    offsetX: -5,
-    offsetY: 5,
-    blur: 10
-}
-```
-
-## 方法
-
-### destroy
-
-销毁自己
-
-``` js
-obj.destroy()
-```
-
-## 事件
-
-### 小程序事件
-
-|事件名      |描述   |
-|---|---|
-| tap | 手指触摸后马上离开 |
-| touchstart | 手指触摸动作开始 |
-| touchmove | 手指触摸后移动 |
-| touchend | 手指触摸动作结束 |
-| drag | 拖拽 |
-
-### Web 事件
-
-|事件名      |描述   |
-|---|---|
-| click | 元素上发生点击时触发 |
-| mousedown | 当元素上按下鼠标按钮时触发 |
-| mousemove | 当鼠标指针移动到元素上时触发 |
-| mouseup | 当在元素上释放鼠标按钮时触发 |
-| mouseover | 当鼠标指针移动到元素上时触发 |
-| mouseout | 当鼠标指针移出元素时触发 |
-| tap | 手指触摸后马上离开 |
-| touchstart | 手指触摸动作开始 |
-| touchmove | 手指触摸后移动 |
-| touchend | 手指触摸动作结束 |
-| drag | 拖拽 |
-
-## 运动
-
-cax 内置了 to 的能力以连缀的方式写运动效果：
+Cax has built-in to capability to write motion effects in a continuous way.
 
 ``` js
 const easing = cax.To.easing.elasticInOut
@@ -641,25 +360,11 @@ cax.To.get(bitmap)
     .start();
 ```
 
-* `to` 和 `to` 之间的是并行
-* `to` 和 `wait` 之前的是串行
-* `to` 和 `to` 之间的 与 下一个 `to` 和 `to` 之间的是串行
+* `to` and `to` are parallel
+* `to` and `wait` are serial 
+* The serial between `to` and `to` is serial with the next `to` and `to`
 
-有点绕，但是很直观，慢慢体会。
-
-当然，也可以通过 set 方法支持任意属性的运动，如:
-
-``` js
-.set('y', 240, 2000, cax.easing.elasticInOut)
-``` 
-
-等同于
-
-``` js
-.y(240, 2000, cax.easing.elasticInOut)
-```
-
-如果想要循环播放的话可以使用 `cycle` 方法:
+If you want circular motion, you can use the `cycle` method:
 
 ``` js
 cax.To.get(bitmap)
@@ -671,13 +376,14 @@ cax.To.get(bitmap)
     .start()
 ```
 
-* [→ 运动演示地址](http://dntzhang.github.io/cax/packages/cax/examples/to/)
-* [→ 去 to2to 一看究竟](https://github.com/dntzhang/cax/tree/master/packages/to)
-* [→ 看看 cax.To.easing 种类](http://tweenjs.github.io/tween.js/examples/03_graphs.html)
+* [→ Motion Demo](http://dntzhang.github.io/cax/packages/cax/examples/to/)
+* [→ to2to package](https://github.com/dntzhang/cax/tree/master/packages/to)
+* [→ cax.To.easing](http://tweenjs.github.io/tween.js/examples/03_graphs.html)
 
-这里需要注意，和 tween.js 不同，cax 把 easing 命名全改成了一个单词的驼峰命名。如 Cubic.In 变成了 cubicIn。
+It's important to note that, unlike tween.js, Cax uses the camelcase. For example, Cubic.In becomes cubicIn.
 
-## 裁剪
+## Clip
+
 
 ```js
 const stage = new cax.Stage(600, 400, 'body')
@@ -690,7 +396,7 @@ bitmap.clip(clipPath)
 stage.add(bitmap)
 ```
 
-使用下面的代码可以得到同样的效果:
+You can get the same effect with blow code:
 
 ```js
 const clipPath = new cax.Graphics()
@@ -699,15 +405,15 @@ clipPath.y = 40
 clipPath.arc(0, 0, 25, 0, Math.PI * 2)
 ```
 
-所以，裁剪区域也是支持所有 transform 属性(x,y,scaleX,scaleY,rotation,skewX,skewY,originX,originY)。
+So you can find that clip graphics supports all the transformation props(x,y,scaleX,scaleY,rotation,skewX,skewY,originX,originY).
 
-[→ 裁剪演示地址](http://dntzhang.github.io/cax/packages/cax/examples/clip/)
+[→ Clip Demo](http://dntzhang.github.io/cax/packages/cax/examples/clip/)
 
-## 自定义对象
+## Custom Object
 
-### 自定义 Shape
+### Custom Shape
 
-自定义 Shape 继承自 cax.Shape:
+Custom Shape inherits from cax.Shape:
 
 ``` js
 class Sector extends cax.Shape {
@@ -734,7 +440,7 @@ class Sector extends cax.Shape {
 }
 ```
 
-使用 Shape:
+Use the Shape:
 
 ``` js
 const sector = new Sector(10, 0, Math.PI/6, {
@@ -745,9 +451,9 @@ stage.add(sector)
 stage.update()
 ```
 
-### 自定义 Element
+### Custom Element
 
-自定义 Element 继承自 cax.Group:
+Custom Element inherits from cax.Group:
 
 ``` js
 class Button extends cax.Group {
@@ -769,7 +475,7 @@ class Button extends cax.Group {
 export default Button
 ```
 
-使用:
+Use the Button:
 
 ``` js
 const button = new cax.Button({
@@ -779,43 +485,11 @@ const button = new cax.Button({
 })
 ```
 
-一般情况下，稍微复杂组合体都建议使用继承自 Group，这样利于扩展也方便管理自身内部的元件。
-小游戏的 DEMO 里的 [Player、Bullet、Enemy、Background](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame/js) 全都是继承自 Group。
-[Wechart 的所有图表](https://github.com/dntzhang/wechart/tree/master/packages)全都是继承自 Group。
+In general, it is suggested that inherit Group from a slightly complex combination, which is conducive to expansion and management of internal components.
 
-## 图片加载器
-
-``` js
-cax.loadImg({
-  img: './a.png',
-  complete: function(img){
-
-  }
-})
-```
-
-加载多张图片：
-
-```js
-cax.loadImgs({
-  img: ['./a.png','./b.png'],
-  progress: function(progress){
-    console.log(progress) //0.5 and then 1
-  },
-  complete: function(imgs){
-    console.log(imgs[0]) //Image(a.png)
-    console.log(imgs[1]) //Image(b.png)
-  }
-})
-```
-
-## 谁在使用？
+# Who is using cax?
 
 ![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
-
-## 微信交流群【2】
-
-![](https://github.com/dntzhang/wechart/raw/master/asset/g2.png)
 
 ## License
 
