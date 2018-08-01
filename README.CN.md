@@ -200,20 +200,35 @@ npm i cax
 * [https://unpkg.com/cax@latest/dist/cax.min.js](https://unpkg.com/cax@latest/dist/cax.min.js)
 * [https://unpkg.com/cax@latest/dist/cax.js](https://unpkg.com/cax@latest/dist/cax.js)
 
+使用方法:
 
 ``` js
 import cax from 'cax'
 
-const stage = new cax.Stage(200, 200, '#renderTo')
-const rect = new cax.Rect(100, 100, {
-  fillStyle: 'black'
-})
+const stage = new cax.Stage(200, 200, 'body')
 
-stage.add(rect)
-stage.update()
+cax.loadImgs({
+  imgs: ['./wepay-diy.jpg'],
+  complete: (imgs) => {
+    const img = imgs[0]
+    const bitmap = new cax.Bitmap(img)
+
+    bitmap.x = stage.width / 2
+    bitmap.y = stage.height / 2
+    bitmap.rotation = -10
+    bitmap.originX = img.width / 2
+    bitmap.originY = img.height / 2
+    bitmap.filter('blur(10px)')
+
+    stage.add(bitmap)
+    stage.update()
+  }
+})
 ```
 
-除了 Stage 构造函数比小程序第四个参数 `this`，其他使用方式都一样。
+除了 Stage 构造函数比小程序第四个参数 `this`，其他使用方式都一样。执行上面代码你将看到如下效果:
+
+![](./asset/getting-start.png)
 
 ## 内置对象
 
