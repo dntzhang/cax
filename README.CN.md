@@ -26,7 +26,7 @@
 
 ![星球部落](./asset/xqbl.png)
 
-![星球部落](./asset/ss1.png)![星球部落](./asset/ss2.png)
+![星球部落](./asset/ss1.png)![星球部落](./asset/ss3.png)
 
 * 小游戏 DEMO 正在审核中敬请期待
 
