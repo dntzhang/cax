@@ -22,7 +22,12 @@
   * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
   * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
-* 小程序 DEMO 正在审核中敬请期待
+* 小程序线上产品 
+
+![星球部落](./asset/xqbl.png)
+
+![星球部落](./asset/ss1.png)![星球部落](./asset/ss2.png)
+
 * 小游戏 DEMO 正在审核中敬请期待
 
 ## 特性
