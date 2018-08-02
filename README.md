@@ -39,7 +39,7 @@ English | [简体中文](./README.CN.md)
 
 [→ Demo Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)  
 
-## Weapp Demo
+## Wechart App Demo
 
 ![星球部落](./asset/xqbl.png)
 
