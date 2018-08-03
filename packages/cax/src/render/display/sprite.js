@@ -102,7 +102,10 @@ class Sprite extends DisplayObject {
 
       rectLen > 4 && (this.originX = this.rect[2] * this.rect[4])
       rectLen > 5 && (this.originY = this.rect[3] * this.rect[5])
-      rectLen > 6 && (this.img = this.imgMap[this.option.imgs[this.rect[6]]])
+      if (rectLen > 6) {
+        const img = this.option.imgs[this.rect[6]]
+        this.img = typeof img === 'string' ? this.imgMap[img] : img
+      }
 
       if (index === len - 1 && (!this.endTime || Date.now() - this.endTime > this.interval)) {
         this.endTime = Date.now()
@@ -134,7 +137,10 @@ class Sprite extends DisplayObject {
     const rectLen = rect.length
     rectLen > 4 && (this.originX = rect[2] * rect[4])
     rectLen > 5 && (this.originY = rect[3] * rect[5])
-    rectLen > 6 && (this.img = this.imgMap[this.option.imgs[rect[6]]])
+    if (rectLen > 6) {
+      const img = this.option.imgs[rect[6]]
+      this.img = typeof img === 'string' ? this.imgMap[img] : img
+    }
   }
 
   gotoAndPlayOnce (animation) {
