@@ -163,6 +163,22 @@ class DisplayObject extends EventDispatcher {
     this._filterName = filterName
   }
 
+  setTransform (x, y, scaleX, scaleY, rotation, skewX, skewY, originX, originY) {
+		this.x = x || 0;
+		this.y = y || 0;
+		this.scaleX = scaleX == null ? 1 : scaleX;
+		this.scaleY = scaleY == null ? 1 : scaleY;
+		this.rotation = rotation || 0;
+		this.skewX = skewX || 0;
+		this.skewY = skewY || 0;
+		this.originX = originX || 0;
+		this.originY = originY || 0;
+  }
+  
+  setMatrix(a, b, c, d, tx, ty){
+    Matrix2D.decompose(a, b, c, d, tx, ty, this)
+  }
+
   unfilter () {
     this.uncache()
   }

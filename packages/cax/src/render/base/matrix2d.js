@@ -1,5 +1,6 @@
 
 const DEG_TO_RAD = 0.017453292519943295
+const PI_2 = Math.PI * 2
 
 class Matrix2D {
   constructor (a, b, c, d, tx, ty) {
@@ -96,6 +97,40 @@ class Matrix2D {
   copy (matrix) {
     return this.setValues(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty)
   }
+}
+
+Matrix2D.decompose = function(a, b, c, d, tx, ty, transform){
+  const skewX = -Math.atan2(-c, d);
+  const skewY = Math.atan2(b, a);
+
+  const delta = Math.abs(skewX + skewY);
+
+  if (delta < 0.00001 || Math.abs(PI_2 - delta) < 0.00001)
+  {
+      transform.rotation = skewY;
+
+      if (a < 0 && d >= 0)
+      {
+          transform.rotation += (transform.rotation <= 0) ? Math.PI : -Math.PI;
+      }
+
+      transform.skewX = transform.skewY = 0;
+  }
+  else
+  {
+      transform.rotation = 0;
+      transform.skewX = skewX;
+      transform.skewY = skewY;
+  }
+
+  // next set scale
+  transform.scaleX = Math.sqrt((a * a) + (b * b));
+  transform.scaleY = Math.sqrt((c * c) + (d * d));
+
+  // next set position
+  transform.x = tx;
+  transform.y = ty;
+
 }
 
 export default Matrix2D
