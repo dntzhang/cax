@@ -18,7 +18,7 @@ class To {
     this.cmds.push(['to'])
     if (arguments.length !== 0) {
       for (let key in target) {
-        this.set(key, target[key], duration, easing)
+        this.set(key, target[key], duration || 0, easing)
       }
     }
     return this
