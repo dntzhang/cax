@@ -17,7 +17,7 @@ class Text extends DisplayObject {
     option = option || {}
     this.font = option.font || '10px sans-serif'
     this.color = option.color || 'black'
-
+    this.textAlign = option.textAlign || 'left'
     this.baseline = option.baseline || 'top'
   }
 

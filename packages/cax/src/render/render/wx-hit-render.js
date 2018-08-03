@@ -68,6 +68,7 @@ class WxHitRender extends Render {
     } else if (obj instanceof Text) {
       ctx.font = obj.font
       ctx.fillStyle = obj.color
+      ctx.textAlign= obj.textAlign
       ctx.fillText(obj.text, 0, 0)
     }
     ctx.restore()

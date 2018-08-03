@@ -159,6 +159,7 @@ class HitRender extends Render {
 
         ctx.font = o.font
         ctx.fillStyle = o.color
+        ctx.textAlign= o.textAlign
         ctx.textBaseline = o.baseline
         ctx.fillText(o.text, 0, 0)
       }
