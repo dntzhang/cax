@@ -3,6 +3,15 @@
 * bitmap 支持 flipX 和 flipY
 * sprite 可以直接使用 bitmap.flipX 和 bitmap.flopY 播放序列帧
 
+## Cax 1.2.5
+
+* group.add 方法如果 child 已经 add 过了，会移除以前的。所以 add 已有的 child 会有置顶的效果
+* Text 支持 textAlign 属性
+* To 运动可以不传时间，默认为 0 
+* Cax 对象支持 setTransform 方法一次性设置所有属性
+* Cax 对象支持 setMatrix 方法转换为设置对象的 transform 属性
+* 修复 Sprite 的配置 imgs 传入图片而非图片字符串导致不渲染的 bug
+
 ## Cax 1.2.4
 
 * filter 方法不需要传递第二个参数

@@ -1,5 +1,5 @@
 /*!
- *  cax v1.2.1
+ *  cax v1.2.5
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -182,8 +182,13 @@ var Group = function (_DisplayObject) {
       var len = arguments.length;
 
       for (var i = 0; i < len; i++) {
-        this.children.push(arguments[i]);
-        arguments[i].parent = this;
+        var c = arguments[i];
+        var parent = c.parent;
+        if (parent) {
+          parent.removeChildAt(parent.children.indexOf(c));
+        }
+        this.children.push(c);
+        c.parent = this;
       }
     }
   }, {
@@ -452,9 +457,33 @@ var DisplayObject = function (_EventDispatcher) {
   }, {
     key: 'filter',
     value: function filter(filterName, filterBox) {
-      this.cache(filterBox.x || 0, filterBox.y || 0, filterBox.width || this.width, filterBox.height || this.height);
+      filterBox = Object.assign({}, {
+        x: 0,
+        y: 0,
+        width: this.width,
+        height: this.height
+      }, filterBox);
+      this.cache(filterBox.x, filterBox.y, filterBox.width, filterBox.height);
       this._readyToFilter = true;
       this._filterName = filterName;
+    }
+  }, {
+    key: 'setTransform',
+    value: function setTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, originX, originY) {
+      this.x = x || 0;
+      this.y = y || 0;
+      this.scaleX = scaleX == null ? 1 : scaleX;
+      this.scaleY = scaleY == null ? 1 : scaleY;
+      this.rotation = rotation || 0;
+      this.skewX = skewX || 0;
+      this.skewY = skewY || 0;
+      this.originX = originX || 0;
+      this.originY = originY || 0;
+    }
+  }, {
+    key: 'setMatrix',
+    value: function setMatrix(a, b, c, d, tx, ty) {
+      _matrix2d2.default.decompose(a, b, c, d, tx, ty, this);
     }
   }, {
     key: 'unfilter',
@@ -871,7 +900,7 @@ var Text = function (_DisplayObject) {
     option = option || {};
     _this.font = option.font || '10px sans-serif';
     _this.color = option.color || 'black';
-
+    _this.textAlign = option.textAlign || 'left';
     _this.baseline = option.baseline || 'top';
     return _this;
   }
@@ -1040,7 +1069,10 @@ var Sprite = function (_DisplayObject) {
 
         rectLen > 4 && (this.originX = this.rect[2] * this.rect[4]);
         rectLen > 5 && (this.originY = this.rect[3] * this.rect[5]);
-        rectLen > 6 && (this.img = this.imgMap[this.option.imgs[this.rect[6]]]);
+        if (rectLen > 6) {
+          var img = this.option.imgs[this.rect[6]];
+          this.img = typeof img === 'string' ? this.imgMap[img] : img;
+        }
 
         if (index === len - 1 && (!this.endTime || Date.now() - this.endTime > this.interval)) {
           this.endTime = Date.now();
@@ -1074,7 +1106,10 @@ var Sprite = function (_DisplayObject) {
       var rectLen = rect.length;
       rectLen > 4 && (this.originX = rect[2] * rect[4]);
       rectLen > 5 && (this.originY = rect[3] * rect[5]);
-      rectLen > 6 && (this.img = this.imgMap[this.option.imgs[rect[6]]]);
+      if (rectLen > 6) {
+        var img = this.option.imgs[rect[6]];
+        this.img = typeof img === 'string' ? this.imgMap[img] : img;
+      }
     }
   }, {
     key: 'gotoAndPlayOnce',
@@ -2071,7 +2106,7 @@ var To = function () {
       this.cmds.push(['to']);
       if (arguments.length !== 0) {
         for (var key in target) {
-          this.set(key, target[key], duration, easing);
+          this.set(key, target[key], duration || 0, easing);
         }
       }
       return this;
@@ -3029,6 +3064,34 @@ var cax = {
   _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
 });
 
+cax.loadImg = function (option) {
+  var img = new Image();
+  img.onload = function () {
+    option.complete(this);
+  };
+  img.src = option.img;
+};
+
+cax.loadImgs = function (option) {
+  var result = [];
+  var loaded = 0;
+  var len = option.imgs.length;
+  option.imgs.forEach(function (src, index) {
+    var img = new Image();
+    img.onload = function (i, img) {
+      return function () {
+        result[i] = img;
+        loaded++;
+        option.progress && option.progress(loaded / len, loaded, i, img, result);
+        if (loaded === len) {
+          option.complete && option.complete(result);
+        }
+      };
+    }(index, img);
+    img.src = src;
+  });
+};
+
 module.exports = cax;
 
 /***/ }),
@@ -3627,6 +3690,9 @@ var Stage = function (_Group) {
   }, {
     key: '_setCursor',
     value: function _setCursor(obj) {
+      if (!this.canvas.style) {
+        return;
+      }
       if (obj.cursor) {
         this.canvas.style.cursor = obj.cursor;
       } else if (obj.parent) {
@@ -3742,6 +3808,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var DEG_TO_RAD = 0.017453292519943295;
+var PI_2 = Math.PI * 2;
 
 var Matrix2D = function () {
   function Matrix2D(a, b, c, d, tx, ty) {
@@ -3852,6 +3919,35 @@ var Matrix2D = function () {
 
   return Matrix2D;
 }();
+
+Matrix2D.decompose = function (a, b, c, d, tx, ty, transform) {
+  var skewX = -Math.atan2(-c, d);
+  var skewY = Math.atan2(b, a);
+
+  var delta = Math.abs(skewX + skewY);
+
+  if (delta < 0.00001 || Math.abs(PI_2 - delta) < 0.00001) {
+    transform.rotation = skewY;
+
+    if (a < 0 && d >= 0) {
+      transform.rotation += transform.rotation <= 0 ? Math.PI : -Math.PI;
+    }
+
+    transform.skewX = transform.skewY = 0;
+  } else {
+    transform.rotation = 0;
+    transform.skewX = skewX;
+    transform.skewY = skewY;
+  }
+
+  // next set scale
+  transform.scaleX = Math.sqrt(a * a + b * b);
+  transform.scaleY = Math.sqrt(c * c + d * d);
+
+  // next set position
+  transform.x = tx;
+  transform.y = ty;
+};
 
 exports.default = Matrix2D;
 
@@ -4178,6 +4274,7 @@ var CanvasRender = function (_Render) {
         this.setComplexProps(ctx, o);
         ctx.font = o.font;
         ctx.fillStyle = o.color;
+        ctx.textAlign = o.textAlign;
         ctx.textBaseline = o.baseline;
         ctx.fillText(o.text, 0, 0);
       }
@@ -4893,6 +4990,7 @@ var HitRender = function (_Render) {
 
           ctx.font = o.font;
           ctx.fillStyle = o.color;
+          ctx.textAlign = o.textAlign;
           ctx.textBaseline = o.baseline;
           ctx.fillText(o.text, 0, 0);
         }
@@ -5053,6 +5151,7 @@ var WxHitRender = function (_Render) {
       } else if (obj instanceof _text2.default) {
         ctx.font = obj.font;
         ctx.fillStyle = obj.color;
+        ctx.textAlign = obj.textAlign;
         ctx.fillText(obj.text, 0, 0);
       }
       ctx.restore();

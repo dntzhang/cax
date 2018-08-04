@@ -10,8 +10,13 @@ class Group extends DisplayObject {
     const len = arguments.length
 
     for (let i = 0; i < len; i++) {
-      this.children.push(arguments[i])
-      arguments[i].parent = this
+      const c = arguments[i]
+      const parent = c.parent
+      if(parent){
+        parent.removeChildAt(parent.children.indexOf(c))
+      }
+      this.children.push(c)
+      c.parent = this
     }
   }
 
