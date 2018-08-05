@@ -3,7 +3,7 @@ import Bitmap from '../../src/render/display/bitmap.js';
 
 
 const stage = new cax.Stage(300, 400, '#canvasCtn')
-
+let filter = false
 
 class Player extends cax.Group {
     constructor() {
@@ -78,7 +78,14 @@ class Player extends cax.Group {
         if(this.sprite.rect){
             const vision = new Bitmap('./hero-m.png')
             vision.rect = this.sprite.rect.slice(0)
-            vision.alpha = 0.4
+            if(filter){
+                vision.filter({
+                    type:'colorize',
+                    color:'#000000',
+                    amount: 1
+                },)
+            }
+            vision.alpha = 0.5
             vision.x = this.x + 5
             vision.y = this.y
             this.visionGroup.add(vision)
@@ -109,4 +116,9 @@ document.querySelector('#toggleBtn').addEventListener('click', () => {
     player.sprite.visible = tag
     tag =!tag
     stage.update()
+})
+
+
+document.querySelector('#toggleFilterBtn').addEventListener('click', () => { 
+    filter = !filter
 })

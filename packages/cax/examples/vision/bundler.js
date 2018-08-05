@@ -78,7 +78,65 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _displayObject = __webpack_require__(2);
+var _graphics = __webpack_require__(4);
+
+var _graphics2 = _interopRequireDefault(_graphics);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Shape = function (_Graphics) {
+  _inherits(Shape, _Graphics);
+
+  function Shape() {
+    _classCallCheck(this, Shape);
+
+    return _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).apply(this, arguments));
+  }
+
+  _createClass(Shape, [{
+    key: 'draw',
+
+    // constructor() {
+    //     super()
+    // }
+
+    value: function draw() {}
+  }, {
+    key: 'render',
+    value: function render(ctx) {
+      this.clear();
+      this.draw();
+      _get(Shape.prototype.__proto__ || Object.getPrototypeOf(Shape.prototype), 'render', this).call(this, ctx);
+    }
+  }]);
+
+  return Shape;
+}(_graphics2.default);
+
+exports.default = Shape;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _displayObject = __webpack_require__(3);
 
 var _displayObject2 = _interopRequireDefault(_displayObject);
 
@@ -108,8 +166,13 @@ var Group = function (_DisplayObject) {
       var len = arguments.length;
 
       for (var i = 0; i < len; i++) {
-        this.children.push(arguments[i]);
-        arguments[i].parent = this;
+        var c = arguments[i];
+        var parent = c.parent;
+        if (parent) {
+          parent.removeChildAt(parent.children.indexOf(c));
+        }
+        this.children.push(c);
+        c.parent = this;
       }
     }
   }, {
@@ -165,7 +228,8 @@ var Group = function (_DisplayObject) {
     key: 'destroy',
     value: function destroy() {
       this.empty();
-      _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
+      // Stage does not have a parent
+      this.parent && _get(Group.prototype.__proto__ || Object.getPrototypeOf(Group.prototype), 'destroy', this).call(this);
     }
   }]);
 
@@ -173,64 +237,6 @@ var Group = function (_DisplayObject) {
 }(_displayObject2.default);
 
 exports.default = Group;
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _graphics = __webpack_require__(3);
-
-var _graphics2 = _interopRequireDefault(_graphics);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Shape = function (_Graphics) {
-  _inherits(Shape, _Graphics);
-
-  function Shape() {
-    _classCallCheck(this, Shape);
-
-    return _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).apply(this, arguments));
-  }
-
-  _createClass(Shape, [{
-    key: 'draw',
-
-    // constructor() {
-    //     super()
-    // }
-
-    value: function draw() {}
-  }, {
-    key: 'render',
-    value: function render(ctx) {
-      this.clear();
-      this.draw();
-      _get(Shape.prototype.__proto__ || Object.getPrototypeOf(Shape.prototype), 'render', this).call(this, ctx);
-    }
-  }]);
-
-  return Shape;
-}(_graphics2.default);
-
-exports.default = Shape;
 
 /***/ }),
 /* 2 */
@@ -245,15 +251,131 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _matrix2d = __webpack_require__(21);
+var _displayObject = __webpack_require__(3);
+
+var _displayObject2 = _interopRequireDefault(_displayObject);
+
+var _util = __webpack_require__(9);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Bitmap = function (_DisplayObject) {
+  _inherits(Bitmap, _DisplayObject);
+
+  function Bitmap(img, onLoad) {
+    _classCallCheck(this, Bitmap);
+
+    var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
+
+    if (typeof img === 'string') {
+      if (Bitmap.cache[img]) {
+        if (_util2.default.isWeapp) {
+          _this.img = Bitmap.cache[img].img;
+          _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+          _this.width = _this.rect[2];
+          _this.height = _this.rect[3];
+        } else {
+          _this.img = Bitmap.cache[img];
+          _this.rect = [0, 0, _this.img.width, _this.img.height];
+          _this.width = _this.img.width;
+          _this.height = _this.img.height;
+        }
+        onLoad && onLoad.call(_this);
+      } else if (_util2.default.isWeapp) {
+        _util2.default.getImageInWx(img, function (result) {
+          _this.img = result.img;
+          if (!_this.rect) {
+            _this.rect = [0, 0, result.width, result.height];
+          }
+          _this.width = result.width;
+          _this.height = result.height;
+          onLoad && onLoad.call(_this);
+          Bitmap.cache[img] = result;
+        });
+      } else {
+        _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+        _this.visible = false;
+        _this.img.onload = function () {
+          _this.visible = true;
+          if (!_this.rect) {
+            _this.rect = [0, 0, _this.img.width, _this.img.height];
+          }
+          _this.width = _this.img.width;
+          _this.height = _this.img.height;
+          onLoad && onLoad.call(_this);
+          Bitmap.cache[img] = _this.img;
+        };
+        _this.img.src = img;
+      }
+    } else {
+      _this.img = img;
+      _this.rect = [0, 0, img.width, img.height];
+      _this.width = img.width;
+      _this.height = img.height;
+      Bitmap.cache[img.src] = img;
+    }
+    return _this;
+  }
+
+  _createClass(Bitmap, [{
+    key: 'clone',
+    value: function clone() {
+      // 复制完img宽度0？？所以直接传字符串
+      var bitmap = new Bitmap(typeof this.img === 'string' ? this.img : this.img.src);
+      bitmap.x = this.x;
+      bitmap.y = this.y;
+      bitmap.scaleX = this.scaleX;
+      bitmap.scaleY = this.scaleY;
+      bitmap.rotation = this.rotation;
+      bitmap.skewX = this.skewX;
+      bitmap.skewY = this.skewY;
+      bitmap.originX = this.originX;
+      bitmap.originY = this.originY;
+      bitmap.width = this.width;
+      bitmap.height = this.height;
+      bitmap.cursor = this.cursor;
+
+      return bitmap;
+    }
+  }]);
+
+  return Bitmap;
+}(_displayObject2.default);
+
+Bitmap.cache = {};
+
+exports.default = Bitmap;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _matrix2d = __webpack_require__(22);
 
 var _matrix2d2 = _interopRequireDefault(_matrix2d);
 
-var _eventDispatcher = __webpack_require__(22);
+var _eventDispatcher = __webpack_require__(23);
 
 var _eventDispatcher2 = _interopRequireDefault(_eventDispatcher);
 
-var _uid = __webpack_require__(23);
+var _uid = __webpack_require__(24);
 
 var _uid2 = _interopRequireDefault(_uid);
 
@@ -283,6 +405,11 @@ var DisplayObject = function (_EventDispatcher) {
     _this.clipGraphics = null;
     _this.clipRuleNonzero = true;
     _this.fixed = false;
+    _this.shadow = null;
+    _this.compositeOperation = null;
+    _this.absClipGraphics = null;
+    _this.absClipRuleNonzero = true;
+    _this.cacheUpdating = false;
     return _this;
   }
 
@@ -386,17 +513,27 @@ var DisplayObject = function (_EventDispatcher) {
       this.clipGraphics = null;
     }
   }, {
+    key: 'absClip',
+    value: function absClip(graphics, notClipRuleNonzero) {
+      this.absClipGraphics = graphics;
+      this.absClipRuleNonzero = !notClipRuleNonzero;
+    }
+  }, {
+    key: 'unAbsClip',
+    value: function unAbsClip() {
+      this.absClipGraphics = null;
+    }
+  }, {
     key: 'cache',
-    value: function cache(x, y, width, height, scale, debug) {
-
+    value: function cache(x, y, width, height, scale, cacheUpdating) {
       this._cacheData = {
         x: x || 0,
         y: y || 0,
         width: width || this.width,
         height: height || this.height,
-        scale: scale || 1,
-        _cached: false
+        scale: scale || 1
       };
+      this.cacheUpdating = cacheUpdating;
       if (!this.cacheCanvas) {
         if (typeof wx !== 'undefined' && wx.createCanvas) {
           this.cacheCanvas = wx.createCanvas();
@@ -407,12 +544,51 @@ var DisplayObject = function (_EventDispatcher) {
       }
       this.cacheCanvas.width = this._cacheData.width * this._cacheData.scale;
       this.cacheCanvas.height = this._cacheData.height * this._cacheData.scale;
+
+      // debug cache canvas
+      // this.cacheCtx.fillRect(0,0,1000,1000)
       this._readyToCache = true;
     }
   }, {
     key: 'uncache',
     value: function uncache() {
       this.cacheCanvas = null;
+    }
+  }, {
+    key: 'filter',
+    value: function filter(filterName, filterBox) {
+      filterBox = Object.assign({}, {
+        x: 0,
+        y: 0,
+        width: this.width,
+        height: this.height
+      }, filterBox);
+      this.cache(filterBox.x, filterBox.y, filterBox.width, filterBox.height);
+      this._readyToFilter = true;
+      this._filterName = filterName;
+    }
+  }, {
+    key: 'setTransform',
+    value: function setTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, originX, originY) {
+      this.x = x || 0;
+      this.y = y || 0;
+      this.scaleX = scaleX == null ? 1 : scaleX;
+      this.scaleY = scaleY == null ? 1 : scaleY;
+      this.rotation = rotation || 0;
+      this.skewX = skewX || 0;
+      this.skewY = skewY || 0;
+      this.originX = originX || 0;
+      this.originY = originY || 0;
+    }
+  }, {
+    key: 'setMatrix',
+    value: function setMatrix(a, b, c, d, tx, ty) {
+      _matrix2d2.default.decompose(a, b, c, d, tx, ty, this);
+    }
+  }, {
+    key: 'unfilter',
+    value: function unfilter() {
+      this.uncache();
     }
   }]);
 
@@ -422,7 +598,7 @@ var DisplayObject = function (_EventDispatcher) {
 exports.default = DisplayObject;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -434,7 +610,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _displayObject = __webpack_require__(2);
+var _displayObject = __webpack_require__(3);
 
 var _displayObject2 = _interopRequireDefault(_displayObject);
 
@@ -660,121 +836,6 @@ var Graphics = function (_DisplayObject) {
 exports.default = Graphics;
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _displayObject = __webpack_require__(2);
-
-var _displayObject2 = _interopRequireDefault(_displayObject);
-
-var _util = __webpack_require__(9);
-
-var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Bitmap = function (_DisplayObject) {
-  _inherits(Bitmap, _DisplayObject);
-
-  function Bitmap(img, onLoad) {
-    _classCallCheck(this, Bitmap);
-
-    var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
-
-    if (typeof img === 'string') {
-      if (Bitmap.cache[img]) {
-        if (_util2.default.isWeapp) {
-          _this.img = Bitmap.cache[img].img;
-          _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
-          _this.width = _this.rect[2];
-          _this.height = _this.rect[3];
-        } else {
-          _this.img = Bitmap.cache[img];
-          _this.rect = [0, 0, _this.img.width, _this.img.height];
-          _this.width = _this.img.width;
-          _this.height = _this.img.height;
-        }
-        onLoad && onLoad.call(_this);
-      } else if (_util2.default.isWeapp) {
-        _util2.default.getImageInWx(img, function (result) {
-          _this.img = result.img;
-          if (!_this.rect) {
-            _this.rect = [0, 0, result.width, result.height];
-          }
-          _this.width = result.width;
-          _this.height = result.height;
-          onLoad && onLoad.call(_this);
-          Bitmap.cache[img] = result;
-        });
-      } else {
-        _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-        _this.visible = false;
-        _this.img.onload = function () {
-          _this.visible = true;
-          if (!_this.rect) {
-            _this.rect = [0, 0, _this.img.width, _this.img.height];
-          }
-          _this.width = _this.img.width;
-          _this.height = _this.img.height;
-          onLoad && onLoad.call(_this);
-          Bitmap.cache[img] = _this.img;
-        };
-        _this.img.src = img;
-      }
-    } else {
-      _this.img = img;
-      _this.rect = [0, 0, img.width, img.height];
-      _this.width = img.width;
-      _this.height = img.height;
-      Bitmap.cache[img.src] = img;
-    }
-    return _this;
-  }
-
-  _createClass(Bitmap, [{
-    key: 'clone',
-    value: function clone() {
-      var bitmap = new Bitmap(this.img);
-      bitmap.x = this.x;
-      bitmap.y = this.y;
-
-      bitmap.scaleX = this.scaleX;
-      bitmap.scaleY = this.scaleY;
-      bitmap.rotation = this.rotation;
-      bitmap.skewX = this.skewX;
-      bitmap.skewY = this.skewY;
-      bitmap.originX = this.originX;
-      bitmap.originY = this.originY;
-      bitmap.width = this.width;
-      bitmap.height = this.height;
-
-      return bitmap;
-    }
-  }]);
-
-  return Bitmap;
-}(_displayObject2.default);
-
-Bitmap.cache = {};
-
-exports.default = Bitmap;
-
-/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -787,7 +848,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _displayObject = __webpack_require__(2);
+var _displayObject = __webpack_require__(3);
 
 var _displayObject2 = _interopRequireDefault(_displayObject);
 
@@ -823,7 +884,7 @@ var Text = function (_DisplayObject) {
     option = option || {};
     _this.font = option.font || '10px sans-serif';
     _this.color = option.color || 'black';
-
+    _this.textAlign = option.textAlign || 'left';
     _this.baseline = option.baseline || 'top';
     return _this;
   }
@@ -862,13 +923,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _displayObject = __webpack_require__(2);
+var _displayObject = __webpack_require__(3);
 
 var _displayObject2 = _interopRequireDefault(_displayObject);
 
 var _util = __webpack_require__(9);
 
 var _util2 = _interopRequireDefault(_util);
+
+var _bitmap = __webpack_require__(2);
+
+var _bitmap2 = _interopRequireDefault(_bitmap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -889,7 +954,7 @@ var Sprite = function (_DisplayObject) {
     _this.option = option;
     var len = _this.option.imgs.length;
     var count = 0;
-
+    var firstImg = _this.option.imgs[0];
     _this.imgMap = {};
 
     if (_util2.default.isWeapp) {
@@ -898,30 +963,43 @@ var Sprite = function (_DisplayObject) {
           _this.imgMap[img] = result.img;
           count++;
           if (count === len) {
-            _this.img = _this.imgMap[_this.option.imgs[0]];
+            _this.img = _this.imgMap[firstImg];
             _this.rect = [0, 0, 0, 0];
           }
         });
       });
     } else {
-      if (typeof _this.option.imgs[0] === 'string') {
+      if (typeof firstImg === 'string') {
         var _len = _this.option.imgs.length;
         var loadedCount = 0;
         _this.option.imgs.forEach(function (src) {
-          var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-          img.onload = function () {
-            _this.imgMap[src] = img;
+          if (_bitmap2.default.cache[src]) {
+            _this.imgMap[src] = _bitmap2.default.cache[src];
             loadedCount++;
             if (loadedCount === _len) {
-              _this.img = _this.imgMap[_this.option.imgs[0]];
+              _this.img = _this.imgMap[firstImg];
               _this.rect = [0, 0, 0, 0];
             }
-          };
-          img.src = src;
+          } else {
+            var img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+            img.onload = function () {
+              _this.imgMap[src] = img;
+              loadedCount++;
+              if (loadedCount === _len) {
+                _this.img = _this.imgMap[firstImg];
+                _this.rect = [0, 0, 0, 0];
+              }
+              _bitmap2.default.cache[src] = img;
+            };
+            img.src = src;
+          }
         });
+      } else if (firstImg instanceof _bitmap2.default) {
+        _this.rect = [0, 0, 0, 0];
+        _this.img = firstImg.img;
       } else {
         _this.rect = [0, 0, 0, 0];
-        _this.img = _this.option.imgs[0];
+        _this.img = firstImg;
       }
     }
 
@@ -975,7 +1053,10 @@ var Sprite = function (_DisplayObject) {
 
         rectLen > 4 && (this.originX = this.rect[2] * this.rect[4]);
         rectLen > 5 && (this.originY = this.rect[3] * this.rect[5]);
-        rectLen > 6 && (this.img = this.imgMap[this.option.imgs[this.rect[6]]]);
+        if (rectLen > 6) {
+          var img = this.option.imgs[this.rect[6]];
+          this.img = typeof img === 'string' ? this.imgMap[img] : img;
+        }
 
         if (index === len - 1 && (!this.endTime || Date.now() - this.endTime > this.interval)) {
           this.endTime = Date.now();
@@ -1009,7 +1090,10 @@ var Sprite = function (_DisplayObject) {
       var rectLen = rect.length;
       rectLen > 4 && (this.originX = rect[2] * rect[4]);
       rectLen > 5 && (this.originY = rect[3] * rect[5]);
-      rectLen > 6 && (this.img = this.imgMap[this.option.imgs[rect[6]]]);
+      if (rectLen > 6) {
+        var img = this.option.imgs[rect[6]];
+        this.img = typeof img === 'string' ? this.imgMap[img] : img;
+      }
     }
   }, {
     key: 'gotoAndPlayOnce',
@@ -1117,7 +1201,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.getImageInWx = getImageInWx;
 function getImageInWx(img, callback) {
-  if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1) {
+  if (img.indexOf('https://') === -1 && img.indexOf('http://') === -1 || img.indexOf('http://tmp/') === 0) {
     wx.getImageInfo({
       src: img,
       success: function success(info) {
@@ -1173,7 +1257,7 @@ exports.default = {
   isWeapp: typeof wx !== 'undefined' && !wx.createCanvas,
   isWegame: typeof wx !== 'undefined' && wx.createCanvas
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
 
 /***/ }),
 /* 10 */
@@ -2006,7 +2090,7 @@ var To = function () {
       this.cmds.push(['to']);
       if (arguments.length !== 0) {
         for (var key in target) {
-          this.set(key, target[key], duration, easing);
+          this.set(key, target[key], duration || 0, easing);
         }
       }
       return this;
@@ -2410,11 +2494,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _canvasRender = __webpack_require__(24);
+var _canvasRender = __webpack_require__(25);
 
 var _canvasRender2 = _interopRequireDefault(_canvasRender);
 
-var _group = __webpack_require__(0);
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -2442,7 +2526,6 @@ var Renderer = function () {
   _createClass(Renderer, [{
     key: 'update',
     value: function update(stage) {
-
       this.renderer.clear(this.ctx, this.width, this.height);
       this.renderer.render(this.ctx, stage);
       this.ctx.draw && this.ctx.draw();
@@ -2555,7 +2638,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(0);
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -2563,7 +2646,7 @@ var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _wxHitRender = __webpack_require__(27);
+var _wxHitRender = __webpack_require__(39);
 
 var _wxHitRender2 = _interopRequireDefault(_wxHitRender);
 
@@ -2742,7 +2825,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -2829,7 +2912,7 @@ var _index = __webpack_require__(17);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _bitmap = __webpack_require__(4);
+var _bitmap = __webpack_require__(2);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -2842,6 +2925,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var stage = new _index2.default.Stage(300, 400, '#canvasCtn');
+var filter = false;
 
 var Player = function (_cax$Group) {
     _inherits(Player, _cax$Group);
@@ -2904,7 +2988,14 @@ var Player = function (_cax$Group) {
             if (this.sprite.rect) {
                 var vision = new _bitmap2.default('./hero-m.png');
                 vision.rect = this.sprite.rect.slice(0);
-                vision.alpha = 0.4;
+                if (filter) {
+                    vision.filter({
+                        type: 'colorize',
+                        color: '#000000',
+                        amount: 1
+                    });
+                }
+                vision.alpha = 0.5;
                 vision.x = this.x + 5;
                 vision.y = this.y;
                 this.visionGroup.add(vision);
@@ -2938,6 +3029,10 @@ document.querySelector('#toggleBtn').addEventListener('click', function () {
     stage.update();
 });
 
+document.querySelector('#toggleFilterBtn').addEventListener('click', function () {
+    filter = !filter;
+});
+
 /***/ }),
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -2963,11 +3058,11 @@ var _weStage = __webpack_require__(14);
 
 var _weStage2 = _interopRequireDefault(_weStage);
 
-var _graphics = __webpack_require__(3);
+var _graphics = __webpack_require__(4);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
-var _bitmap = __webpack_require__(4);
+var _bitmap = __webpack_require__(2);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -2975,7 +3070,7 @@ var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
 
-var _group = __webpack_require__(0);
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -2983,35 +3078,43 @@ var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
+var _shape = __webpack_require__(0);
+
+var _shape2 = _interopRequireDefault(_shape);
+
 var _roundedRect = __webpack_require__(15);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
-var _arrowPath = __webpack_require__(28);
+var _arrowPath = __webpack_require__(40);
 
 var _arrowPath2 = _interopRequireDefault(_arrowPath);
 
-var _ellipse = __webpack_require__(29);
+var _ellipse = __webpack_require__(41);
 
 var _ellipse2 = _interopRequireDefault(_ellipse);
 
-var _button = __webpack_require__(30);
+var _path = __webpack_require__(42);
+
+var _path2 = _interopRequireDefault(_path);
+
+var _button = __webpack_require__(45);
 
 var _button2 = _interopRequireDefault(_button);
 
-var _rect = __webpack_require__(31);
+var _rect = __webpack_require__(46);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _circle = __webpack_require__(32);
+var _circle = __webpack_require__(47);
 
 var _circle2 = _interopRequireDefault(_circle);
 
-var _polygon = __webpack_require__(33);
+var _polygon = __webpack_require__(48);
 
 var _polygon2 = _interopRequireDefault(_polygon);
 
-var _equilateralPolygon = __webpack_require__(34);
+var _equilateralPolygon = __webpack_require__(49);
 
 var _equilateralPolygon2 = _interopRequireDefault(_equilateralPolygon);
 
@@ -3040,8 +3143,11 @@ var cax = {
   Text: _text2.default,
   Group: _group2.default,
   Sprite: _sprite2.default,
+  Shape: _shape2.default,
+
   ArrowPath: _arrowPath2.default,
   Ellipse: _ellipse2.default,
+  Path: _path2.default,
 
   Button: _button2.default,
 
@@ -3053,6 +3159,12 @@ var cax = {
 
   setInterval: _rafInterval.setRafInterval,
   clearInterval: _rafInterval.clearRafInterval,
+  tick: function tick(fn) {
+    return (0, _rafInterval.setRafInterval)(fn, 16);
+  },
+  untick: function untick(tickId) {
+    (0, _rafInterval.clearRafInterval)(tickId);
+  },
 
   caxCanvasId: 0,
   TWEEN: _tween2.default,
@@ -3069,6 +3181,34 @@ var cax = {
   _to2.default.easing[itemLower + 'Out'] = _tween2.default.Easing[item].Out;
   _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
 });
+
+cax.loadImg = function (option) {
+  var img = new Image();
+  img.onload = function () {
+    option.complete(this);
+  };
+  img.src = option.img;
+};
+
+cax.loadImgs = function (option) {
+  var result = [];
+  var loaded = 0;
+  var len = option.imgs.length;
+  option.imgs.forEach(function (src, index) {
+    var img = new Image();
+    img.onload = function (i, img) {
+      return function () {
+        result[i] = img;
+        loaded++;
+        option.progress && option.progress(loaded / len, loaded, i, img, result);
+        if (loaded === len) {
+          option.complete && option.complete(result);
+        }
+      };
+    }(index, img);
+    img.src = src;
+  });
+};
 
 module.exports = cax;
 
@@ -3395,7 +3535,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(0);
+var _wegameCanvas = __webpack_require__(21);
+
+var _wegameCanvas2 = _interopRequireDefault(_wegameCanvas);
+
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -3403,7 +3547,7 @@ var _renderer = __webpack_require__(13);
 
 var _renderer2 = _interopRequireDefault(_renderer);
 
-var _hitRender = __webpack_require__(26);
+var _hitRender = __webpack_require__(38);
 
 var _hitRender2 = _interopRequireDefault(_hitRender);
 
@@ -3435,7 +3579,7 @@ var Stage = function (_Group) {
     _this.isWegame = typeof wx !== 'undefined' && wx.createCanvas;
     if (len === 0) {
       // wegame
-      _this.canvas = wx.createCanvas();
+      _this.canvas = _wegameCanvas2.default;
       _this.disableMoveDetection = true;
     } else if (len === 4) {
       var _ret;
@@ -3503,9 +3647,13 @@ var Stage = function (_Group) {
       });
 
       _this.canvas.addEventListener('dblclick', function (evt) {
-        return _this._handlDblClick(evt);
+        return _this._handleDblClick(evt);
       });
       // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
+
+      document.addEventListener('contextmenu', function (evt) {
+        return _this._handleContextmenu(evt);
+      });
     }
 
     _this.borderTopWidth = 0;
@@ -3535,8 +3683,13 @@ var Stage = function (_Group) {
   }
 
   _createClass(Stage, [{
-    key: '_handlDblClick',
-    value: function _handlDblClick(evt) {
+    key: '_handleContextmenu',
+    value: function _handleContextmenu(evt) {
+      this._getObjectUnderPoint(evt);
+    }
+  }, {
+    key: '_handleDblClick',
+    value: function _handleDblClick(evt) {
       this._getObjectUnderPoint(evt);
     }
   }, {
@@ -3549,6 +3702,9 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseDown',
     value: function _handleMouseDown(evt) {
+      if (this.isWegame) {
+        evt.type = 'touchstart';
+      }
       this.offset = this._getOffset(this.canvas);
       var obj = this._getObjectUnderPoint(evt);
       this.willDragObject = obj;
@@ -3566,6 +3722,9 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseUp',
     value: function _handleMouseUp(evt) {
+      if (this.isWegame) {
+        evt.type = 'touchend';
+      }
       var obj = this._getObjectUnderPoint(evt);
       this._mouseUpX = evt.stageX;
       this._mouseUpY = evt.stageY;
@@ -3598,6 +3757,9 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseMove',
     value: function _handleMouseMove(evt) {
+      if (this.isWegame) {
+        evt.type = 'touchmove';
+      }
       if (this.disableMoveDetection) return;
       var obj = this._getObjectUnderPoint(evt);
       var mockEvt = new _event2.default();
@@ -3649,10 +3811,15 @@ var Stage = function (_Group) {
   }, {
     key: '_setCursor',
     value: function _setCursor(obj) {
+      if (!this.canvas.style) {
+        return;
+      }
       if (obj.cursor) {
         this.canvas.style.cursor = obj.cursor;
       } else if (obj.parent) {
         this._setCursor(obj.parent);
+      } else {
+        this._setCursor({ cursor: 'default' });
       }
     }
   }, {
@@ -3739,12 +3906,30 @@ exports.default = Stage;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var wegameCanvas = null;
+if (typeof wx !== 'undefined' && wx.createCanvas) {
+  wegameCanvas = wx.createCanvas();
+}
+
+exports.default = wegameCanvas;
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var DEG_TO_RAD = 0.017453292519943295;
+var PI_2 = Math.PI * 2;
 
 var Matrix2D = function () {
   function Matrix2D(a, b, c, d, tx, ty) {
@@ -3856,10 +4041,39 @@ var Matrix2D = function () {
   return Matrix2D;
 }();
 
+Matrix2D.decompose = function (a, b, c, d, tx, ty, transform) {
+  var skewX = -Math.atan2(-c, d);
+  var skewY = Math.atan2(b, a);
+
+  var delta = Math.abs(skewX + skewY);
+
+  if (delta < 0.00001 || Math.abs(PI_2 - delta) < 0.00001) {
+    transform.rotation = skewY;
+
+    if (a < 0 && d >= 0) {
+      transform.rotation += transform.rotation <= 0 ? Math.PI : -Math.PI;
+    }
+
+    transform.skewX = transform.skewY = 0;
+  } else {
+    transform.rotation = 0;
+    transform.skewX = skewX;
+    transform.skewY = skewY;
+  }
+
+  // next set scale
+  transform.scaleX = Math.sqrt(a * a + b * b);
+  transform.scaleY = Math.sqrt(c * c + d * d);
+
+  // next set position
+  transform.x = tx;
+  transform.y = ty;
+};
+
 exports.default = Matrix2D;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3987,7 +4201,7 @@ var EventDispatcher = function () {
 exports.default = EventDispatcher;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4007,7 +4221,7 @@ UID.get = function () {
 exports.default = UID;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4019,11 +4233,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(0);
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _graphics = __webpack_require__(3);
+var _graphics = __webpack_require__(4);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -4035,13 +4249,15 @@ var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-var _bitmap = __webpack_require__(4);
+var _bitmap = __webpack_require__(2);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
 var _text = __webpack_require__(5);
 
 var _text2 = _interopRequireDefault(_text);
+
+var _index = __webpack_require__(27);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4078,7 +4294,7 @@ var CanvasRender = function (_Render) {
     }
   }, {
     key: 'render',
-    value: function render(ctx, o, cacheRender) {
+    value: function render(ctx, o, cacheData) {
       var mtx = o._matrix;
       if (o.children) {
         var list = o.children.slice(0),
@@ -4089,25 +4305,29 @@ var CanvasRender = function (_Render) {
           mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
           // if (!this.checkBoundEvent(child)) continue
           ctx.save();
-          this._render(ctx, child, cacheRender ? null : mtx, cacheRender);
+          this._render(ctx, child, cacheData ? null : mtx, cacheData, true);
           ctx.restore();
         }
       } else {
-        this._render(ctx, o, mtx, cacheRender);
+        this._render(ctx, o, cacheData ? null : mtx, cacheData);
       }
     }
   }, {
     key: '_render',
-    value: function _render(ctx, o, mtx, cacheRender) {
+    value: function _render(ctx, o, mtx, cacheData, inGroup) {
       if (!o.isVisible()) return;
       if (mtx && !o.fixed) {
         o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+      } else if (cacheData && !o.fixed) {
+        o._matrix.initialize(cacheData.scale, 0, 0, cacheData.scale, cacheData.x * -1, cacheData.y * -1);
       } else {
         o._matrix.initialize(1, 0, 0, 1, 0, 0);
       }
       mtx = o._matrix;
 
-      if (!cacheRender) {
+      // group 进行 cache canvas 内部的子元素需要进行appendTransform
+      // cache canvas 渲染不叠加自身的 transform，因为进入主渲染会进行appendTransform
+      if (inGroup || !cacheData) {
         mtx.appendTransform(o.x, o.y, o.scaleX, o.scaleY, o.rotation, o.skewX, o.skewY, o.originX, o.originY);
       }
       var ocg = o.clipGraphics;
@@ -4120,44 +4340,78 @@ var CanvasRender = function (_Render) {
         ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
       }
 
-      o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
-      o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
-      if (!cacheRender) {
-        ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+      var oacg = o.absClipGraphics;
+      if (oacg) {
+        ctx.beginPath();
+        oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+        oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+        ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+        oacg.render(ctx);
+        ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
       }
-      if (o._readyToCache) {
+
+      // if(!cacheData){
+      ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
+      // }
+      if (o._readyToCache || o.cacheUpdating) {
+        this.setComplexProps(ctx, o);
         o._readyToCache = false;
-        o.cacheCtx.setTransform(o._cacheData.scale, 0, 0, o._cacheData.scale, o._cacheData.x, o._cacheData.y);
-        this.render(o.cacheCtx, o, true);
-        //debug cacheCanvas
-        //document.body.appendChild(o.cacheCanvas)
-        ctx.drawImage(o.cacheCanvas, 0, 0);
-      } else if (o.cacheCanvas && !cacheRender) {
-        ctx.drawImage(o.cacheCanvas, 0, 0);
+        o.cacheCtx.clearRect(0, 0, o.cacheCanvas.width, o.cacheCanvas.height);
+        o.cacheCtx.save();
+        this.render(o.cacheCtx, o, o._cacheData);
+        o.cacheCtx.restore();
+        // debug cacheCanvas
+        // document.body.appendChild(o.cacheCanvas)
+        if (o._readyToFilter) {
+          o.cacheCtx.putImageData((0, _index.filter)(o.cacheCtx.getImageData(0, 0, o.cacheCanvas.width, o.cacheCanvas.height), o._filterName), 0, 0);
+          this._readyToFilter = false;
+        }
+
+        ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
+      } else if (o.cacheCanvas && !cacheData) {
+        this.setComplexProps(ctx, o);
+        ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
       } else if (o instanceof _group2.default) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = 0; i < l; i++) {
-          //如果注释掉之后 group 内比如 fillStyle Graphics 和 Text存在项目污染，所有都要给默认值？
           ctx.save();
-          var target = this._render(ctx, list[i], mtx);
-          if (target) return target;
+          this._render(ctx, list[i], mtx);
           ctx.restore();
         }
       } else if (o instanceof _graphics2.default) {
+        this.setComplexProps(ctx, o);
         o.render(ctx);
       } else if (o instanceof _sprite2.default && o.rect) {
+        this.setComplexProps(ctx, o);
         o.updateFrame();
         var rect = o.rect;
         ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
       } else if (o instanceof _bitmap2.default && o.rect) {
+        this.setComplexProps(ctx, o);
         var bRect = o.rect;
         ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
       } else if (o instanceof _text2.default) {
+        this.setComplexProps(ctx, o);
         ctx.font = o.font;
         ctx.fillStyle = o.color;
+        ctx.textAlign = o.textAlign;
         ctx.textBaseline = o.baseline;
         ctx.fillText(o.text, 0, 0);
+      }
+    }
+  }, {
+    key: 'setComplexProps',
+    value: function setComplexProps(ctx, o) {
+      o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(o);
+      o.complexAlpha = ctx.globalAlpha = this.getAlpha(o, 1);
+
+      o.complexShadow = this.getShadow(o);
+      if (o.complexShadow) {
+        ctx.shadowColor = o.complexShadow.color;
+        ctx.shadowOffsetX = o.complexShadow.offsetX;
+        ctx.shadowOffsetY = o.complexShadow.offsetY;
+        ctx.shadowBlur = o.complexShadow.blur;
       }
     }
   }, {
@@ -4175,6 +4429,12 @@ var CanvasRender = function (_Render) {
       }
       return result;
     }
+  }, {
+    key: 'getShadow',
+    value: function getShadow(o) {
+      if (o.shadow) return o.shadow;
+      if (o.parent) return this.getShadow(o.parent);
+    }
   }]);
 
   return CanvasRender;
@@ -4183,7 +4443,7 @@ var CanvasRender = function (_Render) {
 exports.default = CanvasRender;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4213,7 +4473,434 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 26 */
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.filter = filter;
+
+var _invert = __webpack_require__(28);
+
+var _blur = __webpack_require__(29);
+
+var _brightness = __webpack_require__(31);
+
+var _contrast = __webpack_require__(32);
+
+var _grayscale = __webpack_require__(33);
+
+var _sepia = __webpack_require__(34);
+
+var _threshold = __webpack_require__(35);
+
+var _gamma = __webpack_require__(36);
+
+var _colorize = __webpack_require__(37);
+
+function filter(pixels, name) {
+  if (typeof name === 'string') {
+    var type = name.split('(')[0];
+    var num = getNumber(name);
+    switch (type) {
+      case 'invert':
+        return (0, _invert.invert)(pixels, num);
+      case 'brightness':
+        return (0, _brightness.brightness)(pixels, -255 + num * 255);
+      case 'blur':
+        return (0, _blur.blur)(pixels, num);
+      case 'contrast':
+        return (0, _contrast.contrast)(pixels, -255 + num * 255);
+      case 'grayscale':
+        return (0, _grayscale.grayscale)(pixels, num);
+      case 'sepia':
+        return (0, _sepia.sepia)(pixels, num);
+      case 'threshold':
+        return (0, _threshold.threshold)(pixels, num);
+      case 'gamma':
+        return (0, _gamma.gamma)(pixels, num);
+    }
+  } else {
+    switch (name.type) {
+      case 'colorize':
+        return (0, _colorize.colorize)(pixels, name);
+    }
+  }
+}
+
+function getNumber(str) {
+  str = str.replace(/(invert)|(brightness)|(blur)|(contrast)|(grayscale)|(sepia)|(threshold)|(gamma)?\(/g, '').replace(')', '');
+  if (str.indexOf('%') !== -1) {
+    return Number(str.replace('%', '')) / 100;
+  } else if (str.indexOf('px') !== -1) {
+    return Number(str.replace('px', ''));
+  } else {
+    return Number(str);
+  }
+}
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.invert = invert;
+function invert(pixels, ratio) {
+  var d = pixels.data;
+  ratio = ratio === undefined ? 1 : ratio;
+  for (var i = 0; i < d.length; i += 4) {
+    d[i] = d[i] + ratio * (255 - 2 * d[i]);
+    d[i + 1] = d[i + 1] + ratio * (255 - 2 * d[i + 1]);
+    d[i + 2] = d[i + 2] + ratio * (255 - 2 * d[i + 2]);
+  }
+  return pixels;
+}
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.blur = blur;
+
+var _createImageData = __webpack_require__(30);
+
+function blur(pixels, diameter) {
+  diameter = Math.abs(diameter);
+  if (diameter <= 1) return pixels;
+  var radius = diameter / 2;
+  var len = Math.ceil(diameter) + (1 - Math.ceil(diameter) % 2);
+  var weights = new Float32Array(len);
+  var rho = (radius + 0.5) / 3;
+  var rhoSq = rho * rho;
+  var gaussianFactor = 1 / Math.sqrt(2 * Math.PI * rhoSq);
+  var rhoFactor = -1 / (2 * rho * rho);
+  var wsum = 0;
+  var middle = Math.floor(len / 2);
+  for (var i = 0; i < len; i++) {
+    var x = i - middle;
+    var gx = gaussianFactor * Math.exp(x * x * rhoFactor);
+    weights[i] = gx;
+    wsum += gx;
+  }
+  for (var i = 0; i < weights.length; i++) {
+    weights[i] /= wsum;
+  }
+  return separableConvolve(pixels, weights, weights, false);
+}
+
+function separableConvolve(pixels, horizWeights, vertWeights, opaque) {
+  return horizontalConvolve(verticalConvolve(pixels, vertWeights, opaque), horizWeights, opaque);
+}
+
+function horizontalConvolve(pixels, weightsVector, opaque) {
+  var side = weightsVector.length;
+  var halfSide = Math.floor(side / 2);
+
+  var src = pixels.data;
+  var sw = pixels.width;
+  var sh = pixels.height;
+
+  var w = sw;
+  var h = sh;
+  var output = (0, _createImageData.createImageData)(w, h);
+  var dst = output.data;
+
+  var alphaFac = opaque ? 1 : 0;
+
+  for (var y = 0; y < h; y++) {
+    for (var x = 0; x < w; x++) {
+      var sy = y;
+      var sx = x;
+      var dstOff = (y * w + x) * 4;
+      var r = 0,
+          g = 0,
+          b = 0,
+          a = 0;
+      for (var cx = 0; cx < side; cx++) {
+        var scy = sy;
+        var scx = Math.min(sw - 1, Math.max(0, sx + cx - halfSide));
+        var srcOff = (scy * sw + scx) * 4;
+        var wt = weightsVector[cx];
+        r += src[srcOff] * wt;
+        g += src[srcOff + 1] * wt;
+        b += src[srcOff + 2] * wt;
+        a += src[srcOff + 3] * wt;
+      }
+      dst[dstOff] = r;
+      dst[dstOff + 1] = g;
+      dst[dstOff + 2] = b;
+      dst[dstOff + 3] = a + alphaFac * (255 - a);
+    }
+  }
+  return output;
+}
+
+function verticalConvolve(pixels, weightsVector, opaque) {
+  var side = weightsVector.length;
+  var halfSide = Math.floor(side / 2);
+
+  var src = pixels.data;
+  var sw = pixels.width;
+  var sh = pixels.height;
+
+  var w = sw;
+  var h = sh;
+  var output = (0, _createImageData.createImageData)(w, h);
+  var dst = output.data;
+
+  var alphaFac = opaque ? 1 : 0;
+
+  for (var y = 0; y < h; y++) {
+    for (var x = 0; x < w; x++) {
+      var sy = y;
+      var sx = x;
+      var dstOff = (y * w + x) * 4;
+      var r = 0,
+          g = 0,
+          b = 0,
+          a = 0;
+      for (var cy = 0; cy < side; cy++) {
+        var scy = Math.min(sh - 1, Math.max(0, sy + cy - halfSide));
+        var scx = sx;
+        var srcOff = (scy * sw + scx) * 4;
+        var wt = weightsVector[cy];
+        r += src[srcOff] * wt;
+        g += src[srcOff + 1] * wt;
+        b += src[srcOff + 2] * wt;
+        a += src[srcOff + 3] * wt;
+      }
+      dst[dstOff] = r;
+      dst[dstOff + 1] = g;
+      dst[dstOff + 2] = b;
+      dst[dstOff + 3] = a + alphaFac * (255 - a);
+    }
+  }
+  return output;
+};
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createImageData = createImageData;
+var tmpCtx = null;
+
+if (typeof document !== 'undefined') {
+  tmpCtx = document.createElement('canvas').getContext('2d');
+} else if (typeof wx !== 'undefined' && wx.createCanvas) {
+  tmpCtx = wx.createCanvas().getContext('2d');
+}
+
+function createImageData(w, h) {
+  return tmpCtx.createImageData(w, h);
+}
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.brightness = brightness;
+function brightness(pixels, adjustment) {
+  var data = pixels.data;
+  var length = data.length;
+  for (var i = 0; i < length; i += 4) {
+    data[i] += adjustment;
+    data[i + 1] += adjustment;
+    data[i + 2] += adjustment;
+  }
+  return pixels;
+}
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.contrast = contrast;
+function contrast(pixels, contrast) {
+  var data = pixels.data;
+  var length = data.length;
+  var factor = 259 * (contrast + 255) / (255 * (259 - contrast));
+
+  for (var i = 0; i < length; i += 4) {
+    data[i] = factor * (data[i] - 128) + 128;
+    data[i + 1] = factor * (data[i + 1] - 128) + 128;
+    data[i + 2] = factor * (data[i + 2] - 128) + 128;
+  }
+
+  return pixels;
+};
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.grayscale = grayscale;
+function grayscale(pixels, adjustment) {
+  var data = pixels.data;
+  var length = data.length;
+  for (var i = 0; i < length; i += 4) {
+    var r = data[i];
+    var g = data[i + 1];
+    var b = data[i + 2];
+
+    // CIE luminance for the RGB
+    // The human eye is bad at seeing red and blue, so we de-emphasize them.
+    var v = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    data[i] = r + (v - r) * adjustment;
+    data[i + 1] = g + (v - g) * adjustment;
+    data[i + 2] = b + (v - b) * adjustment;
+  }
+  return pixels;
+};
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.sepia = sepia;
+function sepia(pixels, adjustment) {
+  var data = pixels.data;
+  var length = data.length;
+  for (var i = 0; i < length; i += 4) {
+    var r = data[i];
+    var g = data[i + 1];
+    var b = data[i + 2];
+
+    var sr = r * 0.393 + g * 0.769 + b * 0.189;
+    var sg = r * 0.349 + g * 0.686 + b * 0.168;
+    var sb = r * 0.272 + g * 0.534 + b * 0.131;
+
+    data[i] = r + (sr - r) * adjustment;
+    data[i + 1] = g + (sg - g) * adjustment;
+    data[i + 2] = b + (sb - b) * adjustment;
+  }
+
+  return pixels;
+};
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.threshold = threshold;
+function threshold(pixels, threshold) {
+  var data = pixels.data;
+  var length = data.length;
+  for (var i = 0; i < length; i += 4) {
+    var r = data[i];
+    var g = data[i + 1];
+    var b = data[i + 2];
+    var v = 0.2126 * r + 0.7152 * g + 0.0722 * b >= threshold ? 255 : 0;
+    data[i] = data[i + 1] = data[i + 2] = v;
+  }
+  return pixels;
+};
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.gamma = gamma;
+function gamma(pixels, adjustment) {
+  var data = pixels.data;
+  var length = data.length;
+  for (var i = 0; i < length; i += 4) {
+    data[i] = Math.pow(data[i] / 255, adjustment) * 255;
+    data[i + 1] = Math.pow(data[i + 1] / 255, adjustment) * 255;
+    data[i + 2] = Math.pow(data[i + 2] / 255, adjustment) * 255;
+  }
+  return pixels;
+};
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.colorize = colorize;
+function colorize(pixels, option) {
+  var data = pixels.data;
+  var length = data.length;
+  var hex = option.color.charAt(0) === '#' ? option.color.substr(1) : option.color;
+  var colorRGB = {
+    r: parseInt(hex.substr(0, 2), 16),
+    g: parseInt(hex.substr(2, 2), 16),
+    b: parseInt(hex.substr(4, 2), 16)
+  };
+
+  for (var i = 0; i < length; i += 4) {
+    data[i] -= (data[i] - colorRGB.r) * option.amount;
+    data[i + 1] -= (data[i + 1] - colorRGB.g) * option.amount;
+    data[i + 2] -= (data[i + 2] - colorRGB.b) * option.amount;
+  }
+
+  return pixels;
+};
+
+/***/ }),
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4225,11 +4912,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _group = __webpack_require__(0);
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _graphics = __webpack_require__(3);
+var _graphics = __webpack_require__(4);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -4245,7 +4932,7 @@ var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-var _bitmap = __webpack_require__(4);
+var _bitmap = __webpack_require__(2);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -4345,6 +5032,7 @@ var HitRender = function (_Render) {
     key: 'hitPixel',
     value: function hitPixel(o, evt) {
       var ctx = this.ctx;
+      ctx.clearRect(0, 0, 2, 2);
       var mtx = o._hitMatrix;
       var list = o.children.slice(0),
           l = list.length;
@@ -4359,17 +5047,11 @@ var HitRender = function (_Render) {
         if (target) return target;
       }
     }
-
-    // checkBoundEvent () {
-    //   return true
-    // }
-
   }, {
     key: '_hitPixel',
     value: function _hitPixel(o, evt, mtx) {
       if (!o.isVisible()) return;
       var ctx = this.ctx;
-      ctx.clearRect(0, 0, 2, 2);
       if (mtx && !o.fixed) {
         o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
       } else {
@@ -4387,43 +5069,52 @@ var HitRender = function (_Render) {
         ocg.render(ctx);
         ctx.clip(o.clipRuleNonzero ? 'nonzero' : 'evenodd');
       }
+
+      var oacg = o.absClipGraphics;
+      if (oacg) {
+        ctx.beginPath();
+        oacg._matrix.initialize(1, 0, 0, 1, 0, 0);
+        oacg._matrix.appendTransform(oacg.x, oacg.y, oacg.scaleX, oacg.scaleY, oacg.rotation, oacg.skewX, oacg.skewY, oacg.originX, oacg.originY);
+        ctx.setTransform(oacg._matrix.a, oacg._matrix.b, oacg._matrix.c, oacg._matrix.d, oacg._matrix.tx, oacg._matrix.ty);
+        oacg.render(ctx);
+        ctx.clip(o.absClipRuleNonzero ? 'nonzero' : 'evenodd');
+      }
+
       if (o.cacheCanvas) {
         ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
-        ctx.drawImage(o.cacheCanvas, 0, 0);
+        ctx.drawImage(o.cacheCanvas, o._cacheData.x, o._cacheData.y);
       } else if (o instanceof _group2.default) {
         var list = o.children.slice(0),
             l = list.length;
         for (var i = l - 1; i >= 0; i--) {
-          //这里不能 save 和 restore，不然把 clip 事件 跪了
-          //ctx.save()
+          ctx.save();
           var target = this._hitPixel(list[i], evt, mtx);
+          ctx.restore();
           if (target) return target;
-          //ctx.restore()
         }
       } else {
-
         ctx.setTransform(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
         if (o instanceof _graphics2.default) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
+
           o.render(ctx);
         } else if (o instanceof _sprite2.default && o.rect) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
+
           o.updateFrame();
           var rect = o.rect;
           ctx.drawImage(o.img, rect[0], rect[1], rect[2], rect[3], 0, 0, rect[2], rect[3]);
         } else if (o instanceof _bitmap2.default && o.rect) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
+
           var bRect = o.rect;
           ctx.drawImage(o.img, bRect[0], bRect[1], bRect[2], bRect[3], 0, 0, bRect[2], bRect[3]);
         } else if (o instanceof _text2.default) {
-          ctx.globalCompositeOperation = o.complexCompositeOperation;
-          ctx.globalAlpha = o.complexAlpha;
+          this.setComplexProps(ctx, o);
 
           ctx.font = o.font;
           ctx.fillStyle = o.color;
+          ctx.textAlign = o.textAlign;
           ctx.textBaseline = o.baseline;
           ctx.fillText(o.text, 0, 0);
         }
@@ -4433,6 +5124,19 @@ var HitRender = function (_Render) {
         this._dispatchEvent(o, evt);
         return o;
       }
+    }
+  }, {
+    key: 'setComplexProps',
+    value: function setComplexProps(ctx, o) {
+      ctx.globalCompositeOperation = o.complexCompositeOperation;
+      ctx.globalAlpha = o.complexAlpha;
+      // The shadow does not trigger the event, so remove it
+      // if(o.complexShadow){
+      //   ctx.shadowColor = o.complexShadow.color
+      //   ctx.shadowOffsetX = o.complexShadow.offsetX
+      //   ctx.shadowOffsetY = o.complexShadow.offsetY
+      //   ctx.shadowBlur = o.complexShadow.blur
+      // }
     }
   }, {
     key: '_dispatchEvent',
@@ -4453,7 +5157,7 @@ var HitRender = function (_Render) {
 exports.default = HitRender;
 
 /***/ }),
-/* 27 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4465,7 +5169,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graphics = __webpack_require__(3);
+var _graphics = __webpack_require__(4);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -4481,7 +5185,7 @@ var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-var _bitmap = __webpack_require__(4);
+var _bitmap = __webpack_require__(2);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -4571,6 +5275,7 @@ var WxHitRender = function (_Render) {
       } else if (obj instanceof _text2.default) {
         ctx.font = obj.font;
         ctx.fillStyle = obj.color;
+        ctx.textAlign = obj.textAlign;
         ctx.fillText(obj.text, 0, 0);
       }
       ctx.restore();
@@ -4614,7 +5319,7 @@ var WxHitRender = function (_Render) {
 exports.default = WxHitRender;
 
 /***/ }),
-/* 28 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4626,7 +5331,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -4676,7 +5381,6 @@ var ArrowPath = function (_Shape) {
   }, {
     key: 'drawArrow',
     value: function drawArrow(fromX, fromY, toX, toY, theta) {
-
       var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,
           angle1 = (angle + theta) * Math.PI / 180,
           angle2 = (angle - theta) * Math.PI / 180,
@@ -4710,7 +5414,7 @@ var ArrowPath = function (_Shape) {
 exports.default = ArrowPath;
 
 /***/ }),
-/* 29 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4722,7 +5426,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -4789,7 +5493,7 @@ var Ellipse = function (_Shape) {
 exports.default = Ellipse;
 
 /***/ }),
-/* 30 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4799,7 +5503,539 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _group = __webpack_require__(0);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _pathParser = __webpack_require__(43);
+
+var _pathParser2 = _interopRequireDefault(_pathParser);
+
+var _shape = __webpack_require__(0);
+
+var _shape2 = _interopRequireDefault(_shape);
+
+var _arcToBezier = __webpack_require__(44);
+
+var _arcToBezier2 = _interopRequireDefault(_arcToBezier);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Path = function (_Shape) {
+  _inherits(Path, _Shape);
+
+  function Path(d, option) {
+    _classCallCheck(this, Path);
+
+    var _this = _possibleConstructorReturn(this, (Path.__proto__ || Object.getPrototypeOf(Path)).call(this));
+
+    _this.d = d;
+
+    option = Object.assign({
+      fillStyle: 'black',
+      strokeStyle: 'black',
+      lineWidth: 1
+    }, option);
+    _this.option = option;
+    return _this;
+  }
+
+  _createClass(Path, [{
+    key: 'draw',
+    value: function draw() {
+      var _this2 = this;
+
+      var cmds = (0, _pathParser2.default)(this.d);
+
+      this.beginPath();
+      // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
+      // M = moveto
+      // L = lineto
+      // H = horizontal lineto
+      // V = vertical lineto
+      // C = curveto
+      // S = smooth curveto
+      // Q = quadratic Belzier curve
+      // T = smooth quadratic Belzier curveto
+      // A = elliptical Arc  暂时未实现，用贝塞尔拟合椭圆
+      // Z = closepath
+      // 以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
+      var preX = void 0,
+          preY = void 0,
+          curves = void 0,
+          lastCurve = void 0;
+
+      // 参考我的 pasition https://github.com/AlloyTeam/pasition/blob/master/src/index.js
+      for (var j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
+        var item = cmds[j];
+        var action = item[0];
+        var preItem = cmds[j - 1];
+
+        switch (action) {
+          case 'M':
+            preX = item[1];
+            preY = item[2];
+            this.moveTo(preX, preY);
+            break;
+          case 'L':
+            preX = item[1];
+            preY = item[2];
+            this.lineTo(preX, preY);
+            break;
+          case 'H':
+            preX = item[1];
+            this.lineTo(preX, preY);
+            break;
+          case 'V':
+            preY = item[1];
+            this.lineTo(preX, preY);
+            break;
+          case 'C':
+            preX = item[5];
+            preY = item[6];
+            this.bezierCurveTo(item[1], item[2], item[3], item[4], preX, preY);
+            break;
+          case 'S':
+
+            if (preItem[0] === 'C' || preItem[0] === 'c') {
+              this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
+            } else if (preItem[0] === 'S' || preItem[0] === 's') {
+              this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]);
+            }
+            preX = item[3];
+            preY = item[4];
+            break;
+
+          case 'Q':
+            preX = item[3];
+            preY = item[4];
+            this.quadraticCurveTo(item[1], item[2], preX, preY);
+            break;
+
+          case 'm':
+            preX += item[1];
+            preY += item[2];
+            this.moveTo(preX, preY);
+            break;
+          case 'l':
+            preX += item[1];
+            preY += item[2];
+            this.lineTo(preX, preY);
+            break;
+          case 'h':
+            preX += item[1];
+            this.lineTo(preX, preY);
+            break;
+          case 'v':
+            preY += item[1];
+            this.lineTo(preX, preY);
+            break;
+          case 'c':
+            this.bezierCurveTo(preX + item[1], preY + item[2], preX + item[3], preY + item[4], preX + item[5], preY + item[6]);
+            preX = preX + item[5];
+            preY = preY + item[6];
+            break;
+          case 's':
+            if (preItem[0] === 'C' || preItem[0] === 'c') {
+              this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+            } else if (preItem[0] === 'S' || preItem[0] === 's') {
+              this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+            }
+
+            preX += item[3];
+            preY += item[4];
+            break;
+          case 'q':
+
+            this.quadraticCurveTo(preX + item[1], preY + item[2], item[3] + preX, item[4] + preY);
+            preX += item[3];
+            preY += item[4];
+            break;
+          case 'Z':
+            this.closePath();
+            break;
+          case 'z':
+            this.closePath();
+            break;
+
+          case 'a':
+            curves = (0, _arcToBezier2.default)({
+              rx: item[1],
+              ry: item[2],
+              px: preX,
+              py: preY,
+              xAxisRotation: item[3],
+              largeArcFlag: item[4],
+              sweepFlag: item[5],
+              cx: preX + item[6],
+              cy: preX + item[7]
+            });
+            lastCurve = curves[curves.length - 1];
+
+            curves.forEach(function (curve, index) {
+              if (index === 0) {
+                _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+              } else {
+                _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+              }
+            });
+
+            preX = lastCurve.x;
+            preY = lastCurve.y;
+
+            break;
+
+          case 'A':
+
+            curves = (0, _arcToBezier2.default)({
+              rx: item[1],
+              ry: item[2],
+              px: preX,
+              py: preY,
+              xAxisRotation: item[3],
+              largeArcFlag: item[4],
+              sweepFlag: item[5],
+              cx: item[6],
+              cy: item[7]
+            });
+            lastCurve = curves[curves.length - 1];
+
+            curves.forEach(function (curve, index) {
+              if (index === 0) {
+                _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+              } else {
+                _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+              }
+            });
+
+            preX = lastCurve.x;
+            preY = lastCurve.y;
+
+            break;
+
+          case 'T':
+
+            if (preItem[0] === 'Q' || preItem[0] === 'q') {
+              preCX = preX + preItem[3] - preItem[1];
+              preCY = preY + preItem[4] - preItem[2];
+              this.quadraticCurveTo(preX, preY, preCX, preCY, item[1], item[2]);
+            } else if (preItem[0] === 'T' || preItem[0] === 't') {
+              this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, item[1], item[2]);
+              preCX = preX + preX - preCX;
+              preCY = preY + preY - preCY;
+            }
+
+            preX = item[1];
+            preY = item[2];
+            break;
+
+          case 't':
+            if (preItem[0] === 'Q' || preItem[0] === 'q') {
+              preCX = preX + preItem[3] - preItem[1];
+              preCY = preY + preItem[4] - preItem[2];
+              this.quadraticCurveTo(preX, preY, preCX, preCY, preX + item[1], preY + item[2]);
+            } else if (preItem[0] === 'T' || preItem[0] === 't') {
+              this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, preX + item[1], preY + item[2]);
+              preCX = preX + preX - preCX;
+              preCY = preY + preY - preCY;
+            }
+
+            preX += item[1];
+            preY += item[2];
+            break;
+        }
+      }
+      if (this.option.fillStyle) {
+        this.fillStyle(this.option.fillStyle);
+        this.fill();
+      }
+
+      if (this.option.strokeStyle) {
+        this.lineWidth(this.option.lineWidth);
+        this.strokeStyle(this.option.strokeStyle);
+        this.stroke();
+      }
+    }
+  }]);
+
+  return Path;
+}(_shape2.default);
+
+exports.default = Path;
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+// https://github.com/jkroso/parse-svg-path/blob/master/index.js
+/**
+ * expected argument lengths
+ * @type {Object}
+ */
+
+var length = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0
+
+  /**
+   * segment pattern
+   * @type {RegExp}
+   */
+
+};var segment = /([astvzqmhlc])([^astvzqmhlc]*)/ig;
+
+/**
+ * parse an svg path data string. Generates an Array
+ * of commands where each command is an Array of the
+ * form `[command, arg1, arg2, ...]`
+ *
+ * @param {String} path
+ * @return {Array}
+ */
+
+function parse(path) {
+  var data = [];
+  path.replace(segment, function (_, command, args) {
+    var type = command.toLowerCase();
+    args = parseValues(args);
+
+    // overloaded moveTo
+    if (type === 'm' && args.length > 2) {
+      data.push([command].concat(args.splice(0, 2)));
+      type = 'l';
+      command = command === 'm' ? 'l' : 'L';
+    }
+
+    while (true) {
+      if (args.length === length[type]) {
+        args.unshift(command);
+        return data.push(args);
+      }
+      if (args.length < length[type]) throw new Error('malformed path data');
+      data.push([command].concat(args.splice(0, length[type])));
+    }
+  });
+  return data;
+}
+
+var number = /-?[0-9]*\.?[0-9]+(?:e[-+]?\d+)?/ig;
+
+function parseValues(args) {
+  var numbers = args.match(number);
+  return numbers ? numbers.map(Number) : [];
+}
+
+exports.default = parse;
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+// https://github.com/colinmeinke/svg-arc-to-cubic-bezier
+
+var TAU = Math.PI * 2;
+
+var mapToEllipse = function mapToEllipse(_ref, rx, ry, cosphi, sinphi, centerx, centery) {
+  var x = _ref.x,
+      y = _ref.y;
+
+  x *= rx;
+  y *= ry;
+
+  var xp = cosphi * x - sinphi * y;
+  var yp = sinphi * x + cosphi * y;
+
+  return {
+    x: xp + centerx,
+    y: yp + centery
+  };
+};
+
+var approxUnitArc = function approxUnitArc(ang1, ang2) {
+  var a = 4 / 3 * Math.tan(ang2 / 4);
+
+  var x1 = Math.cos(ang1);
+  var y1 = Math.sin(ang1);
+  var x2 = Math.cos(ang1 + ang2);
+  var y2 = Math.sin(ang1 + ang2);
+
+  return [{
+    x: x1 - y1 * a,
+    y: y1 + x1 * a
+  }, {
+    x: x2 + y2 * a,
+    y: y2 - x2 * a
+  }, {
+    x: x2,
+    y: y2
+  }];
+};
+
+var vectorAngle = function vectorAngle(ux, uy, vx, vy) {
+  var sign = ux * vy - uy * vx < 0 ? -1 : 1;
+  var umag = Math.sqrt(ux * ux + uy * uy);
+  var vmag = Math.sqrt(ux * ux + uy * uy);
+  var dot = ux * vx + uy * vy;
+
+  var div = dot / (umag * vmag);
+
+  if (div > 1) {
+    div = 1;
+  }
+
+  if (div < -1) {
+    div = -1;
+  }
+
+  return sign * Math.acos(div);
+};
+
+var getArcCenter = function getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp) {
+  var rxsq = Math.pow(rx, 2);
+  var rysq = Math.pow(ry, 2);
+  var pxpsq = Math.pow(pxp, 2);
+  var pypsq = Math.pow(pyp, 2);
+
+  var radicant = rxsq * rysq - rxsq * pypsq - rysq * pxpsq;
+
+  if (radicant < 0) {
+    radicant = 0;
+  }
+
+  radicant /= rxsq * pypsq + rysq * pxpsq;
+  radicant = Math.sqrt(radicant) * (largeArcFlag === sweepFlag ? -1 : 1);
+
+  var centerxp = radicant * rx / ry * pyp;
+  var centeryp = radicant * -ry / rx * pxp;
+
+  var centerx = cosphi * centerxp - sinphi * centeryp + (px + cx) / 2;
+  var centery = sinphi * centerxp + cosphi * centeryp + (py + cy) / 2;
+
+  var vx1 = (pxp - centerxp) / rx;
+  var vy1 = (pyp - centeryp) / ry;
+  var vx2 = (-pxp - centerxp) / rx;
+  var vy2 = (-pyp - centeryp) / ry;
+
+  var ang1 = vectorAngle(1, 0, vx1, vy1);
+  var ang2 = vectorAngle(vx1, vy1, vx2, vy2);
+
+  if (sweepFlag === 0 && ang2 > 0) {
+    ang2 -= TAU;
+  }
+
+  if (sweepFlag === 1 && ang2 < 0) {
+    ang2 += TAU;
+  }
+
+  return [centerx, centery, ang1, ang2];
+};
+
+var arcToBezier = function arcToBezier(_ref2) {
+  var px = _ref2.px,
+      py = _ref2.py,
+      cx = _ref2.cx,
+      cy = _ref2.cy,
+      rx = _ref2.rx,
+      ry = _ref2.ry,
+      _ref2$xAxisRotation = _ref2.xAxisRotation,
+      xAxisRotation = _ref2$xAxisRotation === undefined ? 0 : _ref2$xAxisRotation,
+      _ref2$largeArcFlag = _ref2.largeArcFlag,
+      largeArcFlag = _ref2$largeArcFlag === undefined ? 0 : _ref2$largeArcFlag,
+      _ref2$sweepFlag = _ref2.sweepFlag,
+      sweepFlag = _ref2$sweepFlag === undefined ? 0 : _ref2$sweepFlag;
+
+  var curves = [];
+
+  if (rx === 0 || ry === 0) {
+    return [];
+  }
+
+  var sinphi = Math.sin(xAxisRotation * TAU / 360);
+  var cosphi = Math.cos(xAxisRotation * TAU / 360);
+
+  var pxp = cosphi * (px - cx) / 2 + sinphi * (py - cy) / 2;
+  var pyp = -sinphi * (px - cx) / 2 + cosphi * (py - cy) / 2;
+
+  if (pxp === 0 && pyp === 0) {
+    return [];
+  }
+
+  rx = Math.abs(rx);
+  ry = Math.abs(ry);
+
+  var lambda = Math.pow(pxp, 2) / Math.pow(rx, 2) + Math.pow(pyp, 2) / Math.pow(ry, 2);
+
+  if (lambda > 1) {
+    rx *= Math.sqrt(lambda);
+    ry *= Math.sqrt(lambda);
+  }
+
+  var _getArcCenter = getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp),
+      _getArcCenter2 = _slicedToArray(_getArcCenter, 4),
+      centerx = _getArcCenter2[0],
+      centery = _getArcCenter2[1],
+      ang1 = _getArcCenter2[2],
+      ang2 = _getArcCenter2[3];
+
+  var segments = Math.max(Math.ceil(Math.abs(ang2) / (TAU / 4)), 1);
+
+  ang2 /= segments;
+
+  for (var i = 0; i < segments; i++) {
+    curves.push(approxUnitArc(ang1, ang2));
+    ang1 += ang2;
+  }
+
+  return curves.map(function (curve) {
+    var _mapToEllipse = mapToEllipse(curve[0], rx, ry, cosphi, sinphi, centerx, centery),
+        x1 = _mapToEllipse.x,
+        y1 = _mapToEllipse.y;
+
+    var _mapToEllipse2 = mapToEllipse(curve[1], rx, ry, cosphi, sinphi, centerx, centery),
+        x2 = _mapToEllipse2.x,
+        y2 = _mapToEllipse2.y;
+
+    var _mapToEllipse3 = mapToEllipse(curve[2], rx, ry, cosphi, sinphi, centerx, centery),
+        x = _mapToEllipse3.x,
+        y = _mapToEllipse3.y;
+
+    return { x1: x1, y1: y1, x2: x2, y2: y2, x: x, y: y };
+  });
+};
+
+exports.default = arcToBezier;
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
@@ -4828,20 +6064,67 @@ var Button = function (_Group) {
     var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this));
 
     _this.width = option.width;
-    _this.roundedRect = new _roundedRect2.default(option.width, option.height, option.borderRadius, {
-      strokeStyle: option.borderColor || 'black',
-      fillStyle: option.backgroundColor || '#F5F5F5'
-    });
+
+    var textHeight = 0;
     _this.text = new _text2.default(option.text, {
       font: option.font,
       color: option.color
     });
+    var textWidth = _this.text.getWidth();
+    var textGroup = new _group2.default();
 
-    _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX;
-    _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY;
-    _this.add(_this.roundedRect, _this.text);
+    if (textWidth > option.width) {
+      var step = Math.round(option.text.length * option.width / textWidth / 2);
+
+      var textList = _this.stringSplit(option.text, step);
+      var lineHeight = option.lineHeight || 12;
+      textHeight = textList.length * lineHeight + 6;
+
+      textList.forEach(function (text, index) {
+        _this.text = new _text2.default(text, {
+          font: option.font,
+          color: option.color
+        });
+
+        _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+        _this.text.y = Math.max(textHeight, option.height) / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0) + index * 12 - textHeight / 2 + lineHeight / 2;
+        textGroup.add(_this.text);
+      });
+    } else {
+      _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+      _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
+      textGroup.add(_this.text);
+    }
+
+    _this.roundedRect = new _roundedRect2.default(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
+      strokeStyle: option.borderColor || 'black',
+      fillStyle: option.backgroundColor || '#F5F5F5'
+    });
+
+    _this.add(_this.roundedRect);
+    _this.add(textGroup);
     return _this;
   }
+
+  _createClass(Button, [{
+    key: 'stringSplit',
+    value: function stringSplit(str, len) {
+      var arr = [],
+          offset = 0,
+          char_length = 0;
+      for (var i = 0; i < str.length; i++) {
+        var son_str = str.charAt(i);
+        encodeURI(son_str).length > 2 ? char_length += 1 : char_length += 0.5;
+        if (char_length >= len || char_length < len && i === str.length - 1) {
+          var sub_len = char_length == len ? i + 1 : i;
+          arr.push(str.substr(offset, sub_len - offset + (char_length < len && i === str.length - 1 ? 1 : 0)));
+          offset = i + 1;
+          char_length = 0;
+        }
+      }
+      return arr;
+    }
+  }]);
 
   return Button;
 }(_group2.default);
@@ -4849,7 +6132,7 @@ var Button = function (_Group) {
 exports.default = Button;
 
 /***/ }),
-/* 31 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4861,7 +6144,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -4908,7 +6191,7 @@ var Rect = function (_Shape) {
 exports.default = Rect;
 
 /***/ }),
-/* 32 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4920,7 +6203,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -4974,7 +6257,7 @@ var Circle = function (_Shape) {
 exports.default = Circle;
 
 /***/ }),
-/* 33 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4986,7 +6269,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
@@ -5048,7 +6331,7 @@ var Polygon = function (_Shape) {
 exports.default = Polygon;
 
 /***/ }),
-/* 34 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5060,7 +6343,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _shape = __webpack_require__(1);
+var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
