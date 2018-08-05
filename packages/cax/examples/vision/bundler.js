@@ -2974,7 +2974,7 @@ var Player = function (_cax$Group) {
                 this.sprite.updateFrame();
             }
             this.x--;
-            if (Date.now() - this.preTime > 100) {
+            if (Date.now() - this.preTime > 50) {
                 this.addVision();
                 this.preTime = Date.now();
             }
@@ -2989,9 +2989,10 @@ var Player = function (_cax$Group) {
                 var vision = new _bitmap2.default('./hero-m.png');
                 vision.rect = this.sprite.rect.slice(0);
                 if (filter) {
+                    vision.compositeOperation = 'lighter';
                     vision.filter({
                         type: 'colorize',
-                        color: '#000000',
+                        color: '#ff4725',
                         amount: 1
                     });
                 }

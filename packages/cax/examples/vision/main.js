@@ -63,7 +63,7 @@ class Player extends cax.Group {
             this.sprite.updateFrame()
         }
         this.x--
-        if (Date.now() - this.preTime > 100) {
+        if (Date.now() - this.preTime > 50) {
             this.addVision()
             this.preTime = Date.now()
         }
@@ -77,11 +77,12 @@ class Player extends cax.Group {
     addVision() {
         if(this.sprite.rect){
             const vision = new Bitmap('./hero-m.png')
-            vision.rect = this.sprite.rect.slice(0)
+            vision.rect = this.sprite.rect.slice(0)     
             if(filter){
+                vision.compositeOperation = 'lighter'
                 vision.filter({
                     type:'colorize',
-                    color:'#000000',
+                    color:'#ff4725',
                     amount: 1
                 },)
             }
