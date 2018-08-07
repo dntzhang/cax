@@ -36,7 +36,8 @@ English | [简体中文](./README.CN.md)
   * [SVG](https://dntzhang.github.io/wechart/packages/path/examples/man/)
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
   * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
-
+  * [Cax + Dragonbones](https://dntzhang.github.io/wechart/packages/cax-dragonbones/examples/simple/index.html)
+  
 [→ Demo Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)  
 
 ## Wechart App Demo
