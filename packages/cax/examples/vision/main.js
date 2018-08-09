@@ -50,11 +50,12 @@ class Player extends cax.Group {
             currentAnimation: "walk"
         })
 
-
+        this.sprite.originX = 32
+        this.sprite.originY = 32
         this.visionGroup = new cax.Group()
         this.visionGroup.fixed = true 
         this.add(this.visionGroup, this.sprite)
-
+        this.directionRight = false
         this.preTime = Date.now()
     }
 
@@ -62,7 +63,7 @@ class Player extends cax.Group {
         if(!this.sprite.visible){
             this.sprite.updateFrame()
         }
-        this.x--
+        this.x += (this.directionRight ? 1 : -1)
         if (Date.now() - this.preTime > 50) {
             this.addVision()
             this.preTime = Date.now()
@@ -86,6 +87,9 @@ class Player extends cax.Group {
                     amount: 1
                 },)
             }
+            vision.scaleX = this.scaleX
+            vision.originX = 32
+            vision.originY = 32
             vision.alpha = 0.5
             vision.x = this.x + 5
             vision.y = this.y
@@ -122,4 +126,9 @@ document.querySelector('#toggleBtn').addEventListener('click', () => {
 
 document.querySelector('#toggleFilterBtn').addEventListener('click', () => { 
     filter = !filter
+})
+
+document.querySelector('#toggleDirectionBtn').addEventListener('click', () => { 
+    player.directionRight = !player.directionRight
+    player.scaleX *= -1
 })

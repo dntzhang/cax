@@ -2959,10 +2959,12 @@ var Player = function (_cax$Group) {
             currentAnimation: "walk"
         });
 
+        _this.sprite.originX = 32;
+        _this.sprite.originY = 32;
         _this.visionGroup = new _index2.default.Group();
         _this.visionGroup.fixed = true;
         _this.add(_this.visionGroup, _this.sprite);
-
+        _this.directionRight = false;
         _this.preTime = Date.now();
         return _this;
     }
@@ -2973,7 +2975,7 @@ var Player = function (_cax$Group) {
             if (!this.sprite.visible) {
                 this.sprite.updateFrame();
             }
-            this.x--;
+            this.x += this.directionRight ? 1 : -1;
             if (Date.now() - this.preTime > 50) {
                 this.addVision();
                 this.preTime = Date.now();
@@ -2996,6 +2998,9 @@ var Player = function (_cax$Group) {
                         amount: 1
                     });
                 }
+                vision.scaleX = this.scaleX;
+                vision.originX = 32;
+                vision.originY = 32;
                 vision.alpha = 0.5;
                 vision.x = this.x + 5;
                 vision.y = this.y;
@@ -3032,6 +3037,11 @@ document.querySelector('#toggleBtn').addEventListener('click', function () {
 
 document.querySelector('#toggleFilterBtn').addEventListener('click', function () {
     filter = !filter;
+});
+
+document.querySelector('#toggleDirectionBtn').addEventListener('click', function () {
+    player.directionRight = !player.directionRight;
+    player.scaleX *= -1;
 });
 
 /***/ }),
@@ -6048,6 +6058,10 @@ var _roundedRect = __webpack_require__(15);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
+var _bitmap2 = __webpack_require__(2);
+
+var _bitmap3 = _interopRequireDefault(_bitmap2);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -6055,6 +6069,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*
+Options
+  font:
+  text: 
+  textColor:
+  image: [path, width, height]
+  bgColor: 
+  bgImage: [path, width, height]
+  borderRadius:
+  borderColor:
+*/
 
 var Button = function (_Group) {
   _inherits(Button, _Group);
@@ -6065,45 +6091,78 @@ var Button = function (_Group) {
     var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this));
 
     _this.width = option.width;
+    _this.height = option.height;
+    _this.x = option.x;
+    _this.y = option.y;
 
     var textHeight = 0;
-    _this.text = new _text2.default(option.text, {
-      font: option.font,
-      color: option.color
-    });
-    var textWidth = _this.text.getWidth();
-    var textGroup = new _group2.default();
+    var textGroup;
 
-    if (textWidth > option.width) {
-      var step = Math.round(option.text.length * option.width / textWidth / 2);
-
-      var textList = _this.stringSplit(option.text, step);
-      var lineHeight = option.lineHeight || 12;
-      textHeight = textList.length * lineHeight + 6;
-
-      textList.forEach(function (text, index) {
-        _this.text = new _text2.default(text, {
-          font: option.font,
-          color: option.color
-        });
-
-        _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
-        _this.text.y = Math.max(textHeight, option.height) / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0) + index * 12 - textHeight / 2 + lineHeight / 2;
-        textGroup.add(_this.text);
+    if (option.text) {
+      textGroup = new _group2.default();
+      _this.text = new _text2.default(option.text, {
+        font: option.font,
+        color: option.color
       });
-    } else {
-      _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
-      _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
-      textGroup.add(_this.text);
+      var textWidth = _this.text.getWidth();
+
+      if (textWidth > option.width) {
+        var step = Math.round(option.text.length * option.width / textWidth / 2);
+
+        var textList = _this.stringSplit(option.text, step);
+        var lineHeight = option.lineHeight || 12;
+        textHeight = textList.length * lineHeight + 6;
+
+        textList.forEach(function (text, index) {
+          _this.text = new _text2.default(text, {
+            font: option.font,
+            color: option.color
+          });
+
+          _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+          _this.text.y = Math.max(textHeight, option.height) / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0) + index * 12 - textHeight / 2 + lineHeight / 2;
+          textGroup.add(_this.text);
+        });
+      } else {
+        _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+        _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
+        textGroup.add(_this.text);
+      }
     }
 
-    _this.roundedRect = new _roundedRect2.default(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
-      strokeStyle: option.borderColor || 'black',
-      fillStyle: option.backgroundColor || '#F5F5F5'
-    });
+    if (option.bgImage) {
+      var ratio = SCALE_RATIO;
+      var bitmap = new _bitmap3.default(option.bgImage[0]);
+      bitmap.scaleX = ratio;
+      bitmap.scaleY = ratio;
+      bitmap.width = option.bgImage[1];
+      bitmap.height = option.bgImage[2];
+      bitmap.x = (_this.width - bitmap.width) / 2;
+      bitmap.y = (_this.height - bitmap.height) / 2;
+      _this.add(bitmap);
+    } else if (option.bgColor || option.borderColor) {
+      _this.roundedRect = new _roundedRect2.default(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
+        strokeStyle: option.borderColor || 'black',
+        fillStyle: option.backgroundColor || '#F5F5F5'
+      });
+      _this.add(_this.roundedRect);
+    }
 
-    _this.add(_this.roundedRect);
-    _this.add(textGroup);
+    if (option.image) {
+      var ratio = SCALE_RATIO;
+      var _bitmap = new _bitmap3.default(option.image[0]);
+      _bitmap.scaleX = ratio;
+      _bitmap.scaleY = ratio;
+      _bitmap.width = option.image[1];
+      _bitmap.height = option.image[2];
+      _bitmap.x = (_this.width - _bitmap.width) / 2;
+      _bitmap.y = (_this.height - _bitmap.height) / 2;
+      _this.add(_bitmap);
+    }
+
+    if (textGroup) {
+      _this.add(textGroup);
+    }
     return _this;
   }
 

@@ -1,8 +1,3 @@
-## Todo
-
-* bitmap 支持 flipX 和 flipY
-* sprite 可以直接使用 bitmap.flipX 和 bitmap.flopY 播放序列帧
-
 ## Cax 1.2.5
 
 * group.add 方法如果 child 已经 add 过了，会移除以前的。所以 add 已有的 child 会有置顶的效果
