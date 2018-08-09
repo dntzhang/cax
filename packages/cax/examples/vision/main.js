@@ -68,8 +68,12 @@ class Player extends cax.Group {
             this.addVision()
             this.preTime = Date.now()
         }
-        if (this.x < -100) {
+        if (this.x < -20) {
             this.x = 310
+        }
+
+        if (this.x > 310) {
+            this.x = -19
         }
 
 
@@ -91,11 +95,11 @@ class Player extends cax.Group {
             vision.originX = 32
             vision.originY = 32
             vision.alpha = 0.5
-            vision.x = this.x + 5
+            vision.x = this.x 
             vision.y = this.y
             this.visionGroup.add(vision)
 
-            cax.To.get(vision).to({ alpha: 0 }, 1000).end((obj) => {
+            cax.To.get(vision).to({ alpha: 0 }, 1500).end((obj) => {
                 obj.destroy()
             }).start()
         }
