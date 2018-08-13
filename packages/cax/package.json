@@ -1,6 +1,6 @@
 {
   "name": "cax",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "小程序、小游戏和 Web 通用 Canvas 渲染引擎",
   "main": "dist/cax.js",
   "scripts": {

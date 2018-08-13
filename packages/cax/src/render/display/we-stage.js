@@ -125,6 +125,20 @@ class WeStage extends Group {
     }
   }
 
+  on(type, cb) {
+    switch (type) {
+      case 'touchstart':
+        this.touchStart = cb
+        break
+      case 'touchmove':
+        this.touchMove = cb
+        break
+      case 'touchend':
+        this.touchEnd = cb
+        break
+    }
+  }
+  
   update () {
     this.renderer.update(this)
   }
