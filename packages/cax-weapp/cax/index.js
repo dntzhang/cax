@@ -1,5 +1,5 @@
 /*!
- *  cax v1.2.6
+ *  cax v1.2.7
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -3660,7 +3660,7 @@ var Stage = function (_Group) {
       this.preStageX = null;
       this.preStageY = null;
 
-      if (obj && Math.abs(this._mouseDownX - this._mouseUpX) < 30 && Math.abs(this._mouseDownY - this._mouseUpY) < 30) {
+      if (obj && evt.type === 'touchend' && Math.abs(this._mouseDownX - this._mouseUpX) < 30 && Math.abs(this._mouseDownY - this._mouseUpY) < 30) {
         mockEvt.type = 'tap';
         obj.dispatchEvent(mockEvt);
       }

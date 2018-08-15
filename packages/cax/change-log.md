@@ -1,3 +1,7 @@
+## Cax 1.2.7
+
+* 解决 tap 事件触发两次的问题
+
 ## Cax 1.2.6
 
 * 小程序 stage 支持支持 touchstart touchmove 和 touchend 事件注入
