@@ -82,6 +82,8 @@ class Stage extends Group {
 
     this.width = this.canvas.width
     this.height = this.canvas.height
+
+    this.___instanceof = 'Stage'
   }
 
   _handleContextmenu (evt) {

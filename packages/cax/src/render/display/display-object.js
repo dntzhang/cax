@@ -20,6 +20,16 @@ class DisplayObject extends EventDispatcher {
     this.absClipGraphics = null
     this.absClipRuleNonzero = true
     this.cacheUpdating = false
+
+    try {
+      Object.defineProperties(this, {
+        stage: { get: this._getStage },
+        scale: {
+          get: function() { return this.scaleX; },
+          set: function(scale) { this.scaleX = this.scaleY = scale; }
+        }
+      });
+    } catch (e) {}
   }
 
   isVisible () {
@@ -181,6 +191,13 @@ class DisplayObject extends EventDispatcher {
 
   unfilter () {
     this.uncache()
+  }
+
+  _getStage () {
+		var o = this
+		while (o.parent) { o = o.parent }
+		if (o.___instanceof === 'Stage') { return o; }
+		return null
   }
 }
 
