@@ -1,4 +1,3 @@
-const MOUSEOUT = 'mouseout'
 
 class EventDispatcher {
   constructor () {
@@ -44,10 +43,7 @@ class EventDispatcher {
   }
 
   dispatchEvent (evt) {
-    if (evt.type === MOUSEOUT || !this.parent) {
-      this._dispatchEvent(evt, 0)
-      this._dispatchEvent(evt, 1)
-    } else {
+ 
       var top = this, list = [top]
       while (top.parent) { list.push(top = top.parent) }
       var i, l = list.length
@@ -60,7 +56,7 @@ class EventDispatcher {
       for (i = 0; i < l && !evt.propagationStopped; i++) {
         list[i]._dispatchEvent(evt, 1)
       }
-    }
+    
   }
 
   _dispatchEvent (evt, type) {
