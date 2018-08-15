@@ -110,16 +110,20 @@ function renderLineChart(data, option, component) {
     }
   })
 
-  const tooltip = new Tooltip('0','0')
-
+  const tooltip = new Tooltip('0', '0')
+  tooltip.y = 30
   tooltip.visible = false
   stage.add(tooltip)
 
   //tooptip逻辑写在下面
   stage.on('touchstart', function (evt) {
-    tooltip.x = evt.stageX
-    tooltip.y = evt.stageY
-    //tooltip.update('11:11','100.00')
+    const item = data[Math.round((evt.stageX - leftBottom[0]) / option.xInterval)]
+
+    tooltip.x = evt.stageX - 10
+    if (item) {
+      tooltip.update(item.date, item.value)
+    }
+
     tooltip.visible = true
 
   })
@@ -130,9 +134,13 @@ function renderLineChart(data, option, component) {
   })
 
   stage.on('touchmove', function (evt) {
-    //  tooltip.update('11:11','100.00')
-    tooltip.x = evt.stageX
-    tooltip.y = evt.stageY
+    const item = data[Math.round((evt.stageX - leftBottom[0]) / option.xInterval)]
+
+    tooltip.x = evt.stageX - 10
+    if (item) {
+      tooltip.update(item.date, item.value)
+    }
+
   })
 
   cax.tick(() => {
