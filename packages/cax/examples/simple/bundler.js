@@ -78,7 +78,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _graphics = __webpack_require__(3);
+var _graphics = __webpack_require__(4);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -136,7 +136,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _displayObject = __webpack_require__(2);
+var _displayObject = __webpack_require__(3);
 
 var _displayObject2 = _interopRequireDefault(_displayObject);
 
@@ -166,8 +166,13 @@ var Group = function (_DisplayObject) {
       var len = arguments.length;
 
       for (var i = 0; i < len; i++) {
-        this.children.push(arguments[i]);
-        arguments[i].parent = this;
+        var c = arguments[i];
+        var parent = c.parent;
+        if (parent) {
+          parent.removeChildAt(parent.children.indexOf(c));
+        }
+        this.children.push(c);
+        c.parent = this;
       }
     }
   }, {
@@ -246,6 +251,122 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _displayObject = __webpack_require__(3);
+
+var _displayObject2 = _interopRequireDefault(_displayObject);
+
+var _util = __webpack_require__(9);
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Bitmap = function (_DisplayObject) {
+  _inherits(Bitmap, _DisplayObject);
+
+  function Bitmap(img, onLoad) {
+    _classCallCheck(this, Bitmap);
+
+    var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
+
+    if (typeof img === 'string') {
+      if (Bitmap.cache[img]) {
+        if (_util2.default.isWeapp) {
+          _this.img = Bitmap.cache[img].img;
+          _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
+          _this.width = _this.rect[2];
+          _this.height = _this.rect[3];
+        } else {
+          _this.img = Bitmap.cache[img];
+          _this.rect = [0, 0, _this.img.width, _this.img.height];
+          _this.width = _this.img.width;
+          _this.height = _this.img.height;
+        }
+        onLoad && onLoad.call(_this);
+      } else if (_util2.default.isWeapp) {
+        _util2.default.getImageInWx(img, function (result) {
+          _this.img = result.img;
+          if (!_this.rect) {
+            _this.rect = [0, 0, result.width, result.height];
+          }
+          _this.width = result.width;
+          _this.height = result.height;
+          onLoad && onLoad.call(_this);
+          Bitmap.cache[img] = result;
+        });
+      } else {
+        _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
+        _this.visible = false;
+        _this.img.onload = function () {
+          _this.visible = true;
+          if (!_this.rect) {
+            _this.rect = [0, 0, _this.img.width, _this.img.height];
+          }
+          _this.width = _this.img.width;
+          _this.height = _this.img.height;
+          onLoad && onLoad.call(_this);
+          Bitmap.cache[img] = _this.img;
+        };
+        _this.img.src = img;
+      }
+    } else {
+      _this.img = img;
+      _this.rect = [0, 0, img.width, img.height];
+      _this.width = img.width;
+      _this.height = img.height;
+      Bitmap.cache[img.src] = img;
+    }
+    return _this;
+  }
+
+  _createClass(Bitmap, [{
+    key: 'clone',
+    value: function clone() {
+      // 复制完img宽度0？？所以直接传字符串
+      var bitmap = new Bitmap(typeof this.img === 'string' ? this.img : this.img.src);
+      bitmap.x = this.x;
+      bitmap.y = this.y;
+      bitmap.scaleX = this.scaleX;
+      bitmap.scaleY = this.scaleY;
+      bitmap.rotation = this.rotation;
+      bitmap.skewX = this.skewX;
+      bitmap.skewY = this.skewY;
+      bitmap.originX = this.originX;
+      bitmap.originY = this.originY;
+      bitmap.width = this.width;
+      bitmap.height = this.height;
+      bitmap.cursor = this.cursor;
+
+      return bitmap;
+    }
+  }]);
+
+  return Bitmap;
+}(_displayObject2.default);
+
+Bitmap.cache = {};
+
+exports.default = Bitmap;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _matrix2d = __webpack_require__(22);
 
 var _matrix2d2 = _interopRequireDefault(_matrix2d);
@@ -289,6 +410,20 @@ var DisplayObject = function (_EventDispatcher) {
     _this.absClipGraphics = null;
     _this.absClipRuleNonzero = true;
     _this.cacheUpdating = false;
+
+    try {
+      Object.defineProperties(_this, {
+        stage: { get: _this._getStage },
+        scale: {
+          get: function get() {
+            return this.scaleX;
+          },
+          set: function set(scale) {
+            this.scaleX = this.scaleY = scale;
+          }
+        }
+      });
+    } catch (e) {}
     return _this;
   }
 
@@ -436,14 +571,50 @@ var DisplayObject = function (_EventDispatcher) {
   }, {
     key: 'filter',
     value: function filter(filterName, filterBox) {
-      this.cache(filterBox.x || 0, filterBox.y || 0, filterBox.width || this.width, filterBox.height || this.height);
+      filterBox = Object.assign({}, {
+        x: 0,
+        y: 0,
+        width: this.width,
+        height: this.height
+      }, filterBox);
+      this.cache(filterBox.x, filterBox.y, filterBox.width, filterBox.height);
       this._readyToFilter = true;
       this._filterName = filterName;
+    }
+  }, {
+    key: 'setTransform',
+    value: function setTransform(x, y, scaleX, scaleY, rotation, skewX, skewY, originX, originY) {
+      this.x = x || 0;
+      this.y = y || 0;
+      this.scaleX = scaleX == null ? 1 : scaleX;
+      this.scaleY = scaleY == null ? 1 : scaleY;
+      this.rotation = rotation || 0;
+      this.skewX = skewX || 0;
+      this.skewY = skewY || 0;
+      this.originX = originX || 0;
+      this.originY = originY || 0;
+    }
+  }, {
+    key: 'setMatrix',
+    value: function setMatrix(a, b, c, d, tx, ty) {
+      _matrix2d2.default.decompose(a, b, c, d, tx, ty, this);
     }
   }, {
     key: 'unfilter',
     value: function unfilter() {
       this.uncache();
+    }
+  }, {
+    key: '_getStage',
+    value: function _getStage() {
+      var o = this;
+      while (o.parent) {
+        o = o.parent;
+      }
+      if (o.___instanceof === 'Stage') {
+        return o;
+      }
+      return null;
     }
   }]);
 
@@ -453,7 +624,7 @@ var DisplayObject = function (_EventDispatcher) {
 exports.default = DisplayObject;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -465,7 +636,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _displayObject = __webpack_require__(2);
+var _displayObject = __webpack_require__(3);
 
 var _displayObject2 = _interopRequireDefault(_displayObject);
 
@@ -691,122 +862,6 @@ var Graphics = function (_DisplayObject) {
 exports.default = Graphics;
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _displayObject = __webpack_require__(2);
-
-var _displayObject2 = _interopRequireDefault(_displayObject);
-
-var _util = __webpack_require__(9);
-
-var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Bitmap = function (_DisplayObject) {
-  _inherits(Bitmap, _DisplayObject);
-
-  function Bitmap(img, onLoad) {
-    _classCallCheck(this, Bitmap);
-
-    var _this = _possibleConstructorReturn(this, (Bitmap.__proto__ || Object.getPrototypeOf(Bitmap)).call(this));
-
-    if (typeof img === 'string') {
-      if (Bitmap.cache[img]) {
-        if (_util2.default.isWeapp) {
-          _this.img = Bitmap.cache[img].img;
-          _this.rect = [0, 0, Bitmap.cache[img].width, Bitmap.cache[img].height];
-          _this.width = _this.rect[2];
-          _this.height = _this.rect[3];
-        } else {
-          _this.img = Bitmap.cache[img];
-          _this.rect = [0, 0, _this.img.width, _this.img.height];
-          _this.width = _this.img.width;
-          _this.height = _this.img.height;
-        }
-        onLoad && onLoad.call(_this);
-      } else if (_util2.default.isWeapp) {
-        _util2.default.getImageInWx(img, function (result) {
-          _this.img = result.img;
-          if (!_this.rect) {
-            _this.rect = [0, 0, result.width, result.height];
-          }
-          _this.width = result.width;
-          _this.height = result.height;
-          onLoad && onLoad.call(_this);
-          Bitmap.cache[img] = result;
-        });
-      } else {
-        _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
-        _this.visible = false;
-        _this.img.onload = function () {
-          _this.visible = true;
-          if (!_this.rect) {
-            _this.rect = [0, 0, _this.img.width, _this.img.height];
-          }
-          _this.width = _this.img.width;
-          _this.height = _this.img.height;
-          onLoad && onLoad.call(_this);
-          Bitmap.cache[img] = _this.img;
-        };
-        _this.img.src = img;
-      }
-    } else {
-      _this.img = img;
-      _this.rect = [0, 0, img.width, img.height];
-      _this.width = img.width;
-      _this.height = img.height;
-      Bitmap.cache[img.src] = img;
-    }
-    return _this;
-  }
-
-  _createClass(Bitmap, [{
-    key: 'clone',
-    value: function clone() {
-      // 复制完img宽度0？？所以直接传字符串
-      var bitmap = new Bitmap(typeof this.img === 'string' ? this.img : this.img.src);
-      bitmap.x = this.x;
-      bitmap.y = this.y;
-      bitmap.scaleX = this.scaleX;
-      bitmap.scaleY = this.scaleY;
-      bitmap.rotation = this.rotation;
-      bitmap.skewX = this.skewX;
-      bitmap.skewY = this.skewY;
-      bitmap.originX = this.originX;
-      bitmap.originY = this.originY;
-      bitmap.width = this.width;
-      bitmap.height = this.height;
-      bitmap.cursor = this.cursor;
-
-      return bitmap;
-    }
-  }]);
-
-  return Bitmap;
-}(_displayObject2.default);
-
-Bitmap.cache = {};
-
-exports.default = Bitmap;
-
-/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -819,7 +874,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _displayObject = __webpack_require__(2);
+var _displayObject = __webpack_require__(3);
 
 var _displayObject2 = _interopRequireDefault(_displayObject);
 
@@ -855,7 +910,7 @@ var Text = function (_DisplayObject) {
     option = option || {};
     _this.font = option.font || '10px sans-serif';
     _this.color = option.color || 'black';
-
+    _this.textAlign = option.textAlign || 'left';
     _this.baseline = option.baseline || 'top';
     return _this;
   }
@@ -894,7 +949,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _displayObject = __webpack_require__(2);
+var _displayObject = __webpack_require__(3);
 
 var _displayObject2 = _interopRequireDefault(_displayObject);
 
@@ -902,7 +957,7 @@ var _util = __webpack_require__(9);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _bitmap = __webpack_require__(4);
+var _bitmap = __webpack_require__(2);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -1024,7 +1079,10 @@ var Sprite = function (_DisplayObject) {
 
         rectLen > 4 && (this.originX = this.rect[2] * this.rect[4]);
         rectLen > 5 && (this.originY = this.rect[3] * this.rect[5]);
-        rectLen > 6 && (this.img = this.imgMap[this.option.imgs[this.rect[6]]]);
+        if (rectLen > 6) {
+          var img = this.option.imgs[this.rect[6]];
+          this.img = typeof img === 'string' ? this.imgMap[img] : img;
+        }
 
         if (index === len - 1 && (!this.endTime || Date.now() - this.endTime > this.interval)) {
           this.endTime = Date.now();
@@ -1058,7 +1116,10 @@ var Sprite = function (_DisplayObject) {
       var rectLen = rect.length;
       rectLen > 4 && (this.originX = rect[2] * rect[4]);
       rectLen > 5 && (this.originY = rect[3] * rect[5]);
-      rectLen > 6 && (this.img = this.imgMap[this.option.imgs[rect[6]]]);
+      if (rectLen > 6) {
+        var img = this.option.imgs[rect[6]];
+        this.img = typeof img === 'string' ? this.imgMap[img] : img;
+      }
     }
   }, {
     key: 'gotoAndPlayOnce',
@@ -2055,7 +2116,7 @@ var To = function () {
       this.cmds.push(['to']);
       if (arguments.length !== 0) {
         for (var key in target) {
-          this.set(key, target[key], duration, easing);
+          this.set(key, target[key], duration || 0, easing);
         }
       }
       return this;
@@ -2766,6 +2827,21 @@ var WeStage = function (_Group) {
       }
     }
   }, {
+    key: 'on',
+    value: function on(type, cb) {
+      switch (type) {
+        case 'touchstart':
+          this.touchStart = cb;
+          break;
+        case 'touchmove':
+          this.touchMove = cb;
+          break;
+        case 'touchend':
+          this.touchEnd = cb;
+          break;
+      }
+    }
+  }, {
     key: 'update',
     value: function update() {
       this.renderer.update(this);
@@ -2992,11 +3068,11 @@ var _weStage = __webpack_require__(14);
 
 var _weStage2 = _interopRequireDefault(_weStage);
 
-var _graphics = __webpack_require__(3);
+var _graphics = __webpack_require__(4);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
-var _bitmap = __webpack_require__(4);
+var _bitmap = __webpack_require__(2);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -3115,6 +3191,34 @@ var cax = {
   _to2.default.easing[itemLower + 'Out'] = _tween2.default.Easing[item].Out;
   _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
 });
+
+cax.loadImg = function (option) {
+  var img = new Image();
+  img.onload = function () {
+    option.complete(this);
+  };
+  img.src = option.img;
+};
+
+cax.loadImgs = function (option) {
+  var result = [];
+  var loaded = 0;
+  var len = option.imgs.length;
+  option.imgs.forEach(function (src, index) {
+    var img = new Image();
+    img.onload = function (i, img) {
+      return function () {
+        result[i] = img;
+        loaded++;
+        option.progress && option.progress(loaded / len, loaded, i, img, result);
+        if (loaded === len) {
+          option.complete && option.complete(result);
+        }
+      };
+    }(index, img);
+    img.src = src;
+  });
+};
 
 module.exports = cax;
 
@@ -3585,6 +3689,8 @@ var Stage = function (_Group) {
 
     _this.width = _this.canvas.width;
     _this.height = _this.canvas.height;
+
+    _this.___instanceof = 'Stage';
     return _this;
   }
 
@@ -3644,7 +3750,7 @@ var Stage = function (_Group) {
       this.preStageX = null;
       this.preStageY = null;
 
-      if (obj && Math.abs(this._mouseDownX - this._mouseUpX) < 30 && Math.abs(this._mouseDownY - this._mouseUpY) < 30) {
+      if (obj && evt.type === 'touchend' && Math.abs(this._mouseDownX - this._mouseUpX) < 30 && Math.abs(this._mouseDownY - this._mouseUpY) < 30) {
         mockEvt.type = 'tap';
         obj.dispatchEvent(mockEvt);
       }
@@ -3717,6 +3823,9 @@ var Stage = function (_Group) {
   }, {
     key: '_setCursor',
     value: function _setCursor(obj) {
+      if (!this.canvas.style) {
+        return;
+      }
       if (obj.cursor) {
         this.canvas.style.cursor = obj.cursor;
       } else if (obj.parent) {
@@ -3832,6 +3941,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var DEG_TO_RAD = 0.017453292519943295;
+var PI_2 = Math.PI * 2;
 
 var Matrix2D = function () {
   function Matrix2D(a, b, c, d, tx, ty) {
@@ -3943,6 +4053,35 @@ var Matrix2D = function () {
   return Matrix2D;
 }();
 
+Matrix2D.decompose = function (a, b, c, d, tx, ty, transform) {
+  var skewX = -Math.atan2(-c, d);
+  var skewY = Math.atan2(b, a);
+
+  var delta = Math.abs(skewX + skewY);
+
+  if (delta < 0.00001 || Math.abs(PI_2 - delta) < 0.00001) {
+    transform.rotation = skewY;
+
+    if (a < 0 && d >= 0) {
+      transform.rotation += transform.rotation <= 0 ? Math.PI : -Math.PI;
+    }
+
+    transform.skewX = transform.skewY = 0;
+  } else {
+    transform.rotation = 0;
+    transform.skewX = skewX;
+    transform.skewY = skewY;
+  }
+
+  // next set scale
+  transform.scaleX = Math.sqrt(a * a + b * b);
+  transform.scaleY = Math.sqrt(c * c + d * d);
+
+  // next set position
+  transform.x = tx;
+  transform.y = ty;
+};
+
 exports.default = Matrix2D;
 
 /***/ }),
@@ -3960,8 +4099,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var MOUSEOUT = 'mouseout';
-
 var EventDispatcher = function () {
   function EventDispatcher() {
     _classCallCheck(this, EventDispatcher);
@@ -3971,7 +4108,7 @@ var EventDispatcher = function () {
   }
 
   _createClass(EventDispatcher, [{
-    key: 'addEventListener',
+    key: "addEventListener",
     value: function addEventListener(type, listener, useCapture) {
       var listeners;
       if (useCapture) {
@@ -3992,7 +4129,7 @@ var EventDispatcher = function () {
       return listener;
     }
   }, {
-    key: 'removeEventListener',
+    key: "removeEventListener",
     value: function removeEventListener(type, listener, useCapture) {
       var listeners = useCapture ? this._captureListeners : this._listeners;
       if (!listeners) {
@@ -4012,42 +4149,38 @@ var EventDispatcher = function () {
       });
     }
   }, {
-    key: 'on',
+    key: "on",
     value: function on(type, listener, useCapture) {
       this.addEventListener(type, listener, useCapture);
     }
   }, {
-    key: 'off',
+    key: "off",
     value: function off(type, listener, useCapture) {
       this.removeEventListener(type, listener, useCapture);
     }
   }, {
-    key: 'dispatchEvent',
+    key: "dispatchEvent",
     value: function dispatchEvent(evt) {
-      if (evt.type === MOUSEOUT || !this.parent) {
-        this._dispatchEvent(evt, 0);
-        this._dispatchEvent(evt, 1);
-      } else {
-        var top = this,
-            list = [top];
-        while (top.parent) {
-          list.push(top = top.parent);
-        }
-        var i,
-            l = list.length;
 
-        // capture & atTarget
-        for (i = l - 1; i >= 0 && !evt.propagationStopped; i--) {
-          list[i]._dispatchEvent(evt, 0);
-        }
-        // bubbling
-        for (i = 0; i < l && !evt.propagationStopped; i++) {
-          list[i]._dispatchEvent(evt, 1);
-        }
+      var top = this,
+          list = [top];
+      while (top.parent) {
+        list.push(top = top.parent);
+      }
+      var i,
+          l = list.length;
+
+      // capture & atTarget
+      for (i = l - 1; i >= 0 && !evt.propagationStopped; i--) {
+        list[i]._dispatchEvent(evt, 0);
+      }
+      // bubbling
+      for (i = 0; i < l && !evt.propagationStopped; i++) {
+        list[i]._dispatchEvent(evt, 1);
       }
     }
   }, {
-    key: '_dispatchEvent',
+    key: "_dispatchEvent",
     value: function _dispatchEvent(evt, type) {
       var _this = this;
 
@@ -4110,7 +4243,7 @@ var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _graphics = __webpack_require__(3);
+var _graphics = __webpack_require__(4);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -4122,7 +4255,7 @@ var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-var _bitmap = __webpack_require__(4);
+var _bitmap = __webpack_require__(2);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -4268,6 +4401,7 @@ var CanvasRender = function (_Render) {
         this.setComplexProps(ctx, o);
         ctx.font = o.font;
         ctx.fillStyle = o.color;
+        ctx.textAlign = o.textAlign;
         ctx.textBaseline = o.baseline;
         ctx.fillText(o.text, 0, 0);
       }
@@ -4788,7 +4922,7 @@ var _group = __webpack_require__(1);
 
 var _group2 = _interopRequireDefault(_group);
 
-var _graphics = __webpack_require__(3);
+var _graphics = __webpack_require__(4);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -4804,7 +4938,7 @@ var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-var _bitmap = __webpack_require__(4);
+var _bitmap = __webpack_require__(2);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -4986,6 +5120,7 @@ var HitRender = function (_Render) {
 
           ctx.font = o.font;
           ctx.fillStyle = o.color;
+          ctx.textAlign = o.textAlign;
           ctx.textBaseline = o.baseline;
           ctx.fillText(o.text, 0, 0);
         }
@@ -5040,7 +5175,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graphics = __webpack_require__(3);
+var _graphics = __webpack_require__(4);
 
 var _graphics2 = _interopRequireDefault(_graphics);
 
@@ -5056,7 +5191,7 @@ var _sprite = __webpack_require__(6);
 
 var _sprite2 = _interopRequireDefault(_sprite);
 
-var _bitmap = __webpack_require__(4);
+var _bitmap = __webpack_require__(2);
 
 var _bitmap2 = _interopRequireDefault(_bitmap);
 
@@ -5146,6 +5281,7 @@ var WxHitRender = function (_Render) {
       } else if (obj instanceof _text2.default) {
         ctx.font = obj.font;
         ctx.fillStyle = obj.color;
+        ctx.textAlign = obj.textAlign;
         ctx.fillText(obj.text, 0, 0);
       }
       ctx.restore();
@@ -5917,6 +6053,10 @@ var _roundedRect = __webpack_require__(15);
 
 var _roundedRect2 = _interopRequireDefault(_roundedRect);
 
+var _bitmap2 = __webpack_require__(2);
+
+var _bitmap3 = _interopRequireDefault(_bitmap2);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5924,6 +6064,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*
+Options
+  font:
+  text: 
+  textColor:
+  image: [path, width, height]
+  bgColor: 
+  bgImage: [path, width, height]
+  borderRadius:
+  borderColor:
+*/
 
 var Button = function (_Group) {
   _inherits(Button, _Group);
@@ -5934,45 +6086,78 @@ var Button = function (_Group) {
     var _this = _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this));
 
     _this.width = option.width;
+    _this.height = option.height;
+    _this.x = option.x;
+    _this.y = option.y;
 
     var textHeight = 0;
-    _this.text = new _text2.default(option.text, {
-      font: option.font,
-      color: option.color
-    });
-    var textWidth = _this.text.getWidth();
-    var textGroup = new _group2.default();
+    var textGroup;
 
-    if (textWidth > option.width) {
-      var step = Math.round(option.text.length * option.width / textWidth / 2);
-
-      var textList = _this.stringSplit(option.text, step);
-      var lineHeight = option.lineHeight || 12;
-      textHeight = textList.length * lineHeight + 6;
-
-      textList.forEach(function (text, index) {
-        _this.text = new _text2.default(text, {
-          font: option.font,
-          color: option.color
-        });
-
-        _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
-        _this.text.y = Math.max(textHeight, option.height) / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0) + index * 12 - textHeight / 2 + lineHeight / 2;
-        textGroup.add(_this.text);
+    if (option.text) {
+      textGroup = new _group2.default();
+      _this.text = new _text2.default(option.text, {
+        font: option.font,
+        color: option.color
       });
-    } else {
-      _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
-      _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
-      textGroup.add(_this.text);
+      var textWidth = _this.text.getWidth();
+
+      if (textWidth > option.width) {
+        var step = Math.round(option.text.length * option.width / textWidth / 2);
+
+        var textList = _this.stringSplit(option.text, step);
+        var lineHeight = option.lineHeight || 12;
+        textHeight = textList.length * lineHeight + 6;
+
+        textList.forEach(function (text, index) {
+          _this.text = new _text2.default(text, {
+            font: option.font,
+            color: option.color
+          });
+
+          _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+          _this.text.y = Math.max(textHeight, option.height) / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0) + index * 12 - textHeight / 2 + lineHeight / 2;
+          textGroup.add(_this.text);
+        });
+      } else {
+        _this.text.x = option.width / 2 - _this.text.getWidth() / 2 * _this.text.scaleX + (option.textX || 0);
+        _this.text.y = option.height / 2 - 10 + 5 * _this.text.scaleY + (option.textY || 0);
+        textGroup.add(_this.text);
+      }
     }
 
-    _this.roundedRect = new _roundedRect2.default(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
-      strokeStyle: option.borderColor || 'black',
-      fillStyle: option.backgroundColor || '#F5F5F5'
-    });
+    if (option.bgImage) {
+      var ratio = SCALE_RATIO;
+      var bitmap = new _bitmap3.default(option.bgImage[0]);
+      bitmap.scaleX = ratio;
+      bitmap.scaleY = ratio;
+      bitmap.width = option.bgImage[1];
+      bitmap.height = option.bgImage[2];
+      bitmap.x = (_this.width - bitmap.width) / 2;
+      bitmap.y = (_this.height - bitmap.height) / 2;
+      _this.add(bitmap);
+    } else if (option.bgColor || option.borderColor) {
+      _this.roundedRect = new _roundedRect2.default(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
+        strokeStyle: option.borderColor || 'black',
+        fillStyle: option.backgroundColor || '#F5F5F5'
+      });
+      _this.add(_this.roundedRect);
+    }
 
-    _this.add(_this.roundedRect);
-    _this.add(textGroup);
+    if (option.image) {
+      var ratio = SCALE_RATIO;
+      var _bitmap = new _bitmap3.default(option.image[0]);
+      _bitmap.scaleX = ratio;
+      _bitmap.scaleY = ratio;
+      _bitmap.width = option.image[1];
+      _bitmap.height = option.image[2];
+      _bitmap.x = (_this.width - _bitmap.width) / 2;
+      _bitmap.y = (_this.height - _bitmap.height) / 2;
+      _this.add(_bitmap);
+    }
+
+    if (textGroup) {
+      _this.add(textGroup);
+    }
     return _this;
   }
 

@@ -135,7 +135,7 @@ class Stage extends Group {
     this.preStageX = null
     this.preStageY = null
 
-    if (obj && Math.abs(this._mouseDownX - this._mouseUpX) < 30 && Math.abs(this._mouseDownY - this._mouseUpY) < 30) {
+    if (obj && evt.type === 'touchend' && Math.abs(this._mouseDownX - this._mouseUpX) < 30 && Math.abs(this._mouseDownY - this._mouseUpY) < 30) {
       mockEvt.type = 'tap'
       obj.dispatchEvent(mockEvt)
     }
