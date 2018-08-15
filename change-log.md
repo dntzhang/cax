@@ -1,3 +1,11 @@
+## Cax 1.2.6
+
+* 小程序 stage 支持支持 touchstart touchmove 和 touchend 事件注入
+* button 支持背景图
+* 支持 obj.stage 属性获取到当前舞台
+* 支持 obj.scale 快速读取和设置 scaleX 和 scaleY
+* 修复 mouseout 问题，移动端也支持 mouseout 和 mouseover 事件
+
 ## Cax 1.2.5
 
 * group.add 方法如果 child 已经 add 过了，会移除以前的。所以 add 已有的 child 会有置顶的效果

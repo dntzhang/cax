@@ -426,6 +426,20 @@ var DisplayObject = function (_EventDispatcher) {
     _this.absClipGraphics = null;
     _this.absClipRuleNonzero = true;
     _this.cacheUpdating = false;
+
+    try {
+      Object.defineProperties(_this, {
+        stage: { get: _this._getStage },
+        scale: {
+          get: function get() {
+            return this.scaleX;
+          },
+          set: function set(scale) {
+            this.scaleX = this.scaleY = scale;
+          }
+        }
+      });
+    } catch (e) {}
     return _this;
   }
 
@@ -605,6 +619,18 @@ var DisplayObject = function (_EventDispatcher) {
     key: 'unfilter',
     value: function unfilter() {
       this.uncache();
+    }
+  }, {
+    key: '_getStage',
+    value: function _getStage() {
+      var o = this;
+      while (o.parent) {
+        o = o.parent;
+      }
+      if (o.___instanceof === 'Stage') {
+        return o;
+      }
+      return null;
     }
   }]);
 
@@ -3573,6 +3599,8 @@ var Stage = function (_Group) {
 
     _this.width = _this.canvas.width;
     _this.height = _this.canvas.height;
+
+    _this.___instanceof = 'Stage';
     return _this;
   }
 
@@ -3981,8 +4009,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var MOUSEOUT = 'mouseout';
-
 var EventDispatcher = function () {
   function EventDispatcher() {
     _classCallCheck(this, EventDispatcher);
@@ -3992,7 +4018,7 @@ var EventDispatcher = function () {
   }
 
   _createClass(EventDispatcher, [{
-    key: 'addEventListener',
+    key: "addEventListener",
     value: function addEventListener(type, listener, useCapture) {
       var listeners;
       if (useCapture) {
@@ -4013,7 +4039,7 @@ var EventDispatcher = function () {
       return listener;
     }
   }, {
-    key: 'removeEventListener',
+    key: "removeEventListener",
     value: function removeEventListener(type, listener, useCapture) {
       var listeners = useCapture ? this._captureListeners : this._listeners;
       if (!listeners) {
@@ -4033,42 +4059,38 @@ var EventDispatcher = function () {
       });
     }
   }, {
-    key: 'on',
+    key: "on",
     value: function on(type, listener, useCapture) {
       this.addEventListener(type, listener, useCapture);
     }
   }, {
-    key: 'off',
+    key: "off",
     value: function off(type, listener, useCapture) {
       this.removeEventListener(type, listener, useCapture);
     }
   }, {
-    key: 'dispatchEvent',
+    key: "dispatchEvent",
     value: function dispatchEvent(evt) {
-      if (evt.type === MOUSEOUT || !this.parent) {
-        this._dispatchEvent(evt, 0);
-        this._dispatchEvent(evt, 1);
-      } else {
-        var top = this,
-            list = [top];
-        while (top.parent) {
-          list.push(top = top.parent);
-        }
-        var i,
-            l = list.length;
 
-        // capture & atTarget
-        for (i = l - 1; i >= 0 && !evt.propagationStopped; i--) {
-          list[i]._dispatchEvent(evt, 0);
-        }
-        // bubbling
-        for (i = 0; i < l && !evt.propagationStopped; i++) {
-          list[i]._dispatchEvent(evt, 1);
-        }
+      var top = this,
+          list = [top];
+      while (top.parent) {
+        list.push(top = top.parent);
+      }
+      var i,
+          l = list.length;
+
+      // capture & atTarget
+      for (i = l - 1; i >= 0 && !evt.propagationStopped; i--) {
+        list[i]._dispatchEvent(evt, 0);
+      }
+      // bubbling
+      for (i = 0; i < l && !evt.propagationStopped; i++) {
+        list[i]._dispatchEvent(evt, 1);
       }
     }
   }, {
-    key: '_dispatchEvent',
+    key: "_dispatchEvent",
     value: function _dispatchEvent(evt, type) {
       var _this = this;
 
