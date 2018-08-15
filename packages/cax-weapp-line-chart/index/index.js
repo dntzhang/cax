@@ -1,4 +1,6 @@
 import cax from '../cax/index'
+import Tooltip from './tooltip'
+
 const info = wx.getSystemInfoSync()
 Page({
   onLoad: function (options) {
@@ -99,30 +101,40 @@ function renderLineChart(data, option, component) {
   })
 
   data.forEach((item, index) => {
-    if(index>0){
+    if (index > 0) {
       const t = new cax.Text(item.date)
-      t.x = leftBottom[0] +option.xInterval*index
-      t.y = leftBottom[1] 
+      t.x = leftBottom[0] + option.xInterval * index
+      t.y = leftBottom[1]
       t.textAlign = 'center'
       stage.add(t)
     }
   })
 
-//tooptip逻辑写在下面
-  stage.on('touchstart',function(evt){
-    console.log('touchstart')
+  const tooltip = new Tooltip('0','0')
+
+  tooltip.visible = false
+  stage.add(tooltip)
+
+  //tooptip逻辑写在下面
+  stage.on('touchstart', function (evt) {
+    tooltip.x = evt.stageX
+    tooltip.y = evt.stageY
+    //tooltip.update('11:11','100.00')
+    tooltip.visible = true
+
   })
 
-  stage.on('touchend',function(evt){
-    console.log('touchend')
+  stage.on('touchend', function (evt) {
+    tooltip.visible = false
+
   })
 
-  stage.on('touchmove',function(evt){
-    console.log(evt)
-    console.log('touchmove')
+  stage.on('touchmove', function (evt) {
+    //  tooltip.update('11:11','100.00')
+    tooltip.x = evt.stageX
+    tooltip.y = evt.stageY
   })
 
-  console.log(stage)
   cax.tick(() => {
 
     stage.update()
