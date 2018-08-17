@@ -1,5 +1,5 @@
 /*!
- *  cax v1.2.8
+ *  cax v1.2.9
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -6337,7 +6337,7 @@ var EquilateralPolygon = function (_Shape) {
     _this.num = num;
     _this.r = r;
     _this.options = options || {};
-    _this.strokeColor = options.strokeColor || 'black';
+
     _this.vertex = [];
     _this.initVertex();
     return _this;
@@ -6383,23 +6383,25 @@ var EquilateralPolygon = function (_Shape) {
     key: 'draw',
     value: function draw() {
       this.beginPath();
-      this.strokeStyle(this.strokeColor);
+
       this.moveTo(this.vertex[0][0], this.vertex[0][1]);
 
       for (var i = 1, len = this.vertex.length; i < len; i++) {
         this.lineTo(this.vertex[i][0], this.vertex[i][1]);
       }
       this.closePath();
-      // 路径闭合
-      //  if (this.options.strokeStyle) {
-      //    this.strokeStyle = strokeStyle;
-      // this.lineWidth(this.options.width);
-      // this.lineJoin('round');
-      this.stroke();
-      //  }
+
       if (this.options.fillStyle) {
         this.fillStyle(this.options.fillStyle);
         this.fill();
+      }
+
+      if (this.options.strokeStyle) {
+        this.strokeStyle(this.options.strokeStyle);
+        if (typeof this.options.lineWidth === 'number') {
+          this.lineWidth(this.options.lineWidth);
+        }
+        this.stroke();
       }
     }
   }]);
