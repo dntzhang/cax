@@ -10,9 +10,11 @@ class Stage extends Group {
     super()
     const len = arguments.length
     this.isWegame = typeof wx !== 'undefined' && wx.createCanvas
+    this.moveDetectionInterval = 0
     if (len === 0) { // wegame
       this.canvas = wegameCanvas
       this.disableMoveDetection = true
+      this.moveDetectionInterval = 500
     } else if (len === 4) { // weapp
       return new WeStage(arguments[0], arguments[1], arguments[2], arguments[3])
     } else {
@@ -84,6 +86,8 @@ class Stage extends Group {
     this.height = this.canvas.height
 
     this.___instanceof = 'Stage'
+
+    this._moveDetectionTime = Date.now()
   }
 
   _handleContextmenu (evt) {
@@ -152,6 +156,11 @@ class Stage extends Group {
   }
 
   _handleMouseMove (evt) {
+    if(Date.now() - this._moveDetectionTime < this.moveDetectionInterval){
+      return
+    }
+    this._moveDetectionTime = Date.now()
+
     if (this.isWegame) {
       evt.type = 'touchmove'
     }

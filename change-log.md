@@ -1,3 +1,7 @@
+## Cax 1.2.8
+
+* 支持 stage.movedetectioninterval 设置检测 touchmove 和 mousemove 事件间隔
+
 ## Cax 1.2.7
 
 * 解决 tap 事件触发两次的问题

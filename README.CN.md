@@ -66,6 +66,7 @@
       - [scaleEventPoint](#scaleeventpoint)
     - [Stage 属性](#stage-属性)  
       - [disableMoveDetection](#disablemovedetection)
+      - [moveDetectionInterval](#movedetectioninterval)
   - [Bitmap](#bitmap)
   - [Sprite](#sprite)
       - [Sprite 方法](#sprite-方法)
@@ -89,6 +90,7 @@
   - [Cursor](#cursor)
   - [Fixed](#fixed)
   - [Shadow](#shadow)
+  - [Stage](#stage-1)    
 - [方法](#方法)  
   - [destroy](#destroy)
 - [事件](#事件)
@@ -338,6 +340,15 @@ stage.disableMoveDetection = true
 stage.disableMoveDetection = false
 ```
 
+##### moveDetectionInterval
+
+设置 touchmove 和 mousemove 检测的间隔 
+
+```js
+//每秒检测两次
+stage.moveDetectionInterval = 500
+```
+
 ### Bitmap
 
 ```js
@@ -540,6 +551,7 @@ const button = new cax.Button({
 | y | 竖直偏移 |
 | scaleX | 水平缩放 |
 | scaleY | 竖直缩放 |
+| scale | 同时设置或读取 scaleX 和 scaleY |
 | rotation | 旋转 |
 | skewX | 歪斜 X |
 | skewY | 歪斜 Y |
@@ -589,6 +601,18 @@ obj.shadow = {
     offsetY: 5,
     blur: 10
 }
+```
+
+### Stage
+
+|Name      |Describe   |
+|---|---|
+| stage |或者自己所在的 stage|
+
+使用方式:
+
+```js
+obj.stage
 ```
 
 ## 方法

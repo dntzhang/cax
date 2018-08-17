@@ -59,7 +59,8 @@ English | [简体中文](./README.CN.md)
       - [update](#update)
       - [scaleEventPoint](#scaleeventpoint)
     - [Prop](#stage-prop)  
-      - [disableMoveDetection](#disablemovedetection)      
+      - [disableMoveDetection](#disablemovedetection)   
+      - [moveDetectionInterval](#movedetectioninterval)
   - [Bitmap](#bitmap)
     - [Prop](#bitmap-prop)  
       - [rect](#rect)       
@@ -85,6 +86,7 @@ English | [简体中文](./README.CN.md)
   - [Cursor](#cursor)
   - [Fixed](#fixed)
   - [Shadow](#shadow)
+  - [Stage](#stage-1)  
 - [Method](#method)  
   - [destroy](#destroy)
 - [Event](#event)
@@ -231,6 +233,15 @@ Disable event detection for mouse or touch mobile. Default value in the web is f
 
 ```js
 stage.disableMoveDetection = true
+```
+
+##### moveDetectionInterval
+
+Set the touchmove and mousemove detection interval by moveDetectionInterval.
+
+```js
+//check twice in one second
+stage.moveDetectionInterval = 500
 ```
 
 ### Bitmap
@@ -436,6 +447,7 @@ const button = new cax.Button({
 | y | Vertical offset |
 | scaleX | Horizontal scaling |
 | scaleY | Vertical scaling |
+| scale | Horizontal and Vertical scaling |
 | rotation | rotation |
 | skewX | skewX |
 | skewY | skewY |
@@ -485,6 +497,18 @@ obj.shadow = {
     offsetY: 5,
     blur: 10
 }
+```
+
+### Stage
+
+|Name      |Describe   |
+|---|---|
+| stage | get the root stage|
+
+Usage:
+
+```js
+obj.stage
 ```
 
 ## Method
