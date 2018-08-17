@@ -1,5 +1,5 @@
 /*!
- *  cax v1.2.7
+ *  cax v1.2.8
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -3497,10 +3497,12 @@ var Stage = function (_Group) {
 
     var len = arguments.length;
     _this.isWegame = typeof wx !== 'undefined' && wx.createCanvas;
+    _this.moveDetectionInterval = 0;
     if (len === 0) {
       // wegame
       _this.canvas = _wegameCanvas2.default;
       _this.disableMoveDetection = true;
+      _this.moveDetectionInterval = 500;
     } else if (len === 4) {
       var _ret;
 
@@ -3601,6 +3603,8 @@ var Stage = function (_Group) {
     _this.height = _this.canvas.height;
 
     _this.___instanceof = 'Stage';
+
+    _this._moveDetectionTime = Date.now();
     return _this;
   }
 
@@ -3679,6 +3683,11 @@ var Stage = function (_Group) {
   }, {
     key: '_handleMouseMove',
     value: function _handleMouseMove(evt) {
+      if (Date.now() - this._moveDetectionTime < this.moveDetectionInterval) {
+        return;
+      }
+      this._moveDetectionTime = Date.now();
+
       if (this.isWegame) {
         evt.type = 'touchmove';
       }
