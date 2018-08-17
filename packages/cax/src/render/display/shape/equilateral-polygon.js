@@ -7,7 +7,7 @@ class EquilateralPolygon extends Shape {
     this.num = num
     this.r = r
     this.options = options || {}
-    this.strokeColor = options.strokeColor || 'black'
+
     this.vertex = []
     this.initVertex()
   }
@@ -45,23 +45,26 @@ class EquilateralPolygon extends Shape {
 
   draw () {
     this.beginPath()
-    this.strokeStyle(this.strokeColor)
+
     this.moveTo(this.vertex[0][0], this.vertex[0][1])
 
     for (let i = 1, len = this.vertex.length; i < len; i++) {
       this.lineTo(this.vertex[i][0], this.vertex[i][1])
     }
     this.closePath()
-    // 路径闭合
-    //  if (this.options.strokeStyle) {
-    //    this.strokeStyle = strokeStyle;
-    // this.lineWidth(this.options.width);
-    // this.lineJoin('round');
-    this.stroke()
-    //  }
+
     if (this.options.fillStyle) {
       this.fillStyle(this.options.fillStyle)
       this.fill()
+    }
+
+  
+    if (this.options.strokeStyle) {
+      this.strokeStyle(this.options.strokeStyle)
+      if(typeof this.options.lineWidth === 'number'){
+        this.lineWidth(this.options.lineWidth)
+      }
+      this.stroke()
     }
   }
 }
