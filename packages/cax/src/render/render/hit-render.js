@@ -44,7 +44,7 @@ class HitRender extends Render {
   }
 
   _hitAABB (o, evt) {
-    if (!o.isVisible()) {
+    if (o.ignoreHit || !o.isVisible()) {
       return
     }
     if (o instanceof Group) {
@@ -95,7 +95,7 @@ class HitRender extends Render {
   }
 
   _hitPixel (o, evt, mtx) {
-    if (!o.isVisible()) return
+    if (o.ignoreHit || !o.isVisible()) return
     let ctx = this.ctx
     if (mtx && !o.fixed) {
       o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
