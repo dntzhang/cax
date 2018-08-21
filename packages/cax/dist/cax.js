@@ -4918,7 +4918,7 @@ var HitRender = function (_Render) {
   }, {
     key: '_hitAABB',
     value: function _hitAABB(o, evt) {
-      if (!o.isVisible()) {
+      if (o.ignoreHit || !o.isVisible()) {
         return;
       }
       if (o instanceof _group2.default) {
@@ -4972,7 +4972,7 @@ var HitRender = function (_Render) {
   }, {
     key: '_hitPixel',
     value: function _hitPixel(o, evt, mtx) {
-      if (!o.isVisible()) return;
+      if (o.ignoreHit || !o.isVisible()) return;
       var ctx = this.ctx;
       if (mtx && !o.fixed) {
         o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
