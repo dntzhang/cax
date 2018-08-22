@@ -8,8 +8,6 @@ class Path extends Shape {
     this.d = d
 
     option = Object.assign({
-      fillStyle: 'black',
-      strokeStyle: 'black',
       lineWidth: 1
     }, option)
     this.option = option
