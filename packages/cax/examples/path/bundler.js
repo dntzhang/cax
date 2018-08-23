@@ -2954,94 +2954,19 @@ var _index2 = _interopRequireDefault(_index);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var stage = new _index2.default.Stage(300, 400, 'body');
-
-var bitmap = new _index2.default.Bitmap('./wepay.png');
-bitmap.rect = [0, 0, 170, 140];
-bitmap.x = 60;
-bitmap.y = 60;
-bitmap.cursor = 'pointer';
-bitmap.on('click', function () {
-    alert('wepay');
-});
-
-var group = new _index2.default.Group();
-var rr = new _index2.default.RoundedRect(100, 40, 2, { fillStyle: '#42B035', strokeStyle: '#42B035', lineWidth: 4 });
-var text = new _index2.default.Text('Drag Me!', {
-    color: 'white',
-    font: '20px Arial'
-});
-text.x = 50 - text.getWidth() / 2;
-text.y = 40 / 2 - 10;
-group.add(rr, text);
-group.cursor = 'move';
-group.on('drag', function (evt) {
-    group.x += evt.dx;
-    group.y += evt.dy;
-    evt.preventDefault();
-});
-group.x = 100;
-group.y = 250;
-
-var caxText = new _index2.default.Text('Hello Cax!', {
-    color: '#42B035',
-    font: '30px Arial'
-});
-caxText.shadow = {
-    color: '#42B035',
-    offsetX: -5,
-    offsetY: 5,
-    blur: 10
-};
-caxText.x = 150 - caxText.getWidth() / 2;
-caxText.y = 200;
-caxText.on('drag', function (evt) {
-    evt.target.x += evt.dx;
-    evt.target.y += evt.dy;
-    evt.preventDefault();
-});
-caxText.cursor = 'move';
-
-stage.add(group, bitmap, caxText);
-
-_index2.default.tick(function () {
-    stage.update();
-});
-
-// bitmap.on('touchstart', () => {
-//     console.log('touchstart')
+// const path = new cax.Path('M4.645,45.577c-0.017-0.383-0.029-0.767-0.029-1.154c0-13.997,11.387-25.385,25.385-25.385 s25.385,11.387,25.385,25.385c0,0.387-0.012,0.771-0.029,1.154h4.616C59.985,45.193,60,44.81,60,44.423c0-16.569-13.431-30-30-30 s-30,13.431-30,30c0,0.387,0.015,0.77,0.029,1.154H4.645z',{
+//     strokeStyle:'black',
+//    // fillStyle:'black'
 // })
 
-// bitmap.on('tap', () => {
-//     console.log('tap')
-// })
+var path = new _index2.default.Path('M10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80', {
+        strokeStyle: 'black'
+        // fillStyle:'black'
+});
 
-
-// bitmap.on('touchmove', () => {
-//     console.log('touchmove')
-// })
-
-// bitmap.on('drag', () => {
-//     console.log('dragging')
-// })
-
-// bitmap.on('touchend', () => {
-//     console.log('touchend')
-// })
-
-
-// const ap = new cax.ArrowPath([{ x: 100, y: 200 }, { x: 100, y: 300 }])
-// stage.add(ap)
-
-// const ap2 = new cax.ArrowPath([{ x: 100, y: 200 }, { x: 200, y: 200 }])
-// stage.add(ap2)
-
-
-// const ap3 = new cax.ArrowPath([{ x: 100, y: 200 }, { x: 0, y: 200 }])
-// stage.add(ap3)
-
-
-// const ap4 = new cax.ArrowPath([{ x: 100, y: 200 }, { x: 100, y: 100 }])
-// stage.add(ap4)
+//path.x = 100
+stage.add(path);
+stage.update();
 
 /***/ }),
 /* 17 */
@@ -5615,6 +5540,7 @@ var Path = function (_Shape) {
           case 'S':
 
             if (preItem[0] === 'C' || preItem[0] === 'c') {
+              console.log(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
               this.bezierCurveTo(preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
             } else if (preItem[0] === 'S' || preItem[0] === 's') {
               this.bezierCurveTo(preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]);
@@ -5654,6 +5580,7 @@ var Path = function (_Shape) {
             break;
           case 's':
             if (preItem[0] === 'C' || preItem[0] === 'c') {
+
               this.bezierCurveTo(preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
             } else if (preItem[0] === 'S' || preItem[0] === 's') {
               this.bezierCurveTo(preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
@@ -5766,6 +5693,8 @@ var Path = function (_Shape) {
             break;
         }
       }
+
+      console.log(this.cmds);
       if (this.option.fillStyle) {
         this.fillStyle(this.option.fillStyle);
         this.fill();
