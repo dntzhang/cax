@@ -1,5 +1,5 @@
 /*!
- *  cax v1.2.8
+ *  cax v1.2.9
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -4918,7 +4918,7 @@ var HitRender = function (_Render) {
   }, {
     key: '_hitAABB',
     value: function _hitAABB(o, evt) {
-      if (!o.isVisible()) {
+      if (o.ignoreHit || !o.isVisible()) {
         return;
       }
       if (o instanceof _group2.default) {
@@ -4972,7 +4972,7 @@ var HitRender = function (_Render) {
   }, {
     key: '_hitPixel',
     value: function _hitPixel(o, evt, mtx) {
-      if (!o.isVisible()) return;
+      if (o.ignoreHit || !o.isVisible()) return;
       var ctx = this.ctx;
       if (mtx && !o.fixed) {
         o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty);
@@ -5458,8 +5458,6 @@ var Path = function (_Shape) {
     _this.d = d;
 
     option = Object.assign({
-      fillStyle: 'black',
-      strokeStyle: 'black',
       lineWidth: 1
     }, option);
     _this.option = option;
@@ -5524,9 +5522,9 @@ var Path = function (_Shape) {
           case 'S':
 
             if (preItem[0] === 'C' || preItem[0] === 'c') {
-              this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
+              this.bezierCurveTo(preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
             } else if (preItem[0] === 'S' || preItem[0] === 's') {
-              this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]);
+              this.bezierCurveTo(preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]);
             }
             preX = item[3];
             preY = item[4];
@@ -5563,9 +5561,9 @@ var Path = function (_Shape) {
             break;
           case 's':
             if (preItem[0] === 'C' || preItem[0] === 'c') {
-              this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+              this.bezierCurveTo(preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
             } else if (preItem[0] === 'S' || preItem[0] === 's') {
-              this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+              this.bezierCurveTo(preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
             }
 
             preX += item[3];
@@ -5600,9 +5598,11 @@ var Path = function (_Shape) {
 
             curves.forEach(function (curve, index) {
               if (index === 0) {
-                _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                _this2.moveTo(preX, preY);
+                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
               } else {
-                _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                //curves[index - 1].x, curves[index - 1].y, 
+                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
               }
             });
 
@@ -5628,9 +5628,11 @@ var Path = function (_Shape) {
 
             curves.forEach(function (curve, index) {
               if (index === 0) {
-                _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                _this2.moveTo(preX, preY);
+                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
               } else {
-                _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                //curves[index - 1].x, curves[index - 1].y
+                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
               }
             });
 
@@ -6337,7 +6339,7 @@ var EquilateralPolygon = function (_Shape) {
     _this.num = num;
     _this.r = r;
     _this.options = options || {};
-    _this.strokeColor = options.strokeColor || 'black';
+
     _this.vertex = [];
     _this.initVertex();
     return _this;
@@ -6383,23 +6385,25 @@ var EquilateralPolygon = function (_Shape) {
     key: 'draw',
     value: function draw() {
       this.beginPath();
-      this.strokeStyle(this.strokeColor);
+
       this.moveTo(this.vertex[0][0], this.vertex[0][1]);
 
       for (var i = 1, len = this.vertex.length; i < len; i++) {
         this.lineTo(this.vertex[i][0], this.vertex[i][1]);
       }
       this.closePath();
-      // 路径闭合
-      //  if (this.options.strokeStyle) {
-      //    this.strokeStyle = strokeStyle;
-      // this.lineWidth(this.options.width);
-      // this.lineJoin('round');
-      this.stroke();
-      //  }
+
       if (this.options.fillStyle) {
         this.fillStyle(this.options.fillStyle);
         this.fill();
+      }
+
+      if (this.options.strokeStyle) {
+        this.strokeStyle(this.options.strokeStyle);
+        if (typeof this.options.lineWidth === 'number') {
+          this.lineWidth(this.options.lineWidth);
+        }
+        this.stroke();
       }
     }
   }]);

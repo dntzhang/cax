@@ -1,3 +1,9 @@
+## Cax 1.2.9
+
+* 移除 path 默认的 strokeStyle 和 fillStyle
+* 修复 path 某些命令的 bug
+* 内置对象支持 ignoreHit 不去检测事件绑定
+
 ## Cax 1.2.8
 
 * 支持 stage.movedetectioninterval 设置检测 touchmove 和 mousemove 事件间隔

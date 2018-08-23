@@ -5458,8 +5458,6 @@ var Path = function (_Shape) {
     _this.d = d;
 
     option = Object.assign({
-      fillStyle: 'black',
-      strokeStyle: 'black',
       lineWidth: 1
     }, option);
     _this.option = option;
@@ -5524,9 +5522,9 @@ var Path = function (_Shape) {
           case 'S':
 
             if (preItem[0] === 'C' || preItem[0] === 'c') {
-              this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
+              this.bezierCurveTo(preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
             } else if (preItem[0] === 'S' || preItem[0] === 's') {
-              this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]);
+              this.bezierCurveTo(preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]);
             }
             preX = item[3];
             preY = item[4];
@@ -5563,9 +5561,9 @@ var Path = function (_Shape) {
             break;
           case 's':
             if (preItem[0] === 'C' || preItem[0] === 'c') {
-              this.bezierCurveTo(preX, preY, preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+              this.bezierCurveTo(preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
             } else if (preItem[0] === 'S' || preItem[0] === 's') {
-              this.bezierCurveTo(preX, preY, preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
+              this.bezierCurveTo(preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4]);
             }
 
             preX += item[3];
@@ -5600,9 +5598,11 @@ var Path = function (_Shape) {
 
             curves.forEach(function (curve, index) {
               if (index === 0) {
-                _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                _this2.moveTo(preX, preY);
+                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
               } else {
-                _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                //curves[index - 1].x, curves[index - 1].y, 
+                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
               }
             });
 
@@ -5628,9 +5628,11 @@ var Path = function (_Shape) {
 
             curves.forEach(function (curve, index) {
               if (index === 0) {
-                _this2.bezierCurveTo(preX, preY, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                _this2.moveTo(preX, preY);
+                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
               } else {
-                _this2.bezierCurveTo(curves[index - 1].x, curves[index - 1].y, curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
+                //curves[index - 1].x, curves[index - 1].y
+                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
               }
             });
 
