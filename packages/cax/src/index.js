@@ -94,8 +94,10 @@ const cax = {
   To.easing[itemLower + 'InOut'] = TWEEN.Easing[item].InOut
 })
 
+const isWegame = typeof wx !== 'undefined' && wx.createCanvas
+
 cax.loadImg = function (option) {
-  const img = new Image()
+  const img = isWegame ? wx.createImage() : new Image()
   img.onload = function () {
     option.complete(this)
   }
@@ -107,7 +109,7 @@ cax.loadImgs = function (option) {
   let loaded = 0
   const len = option.imgs.length
   option.imgs.forEach((src, index) => {
-    const img = new Image()
+    const img = isWegame ? wx.createImage() : new Image()
     img.onload = (function (i, img) {
       return function(){
         result[i] = img
