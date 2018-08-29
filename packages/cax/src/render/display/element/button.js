@@ -71,7 +71,7 @@ class Button extends Group {
     } else if (option.bgColor || option.borderColor) {
       this.roundedRect = new RoundedRect(option.width, option.autoHeight ? Math.max(textHeight, option.height) : option.height, option.borderRadius, {
         strokeStyle: option.borderColor || 'black',
-        fillStyle: option.backgroundColor || '#F5F5F5'
+        fillStyle: option.bgColor || '#F5F5F5'
       })
       this.add(this.roundedRect)
     }
