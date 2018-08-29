@@ -4,6 +4,10 @@
 
 > 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
 
+* 微信小游戏
+
+![点十消除](./asset/wegame.jpg)
+
 * [Wechart by Cax![](./asset/hot.png)](https://github.com/dntzhang/wechart)
 * Web DEMO & [→ Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)
   * [Simple](https://dntzhang.github.io/cax) 
@@ -29,7 +33,6 @@
 
 ![星球部落](./asset/ss1.png)![星球部落](./asset/ss3.png)
 
-* 小游戏 DEMO 正在审核中敬请期待
 
 ## 特性
 
