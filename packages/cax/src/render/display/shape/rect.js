@@ -17,6 +17,9 @@ class Rect extends Shape {
 
     if (this.option.strokeStyle) {
       this.strokeStyle(this.option.strokeStyle)
+      if(typeof this.options.lineWidth === 'number'){
+        this.lineWidth(this.options.lineWidth)
+      }
       this.strokeRect(0, 0, this.width, this.height)
     }
   }
