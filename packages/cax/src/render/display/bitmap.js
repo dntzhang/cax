@@ -31,9 +31,9 @@ class Bitmap extends DisplayObject {
         })
       } else {
         this.img = util.isWegame ? wx.createImage() : new window.Image()
-        this.visible = false
+       
         this.img.onload = () => {
-          this.visible = true
+          
           if (!this.rect) {
             this.rect = [0, 0, this.img.width, this.img.height]
           }
