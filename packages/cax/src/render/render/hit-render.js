@@ -165,7 +165,7 @@ class HitRender extends Render {
       }
     }
 
-    if (ctx.getImageData(0, 0, 1, 1).data[3] > 1) {
+    if (ctx.getImageData(0, 0, 1, 1).data[3] > 0) {
       this._dispatchEvent(o, evt)
       return o
     }
