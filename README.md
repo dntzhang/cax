@@ -19,6 +19,8 @@ English | [简体中文](./README.CN.md)
 
 ## Wechart Game Demo
 
+![你在画什么](./asset/draw.png)
+
 ![点十消除](./asset/wegame.jpg)
 
 ## Demo
