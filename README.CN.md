@@ -252,7 +252,7 @@ cax.loadImgs({
 
 ```js
 const group = new cax.Group()
-const rect = new cax.Rect(100, 100 {
+const rect = new cax.Rect(100, 100, {
   fillStyle: 'black'
 })
 group.add(rect)
