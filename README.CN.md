@@ -6,6 +6,8 @@
 
 * 微信小游戏
 
+![你在画什么](https://github.com/dntzhang/cax/raw/master/asset/draw.png)
+
 ![点十消除](./asset/wegame.jpg)
 
 * [Wechart by Cax![](./asset/hot.png)](https://github.com/dntzhang/wechart)
