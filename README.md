@@ -17,7 +17,7 @@ English | [简体中文](./README.CN.md)
 * Built-in images loader
 * Built-in cross platform motion library [→ to2to](https://github.com/dntzhang/cax/tree/master/packages/to)
 
-## Wechart Game Demo
+## Wechat Game Demo
 
 ![你在画什么](./asset/draw.png)
 
@@ -45,7 +45,7 @@ English | [简体中文](./README.CN.md)
   
 [→ Demo Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)  
 
-## Wechart App Demo
+## Wechat App Demo
 
 ![星球部落](./asset/xqbl.png)
 
