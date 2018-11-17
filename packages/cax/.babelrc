@@ -1,8 +1,5 @@
 {
     "plugins": [
-      "transform-class-properties",
-      ["transform-react-jsx", {
-        "pragma": "Cax.h" 
-      }]
+      "transform-class-properties"
     ]
-  }
+}
