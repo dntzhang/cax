@@ -190,6 +190,9 @@ rect.on('touchend', () => {
   console.log('touchend')
 })
 ```
+
+主要，小程序事件触发是根据元素的矩形区域，所以需要设置 width 和 height 才能绑定触发事件。
+
 ## 一分钟入门小游戏 cax 使用
 
 到 GitHub [下载 cax 小游戏示例](https://github.com/dntzhang/cax/tree/master/packages/cax-wegame)，目录结构和运行效果如下:
