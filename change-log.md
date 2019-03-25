@@ -1,3 +1,7 @@
+## Cax 1.3.0
+
+* Group 也能设置宽高并且绑定 AABB 事件
+
 ## Cax 1.2.9
 
 * 移除 path 默认的 strokeStyle 和 fillStyle
