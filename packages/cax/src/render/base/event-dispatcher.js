@@ -1,3 +1,4 @@
+import option from "./stage-propagation-tag"
 
 class EventDispatcher {
   constructor () {
@@ -43,7 +44,8 @@ class EventDispatcher {
   }
 
   dispatchEvent (evt) {
- 
+      option.stagePropagationStopped[evt.type] = false
+
       var top = this, list = [top]
       while (top.parent) { list.push(top = top.parent) }
       var i, l = list.length

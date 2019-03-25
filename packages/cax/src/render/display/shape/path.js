@@ -229,6 +229,14 @@ class Path extends Shape {
       this.stroke()
     }
   }
+
+  clone(){
+    return new Path(this.d,{
+      lineWidth:this.option.lineWidth,
+      strokeStyle:this.option.strokeStyle,
+      fillStyle:this.option.fillStyle
+    })
+  }
 }
 
 export default Path

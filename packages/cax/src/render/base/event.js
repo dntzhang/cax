@@ -1,3 +1,5 @@
+import option from "./stage-propagation-tag"
+
 class Event {
   constructor () {
     this.propagationStopped = false
@@ -7,6 +9,7 @@ class Event {
   }
 
   stopPropagation () {
+    option.stagePropagationStopped[this.type] = true
     this.propagationStopped = true
   }
 

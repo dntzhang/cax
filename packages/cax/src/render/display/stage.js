@@ -4,6 +4,7 @@ import Renderer from '../render/renderer.js'
 import HitRender from '../render/hit-render.js'
 import Event from '../base/event.js'
 import WeStage from './we-stage'
+import option from '../base/stage-propagation-tag'
 
 class Stage extends Group {
   constructor (width, height, renderTo) {
@@ -276,9 +277,13 @@ class Stage extends Group {
 
   on (type, fn) {
     this.canvas.addEventListener(type, (evt) => {
-      this._computeStageXY(evt)
-      fn(evt)
+      if(!option.stagePropagationStopped[type]){
+        this._computeStageXY(evt)
+        fn(evt)
+      }
+      option.stagePropagationStopped[type] = false
     })
+
   }
 
   off (type, fn) {

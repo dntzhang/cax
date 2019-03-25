@@ -30,6 +30,8 @@ class DisplayObject extends EventDispatcher {
         }
       });
     } catch (e) {}
+
+    this.hitBox = null
   }
 
   isVisible () {
@@ -37,7 +39,8 @@ class DisplayObject extends EventDispatcher {
   }
 
   initAABB () {
-    if (this.width === undefined || this.height === undefined) {
+
+    if ((this.width === undefined || this.height === undefined) && !this.hitBox) {
       return
     }
 
@@ -46,12 +49,20 @@ class DisplayObject extends EventDispatcher {
       width = this.width,
       height = this.height,
       mtx = this._matrix,
-      xA = width * mtx.a,
+      tx = mtx.tx,
+      ty = mtx.ty
+
+    if(this.hitBox){
+      width = this.hitBox[2]
+      height = this.hitBox[3]
+      tx = this.hitBox[0] * mtx.a + this.hitBox[1] * mtx.c + tx
+      ty = this.hitBox[0] * mtx.b + this.hitBox[1] * mtx.d + ty
+    }
+
+    let xA = width * mtx.a,
       xB = width * mtx.b,
       yC = height * mtx.c,
       yD = height * mtx.d,
-      tx = mtx.tx,
-      ty = mtx.ty,
       minX = tx,
       maxX = tx,
       minY = ty,

@@ -38,30 +38,47 @@ class HitRender extends Render {
     for (let i = l - 1; i >= 0; i--) {
       let child = list[i]
       // if (!this.isbindingEvent(child)) continue;
-      let target = this._hitAABB(child, evt)
-      if (target) return target
+			let path = this._hitAABB(child, evt, [], true)
+
+      if (path.length > 0) {
+				let target = path[path.length - 1]
+				this._dispatchEvent(target, evt)
+				return target
+			}
     }
   }
 
-  _hitAABB (o, evt) {
+  _hitAABB (o, evt, path, rootCall) {
     if (o.ignoreHit || !o.isVisible()) {
       return
-    }
+		}
+
+		o.initAABB()
+		if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
+			// this._bubbleEvent(o, type, evt);
+      o.___$push = true
+			path.push(o)
+			//return o
+		}
+
     if (o instanceof Group) {
       let list = o.children.slice(0),
         l = list.length
       for (let i = l - 1; i >= 0; i--) {
         let child = list[i]
-        let target = this._hitAABB(child, evt)
-        if (target) return target
-      }
-    } else {
-      if (o.AABB && this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
-        // this._bubbleEvent(o, type, evt);
-        this._dispatchEvent(o, evt)
-        return o
+        this._hitAABB(child, evt, path)
+        if(child.___$push){
+          delete child.___$push
+          //同级只找一个就好了，所有 break
+          break
+        }
+        //if (target) return target
       }
     }
+
+		if(rootCall){
+			return path
+		}
   }
 
   checkPointInAABB (x, y, AABB) {
@@ -97,7 +114,9 @@ class HitRender extends Render {
   _hitPixel (o, evt, mtx) {
     if (o.ignoreHit || !o.isVisible()) return
     let ctx = this.ctx
-    if (mtx && !o.fixed) {
+    if(o.fixed){
+      o._hitMatrix.initialize(1, 0, 0, 1, -evt.stageX, -evt.stageY)
+    }else if (mtx) {
       o._hitMatrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
     } else {
       o._hitMatrix.initialize(1, 0, 0, 1, 0, 0)
@@ -165,7 +184,13 @@ class HitRender extends Render {
       }
     }
 
-    if (ctx.getImageData(0, 0, 1, 1).data[3] > 0) {
+    if(o.hitBox){
+      o.initAABB()
+      if (this.checkPointInAABB(evt.stageX, evt.stageY, o.AABB)) {
+        this._dispatchEvent(o, evt)
+        return o
+      }
+    }else if (ctx.getImageData(0, 0, 1, 1).data[3] > 0) {
       this._dispatchEvent(o, evt)
       return o
     }
