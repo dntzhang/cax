@@ -59,7 +59,7 @@ class Button extends Group {
     }
     
     if (option.bgImage) {
-      var ratio = SCALE_RATIO
+      var ratio = option.ratio || 1
       let bitmap = new Bitmap(option.bgImage[0])
       bitmap.scaleX = ratio
       bitmap.scaleY = ratio
@@ -77,7 +77,7 @@ class Button extends Group {
     }
     
     if (option.image) {
-      var ratio = SCALE_RATIO
+      var ratio = option.ratio || 1
       let bitmap = new Bitmap(option.image[0])
       bitmap.scaleX = ratio
       bitmap.scaleY = ratio

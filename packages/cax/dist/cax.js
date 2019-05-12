@@ -1,5 +1,5 @@
 /*!
- *  cax v1.3.0
+ *  cax v1.3.1
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -6154,7 +6154,7 @@ var Button = function (_Group) {
     }
 
     if (option.bgImage) {
-      var ratio = SCALE_RATIO;
+      var ratio = option.ratio || 1;
       var bitmap = new _bitmap3.default(option.bgImage[0]);
       bitmap.scaleX = ratio;
       bitmap.scaleY = ratio;
@@ -6172,7 +6172,7 @@ var Button = function (_Group) {
     }
 
     if (option.image) {
-      var ratio = SCALE_RATIO;
+      var ratio = option.ratio || 1;
       var _bitmap = new _bitmap3.default(option.image[0]);
       _bitmap.scaleX = ratio;
       _bitmap.scaleY = ratio;
