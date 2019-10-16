@@ -1,5 +1,5 @@
 /*!
- *  cax v1.3.1
+ *  cax v1.3.2
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -1328,8 +1328,8 @@ var root = getGlobal();
 exports.default = {
   getImageInWx: getImageInWx,
   root: root,
-  isWeapp: typeof wx !== 'undefined' && !wx.createCanvas && wx.createCanvasContext,
-  isWegame: typeof wx !== 'undefined' && wx.createCanvas
+  isWeapp: typeof wx !== 'undefined' && typeof Page !== 'undefined',
+  isWegame: typeof wx !== 'undefined' && typeof Page === 'undefined'
 };
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)))
 
@@ -2463,8 +2463,8 @@ var queue = [],
     lastTime = 0,
     vendors = ['ms', 'moz', 'webkit', 'o'],
     x = 0,
-    isWeapp = typeof wx !== 'undefined' && !wx.createCanvas,
-    isWegame = typeof wx !== 'undefined' && wx.createCanvas,
+    isWeapp = typeof wx !== 'undefined' && typeof Page !== 'undefined',
+    isWegame = typeof wx !== 'undefined' && typeof Page === 'undefined',
     isBrowser = typeof window !== 'undefined';
 
 var raf = isBrowser ? window.requestAnimationFrame : null;
@@ -3160,7 +3160,7 @@ var cax = {
   _to2.default.easing[itemLower + 'InOut'] = _tween2.default.Easing[item].InOut;
 });
 
-var isWegame = typeof wx !== 'undefined' && wx.createCanvas;
+var isWegame = typeof wx !== 'undefined' && typeof Page === 'undefined';
 
 cax.loadImg = function (option) {
   var img = isWegame ? wx.createImage() : new Image();
@@ -3557,7 +3557,7 @@ var Stage = function (_Group) {
     var _this = _possibleConstructorReturn(this, (Stage.__proto__ || Object.getPrototypeOf(Stage)).call(this));
 
     var len = arguments.length;
-    _this.isWegame = typeof wx !== 'undefined' && wx.createCanvas;
+    _this.isWegame = typeof wx !== 'undefined' && typeof Page === 'undefined';
     _this.moveDetectionInterval = 0;
     if (len === 0) {
       // wegame

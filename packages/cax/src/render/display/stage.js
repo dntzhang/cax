@@ -10,7 +10,7 @@ class Stage extends Group {
   constructor (width, height, renderTo) {
     super()
     const len = arguments.length
-    this.isWegame = typeof wx !== 'undefined' && wx.createCanvas
+    this.isWegame = typeof wx !== 'undefined' && typeof Page === 'undefined'
     this.moveDetectionInterval = 0
     if (len === 0) { // wegame
       this.canvas = wegameCanvas

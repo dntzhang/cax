@@ -94,7 +94,7 @@ const cax = {
   To.easing[itemLower + 'InOut'] = TWEEN.Easing[item].InOut
 })
 
-const isWegame = typeof wx !== 'undefined' && wx.createCanvas
+const isWegame = typeof wx !== 'undefined' && typeof Page === 'undefined'
 
 cax.loadImg = function (option) {
   const img = isWegame ? wx.createImage() : new Image()
