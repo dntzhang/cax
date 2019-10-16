@@ -1,5 +1,5 @@
 /*!
- *  to2to v1.0.2 
+ *  to2to v1.0.3 
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -123,7 +123,7 @@ var To = function () {
       this.cmds.push(['to']);
       if (arguments.length !== 0) {
         for (var key in target) {
-          this.set(key, target[key], duration, easing);
+          this.set(key, target[key], duration || 0, easing);
         }
       }
       return this;
@@ -1431,8 +1431,8 @@ var queue = [],
     lastTime = 0,
     vendors = ['ms', 'moz', 'webkit', 'o'],
     x = 0,
-    isWeapp = typeof wx !== 'undefined' && !wx.createCanvas,
-    isWegame = typeof wx !== 'undefined' && wx.createCanvas,
+    isWeapp = typeof wx !== 'undefined' && typeof Page !== 'undefined',
+    isWegame = typeof wx !== 'undefined' && typeof Page === 'undefined',
     isBrowser = typeof window !== 'undefined';
 
 var raf = isBrowser ? window.requestAnimationFrame : null;

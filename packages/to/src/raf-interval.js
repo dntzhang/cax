@@ -18,8 +18,8 @@ let queue = [],
   lastTime = 0,
   vendors = ['ms', 'moz', 'webkit', 'o'],
   x = 0,
-  isWeapp = typeof wx !== 'undefined' && !wx.createCanvas,
-  isWegame = typeof wx !== 'undefined' && wx.createCanvas,
+  isWeapp = typeof wx !== 'undefined' && typeof Page !== 'undefined',
+  isWegame = typeof wx !== 'undefined' && typeof Page === 'undefined',
   isBrowser = typeof window !== 'undefined'
 
 let raf = isBrowser ? window.requestAnimationFrame : null
