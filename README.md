@@ -542,6 +542,14 @@ obj.destroy()
 | touchend | End of finger touch action |
 | drag | Drag and drop |
 
+```js
+const handler = () => {}
+obj.on('click', handler)
+
+//unbind
+obj.off('click', handler)
+```
+
 ## Motion
 
 Cax has built-in to capability to write motion effects in a continuous way.
