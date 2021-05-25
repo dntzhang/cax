@@ -276,18 +276,20 @@ class Stage extends Group {
   }
 
   on (type, fn) {
-    this.canvas.addEventListener(type, (evt) => {
+    const handler = (evt) => {
       if(!option.stagePropagationStopped[type]){
         this._computeStageXY(evt)
         fn(evt)
       }
       option.stagePropagationStopped[type] = false
-    })
+    };
 
+    fn.__handler__ = handler;
+    this.canvas.addEventListener(type, handler)
   }
 
   off (type, fn) {
-    this.canvas.removeEventListener(type, fn)
+    this.canvas.removeEventListener(type, fn.__handler__ || fn)
   }
 }
 
