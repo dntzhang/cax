@@ -29,9 +29,9 @@
   * [Graphics](https://dntzhang.github.io/cax/packages/cax/examples/graphics/)
   * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
   * [Cax + Dragonbones](https://dntzhang.github.io/wechart/packages/cax-dragonbones/examples/simple/index.html)
-* 小程序线上产品 
 
-![星球部落](./asset/xqbl.png)
+## 小程序线上产品 
+
 
 ![星球部落](./asset/ss1.png)![星球部落](./asset/ss3.png)
 
