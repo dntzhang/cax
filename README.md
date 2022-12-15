@@ -17,11 +17,6 @@ English | [简体中文](./README.CN.md)
 * Built-in images loader
 * Built-in cross platform motion library [→ to2to](https://github.com/dntzhang/cax/tree/master/packages/to)
 
-## Wechat Game Demo
-
-![你在画什么](./asset/draw.png)
-
-![点十消除](./asset/wegame.jpg)
 
 ## Demo
   * [Wechart by Cax![](./asset/hot.png)](https://github.com/dntzhang/wechart)
@@ -703,9 +698,11 @@ const button = new cax.Button({
 
 In general, it is suggested that inherit Group from a slightly complex combination, which is conducive to expansion and management of internal components.
 
-# Who is using cax?
+## Wechat Game Demo
 
-![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
+![你在画什么](./asset/draw.png)
+
+![点十消除](./asset/wegame.jpg)
 
 ## License
 
