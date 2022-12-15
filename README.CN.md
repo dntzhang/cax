@@ -2,13 +2,8 @@
 
 # Cax [![](https://img.shields.io/npm/v/cax.svg)](https://www.npmjs.com/package/cax) 
 
-> 小程序、小游戏以及 Web 通用 Canvas 渲染引擎
+> Canvas 渲染引擎，兼容了小程序、小游戏和 Web
 
-* 微信小游戏
-
-![你在画什么](https://github.com/dntzhang/cax/raw/master/asset/draw.png)
-
-![点十消除](./asset/wegame.jpg)
 
 * [Wechart by Cax![](./asset/hot.png)](https://github.com/dntzhang/wechart)
 * Web DEMO & [→ Source Code](https://github.com/dntzhang/cax/tree/master/packages/cax/examples)
@@ -30,10 +25,6 @@
   * [Composite Operation](http://dntzhang.github.io/cax/packages/cax/examples/composite-operation/)
   * [Cax + Dragonbones](https://dntzhang.github.io/wechart/packages/cax-dragonbones/examples/simple/index.html)
 
-## 小程序线上产品 
-
-
-![星球部落](./asset/ss1.png)![星球部落](./asset/ss3.png)
 
 
 ## 特性
@@ -862,13 +853,15 @@ cax.loadImgs({
 })
 ```
 
-## 谁在使用？
+## 小程序案例
 
-![Tencent Wechat](./asset/wx.png)  ![Tencent QQ](./asset/qq.png)
+![星球部落](./asset/ss1.png)![星球部落](./asset/ss3.png)
 
-## 微信交流群【2】
+## 微信小游戏案例
 
-![](https://github.com/dntzhang/wechart/raw/master/asset/g2.png)
+![你在画什么](https://github.com/dntzhang/cax/raw/master/asset/draw.png)
+
+![点十消除](./asset/wegame.jpg)
 
 ## License
 
