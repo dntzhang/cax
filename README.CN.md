@@ -215,7 +215,7 @@ import cax from 'cax'
 const stage = new cax.Stage(200, 200, 'body')
 
 cax.loadImgs({
-  imgs: ['./wepay-diy.jpg'],
+  imgs: ['./test.jpg'],
   complete: (imgs) => {
     const img = imgs[0]
     const bitmap = new cax.Bitmap(img)
@@ -233,9 +233,7 @@ cax.loadImgs({
 })
 ```
 
-除了 Stage 构造函数比小程序第四个参数 `this`，其他使用方式都一样。执行上面代码你将看到如下效果:
-
-![](./asset/getting-start.png)
+除了 Stage 构造函数比小程序第四个参数 `this`，其他使用方式都一样。
 
 ## 内置对象
 
