@@ -2,7 +2,7 @@ English | [简体中文](./README.CN.md)
 
 # Cax [![](https://img.shields.io/npm/v/cax.svg)](https://www.npmjs.com/package/cax) 
 
-> HTML5 Canvas 2D Rendering Engine
+> Canvas 2D Rendering Engine
   
 ## Features
 
@@ -118,7 +118,7 @@ import cax from 'cax'
 const stage = new cax.Stage(200, 200, 'body')
 
 cax.loadImgs({
-  imgs: ['./wepay-diy.jpg'],
+  imgs: ['./test.jpg'],
   complete: (imgs) => {
     const img = imgs[0]
     const bitmap = new cax.Bitmap(img)
@@ -136,9 +136,6 @@ cax.loadImgs({
 })
 ```
 
-You will see the following effect:
-
-![](./asset/getting-start.png)
 
 ## Built-in Object
 
