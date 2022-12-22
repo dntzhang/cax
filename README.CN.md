@@ -2,7 +2,7 @@
 
 # Cax [![](https://img.shields.io/npm/v/cax.svg)](https://www.npmjs.com/package/cax) 
 
-> Canvas 渲染引擎，兼容了小程序、小游戏和 Web
+> Canvas 渲染引擎，支持SVG，兼容了小程序、小游戏和 Web
 
 
 * [Wechart by Cax![](./asset/hot.png)](https://github.com/dntzhang/wechart)
