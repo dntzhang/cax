@@ -26,7 +26,9 @@ class Rect extends Shape {
 
   clone () {
     return new Rect(this.width, this.height, {
-      ...this.option
+      fillStyle: this.option.fillStyle,
+      strokeStyle: this.option.fillStyle,
+      lineWidth: this.option.lineWidth
     })
   }
 }

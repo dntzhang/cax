@@ -1,5 +1,5 @@
 /*!
- *  cax v1.3.2
+ *  cax v1.3.3
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -320,7 +320,6 @@ var Bitmap = function (_DisplayObject) {
         _this.img = _util2.default.isWegame ? wx.createImage() : new window.Image();
 
         _this.img.onload = function () {
-
           if (!_this.rect) {
             _this.rect = [0, 0, _this.img.width, _this.img.height];
           }
@@ -427,6 +426,11 @@ var DisplayObject = function (_EventDispatcher) {
     _this.absClipRuleNonzero = true;
     _this.cacheUpdating = false;
 
+    // 能够使用 width，height，bounds-x 和 bounds-y 设置绑定事件的范围，好比:
+    // <path width="100" height="100" bounds-x="50" bounds-y="50" />
+    // this.boundsX = 0
+    // this.boundsY = 0
+
     try {
       Object.defineProperties(_this, {
         stage: { get: _this._getStage },
@@ -453,7 +457,6 @@ var DisplayObject = function (_EventDispatcher) {
   }, {
     key: 'initAABB',
     value: function initAABB() {
-
       if ((this.width === undefined || this.height === undefined) && !this.hitBox) {
         return;
       }
@@ -472,6 +475,11 @@ var DisplayObject = function (_EventDispatcher) {
         tx = this.hitBox[0] * mtx.a + this.hitBox[1] * mtx.c + tx;
         ty = this.hitBox[0] * mtx.b + this.hitBox[1] * mtx.d + ty;
       }
+
+      // if (this.boundsX || this.boundsY) {
+      //   tx = this.boundsX * mtx.a + this.boundsY * mtx.c + tx
+      //   ty = this.boundsX * mtx.b + this.boundsY * mtx.d + ty
+      // }
 
       var xA = width * mtx.a,
           xB = width * mtx.b,
@@ -936,9 +944,12 @@ var Text = function (_DisplayObject) {
     _this.text = text;
     option = option || {};
     _this.font = option.font || '10px sans-serif';
+    _this.fontSize = option.fontSize || 10;
     _this.color = option.color || 'black';
     _this.textAlign = option.textAlign || 'left';
     _this.baseline = option.baseline || 'top';
+    _this.fillStyle = option.fillStyle;
+    _this.strokeStyle = option.strokeStyle;
     return _this;
   }
 
@@ -1193,13 +1204,13 @@ var Event = function () {
   }
 
   _createClass(Event, [{
-    key: "stopPropagation",
+    key: 'stopPropagation',
     value: function stopPropagation() {
       _stagePropagationTag2.default.stagePropagationStopped[this.type] = true;
       this.propagationStopped = true;
     }
   }, {
-    key: "preventDefault",
+    key: 'preventDefault',
     value: function preventDefault() {
       this.pureEvent.preventDefault();
     }
@@ -1218,10 +1229,10 @@ exports.default = Event;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.default = {
-    stagePropagationStopped: {}
+  stagePropagationStopped: {}
 };
 
 /***/ }),
@@ -3871,18 +3882,21 @@ var Stage = function (_Group) {
     value: function on(type, fn) {
       var _this2 = this;
 
-      this.canvas.addEventListener(type, function (evt) {
+      var handler = function handler(evt) {
         if (!_stagePropagationTag2.default.stagePropagationStopped[type]) {
           _this2._computeStageXY(evt);
           fn(evt);
         }
         _stagePropagationTag2.default.stagePropagationStopped[type] = false;
-      });
+      };
+
+      fn.__handler__ = handler;
+      this.canvas.addEventListener(type, handler);
     }
   }, {
     key: 'off',
     value: function off(type, fn) {
-      this.canvas.removeEventListener(type, fn);
+      this.canvas.removeEventListener(type, fn.__handler__ || fn);
     }
   }]);
 
@@ -4102,7 +4116,7 @@ var EventDispatcher = function () {
   }
 
   _createClass(EventDispatcher, [{
-    key: "addEventListener",
+    key: 'addEventListener',
     value: function addEventListener(type, listener, useCapture) {
       var listeners;
       if (useCapture) {
@@ -4123,7 +4137,7 @@ var EventDispatcher = function () {
       return listener;
     }
   }, {
-    key: "removeEventListener",
+    key: 'removeEventListener',
     value: function removeEventListener(type, listener, useCapture) {
       var listeners = useCapture ? this._captureListeners : this._listeners;
       if (!listeners) {
@@ -4143,17 +4157,17 @@ var EventDispatcher = function () {
       });
     }
   }, {
-    key: "on",
+    key: 'on',
     value: function on(type, listener, useCapture) {
       this.addEventListener(type, listener, useCapture);
     }
   }, {
-    key: "off",
+    key: 'off',
     value: function off(type, listener, useCapture) {
       this.removeEventListener(type, listener, useCapture);
     }
   }, {
-    key: "dispatchEvent",
+    key: 'dispatchEvent',
     value: function dispatchEvent(evt) {
       _stagePropagationTag2.default.stagePropagationStopped[evt.type] = false;
 
@@ -4175,7 +4189,7 @@ var EventDispatcher = function () {
       }
     }
   }, {
-    key: "_dispatchEvent",
+    key: '_dispatchEvent',
     value: function _dispatchEvent(evt, type) {
       var _this = this;
 
@@ -4398,7 +4412,16 @@ var CanvasRender = function (_Render) {
         ctx.fillStyle = o.color;
         ctx.textAlign = o.textAlign;
         ctx.textBaseline = o.baseline;
-        ctx.fillText(o.text, 0, 0);
+        // 小程序才有 setFontSize
+        ctx.setFontSize && ctx.setFontSize(o.fontSize);
+        if (o.fillStyle) {
+          ctx.fillStyle = o.fillStyle;
+          ctx.fillText(o.text, 0, 0);
+        }
+        if (o.strokeStyle) {
+          ctx.strokeStyle = o.strokeStyle;
+          ctx.strokeText(o.text, 0, 0);
+        }
       }
     }
   }, {
@@ -5008,7 +5031,7 @@ var HitRender = function (_Render) {
         // this._bubbleEvent(o, type, evt);
         o.___$push = true;
         path.push(o);
-        //return o
+        // return o
       }
 
       if (o instanceof _group2.default) {
@@ -5019,10 +5042,10 @@ var HitRender = function (_Render) {
           this._hitAABB(child, evt, path);
           if (child.___$push) {
             delete child.___$push;
-            //同级只找一个就好了，所有 break
+            // 同级只找一个就好了，所有 break
             break;
           }
-          //if (target) return target
+          // if (target) return target
         }
       }
 
@@ -5536,9 +5559,9 @@ var _shape = __webpack_require__(0);
 
 var _shape2 = _interopRequireDefault(_shape);
 
-var _arcToBezier = __webpack_require__(44);
+var _a2c = __webpack_require__(44);
 
-var _arcToBezier2 = _interopRequireDefault(_arcToBezier);
+var _a2c2 = _interopRequireDefault(_a2c);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5568,11 +5591,8 @@ var Path = function (_Shape) {
   _createClass(Path, [{
     key: 'draw',
     value: function draw() {
-      var _this2 = this;
-
       var cmds = (0, _pathParser2.default)(this.d);
 
-      this.beginPath();
       // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
       // M = moveto
       // L = lineto
@@ -5587,8 +5607,7 @@ var Path = function (_Shape) {
       // 以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
       var preX = void 0,
           preY = void 0,
-          curves = void 0,
-          lastCurve = void 0;
+          curves = void 0;
 
       // 参考我的 pasition https://github.com/AlloyTeam/pasition/blob/master/src/index.js
       for (var j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
@@ -5621,11 +5640,12 @@ var Path = function (_Shape) {
             this.bezierCurveTo(item[1], item[2], item[3], item[4], preX, preY);
             break;
           case 'S':
-
             if (preItem[0] === 'C' || preItem[0] === 'c') {
               this.bezierCurveTo(preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4]);
             } else if (preItem[0] === 'S' || preItem[0] === 's') {
               this.bezierCurveTo(preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4]);
+            } else {
+              this.bezierCurveTo(preX, preY, item[1], item[2], item[3], item[4]);
             }
             preX = item[3];
             preY = item[4];
@@ -5671,7 +5691,6 @@ var Path = function (_Shape) {
             preY += item[4];
             break;
           case 'q':
-
             this.quadraticCurveTo(preX + item[1], preY + item[2], item[3] + preX, item[4] + preY);
             preX += item[3];
             preY += item[4];
@@ -5684,66 +5703,34 @@ var Path = function (_Shape) {
             break;
 
           case 'a':
-            curves = (0, _arcToBezier2.default)({
-              rx: item[1],
-              ry: item[2],
-              px: preX,
-              py: preY,
-              xAxisRotation: item[3],
-              largeArcFlag: item[4],
-              sweepFlag: item[5],
-              cx: preX + item[6],
-              cy: preX + item[7]
-            });
-            lastCurve = curves[curves.length - 1];
+            curves = (0, _a2c2.default)(preX, preY, item[1], item[2], item[3], item[4], item[5], preX + item[6], preY + item[7]);
+            // 不能 moveTo ，会导致 closePath 重新设置起点
+            // this.moveTo(preX, preY)
+            this.bezierCurveTo(curves[0], curves[1], curves[2], curves[3], curves[4], curves[5]);
 
-            curves.forEach(function (curve, index) {
-              if (index === 0) {
-                _this2.moveTo(preX, preY);
-                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
-              } else {
-                //curves[index - 1].x, curves[index - 1].y, 
-                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
-              }
-            });
-
-            preX = lastCurve.x;
-            preY = lastCurve.y;
+            for (var i = 6, len = curves.length; i < len; i += 6) {
+              this.bezierCurveTo(curves[i], curves[i + 1], curves[i + 2], curves[i + 3], curves[i + 4], curves[i + 5]);
+            }
+            preX = preX + item[6];
+            preY = preY + item[7];
 
             break;
 
           case 'A':
+            curves = (0, _a2c2.default)(preX, preY, item[1], item[2], item[3], item[4], item[5], item[6], item[7]);
+            // this.moveTo(preX, preY)
+            this.bezierCurveTo(curves[0], curves[1], curves[2], curves[3], curves[4], curves[5]);
 
-            curves = (0, _arcToBezier2.default)({
-              rx: item[1],
-              ry: item[2],
-              px: preX,
-              py: preY,
-              xAxisRotation: item[3],
-              largeArcFlag: item[4],
-              sweepFlag: item[5],
-              cx: item[6],
-              cy: item[7]
-            });
-            lastCurve = curves[curves.length - 1];
+            for (var _i = 6, _len = curves.length; _i < _len; _i += 6) {
+              this.bezierCurveTo(curves[_i], curves[_i + 1], curves[_i + 2], curves[_i + 3], curves[_i + 4], curves[_i + 5]);
+            }
 
-            curves.forEach(function (curve, index) {
-              if (index === 0) {
-                _this2.moveTo(preX, preY);
-                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
-              } else {
-                //curves[index - 1].x, curves[index - 1].y
-                _this2.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y);
-              }
-            });
-
-            preX = lastCurve.x;
-            preY = lastCurve.y;
+            preX = item[6];
+            preY = item[7];
 
             break;
 
           case 'T':
-
             if (preItem[0] === 'Q' || preItem[0] === 'q') {
               preCX = preX + preItem[3] - preItem[1];
               preCY = preY + preItem[4] - preItem[2];
@@ -5879,182 +5866,117 @@ exports.default = parse;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+// https://src.chromium.org/viewvc/blink/trunk/Source/core/svg/SVGPathParser.cpp?revision=195686#l225
+// https://github.com/adobe-webplatform/Snap.svg/blob/master/src/path.js#L752
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var math = Math;
+var PI = math.PI;
+var abs = math.abs;
 
-// https://github.com/colinmeinke/svg-arc-to-cubic-bezier
-
-var TAU = Math.PI * 2;
-
-var mapToEllipse = function mapToEllipse(_ref, rx, ry, cosphi, sinphi, centerx, centery) {
-  var x = _ref.x,
-      y = _ref.y;
-
-  x *= rx;
-  y *= ry;
-
-  var xp = cosphi * x - sinphi * y;
-  var yp = sinphi * x + cosphi * y;
-
-  return {
-    x: xp + centerx,
-    y: yp + centery
+function cacher(fn) {
+  var cache = {};
+  return function () {
+    var key = [].concat(Array.prototype.slice.call(arguments)).join('-');
+    if (cache.hasOwnProperty(key)) return cache[key];
+    var result = fn.apply(null, arguments);
+    cache[key] = result;
+    return result;
   };
-};
+}
 
-var approxUnitArc = function approxUnitArc(ang1, ang2) {
-  var a = 4 / 3 * Math.tan(ang2 / 4);
-
-  var x1 = Math.cos(ang1);
-  var y1 = Math.sin(ang1);
-  var x2 = Math.cos(ang1 + ang2);
-  var y2 = Math.sin(ang1 + ang2);
-
-  return [{
-    x: x1 - y1 * a,
-    y: y1 + x1 * a
-  }, {
-    x: x2 + y2 * a,
-    y: y2 - x2 * a
-  }, {
-    x: x2,
-    y: y2
-  }];
-};
-
-var vectorAngle = function vectorAngle(ux, uy, vx, vy) {
-  var sign = ux * vy - uy * vx < 0 ? -1 : 1;
-  var umag = Math.sqrt(ux * ux + uy * uy);
-  var vmag = Math.sqrt(ux * ux + uy * uy);
-  var dot = ux * vx + uy * vy;
-
-  var div = dot / (umag * vmag);
-
-  if (div > 1) {
-    div = 1;
-  }
-
-  if (div < -1) {
-    div = -1;
-  }
-
-  return sign * Math.acos(div);
-};
-
-var getArcCenter = function getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp) {
-  var rxsq = Math.pow(rx, 2);
-  var rysq = Math.pow(ry, 2);
-  var pxpsq = Math.pow(pxp, 2);
-  var pypsq = Math.pow(pyp, 2);
-
-  var radicant = rxsq * rysq - rxsq * pypsq - rysq * pxpsq;
-
-  if (radicant < 0) {
-    radicant = 0;
-  }
-
-  radicant /= rxsq * pypsq + rysq * pxpsq;
-  radicant = Math.sqrt(radicant) * (largeArcFlag === sweepFlag ? -1 : 1);
-
-  var centerxp = radicant * rx / ry * pyp;
-  var centeryp = radicant * -ry / rx * pxp;
-
-  var centerx = cosphi * centerxp - sinphi * centeryp + (px + cx) / 2;
-  var centery = sinphi * centerxp + cosphi * centeryp + (py + cy) / 2;
-
-  var vx1 = (pxp - centerxp) / rx;
-  var vy1 = (pyp - centeryp) / ry;
-  var vx2 = (-pxp - centerxp) / rx;
-  var vy2 = (-pyp - centeryp) / ry;
-
-  var ang1 = vectorAngle(1, 0, vx1, vy1);
-  var ang2 = vectorAngle(vx1, vy1, vx2, vy2);
-
-  if (sweepFlag === 0 && ang2 > 0) {
-    ang2 -= TAU;
-  }
-
-  if (sweepFlag === 1 && ang2 < 0) {
-    ang2 += TAU;
-  }
-
-  return [centerx, centery, ang1, ang2];
-};
-
-var arcToBezier = function arcToBezier(_ref2) {
-  var px = _ref2.px,
-      py = _ref2.py,
-      cx = _ref2.cx,
-      cy = _ref2.cy,
-      rx = _ref2.rx,
-      ry = _ref2.ry,
-      _ref2$xAxisRotation = _ref2.xAxisRotation,
-      xAxisRotation = _ref2$xAxisRotation === undefined ? 0 : _ref2$xAxisRotation,
-      _ref2$largeArcFlag = _ref2.largeArcFlag,
-      largeArcFlag = _ref2$largeArcFlag === undefined ? 0 : _ref2$largeArcFlag,
-      _ref2$sweepFlag = _ref2.sweepFlag,
-      sweepFlag = _ref2$sweepFlag === undefined ? 0 : _ref2$sweepFlag;
-
-  var curves = [];
-
-  if (rx === 0 || ry === 0) {
-    return [];
-  }
-
-  var sinphi = Math.sin(xAxisRotation * TAU / 360);
-  var cosphi = Math.cos(xAxisRotation * TAU / 360);
-
-  var pxp = cosphi * (px - cx) / 2 + sinphi * (py - cy) / 2;
-  var pyp = -sinphi * (px - cx) / 2 + cosphi * (py - cy) / 2;
-
-  if (pxp === 0 && pyp === 0) {
-    return [];
-  }
-
-  rx = Math.abs(rx);
-  ry = Math.abs(ry);
-
-  var lambda = Math.pow(pxp, 2) / Math.pow(rx, 2) + Math.pow(pyp, 2) / Math.pow(ry, 2);
-
-  if (lambda > 1) {
-    rx *= Math.sqrt(lambda);
-    ry *= Math.sqrt(lambda);
-  }
-
-  var _getArcCenter = getArcCenter(px, py, cx, cy, rx, ry, largeArcFlag, sweepFlag, sinphi, cosphi, pxp, pyp),
-      _getArcCenter2 = _slicedToArray(_getArcCenter, 4),
-      centerx = _getArcCenter2[0],
-      centery = _getArcCenter2[1],
-      ang1 = _getArcCenter2[2],
-      ang2 = _getArcCenter2[3];
-
-  var segments = Math.max(Math.ceil(Math.abs(ang2) / (TAU / 4)), 1);
-
-  ang2 /= segments;
-
-  for (var i = 0; i < segments; i++) {
-    curves.push(approxUnitArc(ang1, ang2));
-    ang1 += ang2;
-  }
-
-  return curves.map(function (curve) {
-    var _mapToEllipse = mapToEllipse(curve[0], rx, ry, cosphi, sinphi, centerx, centery),
-        x1 = _mapToEllipse.x,
-        y1 = _mapToEllipse.y;
-
-    var _mapToEllipse2 = mapToEllipse(curve[1], rx, ry, cosphi, sinphi, centerx, centery),
-        x2 = _mapToEllipse2.x,
-        y2 = _mapToEllipse2.y;
-
-    var _mapToEllipse3 = mapToEllipse(curve[2], rx, ry, cosphi, sinphi, centerx, centery),
-        x = _mapToEllipse3.x,
-        y = _mapToEllipse3.y;
-
-    return { x1: x1, y1: y1, x2: x2, y2: y2, x: x, y: y };
+function a2c(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursive) {
+  // for more information of where this math came from visit:
+  // http://www.w3.org/TR/SVG11/implnote.html#ArcImplementationNotes
+  var _120 = PI * 120 / 180,
+      rad = PI / 180 * (+angle || 0),
+      res = [],
+      xy,
+      rotate = cacher(function (x, y, rad) {
+    var X = x * math.cos(rad) - y * math.sin(rad),
+        Y = x * math.sin(rad) + y * math.cos(rad);
+    return { x: X, y: Y };
   });
-};
+  if (!rx || !ry) {
+    return [x1, y1, x2, y2, x2, y2];
+  }
+  if (!recursive) {
+    xy = rotate(x1, y1, -rad);
+    x1 = xy.x;
+    y1 = xy.y;
+    xy = rotate(x2, y2, -rad);
+    x2 = xy.x;
+    y2 = xy.y;
+    var cos = math.cos(PI / 180 * angle),
+        sin = math.sin(PI / 180 * angle),
+        x = (x1 - x2) / 2,
+        y = (y1 - y2) / 2;
+    var h = x * x / (rx * rx) + y * y / (ry * ry);
+    if (h > 1) {
+      h = math.sqrt(h);
+      rx = h * rx;
+      ry = h * ry;
+    }
+    var rx2 = rx * rx,
+        ry2 = ry * ry,
+        k = (large_arc_flag == sweep_flag ? -1 : 1) * math.sqrt(abs((rx2 * ry2 - rx2 * y * y - ry2 * x * x) / (rx2 * y * y + ry2 * x * x))),
+        cx = k * rx * y / ry + (x1 + x2) / 2,
+        cy = k * -ry * x / rx + (y1 + y2) / 2,
+        f1 = math.asin(((y1 - cy) / ry).toFixed(9)),
+        f2 = math.asin(((y2 - cy) / ry).toFixed(9));
 
-exports.default = arcToBezier;
+    f1 = x1 < cx ? PI - f1 : f1;
+    f2 = x2 < cx ? PI - f2 : f2;
+    f1 < 0 && (f1 = PI * 2 + f1);
+    f2 < 0 && (f2 = PI * 2 + f2);
+    if (sweep_flag && f1 > f2) {
+      f1 = f1 - PI * 2;
+    }
+    if (!sweep_flag && f2 > f1) {
+      f2 = f2 - PI * 2;
+    }
+  } else {
+    f1 = recursive[0];
+    f2 = recursive[1];
+    cx = recursive[2];
+    cy = recursive[3];
+  }
+  var df = f2 - f1;
+  if (abs(df) > _120) {
+    var f2old = f2,
+        x2old = x2,
+        y2old = y2;
+    f2 = f1 + _120 * (sweep_flag && f2 > f1 ? 1 : -1);
+    x2 = cx + rx * math.cos(f2);
+    y2 = cy + ry * math.sin(f2);
+    res = a2c(x2, y2, rx, ry, angle, 0, sweep_flag, x2old, y2old, [f2, f2old, cx, cy]);
+  }
+  df = f2 - f1;
+  var c1 = math.cos(f1),
+      s1 = math.sin(f1),
+      c2 = math.cos(f2),
+      s2 = math.sin(f2),
+      t = math.tan(df / 4),
+      hx = 4 / 3 * rx * t,
+      hy = 4 / 3 * ry * t,
+      m1 = [x1, y1],
+      m2 = [x1 + hx * s1, y1 - hy * c1],
+      m3 = [x2 + hx * s2, y2 - hy * c2],
+      m4 = [x2, y2];
+  m2[0] = 2 * m1[0] - m2[0];
+  m2[1] = 2 * m1[1] - m2[1];
+  if (recursive) {
+    return [m2, m3, m4].concat(res);
+  } else {
+    res = [m2, m3, m4].concat(res).join().split(',');
+    var newres = [];
+    for (var i = 0, ii = res.length; i < ii; i++) {
+      newres[i] = i % 2 ? rotate(res[i - 1], res[i], rad).y : rotate(res[i], res[i + 1], rad).x;
+    }
+    return newres;
+  }
+}
+
+exports.default = a2c;
 
 /***/ }),
 /* 45 */
@@ -6096,10 +6018,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /*
 Options
   font:
-  text: 
+  text:
   textColor:
   image: [path, width, height]
-  bgColor: 
+  bgColor:
   bgImage: [path, width, height]
   borderRadius:
   borderColor:
@@ -6268,6 +6190,15 @@ var Rect = function (_Shape) {
         }
         this.strokeRect(0, 0, this.width, this.height);
       }
+    }
+  }, {
+    key: 'clone',
+    value: function clone() {
+      return new Rect(this.width, this.height, {
+        fillStyle: this.option.fillStyle,
+        strokeStyle: this.option.fillStyle,
+        lineWidth: this.option.lineWidth
+      });
     }
   }]);
 
