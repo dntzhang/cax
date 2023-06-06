@@ -7,7 +7,7 @@ import Text from '../display/text.js'
 import { filter } from '../filter/index.js'
 
 class CanvasRender extends Render {
-  constructor(canvasOrContext, width, height) {
+  constructor (canvasOrContext, width, height) {
     super()
     if (arguments.length === 3) {
       this.ctx = canvasOrContext
@@ -20,11 +20,11 @@ class CanvasRender extends Render {
     }
   }
 
-  clear(ctx, width, height) {
+  clear (ctx, width, height) {
     ctx.clearRect(0, 0, width, height)
   }
 
-  render(ctx, o, cacheData) {
+  render (ctx, o, cacheData) {
     let mtx = o._matrix
     if (o.children) {
       let list = o.children.slice(0),
@@ -53,7 +53,7 @@ class CanvasRender extends Render {
     }
   }
 
-  _render(ctx, o, mtx, cacheData, inGroup) {
+  _render (ctx, o, mtx, cacheData, inGroup) {
     if (!o.isVisible()) return
     if (mtx && !o.fixed) {
       o._matrix.initialize(mtx.a, mtx.b, mtx.c, mtx.d, mtx.tx, mtx.ty)
@@ -232,7 +232,7 @@ class CanvasRender extends Render {
     }
   }
 
-  setComplexProps(ctx, o) {
+  setComplexProps (ctx, o) {
     o.complexCompositeOperation = ctx.globalCompositeOperation = this.getCompositeOperation(
       o
     )
@@ -247,12 +247,12 @@ class CanvasRender extends Render {
     }
   }
 
-  getCompositeOperation(o) {
+  getCompositeOperation (o) {
     if (o.compositeOperation) return o.compositeOperation
     if (o.parent) return this.getCompositeOperation(o.parent)
   }
 
-  getAlpha(o, alpha) {
+  getAlpha (o, alpha) {
     var result = o.alpha * alpha
     if (o.parent) {
       return this.getAlpha(o.parent, result)
@@ -260,7 +260,7 @@ class CanvasRender extends Render {
     return result
   }
 
-  getShadow(o) {
+  getShadow (o) {
     if (o.shadow) return o.shadow
     if (o.parent) return this.getShadow(o.parent)
   }

@@ -157,7 +157,7 @@ class Stage extends Group {
   }
 
   _handleMouseMove (evt) {
-    if(Date.now() - this._moveDetectionTime < this.moveDetectionInterval){
+    if (Date.now() - this._moveDetectionTime < this.moveDetectionInterval) {
       return
     }
     this._moveDetectionTime = Date.now()
@@ -215,7 +215,7 @@ class Stage extends Group {
   }
 
   _setCursor (obj) {
-    if(!this.canvas.style){
+    if (!this.canvas.style) {
       return
     }
     if (obj.cursor) {
@@ -277,14 +277,14 @@ class Stage extends Group {
 
   on (type, fn) {
     const handler = (evt) => {
-      if(!option.stagePropagationStopped[type]){
+      if (!option.stagePropagationStopped[type]) {
         this._computeStageXY(evt)
         fn(evt)
       }
       option.stagePropagationStopped[type] = false
-    };
+    }
 
-    fn.__handler__ = handler;
+    fn.__handler__ = handler
     this.canvas.addEventListener(type, handler)
   }
 

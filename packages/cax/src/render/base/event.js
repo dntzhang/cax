@@ -1,4 +1,4 @@
-import option from "./stage-propagation-tag"
+import option from './stage-propagation-tag'
 
 class Event {
   constructor () {

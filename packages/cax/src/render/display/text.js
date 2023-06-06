@@ -10,7 +10,7 @@ if (util.isWeapp) {
 }
 
 class Text extends DisplayObject {
-  constructor(text, option) {
+  constructor (text, option) {
     super()
 
     this.text = text
@@ -24,7 +24,7 @@ class Text extends DisplayObject {
     this.strokeStyle = option.strokeStyle
   }
 
-  getWidth() {
+  getWidth () {
     if (!measureCtx) {
       if (util.isWegame) {
         measureCtx = wx.createCanvas().getContext('2d')

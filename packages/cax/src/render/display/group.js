@@ -12,7 +12,7 @@ class Group extends DisplayObject {
     for (let i = 0; i < len; i++) {
       const c = arguments[i]
       const parent = c.parent
-      if(parent){
+      if (parent) {
         parent.removeChildAt(parent.children.indexOf(c))
       }
       this.children.push(c)

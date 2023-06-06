@@ -111,7 +111,7 @@ cax.loadImgs = function (option) {
   option.imgs.forEach((src, index) => {
     const img = isWegame ? wx.createImage() : new Image()
     img.onload = (function (i, img) {
-      return function(){
+      return function () {
         result[i] = img
         loaded++
         option.progress && option.progress(loaded / len, loaded, i, img, result)
@@ -119,7 +119,7 @@ cax.loadImgs = function (option) {
           option.complete && option.complete(result)
         }
       }
-    })(index,img)
+    })(index, img)
     img.src = src
   })
 }

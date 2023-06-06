@@ -99,38 +99,33 @@ class Matrix2D {
   }
 }
 
-Matrix2D.decompose = function(a, b, c, d, tx, ty, transform){
-  const skewX = -Math.atan2(-c, d);
-  const skewY = Math.atan2(b, a);
+Matrix2D.decompose = function (a, b, c, d, tx, ty, transform) {
+  const skewX = -Math.atan2(-c, d)
+  const skewY = Math.atan2(b, a)
 
-  const delta = Math.abs(skewX + skewY);
+  const delta = Math.abs(skewX + skewY)
 
-  if (delta < 0.00001 || Math.abs(PI_2 - delta) < 0.00001)
-  {
-      transform.rotation = skewY;
+  if (delta < 0.00001 || Math.abs(PI_2 - delta) < 0.00001) {
+    transform.rotation = skewY
 
-      if (a < 0 && d >= 0)
-      {
-          transform.rotation += (transform.rotation <= 0) ? Math.PI : -Math.PI;
-      }
+    if (a < 0 && d >= 0) {
+      transform.rotation += (transform.rotation <= 0) ? Math.PI : -Math.PI
+    }
 
-      transform.skewX = transform.skewY = 0;
-  }
-  else
-  {
-      transform.rotation = 0;
-      transform.skewX = skewX;
-      transform.skewY = skewY;
+    transform.skewX = transform.skewY = 0
+  } else {
+    transform.rotation = 0
+    transform.skewX = skewX
+    transform.skewY = skewY
   }
 
   // next set scale
-  transform.scaleX = Math.sqrt((a * a) + (b * b));
-  transform.scaleY = Math.sqrt((c * c) + (d * d));
+  transform.scaleX = Math.sqrt((a * a) + (b * b))
+  transform.scaleY = Math.sqrt((c * c) + (d * d))
 
   // next set position
-  transform.x = tx;
-  transform.y = ty;
-
+  transform.x = tx
+  transform.y = ty
 }
 
 export default Matrix2D

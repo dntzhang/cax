@@ -29,8 +29,8 @@ class WeStage extends Group {
   touchStartHandler (evt) {
     const p1 = evt.changedTouches[0]
 
-    evt.stageX = Math.round(p1.x * this.scaleX);
-    evt.stageY = Math.round(p1.y * this.scaleY);
+    evt.stageX = Math.round(p1.x * this.scaleX)
+    evt.stageY = Math.round(p1.y * this.scaleY)
 
     this._getObjectUnderPoint(evt, (obj) => {
       this.willDragObject = obj
@@ -44,8 +44,8 @@ class WeStage extends Group {
   touchMoveHandler (evt) {
     const p1 = evt.changedTouches[0]
 
-    evt.stageX = Math.round(p1.x * this.scaleX);
-    evt.stageY = Math.round(p1.y * this.scaleY);
+    evt.stageX = Math.round(p1.x * this.scaleX)
+    evt.stageY = Math.round(p1.y * this.scaleY)
 
     this._getObjectUnderPoint(evt, (obj) => {
       let mockEvt = new Event()
@@ -82,8 +82,8 @@ class WeStage extends Group {
   touchEndHandler (evt) {
     const p1 = evt.changedTouches[0]
 
-    evt.stageX = Math.round(p1.x * this.scaleX);
-    evt.stageY = Math.round(p1.y * this.scaleY);
+    evt.stageX = Math.round(p1.x * this.scaleX)
+    evt.stageY = Math.round(p1.y * this.scaleY)
 
     let mockEvt = new Event()
     mockEvt.stageX = evt.stageX
@@ -125,7 +125,7 @@ class WeStage extends Group {
     }
   }
 
-  on(type, cb) {
+  on (type, cb) {
     switch (type) {
       case 'touchstart':
         this.touchStart = cb
@@ -138,7 +138,7 @@ class WeStage extends Group {
         break
     }
   }
-  
+
   update () {
     this.renderer.update(this)
   }

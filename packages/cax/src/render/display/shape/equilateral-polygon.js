@@ -58,10 +58,9 @@ class EquilateralPolygon extends Shape {
       this.fill()
     }
 
-  
     if (this.options.strokeStyle) {
       this.strokeStyle(this.options.strokeStyle)
-      if(typeof this.options.lineWidth === 'number'){
+      if (typeof this.options.lineWidth === 'number') {
         this.lineWidth(this.options.lineWidth)
       }
       this.stroke()

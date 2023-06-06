@@ -1,4 +1,4 @@
-import option from "./stage-propagation-tag"
+import option from './stage-propagation-tag'
 
 class EventDispatcher {
   constructor () {
@@ -44,21 +44,20 @@ class EventDispatcher {
   }
 
   dispatchEvent (evt) {
-      option.stagePropagationStopped[evt.type] = false
+    option.stagePropagationStopped[evt.type] = false
 
-      var top = this, list = [top]
-      while (top.parent) { list.push(top = top.parent) }
-      var i, l = list.length
+    var top = this, list = [top]
+    while (top.parent) { list.push(top = top.parent) }
+    var i, l = list.length
 
-      // capture & atTarget
-      for (i = l - 1; i >= 0 && !evt.propagationStopped; i--) {
-        list[i]._dispatchEvent(evt, 0)
-      }
-      // bubbling
-      for (i = 0; i < l && !evt.propagationStopped; i++) {
-        list[i]._dispatchEvent(evt, 1)
-      }
-    
+    // capture & atTarget
+    for (i = l - 1; i >= 0 && !evt.propagationStopped; i--) {
+      list[i]._dispatchEvent(evt, 0)
+    }
+    // bubbling
+    for (i = 0; i < l && !evt.propagationStopped; i++) {
+      list[i]._dispatchEvent(evt, 1)
+    }
   }
 
   _dispatchEvent (evt, type) {

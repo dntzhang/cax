@@ -6,10 +6,10 @@ import Bitmap from '../bitmap'
 /*
 Options
   font:
-  text: 
+  text:
   textColor:
   image: [path, width, height]
-  bgColor: 
+  bgColor:
   bgImage: [path, width, height]
   borderRadius:
   borderColor:
@@ -22,10 +22,10 @@ class Button extends Group {
     this.height = option.height
     this.x = option.x
     this.y = option.y
-    
+
     let textHeight = 0
     var textGroup
-    
+
     if (option.text) {
       textGroup = new Group()
       this.text = new Text(option.text, {
@@ -57,7 +57,7 @@ class Button extends Group {
         textGroup.add(this.text)
       }
     }
-    
+
     if (option.bgImage) {
       var ratio = option.ratio || 1
       let bitmap = new Bitmap(option.bgImage[0])
@@ -75,7 +75,7 @@ class Button extends Group {
       })
       this.add(this.roundedRect)
     }
-    
+
     if (option.image) {
       var ratio = option.ratio || 1
       let bitmap = new Bitmap(option.image[0])
@@ -87,7 +87,7 @@ class Button extends Group {
       bitmap.y = (this.height - bitmap.height) / 2
       this.add(bitmap)
     }
-    
+
     if (textGroup) {
       this.add(textGroup)
     }
