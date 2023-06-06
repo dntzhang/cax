@@ -1,5 +1,5 @@
 /*!
- *  cax v1.3.3
+ *  cax v1.3.4
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -6196,7 +6196,7 @@ var Rect = function (_Shape) {
     value: function clone() {
       return new Rect(this.width, this.height, {
         fillStyle: this.option.fillStyle,
-        strokeStyle: this.option.fillStyle,
+        strokeStyle: this.option.strokeStyle,
         lineWidth: this.option.lineWidth
       });
     }
