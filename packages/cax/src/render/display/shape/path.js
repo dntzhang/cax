@@ -1,22 +1,24 @@
 import parse from '../../base/path-parser.js'
 import Shape from './shape'
-import arcToBezier from '../../base/arc-to-bezier'
+import a2c from '../../base/a2c'
 
 class Path extends Shape {
   constructor (d, option) {
     super()
     this.d = d
 
-    option = Object.assign({
-      lineWidth: 1
-    }, option)
+    option = Object.assign(
+      {
+        lineWidth: 1
+      },
+      option
+    )
     this.option = option
   }
 
   draw () {
     const cmds = parse(this.d)
 
-    this.beginPath()
     // https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Paths
     // M = moveto
     // L = lineto
@@ -29,10 +31,7 @@ class Path extends Shape {
     // A = elliptical Arc  暂时未实现，用贝塞尔拟合椭圆
     // Z = closepath
     // 以上所有命令均允许小写字母。大写表示绝对定位，小写表示相对定位(从上一个点开始)。
-    let preX,
-      preY,
-      curves,
-      lastCurve
+    let preX, preY, curves
 
     // 参考我的 pasition https://github.com/AlloyTeam/pasition/blob/master/src/index.js
     for (let j = 0, cmdLen = cmds.length; j < cmdLen; j++) {
@@ -65,11 +64,26 @@ class Path extends Shape {
           this.bezierCurveTo(item[1], item[2], item[3], item[4], preX, preY)
           break
         case 'S':
-      
           if (preItem[0] === 'C' || preItem[0] === 'c') {
-            this.bezierCurveTo( preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], item[1], item[2], item[3], item[4])
+            this.bezierCurveTo(
+              preX + preItem[5] - preItem[3],
+              preY + preItem[6] - preItem[4],
+              item[1],
+              item[2],
+              item[3],
+              item[4]
+            )
           } else if (preItem[0] === 'S' || preItem[0] === 's') {
-            this.bezierCurveTo( preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], item[1], item[2], item[3], item[4])
+            this.bezierCurveTo(
+              preX + preItem[3] - preItem[1],
+              preY + preItem[4] - preItem[2],
+              item[1],
+              item[2],
+              item[3],
+              item[4]
+            )
+          } else {
+            this.bezierCurveTo(preX, preY, item[1], item[2], item[3], item[4])
           }
           preX = item[3]
           preY = item[4]
@@ -100,23 +114,48 @@ class Path extends Shape {
           this.lineTo(preX, preY)
           break
         case 'c':
-          this.bezierCurveTo(preX + item[1], preY + item[2], preX + item[3], preY + item[4], preX + item[5], preY + item[6])
+          this.bezierCurveTo(
+            preX + item[1],
+            preY + item[2],
+            preX + item[3],
+            preY + item[4],
+            preX + item[5],
+            preY + item[6]
+          )
           preX = preX + item[5]
           preY = preY + item[6]
           break
         case 's':
-          if (preItem[0] === 'C' || preItem[0] === 'c') {   
-            this.bezierCurveTo( preX + preItem[5] - preItem[3], preY + preItem[6] - preItem[4], preX + item[1], preY + item[2], preX + item[3], preY + item[4])
+          if (preItem[0] === 'C' || preItem[0] === 'c') {
+            this.bezierCurveTo(
+              preX + preItem[5] - preItem[3],
+              preY + preItem[6] - preItem[4],
+              preX + item[1],
+              preY + item[2],
+              preX + item[3],
+              preY + item[4]
+            )
           } else if (preItem[0] === 'S' || preItem[0] === 's') {
-            this.bezierCurveTo( preX + preItem[3] - preItem[1], preY + preItem[4] - preItem[2], preX + item[1], preY + item[2], preX + item[3], preY + item[4])
+            this.bezierCurveTo(
+              preX + preItem[3] - preItem[1],
+              preY + preItem[4] - preItem[2],
+              preX + item[1],
+              preY + item[2],
+              preX + item[3],
+              preY + item[4]
+            )
           }
 
           preX += item[3]
           preY += item[4]
           break
         case 'q':
-
-          this.quadraticCurveTo(preX + item[1], preY + item[2], item[3] + preX, item[4] + preY)
+          this.quadraticCurveTo(
+            preX + item[1],
+            preY + item[2],
+            item[3] + preX,
+            item[4] + preY
+          )
           preX += item[3]
           preY += item[4]
           break
@@ -128,72 +167,95 @@ class Path extends Shape {
           break
 
         case 'a':
-          curves = arcToBezier({
-            rx: item[1],
-            ry: item[2],
-            px: preX,
-            py: preY,
-            xAxisRotation: item[3],
-            largeArcFlag: item[4],
-            sweepFlag: item[5],
-            cx: preX + item[6],
-            cy: preX + item[7]
-          })
-          lastCurve = curves[curves.length - 1]
+          curves = a2c(
+            preX,
+            preY,
+            item[1],
+            item[2],
+            item[3],
+            item[4],
+            item[5],
+            preX + item[6],
+            preY + item[7]
+          )
+          // 不能 moveTo ，会导致 closePath 重新设置起点
+          // this.moveTo(preX, preY)
+          this.bezierCurveTo(
+            curves[0],
+            curves[1],
+            curves[2],
+            curves[3],
+            curves[4],
+            curves[5]
+          )
 
-          curves.forEach((curve, index) => {
-            if (index === 0) {
-              this.moveTo(preX, preY)
-              this.bezierCurveTo( curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y)
-            } else {
-              //curves[index - 1].x, curves[index - 1].y, 
-              this.bezierCurveTo(curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y)
-            }
-          })
-
-          preX = lastCurve.x
-          preY = lastCurve.y
+          for (let i = 6, len = curves.length; i < len; i += 6) {
+            this.bezierCurveTo(
+              curves[i],
+              curves[i + 1],
+              curves[i + 2],
+              curves[i + 3],
+              curves[i + 4],
+              curves[i + 5]
+            )
+          }
+          preX = preX + item[6]
+          preY = preY + item[7]
 
           break
 
         case 'A':
+          curves = a2c(
+            preX,
+            preY,
+            item[1],
+            item[2],
+            item[3],
+            item[4],
+            item[5],
+            item[6],
+            item[7]
+          )
+          // this.moveTo(preX, preY)
+          this.bezierCurveTo(
+            curves[0],
+            curves[1],
+            curves[2],
+            curves[3],
+            curves[4],
+            curves[5]
+          )
 
-          curves = arcToBezier({
-            rx: item[1],
-            ry: item[2],
-            px: preX,
-            py: preY,
-            xAxisRotation: item[3],
-            largeArcFlag: item[4],
-            sweepFlag: item[5],
-            cx: item[6],
-            cy: item[7]
-          })
-          lastCurve = curves[curves.length - 1]
+          for (let i = 6, len = curves.length; i < len; i += 6) {
+            this.bezierCurveTo(
+              curves[i],
+              curves[i + 1],
+              curves[i + 2],
+              curves[i + 3],
+              curves[i + 4],
+              curves[i + 5]
+            )
+          }
 
-          curves.forEach((curve, index) => {
-            if (index === 0) {
-              this.moveTo(preX, preY)
-              this.bezierCurveTo( curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y)
-            } else {
-              //curves[index - 1].x, curves[index - 1].y
-              this.bezierCurveTo( curve.x1, curve.y1, curve.x2, curve.y2, curve.x, curve.y)
-            }
-          })
-
-          preX = lastCurve.x
-          preY = lastCurve.y
+          preX = item[6]
+          preY = item[7]
 
           break
 
         case 'T':
-
           if (preItem[0] === 'Q' || preItem[0] === 'q') {
             preCX = preX + preItem[3] - preItem[1]
             preCY = preY + preItem[4] - preItem[2]
             this.quadraticCurveTo(preX, preY, preCX, preCY, item[1], item[2])
           } else if (preItem[0] === 'T' || preItem[0] === 't') {
-            this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, item[1], item[2])
+            this.quadraticCurveTo(
+              preX,
+              preY,
+              preX + preX - preCX,
+              preY + preY - preCY,
+              item[1],
+              item[2]
+            )
             preCX = preX + preX - preCX
             preCY = preY + preY - preCY
           }
@@ -206,9 +268,23 @@ class Path extends Shape {
           if (preItem[0] === 'Q' || preItem[0] === 'q') {
             preCX = preX + preItem[3] - preItem[1]
             preCY = preY + preItem[4] - preItem[2]
-            this.quadraticCurveTo(preX, preY, preCX, preCY, preX + item[1], preY + item[2])
+            this.quadraticCurveTo(
+              preX,
+              preY,
+              preCX,
+              preCY,
+              preX + item[1],
+              preY + item[2]
+            )
           } else if (preItem[0] === 'T' || preItem[0] === 't') {
-            this.quadraticCurveTo(preX, preY, preX + preX - preCX, preY + preY - preCY, preX + item[1], preY + item[2])
+            this.quadraticCurveTo(
+              preX,
+              preY,
+              preX + preX - preCX,
+              preY + preY - preCY,
+              preX + item[1],
+              preY + item[2]
+            )
             preCX = preX + preX - preCX
             preCY = preY + preY - preCY
           }
@@ -230,11 +306,11 @@ class Path extends Shape {
     }
   }
 
-  clone(){
-    return new Path(this.d,{
-      lineWidth:this.option.lineWidth,
-      strokeStyle:this.option.strokeStyle,
-      fillStyle:this.option.fillStyle
+  clone () {
+    return new Path(this.d, {
+      lineWidth: this.option.lineWidth,
+      strokeStyle: this.option.strokeStyle,
+      fillStyle: this.option.fillStyle
     })
   }
 }

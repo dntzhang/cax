@@ -10,18 +10,21 @@ if (util.isWeapp) {
 }
 
 class Text extends DisplayObject {
-  constructor (text, option) {
+  constructor(text, option) {
     super()
 
     this.text = text
     option = option || {}
     this.font = option.font || '10px sans-serif'
+    this.fontSize = option.fontSize || 10
     this.color = option.color || 'black'
     this.textAlign = option.textAlign || 'left'
     this.baseline = option.baseline || 'top'
+    this.fillStyle = option.fillStyle
+    this.strokeStyle = option.strokeStyle
   }
 
-  getWidth () {
+  getWidth() {
     if (!measureCtx) {
       if (util.isWegame) {
         measureCtx = wx.createCanvas().getContext('2d')

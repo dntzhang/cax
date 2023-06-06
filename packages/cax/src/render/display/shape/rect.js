@@ -17,11 +17,17 @@ class Rect extends Shape {
 
     if (this.option.strokeStyle) {
       this.strokeStyle(this.option.strokeStyle)
-      if(typeof this.option.lineWidth === 'number'){
+      if (typeof this.option.lineWidth === 'number') {
         this.lineWidth(this.option.lineWidth)
       }
       this.strokeRect(0, 0, this.width, this.height)
     }
+  }
+
+  clone () {
+    return new Rect(this.width, this.height, {
+      ...this.option
+    })
   }
 }
 
