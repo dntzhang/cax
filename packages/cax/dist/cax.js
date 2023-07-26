@@ -1,5 +1,5 @@
 /*!
- *  cax v1.3.5
+ *  cax v1.3.6
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -3563,7 +3563,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Stage = function (_Group) {
   _inherits(Stage, _Group);
 
-  function Stage(width, height, renderTo) {
+  function Stage(width, height, renderTo, contextAttributes) {
     _classCallCheck(this, Stage);
 
     var _this = _possibleConstructorReturn(this, (Stage.__proto__ || Object.getPrototypeOf(Stage)).call(this));
@@ -3602,16 +3602,15 @@ var Stage = function (_Group) {
 
       _this.offset = _this._getOffset(_this.canvas);
     }
-    _this.renderer = new _renderer2.default(_this.canvas);
+    _this.renderer = new _renderer2.default(_this.canvas, _this.canvas.width, _this.canvas.height, contextAttributes);
+
     if (_this.isWegame) {
       wx.onTouchStart(function (evt) {
         return _this._handleMouseDown(evt);
       });
-
       wx.onTouchMove(function (evt) {
         return _this._handleMouseMove(evt);
       });
-
       wx.onTouchEnd(function (evt) {
         return _this._handleMouseUp(evt);
       });
@@ -3640,12 +3639,10 @@ var Stage = function (_Group) {
       _this.canvas.addEventListener('touchend', function (evt) {
         return _this._handleMouseUp(evt);
       });
-
       _this.canvas.addEventListener('dblclick', function (evt) {
         return _this._handleDblClick(evt);
       });
       // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
-
       document.addEventListener('contextmenu', function (evt) {
         return _this._handleContextmenu(evt);
       });
@@ -4286,20 +4283,18 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var CanvasRender = function (_Render) {
   _inherits(CanvasRender, _Render);
 
-  function CanvasRender(canvasOrContext, width, height) {
+  function CanvasRender(canvasOrContext, width, height, contextAttributes) {
     _classCallCheck(this, CanvasRender);
 
     var _this = _possibleConstructorReturn(this, (CanvasRender.__proto__ || Object.getPrototypeOf(CanvasRender)).call(this));
 
     if (arguments.length === 3) {
       _this.ctx = canvasOrContext;
-      _this.width = width;
-      _this.height = height;
     } else {
-      _this.ctx = canvasOrContext.getContext('2d');
-      _this.width = canvasOrContext.width;
-      _this.height = canvasOrContext.height;
+      _this.ctx = canvasOrContext.getContext('2d', contextAttributes);
     }
+    _this.width = width;
+    _this.height = height;
     return _this;
   }
 

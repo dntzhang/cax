@@ -7,17 +7,15 @@ import Text from '../display/text.js'
 import { filter } from '../filter/index.js'
 
 class CanvasRender extends Render {
-  constructor (canvasOrContext, width, height) {
+  constructor (canvasOrContext, width, height, contextAttributes) {
     super()
     if (arguments.length === 3) {
       this.ctx = canvasOrContext
-      this.width = width
-      this.height = height
     } else {
-      this.ctx = canvasOrContext.getContext('2d')
-      this.width = canvasOrContext.width
-      this.height = canvasOrContext.height
+      this.ctx = canvasOrContext.getContext('2d', contextAttributes)
     }
+    this.width = width
+    this.height = height
   }
 
   clear (ctx, width, height) {

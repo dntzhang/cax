@@ -7,7 +7,7 @@ import WeStage from './we-stage'
 import option from '../base/stage-propagation-tag'
 
 class Stage extends Group {
-  constructor (width, height, renderTo) {
+  constructor (width, height, renderTo, contextAttributes) {
     super()
     const len = arguments.length
     this.isWegame = typeof wx !== 'undefined' && typeof Page === 'undefined'
@@ -39,12 +39,11 @@ class Stage extends Group {
 
       this.offset = this._getOffset(this.canvas)
     }
-    this.renderer = new Renderer(this.canvas)
+    this.renderer = new Renderer(this.canvas, this.canvas.width, this.canvas.height, contextAttributes)
+
     if (this.isWegame) {
       wx.onTouchStart(evt => this._handleMouseDown(evt))
-
       wx.onTouchMove(evt => this._handleMouseMove(evt))
-
       wx.onTouchEnd(evt => this._handleMouseUp(evt))
     } else {
       this.canvas.addEventListener('click', evt => this._handleClick(evt))
@@ -55,10 +54,8 @@ class Stage extends Group {
       this.canvas.addEventListener('touchstart', evt => this._handleMouseDown(evt))
       this.canvas.addEventListener('touchmove', evt => this._handleMouseMove(evt))
       this.canvas.addEventListener('touchend', evt => this._handleMouseUp(evt))
-
       this.canvas.addEventListener('dblclick', evt => this._handleDblClick(evt))
       // this.addEvent(this.canvas, "mousewheel", this._handleMouseWheel.bind(this));
-
       document.addEventListener('contextmenu', evt => this._handleContextmenu(evt))
     }
 
