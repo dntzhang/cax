@@ -216,7 +216,6 @@ class CanvasRender extends Render {
     } else if (o instanceof Text) {
       this.setComplexProps(ctx, o)
       ctx.font = o.font
-      ctx.fillStyle = o.color
       ctx.textAlign = o.textAlign
       ctx.textBaseline = o.baseline
       // 小程序才有 setFontSize
@@ -224,10 +223,12 @@ class CanvasRender extends Render {
       if (o.fillStyle) {
         ctx.fillStyle = o.fillStyle
         ctx.fillText(o.text, 0, 0)
-      }
-      if (o.strokeStyle) {
+      } else if (o.strokeStyle) {
         ctx.strokeStyle = o.strokeStyle
+        ctx.lineWidth = o.lineWidth
         ctx.strokeText(o.text, 0, 0)
+      } else {
+        console.warn('The Text element needs to have 【fillStyle】 or 【strokeStyle】 set in order to be rendered.')
       }
     }
   }

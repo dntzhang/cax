@@ -17,10 +17,11 @@ class Text extends DisplayObject {
     option = option || {}
     this.font = option.font || '10px sans-serif'
     this.fontSize = option.fontSize || 10
-    this.color = option.color || 'black'
     this.textAlign = option.textAlign || 'left'
     this.baseline = option.baseline || 'top'
-    this.fillStyle = option.fillStyle
+    // color 待废弃
+    this.fillStyle = option.fillStyle || option.color
+    this.lineWidth = option.lineWidth || 1
     this.strokeStyle = option.strokeStyle
   }
 

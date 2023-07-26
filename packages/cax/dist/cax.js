@@ -1,5 +1,5 @@
 /*!
- *  cax v1.3.4
+ *  cax v1.3.5
  *  By https://github.com/dntzhang 
  *  Github: https://github.com/dntzhang/cax
  *  MIT Licensed.
@@ -945,10 +945,11 @@ var Text = function (_DisplayObject) {
     option = option || {};
     _this.font = option.font || '10px sans-serif';
     _this.fontSize = option.fontSize || 10;
-    _this.color = option.color || 'black';
     _this.textAlign = option.textAlign || 'left';
     _this.baseline = option.baseline || 'top';
-    _this.fillStyle = option.fillStyle;
+    // color 待废弃
+    _this.fillStyle = option.fillStyle || option.color;
+    _this.lineWidth = option.lineWidth || 1;
     _this.strokeStyle = option.strokeStyle;
     return _this;
   }
@@ -4409,7 +4410,6 @@ var CanvasRender = function (_Render) {
       } else if (o instanceof _text2.default) {
         this.setComplexProps(ctx, o);
         ctx.font = o.font;
-        ctx.fillStyle = o.color;
         ctx.textAlign = o.textAlign;
         ctx.textBaseline = o.baseline;
         // 小程序才有 setFontSize
@@ -4417,10 +4417,12 @@ var CanvasRender = function (_Render) {
         if (o.fillStyle) {
           ctx.fillStyle = o.fillStyle;
           ctx.fillText(o.text, 0, 0);
-        }
-        if (o.strokeStyle) {
+        } else if (o.strokeStyle) {
           ctx.strokeStyle = o.strokeStyle;
+          ctx.lineWidth = o.lineWidth;
           ctx.strokeText(o.text, 0, 0);
+        } else {
+          console.warn('The Text element needs to have 【fillStyle】 or 【strokeStyle】 set in order to be rendered.');
         }
       }
     }
