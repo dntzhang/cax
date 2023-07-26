@@ -184,7 +184,7 @@ groupObj.empty()
 replace child by another obj
 
 ```js
-groupObj.replace (current, pre)
+groupObj.replace(current, prev)
 ```
 
 ### Stage

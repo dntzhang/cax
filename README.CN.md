@@ -287,7 +287,7 @@ groupObj.empty ()
 使用一个对象替代子对象
 
 ```js
-groupObj.replace (current, pre)
+groupObj.replace(current, prev)
 ```
 
 ### Stage
